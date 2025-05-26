@@ -7140,6 +7140,10 @@ class ScraperTask(BaseTask):
 def index():
     return render_template("main.index.html")
 
+@app.route("/test-modules")
+def test_modules():
+    return render_template("test_modules.html")
+
 @app.route("/api/upload-for-path-detection", methods=["POST"])
 def upload_for_path_detection():
     if "files" not in request.files:
@@ -11262,6 +11266,89 @@ def recommend_related_papers(paper_id, source="arxiv", limit=5):
 # -----------------------------------------------------------------------------
 # Academic API Endpoints
 # -----------------------------------------------------------------------------
+
+@app.route("/shutdown", methods=["POST"])
+def shutdown_server():
+    """Graceful shutdown endpoint"""
+    try:
+        # Check for secret key to prevent unauthorized shutdowns
+        data = request.get_json() or {}
+        secret = data.get('secret', '')
+        
+        if secret != 'neurogen-shutdown-key':
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Log shutdown request
+        app.logger.info("Shutdown request received")
+        
+        # Cleanup function
+        def cleanup_and_shutdown():
+            # Give time for response to be sent
+            time.sleep(1)
+            
+            # Log cleanup start
+            app.logger.info("Starting cleanup process...")
+            
+            # Cancel any running threads or background tasks
+            # Since there's no global task_manager, we'll do general cleanup
+            try:
+                # Emit shutdown event to all connected clients
+                socketio.emit('server_shutdown', {
+                    'message': 'Server is shutting down',
+                    'timestamp': time.time()
+                })
+                
+                # Give clients time to disconnect
+                time.sleep(0.5)
+                
+                # Stop accepting new connections
+                socketio.stop()
+                
+            except Exception as e:
+                app.logger.error(f"Error during socket cleanup: {e}")
+            
+            # Clean up any temp files
+            try:
+                import shutil
+                import tempfile
+                temp_dir = tempfile.gettempdir()
+                # Clean up any NeuroGen temp files
+                for item in os.listdir(temp_dir):
+                    if item.startswith('neurogen_'):
+                        item_path = os.path.join(temp_dir, item)
+                        try:
+                            if os.path.isfile(item_path):
+                                os.unlink(item_path)
+                            elif os.path.isdir(item_path):
+                                shutil.rmtree(item_path)
+                        except:
+                            pass
+            except Exception as e:
+                app.logger.error(f"Error during temp file cleanup: {e}")
+            
+            app.logger.info("Cleanup complete, shutting down...")
+            
+            # Shutdown the server
+            func = request.environ.get('werkzeug.server.shutdown')
+            if func is None:
+                # For production servers (not werkzeug)
+                app.logger.info("Using os._exit for shutdown")
+                os._exit(0)
+            else:
+                app.logger.info("Using werkzeug shutdown")
+                func()
+        
+        # Start cleanup in background thread
+        import threading
+        cleanup_thread = threading.Thread(target=cleanup_and_shutdown)
+        cleanup_thread.daemon = True
+        cleanup_thread.start()
+        
+        return jsonify({"message": "Server is shutting down gracefully"}), 200
+        
+    except Exception as e:
+        app.logger.error(f"Error during shutdown: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/academic/health", methods=["GET"])
 def academic_health_check():
