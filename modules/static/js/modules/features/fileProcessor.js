@@ -2448,6 +2448,133 @@ const fileProcessor = {
   },
 
   /**
+   * Handle emergency stop - force cancel without task ID
+   * @param {string} reason - Reason for emergency stop
+   */
+  async emergencyStop(reason = "Emergency stop triggered") {
+    try {
+      console.warn("[EMERGENCY] Emergency stop triggered:", reason);
+      
+      // Update UI immediately
+      this.updateEmergencyStopUI();
+      
+      // Force reset all state
+      this.forceResetProcessingState();
+      
+      // Try Socket.IO first
+      if (window.socket && window.socket.connected) {
+        window.socket.emit('emergency_stop', {
+          reason: reason,
+          timestamp: Date.now()
+        });
+        
+        // Listen for response
+        window.socket.once('emergency_stop_complete', (data) => {
+          console.log('[EMERGENCY] Stop complete:', data);
+          this.showEmergencyStopComplete(data);
+        });
+        
+        window.socket.once('emergency_stop_error', (data) => {
+          console.error('[EMERGENCY] Stop error:', data);
+          this.showError('Emergency stop encountered an error');
+        });
+      }
+      
+      // Also try REST API
+      try {
+        const response = await fetch('/api/emergency-stop', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ reason })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Emergency stop failed: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('[EMERGENCY] REST API response:', result);
+        
+        // Show completion
+        this.showEmergencyStopComplete(result);
+        
+      } catch (apiError) {
+        console.error('[EMERGENCY] API Error:', apiError);
+        // Still show UI as stopped
+        this.showCancelled();
+      }
+      
+    } catch (error) {
+      console.error('[EMERGENCY] Error during emergency stop:', error);
+      this.handleError(error, "Emergency stop error");
+      // Force UI to cancelled state
+      this.showCancelled();
+    }
+  },
+
+  /**
+   * Update UI for emergency stop
+   */
+  updateEmergencyStopUI() {
+    // Update all buttons and status
+    const cancelBtn = getElement('cancel-btn');
+    if (cancelBtn) {
+      cancelBtn.disabled = true;
+      cancelBtn.innerHTML = '<i class="fas fa-stop-circle"></i> EMERGENCY STOPPING...';
+      cancelBtn.classList.add('btn-danger');
+    }
+    
+    const progressStatus = getElement('progress-status');
+    if (progressStatus) {
+      progressStatus.textContent = "EMERGENCY STOP - Forcing cancellation...";
+      progressStatus.classList.add('text-danger');
+    }
+    
+    // Add emergency stop indicator
+    const progressBar = getElement('progress-bar');
+    if (progressBar) {
+      progressBar.classList.add('bg-danger');
+    }
+  },
+
+  /**
+   * Show emergency stop completion
+   * @param {Object} data - Completion data
+   */
+  showEmergencyStopComplete(data) {
+    console.log('[EMERGENCY] Showing emergency stop completion:', data);
+    
+    // Clear all state
+    this.forceResetProcessingState();
+    
+    // Show cancelled state with emergency message
+    const cancelledContainer = getElement('cancelled-container');
+    if (cancelledContainer) {
+      const message = cancelledContainer.querySelector('.alert-warning');
+      if (message) {
+        message.innerHTML = `
+          <h4 class="alert-heading">
+            <i class="fas fa-stop-circle"></i> Emergency Stop Executed
+          </h4>
+          <p>All tasks have been forcefully cancelled.</p>
+          <hr>
+          <p class="mb-0">
+            Cancelled Tasks: ${data.cancelled_count || 'Unknown'}<br>
+            <small>You may need to refresh the page if issues persist.</small>
+          </p>
+        `;
+        message.classList.remove('alert-warning');
+        message.classList.add('alert-danger');
+      }
+    }
+    
+    this.showCancelled();
+  },
+
+
+  /**
    * Handle new task button click
    * @param {Event} event - Click event
    */
@@ -3038,3 +3165,17 @@ export const handleFileSubmit = fileProcessor.handleFileSubmit.bind(fileProcesso
 export const handleFileSelection = fileProcessor.handleFileSelection.bind(fileProcessor);
 export const extractPdfContent = fileProcessor.extractPdfContent.bind(fileProcessor);
 import uiUtils from '../utils/uiBridge.js';
+
+
+// Add keyboard shortcut for emergency stop (Ctrl+Shift+X)
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'X') {
+    e.preventDefault();
+    if (window.fileProcessor && typeof window.fileProcessor.emergencyStop === 'function') {
+      if (confirm('⚠️ EMERGENCY STOP ⚠️\n\nThis will forcefully cancel ALL running tasks!\n\nAre you sure?')) {
+        window.fileProcessor.emergencyStop('Keyboard shortcut triggered');
+      }
+    }
+  }
+});
+

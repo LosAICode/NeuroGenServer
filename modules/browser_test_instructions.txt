@@ -1,0 +1,50 @@
+
+🧪 Browser Testing Instructions
+================================
+
+1. Open Chrome Developer Tools (F12)
+
+2. Go to Console tab and paste:
+   ```javascript
+   // Enable debug mode
+   window.progressDebug = true;
+   
+   // Monitor all progress events
+   window.socket.on('progress_update', (data) => {
+     console.log(`Progress: ${data.task_id} - ${data.progress}%`, data);
+   });
+   
+   // Check for duplicate progress elements
+   document.querySelectorAll('[id*="progress"]').forEach(el => {
+     console.log('Progress element:', el.id, el.style.width);
+   });
+   ```
+
+3. Test each module:
+   
+   a) File Processor:
+      - Upload multiple files
+      - Watch console for progress updates
+      - Verify bar reaches 100%
+   
+   b) Playlist Downloader:
+      - Enter a YouTube playlist URL
+      - Monitor progress updates
+      - Check if completes properly
+   
+   c) Web Scraper:
+      - Enter a website URL
+      - Watch scraping progress
+      - Ensure completion at 100%
+
+4. Common issues to check:
+   - Progress stuck at 50%? ❌ Should be fixed
+   - Duplicate percentage displays? ❌ Should be fixed
+   - Progress going backwards? ❌ Should be fixed
+   - Not reaching 100%? ❌ Should be fixed
+
+5. Expected behavior:
+   - Smooth progress from 0-100%
+   - Single progress indicator
+   - Immediate completion at 100%
+   - Consistent progress updates

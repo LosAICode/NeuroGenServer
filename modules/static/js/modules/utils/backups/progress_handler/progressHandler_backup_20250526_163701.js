@@ -236,6 +236,32 @@ function smoothProgress(taskId, reportedProgress, updateCount) {
   // CRITICAL FIX: Direct progress return - no smoothing
   return reportedProgress;
 }
+  
+  // High progress special case (99-100%)
+  if (reportedProgress >= 99 && reportedProgress < 100) {
+    // Get task data
+    const task = state.activeTasks.get(taskId);
+    if (!task) return reportedProgress;
+    
+    // If status is "completed" or we have indicators of completion, force to 100%
+    if (task.status === 'completed' || 
+        (task.stats && task.stats.status === 'completed') ||
+        (task.message && (
+          task.message.toLowerCase().includes('complet') ||
+          task.message.toLowerCase().includes('done') ||
+          task.message.toLowerCase().includes('finish')
+        )) ||
+        (task.stats && task.stats.processed_files >= task.stats.total_files)) {
+          
+      return 100;
+    }
+  }
+  
+  // Otherwise return the reported progress unchanged
+  return reportedProgress;
+}
+
+// Format a byte size to human-readable format
 function formatBytes(bytes) {
   if (bytes === 0) return '0 Bytes';
   
@@ -1852,24 +1878,7 @@ function setupTaskEventHandlers(taskId, options) {
     };
     
     // Register handlers
-    // CRITICAL FIX: Register ALL possible progress event names
-    const progressEvents = [
-      'progress_update',
-      'task_progress',
-      'file_processing_progress',
-      'playlist_progress',
-      'web_scraping_progress',
-      'pdf_download_progress',
-      'pdf_processing_progress'
-    ];
-    
-    // Register all progress events
-    progressEvents.forEach(event => {
-      window.socket.on(event, progressHandler);
-      handlers.socketHandlers[event] = progressHandler;
-    });
-    
-    // window.socket.on('progress_update', progressHandler);
+    window.socket.on('progress_update', progressHandler);
     window.socket.on('task_progress', progressHandler);
     window.socket.on('task_completed', completedHandler);
     window.socket.on('task_error', errorHandler);
@@ -2065,10 +2074,10 @@ function updateTaskProgress(taskId, progress, message, stats = null) {
                         (stats && stats.status === "completed" || 
                         task.status === "completed");
                         
-  // CRITICAL FIX: Removed backward progress prevention
-  // // CRITICAL FIX: Removed backward progress prevention
-  // console.warn(`Ignoring backward progress update for task ${taskId}: ${progress}% (last was ${lastProgress}%)`);
-  // return;
+  if (progress < lastProgress && lastProgress < 99 && !isCompletingUpdate) {
+    console.warn(`Ignoring backward progress update for task ${taskId}: ${progress}% (last was ${lastProgress}%)`);
+    return;
+  }
 
   // Update last progress value
   state.lastProgressValues.set(taskId, progress);
@@ -2092,12 +2101,19 @@ function updateTaskProgress(taskId, progress, message, stats = null) {
       task.status !== 'completed' && 
       !state.completedTaskIds.has(taskId)) {
     
-    // CRITICAL FIX: Complete immediately without delay
-    console.log(`Task ${taskId} reached 100% - completing immediately`);
-    completeTask(taskId, {
-      ...task,
-      output_file: task.outputPath || stats?.output_file || null
-    });
+    // Set a small timeout to see if a completion event comes in
+    setTimeout(() => {
+      const currentTask = state.activeTasks.get(taskId);
+      if (currentTask && currentTask.status !== 'completed' && 
+          !state.completedTaskIds.has(taskId)) {
+        console.log(`Task ${taskId} reached completion criteria but no completion event received, auto-completing`);
+        // Auto-complete the task
+        completeTask(taskId, {
+          ...currentTask,
+          output_file: currentTask.outputPath || null
+        });
+      }
+    }, 2000); // Wait 2 seconds for completion event before auto-completing
   }
 }
 
@@ -2129,8 +2145,7 @@ function updateProgressUI(taskId, progress, message, stats = null) {
   state.taskProgressInfo.set(taskId, info);
   
   // Apply progress smoothing for early stages
-  // CRITICAL FIX: Direct progress assignment
-  const smoothedProgress = Math.max(0, Math.min(100, progress));
+  const smoothedProgress = smoothProgress(taskId, progress, info.updateCount);
 
   // Update progress bar with sanity checks
   if (elements.progressBar) {

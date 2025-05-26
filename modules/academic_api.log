@@ -1,0 +1,871 @@
+2025-05-26 15:24:08,071 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 15:24:08,085 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 15:24:09,580 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 15:24:09,583 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 15:24:09,607 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 15:24:09,653 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 15:24:09,758 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 15:24:09,758 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 15:24:09,769 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 15:24:09,769 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 15:24:09,769 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 15:24:09,769 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 15:24:09,913 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:24:09,913 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 15:24:09,913 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 15:24:09,913 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 15:24:10,171 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 15:24:10,171 - neurogenlib - INFO - File path utility is available
+2025-05-26 15:24:10,171 - neurogenlib - INFO - Error handler is available
+2025-05-26 15:24:10,171 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 15:24:10,171 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:24:10,171 - neurogenlib - INFO - Structify module is available
+2025-05-26 15:24:10,171 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 15:24:10,182 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 15:24:10,182 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 15:24:10,182 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 15:24:10,182 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 15:24:10,182 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 15:24:10,229 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 15:24:13,364 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 15:24:13,374 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 15:24:14,357 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 15:24:14,361 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 15:24:14,380 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 15:24:14,402 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 15:24:14,499 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 15:24:14,500 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 15:24:14,503 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 15:24:14,503 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 15:24:14,504 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 15:24:14,504 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 15:24:14,621 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:24:14,621 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 15:24:14,621 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 15:24:14,621 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 15:24:14,801 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 15:24:14,801 - neurogenlib - INFO - File path utility is available
+2025-05-26 15:24:14,801 - neurogenlib - INFO - Error handler is available
+2025-05-26 15:24:14,812 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 15:24:14,813 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:24:14,814 - neurogenlib - INFO - Structify module is available
+2025-05-26 15:24:14,814 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 15:24:14,820 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 15:24:14,822 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 15:24:14,826 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 15:24:14,829 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 15:24:14,830 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 15:24:14,867 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 15:24:14,874 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 15:24:49,176 - __main__ - INFO - Processing request: input_dir=C:\Users\Los\Documents\NeuroGenServer, output_file=C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json, output_dir=None
+2025-05-26 15:24:49,181 - __main__ - INFO - Output file will be saved at: C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 15:24:49,181 - __main__ - INFO - Resolved output path: C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 15:24:49,181 - __main__ - INFO - BaseTask eb530c25-7d20-486d-bf5c-6b1cd29621d7 (file_processing) created.
+2025-05-26 15:24:49,208 - __main__ - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-05-26 15:24:49,208 - __main__ - INFO - Added task eb530c25-7d20-486d-bf5c-6b1cd29621d7 to active tasks.
+2025-05-26 15:24:49,208 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 (file_processing) started processing.
+2025-05-26 15:24:49,208 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 (file_processing) thread started.
+2025-05-26 15:24:49,208 - __main__ - INFO - Started processing task: eb530c25-7d20-486d-bf5c-6b1cd29621d7 for input directory: C:\Users\Los\Documents\NeuroGenServer
+2025-05-26 15:24:49,214 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7: Starting enhanced file processing for directory: C:/Users/Los/Documents/NeuroGenServer
+2025-05-26 15:24:49,214 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 1% - Processing files in C:/Users/Los/Documents/NeuroGenServer with enhanced analytics...
+2025-05-26 15:24:49,214 - __main__ - INFO - Using direct import of process_all_files
+2025-05-26 15:24:49,214 - __main__ - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-05-26 15:24:49,340 - file_processor - INFO - Found 176 valid files in C:/Users/Los/Documents/NeuroGenServer (0.13s)
+2025-05-26 15:24:49,340 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 0% - Stage: discovery (0/176)
+2025-05-26 15:24:49,341 - file_processor - INFO - Using thread executor with max_workers=3
+2025-05-26 15:24:49,343 - file_processor - INFO - Processing batch 1/4 (50 files)
+2025-05-26 15:24:49,345 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 0% - Stage: processing (1/178)
+2025-05-26 15:24:49,347 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 1% - Stage: processing (2/178)
+2025-05-26 15:24:49,347 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 1% - Stage: processing (3/180)
+2025-05-26 15:24:49,347 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 2% - Stage: processing (4/182)
+2025-05-26 15:24:49,792 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 2% - Stage: processing (5/183)
+2025-05-26 15:24:49,792 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 3% - Stage: processing (6/184)
+2025-05-26 15:24:49,802 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 3% - Stage: processing (7/185)
+2025-05-26 15:24:49,802 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 4% - Stage: processing (8/186)
+2025-05-26 15:24:49,802 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 4% - Stage: processing (9/187)
+2025-05-26 15:24:49,809 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 5% - Stage: processing (10/188)
+2025-05-26 15:24:49,812 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 5% - Stage: processing (11/189)
+2025-05-26 15:24:49,812 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 6% - Stage: processing (12/190)
+2025-05-26 15:24:49,812 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 6% - Stage: processing (13/191)
+2025-05-26 15:24:49,812 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 7% - Stage: processing (14/192)
+2025-05-26 15:24:49,812 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 7% - Stage: processing (15/193)
+2025-05-26 15:24:49,822 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 8% - Stage: processing (16/194)
+2025-05-26 15:24:49,833 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 8% - Stage: processing (17/195)
+2025-05-26 15:24:49,833 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 9% - Stage: processing (18/196)
+2025-05-26 15:24:49,833 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 9% - Stage: processing (19/197)
+2025-05-26 15:24:49,833 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 10% - Stage: processing (20/198)
+2025-05-26 15:24:49,833 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 10% - Stage: processing (21/199)
+2025-05-26 15:24:49,846 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 10% - Stage: processing (22/200)
+2025-05-26 15:24:49,846 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 11% - Stage: processing (23/201)
+2025-05-26 15:24:49,846 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 11% - Stage: processing (24/202)
+2025-05-26 15:24:49,846 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 12% - Stage: processing (25/203)
+2025-05-26 15:24:49,846 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 12% - Stage: processing (26/204)
+2025-05-26 15:24:49,846 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 13% - Stage: processing (27/205)
+2025-05-26 15:24:49,846 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 13% - Stage: processing (28/206)
+2025-05-26 15:24:49,856 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 13% - Stage: processing (29/207)
+2025-05-26 15:24:49,859 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 14% - Stage: processing (30/208)
+2025-05-26 15:24:49,865 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 14% - Stage: processing (31/209)
+2025-05-26 15:24:49,867 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 15% - Stage: processing (32/210)
+2025-05-26 15:24:49,867 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 15% - Stage: processing (33/211)
+2025-05-26 15:24:49,867 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 15% - Stage: processing (34/212)
+2025-05-26 15:24:49,867 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 16% - Stage: processing (35/213)
+2025-05-26 15:24:49,867 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 16% - Stage: processing (36/214)
+2025-05-26 15:24:49,877 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 17% - Stage: processing (37/215)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 17% - Stage: processing (38/216)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 17% - Stage: processing (39/217)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 18% - Stage: processing (40/218)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 18% - Stage: processing (41/219)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 18% - Stage: processing (42/220)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 19% - Stage: processing (43/221)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 19% - Stage: processing (44/222)
+2025-05-26 15:24:49,882 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 19% - Stage: processing (45/223)
+2025-05-26 15:24:49,897 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 20% - Stage: processing (46/224)
+2025-05-26 15:24:49,897 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 20% - Stage: processing (47/225)
+2025-05-26 15:24:49,897 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 21% - Stage: processing (48/226)
+2025-05-26 15:24:49,897 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 21% - Stage: processing (49/226)
+2025-05-26 15:24:49,897 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 21% - Stage: processing (50/226)
+2025-05-26 15:24:49,897 - file_processor - INFO - Processing batch 2/4 (50 files)
+2025-05-26 15:24:49,897 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 22% - Stage: processing (51/227)
+2025-05-26 15:24:49,897 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 22% - Stage: processing (52/228)
+2025-05-26 15:24:49,909 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 22% - Stage: processing (53/231)
+2025-05-26 15:24:49,909 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 23% - Stage: processing (54/232)
+2025-05-26 15:24:49,909 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 23% - Stage: processing (55/233)
+2025-05-26 15:24:49,918 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 23% - Stage: processing (56/234)
+2025-05-26 15:24:49,929 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 24% - Stage: processing (57/235)
+2025-05-26 15:24:49,929 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 24% - Stage: processing (58/236)
+2025-05-26 15:24:49,929 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 24% - Stage: processing (59/237)
+2025-05-26 15:24:49,929 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 24% - Stage: processing (60/238)
+2025-05-26 15:24:49,929 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 25% - Stage: processing (61/239)
+2025-05-26 15:24:49,929 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 25% - Stage: processing (62/240)
+2025-05-26 15:24:49,929 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 25% - Stage: processing (63/241)
+2025-05-26 15:24:49,940 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 26% - Stage: processing (64/242)
+2025-05-26 15:24:49,942 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 26% - Stage: processing (65/243)
+2025-05-26 15:24:49,942 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 26% - Stage: processing (66/244)
+2025-05-26 15:24:49,942 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 27% - Stage: processing (67/245)
+2025-05-26 15:24:49,950 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 27% - Stage: processing (68/246)
+2025-05-26 15:24:49,950 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 27% - Stage: processing (69/247)
+2025-05-26 15:24:49,950 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 27% - Stage: processing (70/248)
+2025-05-26 15:24:49,950 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 28% - Stage: processing (71/249)
+2025-05-26 15:24:49,950 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 28% - Stage: processing (72/250)
+2025-05-26 15:24:49,961 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 28% - Stage: processing (73/251)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 29% - Stage: processing (74/252)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 29% - Stage: processing (75/253)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 29% - Stage: processing (76/254)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 29% - Stage: processing (77/255)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 30% - Stage: processing (78/256)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 30% - Stage: processing (79/257)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 30% - Stage: processing (80/258)
+2025-05-26 15:24:49,964 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 30% - Stage: processing (81/259)
+2025-05-26 15:24:49,975 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 31% - Stage: processing (82/260)
+2025-05-26 15:24:49,975 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 31% - Stage: processing (83/261)
+2025-05-26 15:24:49,975 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 31% - Stage: processing (84/262)
+2025-05-26 15:24:49,975 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 31% - Stage: processing (85/263)
+2025-05-26 15:24:49,985 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 32% - Stage: processing (86/264)
+2025-05-26 15:24:49,985 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 32% - Stage: processing (87/265)
+2025-05-26 15:24:49,985 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 32% - Stage: processing (88/266)
+2025-05-26 15:24:49,985 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 33% - Stage: processing (89/267)
+2025-05-26 15:24:49,996 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 33% - Stage: processing (90/268)
+2025-05-26 15:24:49,996 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 33% - Stage: processing (91/269)
+2025-05-26 15:24:49,996 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 33% - Stage: processing (92/270)
+2025-05-26 15:24:49,996 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 33% - Stage: processing (93/271)
+2025-05-26 15:24:49,996 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 34% - Stage: processing (94/272)
+2025-05-26 15:24:49,996 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 34% - Stage: processing (95/273)
+2025-05-26 15:24:49,996 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 34% - Stage: processing (96/274)
+2025-05-26 15:24:50,009 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 34% - Stage: processing (97/275)
+2025-05-26 15:24:50,009 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 35% - Stage: processing (98/276)
+2025-05-26 15:24:50,009 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 35% - Stage: processing (99/276)
+2025-05-26 15:24:50,017 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 35% - Stage: processing (100/276)
+2025-05-26 15:24:50,017 - file_processor - INFO - Processing batch 3/4 (50 files)
+2025-05-26 15:24:50,029 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 35% - Stage: processing (101/278)
+2025-05-26 15:24:50,032 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 36% - Stage: processing (102/278)
+2025-05-26 15:24:50,042 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 36% - Stage: processing (103/280)
+2025-05-26 15:24:50,065 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 36% - Stage: processing (104/282)
+2025-05-26 15:24:50,065 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 36% - Stage: processing (105/283)
+2025-05-26 15:24:50,074 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 36% - Stage: processing (106/284)
+2025-05-26 15:24:50,076 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 37% - Stage: processing (107/285)
+2025-05-26 15:24:50,076 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 37% - Stage: processing (108/286)
+2025-05-26 15:24:50,086 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 37% - Stage: processing (109/287)
+2025-05-26 15:24:50,086 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 37% - Stage: processing (110/288)
+2025-05-26 15:24:50,086 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 38% - Stage: processing (111/289)
+2025-05-26 15:24:50,086 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 38% - Stage: processing (112/290)
+2025-05-26 15:24:50,096 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 38% - Stage: processing (113/291)
+2025-05-26 15:24:50,099 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 38% - Stage: processing (114/292)
+2025-05-26 15:24:50,099 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 38% - Stage: processing (115/293)
+2025-05-26 15:24:50,099 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 39% - Stage: processing (116/294)
+2025-05-26 15:24:50,099 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 39% - Stage: processing (117/295)
+2025-05-26 15:24:50,110 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 39% - Stage: processing (118/296)
+2025-05-26 15:24:50,110 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 39% - Stage: processing (119/297)
+2025-05-26 15:24:50,110 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 39% - Stage: processing (120/298)
+2025-05-26 15:24:50,110 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 40% - Stage: processing (121/299)
+2025-05-26 15:24:50,121 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 40% - Stage: processing (122/300)
+2025-05-26 15:24:50,121 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 40% - Stage: processing (123/301)
+2025-05-26 15:24:50,129 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 40% - Stage: processing (124/302)
+2025-05-26 15:24:50,130 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 40% - Stage: processing (125/303)
+2025-05-26 15:24:50,133 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 41% - Stage: processing (126/304)
+2025-05-26 15:24:50,133 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 41% - Stage: processing (127/305)
+2025-05-26 15:24:50,133 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 41% - Stage: processing (128/306)
+2025-05-26 15:24:50,133 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 41% - Stage: processing (129/307)
+2025-05-26 15:24:50,133 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 41% - Stage: processing (130/308)
+2025-05-26 15:24:50,146 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 41% - Stage: processing (131/309)
+2025-05-26 15:24:50,146 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 42% - Stage: processing (132/310)
+2025-05-26 15:24:50,146 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 42% - Stage: processing (133/311)
+2025-05-26 15:24:50,146 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 42% - Stage: processing (134/312)
+2025-05-26 15:24:50,146 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 42% - Stage: processing (135/313)
+2025-05-26 15:24:50,146 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 42% - Stage: processing (136/314)
+2025-05-26 15:24:50,157 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 43% - Stage: processing (137/315)
+2025-05-26 15:24:50,159 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 43% - Stage: processing (138/316)
+2025-05-26 15:24:50,159 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 43% - Stage: processing (139/317)
+2025-05-26 15:24:50,159 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 43% - Stage: processing (140/318)
+2025-05-26 15:24:50,167 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 43% - Stage: processing (141/319)
+2025-05-26 15:24:50,167 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 43% - Stage: processing (142/320)
+2025-05-26 15:24:50,167 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 44% - Stage: processing (143/321)
+2025-05-26 15:24:50,167 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 44% - Stage: processing (144/322)
+2025-05-26 15:24:50,167 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 44% - Stage: processing (145/323)
+2025-05-26 15:24:50,167 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 44% - Stage: processing (146/324)
+2025-05-26 15:24:50,179 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 44% - Stage: processing (147/325)
+2025-05-26 15:24:50,179 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 44% - Stage: processing (148/326)
+2025-05-26 15:24:50,179 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 45% - Stage: processing (149/326)
+2025-05-26 15:24:55,474 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 45% - Stage: processing (150/326)
+2025-05-26 15:24:55,476 - file_processor - INFO - Processing batch 4/4 (26 files)
+2025-05-26 15:24:55,482 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 45% - Stage: processing (151/328)
+2025-05-26 15:24:55,487 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 45% - Stage: processing (152/330)
+2025-05-26 15:24:55,491 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 45% - Stage: processing (153/330)
+2025-05-26 15:24:55,496 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 45% - Stage: processing (154/332)
+2025-05-26 15:24:55,504 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 46% - Stage: processing (155/333)
+2025-05-26 15:24:55,507 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 46% - Stage: processing (156/334)
+2025-05-26 15:24:55,510 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 46% - Stage: processing (157/335)
+2025-05-26 15:24:55,512 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 46% - Stage: processing (158/336)
+2025-05-26 15:24:55,518 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 46% - Stage: processing (159/337)
+2025-05-26 15:24:55,523 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 46% - Stage: processing (160/338)
+2025-05-26 15:24:55,528 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 47% - Stage: processing (161/339)
+2025-05-26 15:24:55,530 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 47% - Stage: processing (162/340)
+2025-05-26 15:24:55,535 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 47% - Stage: processing (163/341)
+2025-05-26 15:24:55,540 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 47% - Stage: processing (164/342)
+2025-05-26 15:24:55,543 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 47% - Stage: processing (165/343)
+2025-05-26 15:24:55,544 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 47% - Stage: processing (166/344)
+2025-05-26 15:24:55,554 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 47% - Stage: processing (167/345)
+2025-05-26 15:24:55,556 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 48% - Stage: processing (168/346)
+2025-05-26 15:24:55,559 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 48% - Stage: processing (169/347)
+2025-05-26 15:24:55,560 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 48% - Stage: processing (170/348)
+2025-05-26 15:24:55,563 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 48% - Stage: processing (171/349)
+2025-05-26 15:24:55,567 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 48% - Stage: processing (172/350)
+2025-05-26 15:24:55,573 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 48% - Stage: processing (173/351)
+2025-05-26 15:24:55,575 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 48% - Stage: processing (174/352)
+2025-05-26 15:24:55,576 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 49% - Stage: processing (175/352)
+2025-05-26 15:24:55,578 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 49% - Stage: processing (176/352)
+2025-05-26 15:24:55,579 - file_processor - INFO - Ensured output directory exists: C:/Users/Los/Documents/NeuroGenServer
+2025-05-26 15:24:57,823 - file_processor - INFO - Created JSON output at C:/Users/Los/Documents/NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 15:24:57,823 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 progress: 99% - Stage: completed (100/100)
+2025-05-26 15:24:57,823 - file_processor - INFO - Processing complete in 6.36s
+2025-05-26 15:24:57,823 - file_processor - INFO - Stats: 176 files found, 176 processed, 0 skipped, 0 errors, 8614 chunks created
+2025-05-26 15:24:57,823 - __main__ - INFO - Output file validation passed: C:/Users/Los/Documents/NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json (71494035 bytes)
+2025-05-26 15:24:57,823 - __main__ - INFO - Processing completed in 8.64s: 176/100 files processed, 0 errors, 0 skipped
+2025-05-26 15:24:57,830 - __main__ - INFO - Emitted enhanced task completion for eb530c25-7d20-486d-bf5c-6b1cd29621d7 with full stats
+2025-05-26 15:24:57,830 - __main__ - INFO - Added task eb530c25-7d20-486d-bf5c-6b1cd29621d7 to history
+2025-05-26 15:24:57,830 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 completed with enhanced stats showcase
+2025-05-26 15:25:06,292 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 enhanced final stats: processed=176, errors=0, skipped=0, pdfs=0, duration=17.11s, efficiency=59.32
+2025-05-26 15:25:06,292 - __main__ - INFO - Task eb530c25-7d20-486d-bf5c-6b1cd29621d7 (file_processing) completed in 17.11s.
+2025-05-26 15:25:06,292 - __main__ - INFO - Processing completed in 17.11s: 176/100 files processed, 0 errors, 0 skipped
+2025-05-26 15:25:06,292 - __main__ - INFO - Removed task eb530c25-7d20-486d-bf5c-6b1cd29621d7 from active tasks.
+2025-05-26 15:25:12,166 - __main__ - INFO - [CANCEL] REST API cancellation request for task: eb530c25-7d20-486d-bf5c-6b1cd29621d7
+2025-05-26 15:25:12,166 - __main__ - INFO - Emitted task_cancelled for task eb530c25-7d20-486d-bf5c-6b1cd29621d7
+2025-05-26 15:26:48,449 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 15:26:48,455 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 15:26:49,784 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 15:26:49,784 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 15:26:49,806 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 15:26:49,865 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 15:26:49,989 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 15:26:49,989 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 15:26:49,993 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 15:26:49,993 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 15:26:49,993 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 15:26:49,993 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 15:26:50,122 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:26:50,122 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 15:26:50,122 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 15:26:50,122 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 15:26:50,384 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 15:26:50,384 - neurogenlib - INFO - File path utility is available
+2025-05-26 15:26:50,392 - neurogenlib - INFO - Error handler is available
+2025-05-26 15:26:50,398 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 15:26:50,400 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:26:50,400 - neurogenlib - INFO - Structify module is available
+2025-05-26 15:26:50,402 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 15:26:50,403 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 15:26:50,403 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 15:26:50,405 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 15:26:50,407 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 15:26:50,408 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 15:26:50,457 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 15:26:53,453 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 15:26:53,462 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 15:26:54,537 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 15:26:54,537 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 15:26:54,558 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 15:26:54,579 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 15:26:54,672 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 15:26:54,672 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 15:26:54,675 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 15:26:54,675 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 15:26:54,675 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 15:26:54,676 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 15:26:54,794 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:26:54,794 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 15:26:54,794 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 15:26:54,794 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 15:26:54,985 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 15:26:54,986 - neurogenlib - INFO - File path utility is available
+2025-05-26 15:26:54,986 - neurogenlib - INFO - Error handler is available
+2025-05-26 15:26:54,986 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 15:26:54,986 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 15:26:54,986 - neurogenlib - INFO - Structify module is available
+2025-05-26 15:26:54,993 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 15:26:54,995 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 15:26:54,995 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 15:26:54,997 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 15:26:54,997 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 15:26:55,003 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 15:26:55,041 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 15:26:55,044 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 15:27:17,181 - __main__ - INFO - Processing request: input_dir=C:\Users\Los\Documents\NeuroGenServer, output_file=C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json, output_dir=None
+2025-05-26 15:27:17,182 - __main__ - INFO - Output file will be saved at: C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 15:27:17,182 - __main__ - INFO - Resolved output path: C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 15:27:17,182 - __main__ - INFO - BaseTask 2957e439-77d3-4531-a726-2748081e8a7a (file_processing) created.
+2025-05-26 15:27:17,229 - __main__ - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-05-26 15:27:17,229 - __main__ - INFO - Added task 2957e439-77d3-4531-a726-2748081e8a7a to active tasks.
+2025-05-26 15:27:17,230 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a (file_processing) started processing.
+2025-05-26 15:27:17,232 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a (file_processing) thread started.
+2025-05-26 15:27:17,232 - __main__ - INFO - Started processing task: 2957e439-77d3-4531-a726-2748081e8a7a for input directory: C:\Users\Los\Documents\NeuroGenServer
+2025-05-26 15:27:17,235 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a: Starting enhanced file processing for directory: C:/Users/Los/Documents/NeuroGenServer
+2025-05-26 15:27:17,236 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 1% - Processing files in C:/Users/Los/Documents/NeuroGenServer with enhanced analytics...
+2025-05-26 15:27:17,236 - __main__ - INFO - Using direct import of process_all_files
+2025-05-26 15:27:17,237 - __main__ - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-05-26 15:27:17,335 - file_processor - INFO - Found 176 valid files in C:/Users/Los/Documents/NeuroGenServer (0.10s)
+2025-05-26 15:27:17,335 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 0% - Stage: discovery (0/176)
+2025-05-26 15:27:17,336 - file_processor - INFO - Using thread executor with max_workers=3
+2025-05-26 15:27:17,336 - file_processor - INFO - Processing batch 1/4 (50 files)
+2025-05-26 15:27:17,338 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 0% - Stage: processing (1/178)
+2025-05-26 15:27:17,340 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 1% - Stage: processing (2/178)
+2025-05-26 15:27:17,343 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 1% - Stage: processing (3/180)
+2025-05-26 15:27:17,345 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 2% - Stage: processing (4/181)
+2025-05-26 15:27:17,347 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 2% - Stage: processing (5/183)
+2025-05-26 15:27:17,348 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 3% - Stage: processing (6/184)
+2025-05-26 15:27:21,840 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 3% - Stage: processing (7/185)
+2025-05-26 15:27:30,309 - __main__ - INFO - [CANCEL] REST API cancellation request for task: 2957e439-77d3-4531-a726-2748081e8a7a
+2025-05-26 15:27:30,309 - __main__ - INFO - Attempting to cancel task 2957e439-77d3-4531-a726-2748081e8a7a (file_processing). Previous status: processing
+2025-05-26 15:27:30,311 - __main__ - INFO - Sent InterruptedError to thread 2387923526848
+2025-05-26 15:27:30,311 - __main__ - INFO - Emitted task_cancelled for 2957e439-77d3-4531-a726-2748081e8a7a
+2025-05-26 15:27:30,360 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 4% - Stage: processing (8/186)
+2025-05-26 15:27:30,364 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 4% - Stage: processing (9/187)
+2025-05-26 15:27:30,366 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,367 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\NeuroGen Server structure.txt: Task cancelled by user
+2025-05-26 15:27:30,382 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 5% - Stage: processing (11/189)
+2025-05-26 15:27:30,390 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 6% - Stage: processing (12/190)
+2025-05-26 15:27:30,392 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 6% - Stage: processing (13/191)
+2025-05-26 15:27:30,398 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 7% - Stage: processing (14/192)
+2025-05-26 15:27:30,399 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 7% - Stage: processing (15/193)
+2025-05-26 15:27:30,405 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 8% - Stage: processing (16/194)
+2025-05-26 15:27:30,409 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 8% - Stage: processing (17/195)
+2025-05-26 15:27:30,415 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 9% - Stage: processing (18/196)
+2025-05-26 15:27:30,416 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 9% - Stage: processing (19/197)
+2025-05-26 15:27:30,418 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,421 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\test-fixes.bat: Task cancelled by user
+2025-05-26 15:27:30,426 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 10% - Stage: processing (21/199)
+2025-05-26 15:27:30,429 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 10% - Stage: processing (22/200)
+2025-05-26 15:27:30,432 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 11% - Stage: processing (23/201)
+2025-05-26 15:27:30,434 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 11% - Stage: processing (24/202)
+2025-05-26 15:27:30,437 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 12% - Stage: processing (25/203)
+2025-05-26 15:27:30,481 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 12% - Stage: processing (26/204)
+2025-05-26 15:27:30,484 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 13% - Stage: processing (27/205)
+2025-05-26 15:27:30,488 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 13% - Stage: processing (28/206)
+2025-05-26 15:27:30,512 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 13% - Stage: processing (29/207)
+2025-05-26 15:27:30,529 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,529 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\app.original.py: Task cancelled by user
+2025-05-26 15:27:30,532 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 14% - Stage: processing (31/209)
+2025-05-26 15:27:30,534 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 15% - Stage: processing (32/210)
+2025-05-26 15:27:30,536 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 15% - Stage: processing (33/211)
+2025-05-26 15:27:30,542 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 15% - Stage: processing (34/212)
+2025-05-26 15:27:30,544 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 16% - Stage: processing (35/213)
+2025-05-26 15:27:30,547 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 16% - Stage: processing (36/214)
+2025-05-26 15:27:30,548 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 17% - Stage: processing (37/215)
+2025-05-26 15:27:30,550 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 17% - Stage: processing (38/216)
+2025-05-26 15:27:30,561 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 17% - Stage: processing (39/217)
+2025-05-26 15:27:30,562 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,563 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\claude_validate.txt: Task cancelled by user
+2025-05-26 15:27:30,566 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 18% - Stage: processing (41/219)
+2025-05-26 15:27:30,570 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 18% - Stage: processing (42/220)
+2025-05-26 15:27:30,572 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 19% - Stage: processing (43/221)
+2025-05-26 15:27:30,578 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 19% - Stage: processing (44/222)
+2025-05-26 15:27:30,580 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 19% - Stage: processing (45/223)
+2025-05-26 15:27:30,599 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 20% - Stage: processing (46/224)
+2025-05-26 15:27:30,601 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 20% - Stage: processing (47/225)
+2025-05-26 15:27:30,609 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 21% - Stage: processing (48/226)
+2025-05-26 15:27:30,611 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 21% - Stage: processing (49/226)
+2025-05-26 15:27:30,613 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,613 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\history_manager.py: Task cancelled by user
+2025-05-26 15:27:30,614 - file_processor - INFO - Processing batch 2/4 (50 files)
+2025-05-26 15:27:30,618 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 22% - Stage: processing (51/227)
+2025-05-26 15:27:30,629 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 22% - Stage: processing (52/229)
+2025-05-26 15:27:30,633 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 22% - Stage: processing (53/231)
+2025-05-26 15:27:30,635 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 23% - Stage: processing (54/232)
+2025-05-26 15:27:30,649 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 23% - Stage: processing (55/233)
+2025-05-26 15:27:30,660 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 23% - Stage: processing (56/234)
+2025-05-26 15:27:30,664 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 24% - Stage: processing (57/235)
+2025-05-26 15:27:30,666 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 24% - Stage: processing (58/236)
+2025-05-26 15:27:30,667 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 24% - Stage: processing (59/237)
+2025-05-26 15:27:30,670 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,672 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\neurogenlib.py: Task cancelled by user
+2025-05-26 15:27:30,675 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 25% - Stage: processing (61/239)
+2025-05-26 15:27:30,678 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 25% - Stage: processing (62/240)
+2025-05-26 15:27:30,680 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 25% - Stage: processing (63/241)
+2025-05-26 15:27:30,682 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 26% - Stage: processing (64/242)
+2025-05-26 15:27:30,685 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 26% - Stage: processing (65/243)
+2025-05-26 15:27:30,690 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 26% - Stage: processing (66/244)
+2025-05-26 15:27:30,694 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 27% - Stage: processing (67/245)
+2025-05-26 15:27:30,696 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 27% - Stage: processing (68/246)
+2025-05-26 15:27:30,699 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 27% - Stage: processing (69/247)
+2025-05-26 15:27:30,700 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,700 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\pdf_processing_endpoints.py: Task cancelled by user
+2025-05-26 15:27:30,706 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 28% - Stage: processing (71/249)
+2025-05-26 15:27:30,709 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 28% - Stage: processing (72/250)
+2025-05-26 15:27:30,712 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 28% - Stage: processing (73/251)
+2025-05-26 15:27:30,714 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 29% - Stage: processing (74/252)
+2025-05-26 15:27:30,716 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 29% - Stage: processing (75/253)
+2025-05-26 15:27:30,717 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 29% - Stage: processing (76/254)
+2025-05-26 15:27:30,718 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 29% - Stage: processing (77/255)
+2025-05-26 15:27:30,725 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 30% - Stage: processing (78/256)
+2025-05-26 15:27:30,728 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 30% - Stage: processing (79/257)
+2025-05-26 15:27:30,730 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,730 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\swagger_spec.yaml: Task cancelled by user
+2025-05-26 15:27:30,731 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 30% - Stage: processing (81/259)
+2025-05-26 15:27:30,733 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 31% - Stage: processing (82/260)
+2025-05-26 15:27:30,737 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 31% - Stage: processing (83/261)
+2025-05-26 15:27:30,741 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 31% - Stage: processing (84/262)
+2025-05-26 15:27:30,745 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 31% - Stage: processing (85/263)
+2025-05-26 15:27:30,753 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 32% - Stage: processing (86/264)
+2025-05-26 15:27:30,758 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 32% - Stage: processing (87/265)
+2025-05-26 15:27:30,762 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 32% - Stage: processing (88/266)
+2025-05-26 15:27:30,765 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 33% - Stage: processing (89/267)
+2025-05-26 15:27:30,767 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,767 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\__init__.py: Task cancelled by user
+2025-05-26 15:27:30,771 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 33% - Stage: processing (91/269)
+2025-05-26 15:27:30,774 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 33% - Stage: processing (92/270)
+2025-05-26 15:27:30,776 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 33% - Stage: processing (93/271)
+2025-05-26 15:27:30,779 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 34% - Stage: processing (94/272)
+2025-05-26 15:27:30,781 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 34% - Stage: processing (95/273)
+2025-05-26 15:27:30,782 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 34% - Stage: processing (96/274)
+2025-05-26 15:27:30,785 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 34% - Stage: processing (97/275)
+2025-05-26 15:27:30,791 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 35% - Stage: processing (98/276)
+2025-05-26 15:27:30,794 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 35% - Stage: processing (99/276)
+2025-05-26 15:27:30,796 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,796 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\static\js\index.original.js: Task cancelled by user
+2025-05-26 15:27:30,797 - file_processor - INFO - Processing batch 3/4 (50 files)
+2025-05-26 15:27:30,799 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 36% - Stage: processing (101/277)
+2025-05-26 15:27:30,808 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 36% - Stage: processing (102/278)
+2025-05-26 15:27:30,818 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 36% - Stage: processing (103/280)
+2025-05-26 15:27:30,828 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 36% - Stage: processing (104/282)
+2025-05-26 15:27:30,831 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 36% - Stage: processing (105/283)
+2025-05-26 15:27:30,840 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 36% - Stage: processing (106/284)
+2025-05-26 15:27:30,842 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 37% - Stage: processing (107/285)
+2025-05-26 15:27:30,845 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 37% - Stage: processing (108/286)
+2025-05-26 15:27:30,849 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 37% - Stage: processing (109/287)
+2025-05-26 15:27:30,851 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,851 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\static\js\modules\module-standardizer.js: Task cancelled by user
+2025-05-26 15:27:30,857 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 38% - Stage: processing (111/289)
+2025-05-26 15:27:30,860 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 38% - Stage: processing (112/290)
+2025-05-26 15:27:30,862 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 38% - Stage: processing (113/291)
+2025-05-26 15:27:30,864 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 38% - Stage: processing (114/292)
+2025-05-26 15:27:30,865 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 38% - Stage: processing (115/293)
+2025-05-26 15:27:30,867 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 39% - Stage: processing (116/294)
+2025-05-26 15:27:30,868 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 39% - Stage: processing (117/295)
+2025-05-26 15:27:30,874 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 39% - Stage: processing (118/296)
+2025-05-26 15:27:30,879 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 39% - Stage: processing (119/297)
+2025-05-26 15:27:30,880 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,880 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\static\js\modules\core\moduleLoader.minimal.js: Task cancelled by user
+2025-05-26 15:27:30,882 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 40% - Stage: processing (121/299)
+2025-05-26 15:27:30,884 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 40% - Stage: processing (122/300)
+2025-05-26 15:27:30,889 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 40% - Stage: processing (123/301)
+2025-05-26 15:27:30,893 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 40% - Stage: processing (124/302)
+2025-05-26 15:27:30,897 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 40% - Stage: processing (125/303)
+2025-05-26 15:27:30,898 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 41% - Stage: processing (126/304)
+2025-05-26 15:27:30,900 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 41% - Stage: processing (127/305)
+2025-05-26 15:27:30,901 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 41% - Stage: processing (128/306)
+2025-05-26 15:27:30,905 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 41% - Stage: processing (129/307)
+2025-05-26 15:27:30,908 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,909 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\static\js\modules\features\academicScraper.js: Task cancelled by user
+2025-05-26 15:27:30,911 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 41% - Stage: processing (131/309)
+2025-05-26 15:27:30,914 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 42% - Stage: processing (132/310)
+2025-05-26 15:27:30,915 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 42% - Stage: processing (133/311)
+2025-05-26 15:27:30,917 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 42% - Stage: processing (134/312)
+2025-05-26 15:27:30,923 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 42% - Stage: processing (135/313)
+2025-05-26 15:27:30,926 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 42% - Stage: processing (136/314)
+2025-05-26 15:27:30,929 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 43% - Stage: processing (137/315)
+2025-05-26 15:27:30,931 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 43% - Stage: processing (138/316)
+2025-05-26 15:27:30,933 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 43% - Stage: processing (139/317)
+2025-05-26 15:27:30,938 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,939 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\static\js\modules\features\playlistDownloader.js: Task cancelled by user
+2025-05-26 15:27:30,946 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 43% - Stage: processing (141/319)
+2025-05-26 15:27:30,947 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 43% - Stage: processing (142/320)
+2025-05-26 15:27:30,950 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 44% - Stage: processing (143/321)
+2025-05-26 15:27:30,952 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 44% - Stage: processing (144/322)
+2025-05-26 15:27:30,959 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 44% - Stage: processing (145/323)
+2025-05-26 15:27:30,962 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 44% - Stage: processing (146/324)
+2025-05-26 15:27:30,964 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 44% - Stage: processing (147/325)
+2025-05-26 15:27:30,966 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 44% - Stage: processing (148/326)
+2025-05-26 15:27:30,967 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 45% - Stage: processing (149/326)
+2025-05-26 15:27:30,968 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:30,968 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\static\js\modules\utils\index.js: Task cancelled by user
+2025-05-26 15:27:30,968 - file_processor - INFO - Processing batch 4/4 (26 files)
+2025-05-26 15:27:30,979 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 45% - Stage: processing (151/327)
+2025-05-26 15:27:30,981 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 45% - Stage: processing (152/329)
+2025-05-26 15:27:30,984 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 45% - Stage: processing (153/330)
+2025-05-26 15:27:30,992 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 45% - Stage: processing (154/332)
+2025-05-26 15:27:30,995 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 46% - Stage: processing (155/333)
+2025-05-26 15:27:30,997 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 46% - Stage: processing (156/334)
+2025-05-26 15:27:30,999 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 46% - Stage: processing (157/335)
+2025-05-26 15:27:31,002 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 46% - Stage: processing (158/336)
+2025-05-26 15:27:31,009 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 46% - Stage: processing (159/337)
+2025-05-26 15:27:31,012 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:31,012 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\static\js\modules\utils\uiRegistry.js: Task cancelled by user
+2025-05-26 15:27:31,013 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 47% - Stage: processing (161/339)
+2025-05-26 15:27:31,015 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 47% - Stage: processing (162/340)
+2025-05-26 15:27:31,017 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 47% - Stage: processing (163/341)
+2025-05-26 15:27:31,018 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 47% - Stage: processing (164/342)
+2025-05-26 15:27:31,023 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 47% - Stage: processing (165/343)
+2025-05-26 15:27:31,026 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 47% - Stage: processing (166/344)
+2025-05-26 15:27:31,043 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 47% - Stage: processing (167/345)
+2025-05-26 15:27:31,059 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 48% - Stage: processing (168/346)
+2025-05-26 15:27:31,064 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 48% - Stage: processing (169/347)
+2025-05-26 15:27:31,067 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:31,068 - root - ERROR - Error processing C:\Users\Los\Documents\NeuroGenServer\modules\templates\app.index.html: Task cancelled by user
+2025-05-26 15:27:31,076 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 48% - Stage: processing (171/349)
+2025-05-26 15:27:31,082 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 48% - Stage: processing (172/350)
+2025-05-26 15:27:31,085 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 48% - Stage: processing (173/351)
+2025-05-26 15:27:31,092 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 48% - Stage: processing (174/352)
+2025-05-26 15:27:31,096 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 49% - Stage: processing (175/352)
+2025-05-26 15:27:31,098 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a progress: 49% - Stage: processing (176/352)
+2025-05-26 15:27:31,100 - file_processor - INFO - Ensured output directory exists: C:/Users/Los/Documents/NeuroGenServer
+2025-05-26 15:27:41,634 - file_processor - INFO - Created JSON output at C:/Users/Los/Documents/NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 15:27:41,655 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:41,655 - file_processor - ERROR - Error writing final output: Task cancelled by user
+Traceback (most recent call last):
+  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\Structify\claude.py", line 7729, in process_all_files
+    progress_callback(100, 100, "completed")
+  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\main.py", line 4644, in _structify_progress_callback
+    raise InterruptedError("Task cancelled by user")
+InterruptedError: Task cancelled by user
+2025-05-26 15:27:41,717 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a cancelled during processing
+2025-05-26 15:27:41,726 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a processing cancelled via InterruptedError.
+2025-05-26 15:27:55,657 - __main__ - INFO - [CANCEL] REST API cancellation request for task: 2957e439-77d3-4531-a726-2748081e8a7a
+2025-05-26 15:27:55,669 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a enhanced final stats: processed=176, errors=17, skipped=0, pdfs=0, duration=38.49s, efficiency=55.92
+2025-05-26 15:27:55,670 - __main__ - INFO - Task 2957e439-77d3-4531-a726-2748081e8a7a (file_processing) was interrupted
+2025-05-26 15:28:03,242 - __main__ - INFO - [CANCEL] REST API cancellation request for task: 2957e439-77d3-4531-a726-2748081e8a7a
+2025-05-26 15:28:41,498 - __main__ - INFO - [CANCEL] REST API cancellation request for task: 2957e439-77d3-4531-a726-2748081e8a7a
+2025-05-26 16:41:24,122 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 16:41:24,137 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 16:41:26,617 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 16:41:26,619 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 16:41:26,660 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 16:41:26,759 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 16:41:27,037 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 16:41:27,038 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 16:41:27,042 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 16:41:27,042 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 16:41:27,043 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 16:41:27,043 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 16:41:27,303 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 16:41:27,303 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 16:41:27,317 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 16:41:27,319 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 16:41:28,017 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 16:41:28,020 - neurogenlib - INFO - File path utility is available
+2025-05-26 16:41:28,024 - neurogenlib - INFO - Error handler is available
+2025-05-26 16:41:28,026 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 16:41:28,028 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 16:41:28,028 - neurogenlib - INFO - Structify module is available
+2025-05-26 16:41:28,031 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 16:41:28,039 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 16:41:28,041 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 16:41:28,047 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 16:41:28,048 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 16:41:28,050 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 16:41:28,115 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 16:41:36,050 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 16:41:36,068 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 16:41:38,928 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 16:41:38,928 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 16:41:38,955 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 16:41:39,008 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 16:41:39,124 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 16:41:39,126 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 16:41:39,128 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 16:41:39,131 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 16:41:39,131 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 16:41:39,131 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 16:41:39,316 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 16:41:39,316 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 16:41:39,316 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 16:41:39,316 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 16:41:39,653 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 16:41:39,653 - neurogenlib - INFO - File path utility is available
+2025-05-26 16:41:39,653 - neurogenlib - INFO - Error handler is available
+2025-05-26 16:41:39,666 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 16:41:39,668 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 16:41:39,668 - neurogenlib - INFO - Structify module is available
+2025-05-26 16:41:39,670 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 16:41:39,674 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 16:41:39,675 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 16:41:39,678 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 16:41:39,679 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 16:41:39,688 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 16:41:39,774 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 16:41:39,786 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 16:45:48,000 - __main__ - INFO - [CANCEL] REST API cancellation request for task: 2957e439-77d3-4531-a726-2748081e8a7a
+2025-05-26 16:45:48,036 - __main__ - INFO - Emitted task_cancelled for task 2957e439-77d3-4531-a726-2748081e8a7a
+2025-05-26 16:46:09,309 - __main__ - INFO - Processing request: input_dir=C:\Users\Los\Documents\NeuroGenServer, output_file=C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json, output_dir=None
+2025-05-26 16:46:09,314 - __main__ - INFO - Output file will be saved at: C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 16:46:09,314 - __main__ - INFO - Resolved output path: C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 16:46:09,323 - __main__ - INFO - BaseTask 83768923-f734-4112-895d-a983b1c042a8 (file_processing) created.
+2025-05-26 16:46:10,128 - __main__ - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-05-26 16:46:10,128 - __main__ - INFO - Added task 83768923-f734-4112-895d-a983b1c042a8 to active tasks.
+2025-05-26 16:46:10,149 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 (file_processing) started processing.
+2025-05-26 16:46:10,157 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 (file_processing) thread started.
+2025-05-26 16:46:10,158 - __main__ - INFO - Started processing task: 83768923-f734-4112-895d-a983b1c042a8 for input directory: C:\Users\Los\Documents\NeuroGenServer
+2025-05-26 16:46:10,162 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8: Starting enhanced file processing for directory: C:/Users/Los/Documents/NeuroGenServer
+2025-05-26 16:46:10,164 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 1% - Processing files in C:/Users/Los/Documents/NeuroGenServer with enhanced analytics...
+2025-05-26 16:46:10,174 - __main__ - INFO - Using direct import of process_all_files
+2025-05-26 16:46:10,174 - __main__ - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-05-26 16:46:12,237 - file_processor - INFO - Skipping large file during discovery: C:\Users\Los\Documents\NeuroGenServer\C_Users_Los_Documents_NeuroGen.Server.json (179699093 bytes)
+2025-05-26 16:46:12,905 - file_processor - INFO - Found 175 valid files in C:/Users/Los/Documents/NeuroGenServer (0.76s)
+2025-05-26 16:46:12,907 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 0% - Stage: discovery (0/175)
+2025-05-26 16:46:12,907 - file_processor - INFO - Using thread executor with max_workers=3
+2025-05-26 16:46:12,907 - file_processor - INFO - Processing batch 1/4 (50 files)
+2025-05-26 16:46:25,061 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 0% - Stage: processing (1/176)
+2025-05-26 16:46:25,070 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 1% - Stage: processing (2/177)
+2025-05-26 16:46:25,118 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 1% - Stage: processing (3/179)
+2025-05-26 16:46:25,136 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 2% - Stage: processing (4/181)
+2025-05-26 16:46:25,157 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 2% - Stage: processing (5/182)
+2025-05-26 16:46:25,163 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 3% - Stage: processing (6/183)
+2025-05-26 16:46:25,171 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 3% - Stage: processing (7/184)
+2025-05-26 16:46:25,174 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 4% - Stage: processing (8/185)
+2025-05-26 16:46:25,174 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 4% - Stage: processing (9/186)
+2025-05-26 16:46:25,174 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 5% - Stage: processing (10/187)
+2025-05-26 16:46:25,186 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 5% - Stage: processing (11/188)
+2025-05-26 16:46:25,206 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 6% - Stage: processing (12/189)
+2025-05-26 16:46:25,209 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 6% - Stage: processing (13/190)
+2025-05-26 16:46:25,215 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 7% - Stage: processing (14/191)
+2025-05-26 16:46:25,220 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 7% - Stage: processing (15/192)
+2025-05-26 16:46:25,223 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 8% - Stage: processing (16/193)
+2025-05-26 16:46:25,227 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 8% - Stage: processing (17/194)
+2025-05-26 16:46:25,231 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 9% - Stage: processing (18/195)
+2025-05-26 16:46:25,238 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 9% - Stage: processing (19/196)
+2025-05-26 16:46:25,243 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 10% - Stage: processing (20/197)
+2025-05-26 16:46:25,245 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 10% - Stage: processing (21/198)
+2025-05-26 16:46:25,251 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 10% - Stage: processing (22/199)
+2025-05-26 16:46:25,256 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 11% - Stage: processing (23/200)
+2025-05-26 16:46:25,260 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 11% - Stage: processing (24/201)
+2025-05-26 16:46:25,263 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 12% - Stage: processing (25/202)
+2025-05-26 16:46:25,275 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 12% - Stage: processing (26/203)
+2025-05-26 16:46:25,280 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 13% - Stage: processing (27/204)
+2025-05-26 16:46:25,285 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 13% - Stage: processing (28/205)
+2025-05-26 16:46:25,291 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 13% - Stage: processing (29/206)
+2025-05-26 16:46:25,296 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 14% - Stage: processing (30/207)
+2025-05-26 16:46:25,302 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 14% - Stage: processing (31/208)
+2025-05-26 16:46:25,307 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 15% - Stage: processing (32/209)
+2025-05-26 16:46:25,307 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 15% - Stage: processing (33/210)
+2025-05-26 16:46:25,307 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 15% - Stage: processing (34/211)
+2025-05-26 16:46:25,307 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 16% - Stage: processing (35/212)
+2025-05-26 16:46:25,321 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 16% - Stage: processing (36/213)
+2025-05-26 16:46:25,327 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 17% - Stage: processing (37/214)
+2025-05-26 16:46:25,330 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 17% - Stage: processing (38/215)
+2025-05-26 16:46:25,339 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 17% - Stage: processing (39/216)
+2025-05-26 16:46:25,342 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 18% - Stage: processing (40/217)
+2025-05-26 16:46:25,346 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 18% - Stage: processing (41/218)
+2025-05-26 16:46:25,354 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 18% - Stage: processing (42/219)
+2025-05-26 16:46:25,356 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 19% - Stage: processing (43/220)
+2025-05-26 16:46:25,359 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 19% - Stage: processing (44/221)
+2025-05-26 16:46:25,363 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 20% - Stage: processing (45/222)
+2025-05-26 16:46:25,371 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 20% - Stage: processing (46/223)
+2025-05-26 16:46:25,374 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 20% - Stage: processing (47/224)
+2025-05-26 16:46:25,377 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 21% - Stage: processing (48/225)
+2025-05-26 16:46:25,379 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 21% - Stage: processing (49/225)
+2025-05-26 16:46:25,381 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 22% - Stage: processing (50/225)
+2025-05-26 16:46:25,387 - file_processor - INFO - Processing batch 2/4 (50 files)
+2025-05-26 16:46:25,390 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 22% - Stage: processing (51/227)
+2025-05-26 16:46:25,394 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 22% - Stage: processing (52/227)
+2025-05-26 16:46:25,413 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 22% - Stage: processing (53/230)
+2025-05-26 16:46:25,418 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 23% - Stage: processing (54/231)
+2025-05-26 16:46:25,424 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 23% - Stage: processing (55/232)
+2025-05-26 16:46:25,432 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 23% - Stage: processing (56/233)
+2025-05-26 16:46:25,441 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 24% - Stage: processing (57/234)
+2025-05-26 16:46:25,444 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 24% - Stage: processing (58/235)
+2025-05-26 16:46:25,447 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 24% - Stage: processing (59/236)
+2025-05-26 16:46:25,453 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 25% - Stage: processing (60/237)
+2025-05-26 16:46:25,457 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 25% - Stage: processing (61/238)
+2025-05-26 16:46:25,463 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 25% - Stage: processing (62/239)
+2025-05-26 16:46:25,473 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 25% - Stage: processing (63/240)
+2025-05-26 16:46:25,476 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 26% - Stage: processing (64/241)
+2025-05-26 16:46:25,480 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 26% - Stage: processing (65/242)
+2025-05-26 16:46:25,486 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 26% - Stage: processing (66/243)
+2025-05-26 16:46:25,490 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 27% - Stage: processing (67/244)
+2025-05-26 16:46:25,493 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 27% - Stage: processing (68/245)
+2025-05-26 16:46:25,495 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 27% - Stage: processing (69/246)
+2025-05-26 16:46:25,510 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 28% - Stage: processing (70/247)
+2025-05-26 16:46:25,543 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 28% - Stage: processing (71/248)
+2025-05-26 16:46:25,564 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 28% - Stage: processing (72/249)
+2025-05-26 16:46:25,626 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 28% - Stage: processing (73/250)
+2025-05-26 16:46:25,638 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 29% - Stage: processing (74/251)
+2025-05-26 16:46:25,644 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 29% - Stage: processing (75/252)
+2025-05-26 16:46:25,659 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 29% - Stage: processing (76/253)
+2025-05-26 16:46:25,662 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 30% - Stage: processing (77/254)
+2025-05-26 16:46:25,679 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 30% - Stage: processing (78/255)
+2025-05-26 16:46:25,688 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 30% - Stage: processing (79/256)
+2025-05-26 16:46:25,691 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 30% - Stage: processing (80/257)
+2025-05-26 16:46:25,695 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 31% - Stage: processing (81/258)
+2025-05-26 16:46:25,698 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 31% - Stage: processing (82/259)
+2025-05-26 16:46:25,706 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 31% - Stage: processing (83/260)
+2025-05-26 16:46:25,740 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 31% - Stage: processing (84/261)
+2025-05-26 16:46:25,748 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 32% - Stage: processing (85/262)
+2025-05-26 16:46:25,757 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 32% - Stage: processing (86/263)
+2025-05-26 16:46:25,760 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 32% - Stage: processing (87/264)
+2025-05-26 16:46:25,775 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 32% - Stage: processing (88/265)
+2025-05-26 16:46:25,797 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 33% - Stage: processing (89/266)
+2025-05-26 16:46:25,822 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 33% - Stage: processing (90/267)
+2025-05-26 16:46:25,826 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 33% - Stage: processing (91/268)
+2025-05-26 16:46:25,831 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 33% - Stage: processing (92/269)
+2025-05-26 16:46:25,843 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 34% - Stage: processing (93/270)
+2025-05-26 16:46:25,909 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 34% - Stage: processing (94/271)
+2025-05-26 16:46:25,920 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 34% - Stage: processing (95/272)
+2025-05-26 16:46:25,927 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 34% - Stage: processing (96/273)
+2025-05-26 16:46:25,931 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 35% - Stage: processing (97/274)
+2025-05-26 16:46:25,942 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 35% - Stage: processing (98/275)
+2025-05-26 16:46:25,946 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 35% - Stage: processing (99/275)
+2025-05-26 16:46:25,948 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 36% - Stage: processing (100/275)
+2025-05-26 16:46:25,954 - file_processor - INFO - Processing batch 3/4 (50 files)
+2025-05-26 16:46:25,970 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 36% - Stage: processing (101/277)
+2025-05-26 16:46:26,060 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 36% - Stage: processing (102/279)
+2025-05-26 16:46:33,985 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 36% - Stage: processing (103/280)
+2025-05-26 16:46:33,997 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 36% - Stage: processing (104/281)
+2025-05-26 16:46:34,001 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 36% - Stage: processing (105/282)
+2025-05-26 16:46:34,004 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 37% - Stage: processing (106/283)
+2025-05-26 16:46:34,012 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 37% - Stage: processing (107/284)
+2025-05-26 16:46:34,018 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 37% - Stage: processing (108/285)
+2025-05-26 16:46:34,023 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 37% - Stage: processing (109/286)
+2025-05-26 16:46:34,036 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 37% - Stage: processing (110/287)
+2025-05-26 16:46:34,050 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 38% - Stage: processing (111/288)
+2025-05-26 16:46:34,054 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 38% - Stage: processing (112/289)
+2025-05-26 16:46:34,054 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 38% - Stage: processing (113/290)
+2025-05-26 16:46:34,068 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 38% - Stage: processing (114/291)
+2025-05-26 16:46:34,070 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 38% - Stage: processing (115/292)
+2025-05-26 16:46:34,071 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 39% - Stage: processing (116/293)
+2025-05-26 16:46:34,080 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 39% - Stage: processing (117/294)
+2025-05-26 16:46:34,085 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 39% - Stage: processing (118/295)
+2025-05-26 16:46:34,089 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 39% - Stage: processing (119/296)
+2025-05-26 16:46:34,097 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 40% - Stage: processing (120/297)
+2025-05-26 16:46:34,102 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 40% - Stage: processing (121/298)
+2025-05-26 16:46:34,104 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 40% - Stage: processing (122/299)
+2025-05-26 16:46:34,106 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 40% - Stage: processing (123/300)
+2025-05-26 16:46:34,118 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 40% - Stage: processing (124/301)
+2025-05-26 16:46:34,121 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 40% - Stage: processing (125/302)
+2025-05-26 16:46:34,123 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 41% - Stage: processing (126/303)
+2025-05-26 16:46:34,133 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 41% - Stage: processing (127/304)
+2025-05-26 16:46:34,136 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 41% - Stage: processing (128/305)
+2025-05-26 16:46:34,149 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 41% - Stage: processing (129/306)
+2025-05-26 16:46:34,154 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 41% - Stage: processing (130/307)
+2025-05-26 16:46:34,156 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 42% - Stage: processing (131/308)
+2025-05-26 16:46:34,167 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 42% - Stage: processing (132/309)
+2025-05-26 16:46:34,172 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 42% - Stage: processing (133/310)
+2025-05-26 16:46:34,179 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 42% - Stage: processing (134/311)
+2025-05-26 16:46:34,184 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 42% - Stage: processing (135/312)
+2025-05-26 16:46:34,187 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 43% - Stage: processing (136/313)
+2025-05-26 16:46:34,188 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 43% - Stage: processing (137/314)
+2025-05-26 16:46:34,199 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 43% - Stage: processing (138/315)
+2025-05-26 16:46:34,202 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 43% - Stage: processing (139/316)
+2025-05-26 16:46:34,206 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 43% - Stage: processing (140/317)
+2025-05-26 16:46:34,218 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 43% - Stage: processing (141/318)
+2025-05-26 16:46:34,220 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 44% - Stage: processing (142/319)
+2025-05-26 16:46:34,224 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 44% - Stage: processing (143/320)
+2025-05-26 16:46:34,234 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 44% - Stage: processing (144/321)
+2025-05-26 16:46:34,236 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 44% - Stage: processing (145/322)
+2025-05-26 16:46:34,239 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 44% - Stage: processing (146/323)
+2025-05-26 16:46:34,246 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 44% - Stage: processing (147/324)
+2025-05-26 16:46:34,248 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 45% - Stage: processing (148/325)
+2025-05-26 16:46:34,250 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 45% - Stage: processing (149/325)
+2025-05-26 16:46:34,255 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 45% - Stage: processing (150/325)
+2025-05-26 16:46:34,256 - file_processor - INFO - Processing batch 4/4 (25 files)
+2025-05-26 16:46:34,269 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 45% - Stage: processing (151/326)
+2025-05-26 16:46:34,273 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (152/327)
+2025-05-26 16:46:34,286 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (153/329)
+2025-05-26 16:46:34,288 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (154/331)
+2025-05-26 16:46:34,303 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (155/332)
+2025-05-26 16:46:34,307 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (156/333)
+2025-05-26 16:46:34,317 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (157/334)
+2025-05-26 16:46:34,321 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (158/335)
+2025-05-26 16:46:34,323 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 46% - Stage: processing (159/336)
+2025-05-26 16:46:34,334 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 47% - Stage: processing (160/337)
+2025-05-26 16:46:34,338 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 47% - Stage: processing (161/338)
+2025-05-26 16:46:34,349 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 47% - Stage: processing (162/339)
+2025-05-26 16:46:34,352 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 47% - Stage: processing (163/340)
+2025-05-26 16:46:34,355 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 47% - Stage: processing (164/341)
+2025-05-26 16:46:34,365 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 47% - Stage: processing (165/342)
+2025-05-26 16:46:34,365 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 47% - Stage: processing (166/343)
+2025-05-26 16:46:34,385 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 48% - Stage: processing (167/344)
+2025-05-26 16:46:34,397 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 48% - Stage: processing (168/345)
+2025-05-26 16:46:34,401 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 48% - Stage: processing (169/346)
+2025-05-26 16:46:34,405 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 48% - Stage: processing (170/347)
+2025-05-26 16:46:34,416 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 48% - Stage: processing (171/348)
+2025-05-26 16:46:34,419 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 48% - Stage: processing (172/349)
+2025-05-26 16:46:34,428 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 48% - Stage: processing (173/350)
+2025-05-26 16:46:34,432 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 49% - Stage: processing (174/350)
+2025-05-26 16:46:34,435 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 49% - Stage: processing (175/350)
+2025-05-26 16:46:34,437 - file_processor - INFO - Ensured output directory exists: C:/Users/Los/Documents/NeuroGenServer
+2025-05-26 16:46:34,925 - file_processor - INFO - Created JSON output at C:/Users/Los/Documents/NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 16:46:34,926 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 progress: 99% - Stage: completed (100/100)
+2025-05-26 16:46:34,926 - file_processor - INFO - Processing complete in 22.34s
+2025-05-26 16:46:34,926 - file_processor - INFO - Stats: 175 files found, 175 processed, 0 skipped, 0 errors, 2801 chunks created
+2025-05-26 16:46:34,926 - __main__ - INFO - Output file validation passed: C:/Users/Los/Documents/NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json (22663234 bytes)
+2025-05-26 16:46:34,926 - __main__ - INFO - Processing completed in 25.60s: 175/100 files processed, 0 errors, 0 skipped
+2025-05-26 16:46:34,926 - __main__ - INFO - Emitted enhanced task completion for 83768923-f734-4112-895d-a983b1c042a8 with full stats
+2025-05-26 16:46:34,926 - __main__ - INFO - Added task 83768923-f734-4112-895d-a983b1c042a8 to history
+2025-05-26 16:46:34,926 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 completed with enhanced stats showcase
+2025-05-26 16:46:43,065 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 enhanced final stats: processed=175, errors=0, skipped=0, pdfs=0, duration=33.74s, efficiency=51.53
+2025-05-26 16:46:43,094 - __main__ - INFO - Task 83768923-f734-4112-895d-a983b1c042a8 (file_processing) completed in 33.77s.
+2025-05-26 16:46:43,095 - __main__ - INFO - Processing completed in 33.77s: 175/100 files processed, 0 errors, 0 skipped
+2025-05-26 16:46:43,095 - __main__ - INFO - Removed task 83768923-f734-4112-895d-a983b1c042a8 from active tasks.
+2025-05-26 16:47:06,238 - __main__ - INFO - [CANCEL] REST API cancellation request for task: 83768923-f734-4112-895d-a983b1c042a8
+2025-05-26 16:47:06,247 - __main__ - INFO - Emitted task_cancelled for task 83768923-f734-4112-895d-a983b1c042a8
+2025-05-26 16:53:49,325 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\main.py', reloading
+2025-05-26 16:53:51,742 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 16:53:56,458 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 16:53:56,471 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 16:53:58,181 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 16:53:58,191 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 16:53:58,221 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 16:53:58,292 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 16:53:58,452 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 16:53:58,452 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 16:53:58,477 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 16:53:58,477 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 16:53:58,477 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 16:53:58,477 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 16:53:58,725 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 16:53:58,725 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 16:53:58,725 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 16:53:58,725 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 16:53:58,990 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 16:53:58,992 - neurogenlib - INFO - File path utility is available
+2025-05-26 16:53:58,994 - neurogenlib - INFO - Error handler is available
+2025-05-26 16:53:58,995 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 16:53:58,996 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 16:53:58,996 - neurogenlib - INFO - Structify module is available
+2025-05-26 16:53:58,998 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 16:53:59,000 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 16:53:59,000 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 16:53:59,008 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 16:53:59,008 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 16:53:59,011 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 16:53:59,063 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 16:53:59,073 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 17:01:59,334 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:01:59,390 - __main__ - INFO - Successfully imported academic_api_client module

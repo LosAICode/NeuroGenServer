@@ -4338,7 +4338,7 @@ class ProcessingTask(BaseTask):
         
         # Processing optimization settings
         self.batch_size = 50  # Process files in batches for better memory management
-        self.cancellation_check_interval = 5  # Check every 10 files
+        self.cancellation_check_interval = 10  # Check every 10 files
         self.adaptive_chunk_size = True  # Dynamically adjust chunk size based on performance
         self.current_chunk_size = DEFAULT_MAX_CHUNK_SIZE
         
@@ -4370,12 +4370,6 @@ class ProcessingTask(BaseTask):
 
     def _check_internal_cancellation(self) -> bool:
         """
-    try:
-        # CRITICAL: Check force cancellation first
-        if is_force_cancelled(self.task_id if hasattr(self, 'task_id') else None):
-            logger.warning(f"Task {getattr(self, 'task_id', 'unknown')} force cancelled")
-            return True
-        
         Internal method for ProcessingTask to check its own cancellation status.
         This avoids the need to go through the global check_task_cancellation function
         and prevents AttributeError issues.
@@ -9326,12 +9320,6 @@ def mark_task_cancelled(task_id: str, reason: str = "Task cancelled by user") ->
 
 def _check_internal_cancellation(self) -> bool:
     """
-    try:
-        # CRITICAL: Check force cancellation first
-        if is_force_cancelled(self.task_id if hasattr(self, 'task_id') else None):
-            logger.warning(f"Task {getattr(self, 'task_id', 'unknown')} force cancelled")
-            return True
-        
     Internal method for ProcessingTask to check its own cancellation status.
     This avoids the need to go through the global check_task_cancellation function.
     
@@ -9478,194 +9466,6 @@ def _structify_progress_callback(self, processed_count: int, total_count: int,
     
     # Emit progress update with enhanced information
     self.emit_progress_update(progress=self.progress, message=msg, details=details)
-
-
-
-
-# ============================================================================
-# ENHANCED FORCE CANCELLATION SYSTEM
-# ============================================================================
-
-# Global force cancellation flag
-FORCE_CANCEL_ALL = False
-FORCE_CANCELLED_TASKS = set()
-
-def force_cancel_all_tasks():
-    """
-    Force cancel ALL active tasks regardless of their state.
-    This is a nuclear option to break out of stuck loops.
-    """
-    global FORCE_CANCEL_ALL, FORCE_CANCELLED_TASKS
-    
-    logger.warning("[FORCE_CANCEL] Initiating force cancellation of ALL tasks")
-    
-    # Set global force cancel flag
-    FORCE_CANCEL_ALL = True
-    
-    # Cancel all tasks in active_tasks
-    with tasks_lock:
-        cancelled_count = 0
-        for task_id, task in list(active_tasks.items()):
-            try:
-                # Add to force cancelled set
-                FORCE_CANCELLED_TASKS.add(task_id)
-                
-                # Try to set cancellation flags on the task object
-                if hasattr(task, '__setattr__'):
-                    try:
-                        task.is_cancelled = True
-                        task.is_cancelled_flag = True
-                        task.status = 'cancelled'
-                        task.cancelled = True
-                    except:
-                        pass
-                
-                # If it's a ProcessingTask, try to set its internal flag
-                if hasattr(task, '_cancelled'):
-                    task._cancelled = True
-                
-                # Emit cancellation event
-                task_type = 'unknown'
-                if hasattr(task, 'task_type'):
-                    task_type = task.task_type
-                elif isinstance(task, dict) and 'type' in task:
-                    task_type = task['type']
-                
-                emit_task_cancelled(task_id, reason="Force cancelled due to system issue")
-                cancelled_count += 1
-                
-                logger.info(f"[FORCE_CANCEL] Force cancelled task {task_id} (type: {task_type})")
-                
-            except Exception as e:
-                logger.error(f"[FORCE_CANCEL] Error force cancelling task {task_id}: {e}")
-        
-        # Clear all active tasks
-        active_tasks.clear()
-        
-    logger.warning(f"[FORCE_CANCEL] Force cancelled {cancelled_count} tasks")
-    
-    # Also emit a global cancellation event
-    try:
-        socketio.emit('all_tasks_cancelled', {
-            'reason': 'Force cancellation due to system issue',
-            'count': cancelled_count,
-            'timestamp': time.time()
-        })
-    except:
-        pass
-    
-    return cancelled_count
-
-def is_force_cancelled(task_id=None):
-    """
-    Check if force cancellation is active or if a specific task was force cancelled.
-    
-    Args:
-        task_id: Optional task ID to check. If None, checks global flag.
-        
-    Returns:
-        bool: True if force cancelled
-    """
-    if FORCE_CANCEL_ALL:
-        return True
-    
-    if task_id and task_id in FORCE_CANCELLED_TASKS:
-        return True
-        
-    return False
-
-def reset_force_cancel():
-    """Reset force cancellation flags"""
-    global FORCE_CANCEL_ALL, FORCE_CANCELLED_TASKS
-    FORCE_CANCEL_ALL = False
-    FORCE_CANCELLED_TASKS.clear()
-    logger.info("[FORCE_CANCEL] Force cancellation flags reset")
-
-# Update check_task_cancellation to include force cancel check
-def check_task_cancellation_enhanced(task_id: str) -> bool:
-    """
-    Enhanced version that checks for force cancellation first.
-    
-    Args:
-        task_id: The task ID to check
-        
-    Returns:
-        bool: True if the task is cancelled or force cancelled
-    """
-    # Check force cancellation first
-    if is_force_cancelled(task_id):
-        return True
-    
-    # Then check normal cancellation
-    return check_task_cancellation(task_id)
-
-# ============================================================================
-# EMERGENCY STOP ENDPOINT
-# ============================================================================
-
-@app.route("/api/emergency-stop", methods=["POST"])
-def emergency_stop():
-    """
-    Emergency stop endpoint to force cancel all tasks.
-    Use this when normal cancellation isn't working.
-    """
-    try:
-        logger.warning("[EMERGENCY] Emergency stop requested")
-        
-        # Get current task count before cancellation
-        task_count = len(active_tasks)
-        
-        # Force cancel all tasks
-        cancelled_count = force_cancel_all_tasks()
-        
-        # Kill any stuck threads (be careful with this)
-        try:
-            # Get all threads
-            import threading
-            current_thread = threading.current_thread()
-            for thread in threading.enumerate():
-                if thread != current_thread and thread.name.startswith(('ProcessingTask', 'FileProcessor')):
-                    logger.warning(f"[EMERGENCY] Attempting to stop thread: {thread.name}")
-                    # Note: We can't forcefully kill threads in Python, but we can log them
-        except Exception as e:
-            logger.error(f"[EMERGENCY] Error enumerating threads: {e}")
-        
-        return jsonify({
-            "status": "success",
-            "message": "Emergency stop executed",
-            "tasks_before": task_count,
-            "tasks_cancelled": cancelled_count,
-            "timestamp": time.time()
-        }), 200
-        
-    except Exception as e:
-        logger.error(f"[EMERGENCY] Error during emergency stop: {e}")
-        return structured_error_response(
-            "EMERGENCY_STOP_ERROR",
-            f"Error during emergency stop: {str(e)}",
-            500
-        )
-
-@socketio.on('emergency_stop')
-def handle_emergency_stop(data):
-    """Socket.IO handler for emergency stop"""
-    logger.warning("[EMERGENCY] Emergency stop via Socket.IO")
-    
-    try:
-        cancelled_count = force_cancel_all_tasks()
-        
-        emit('emergency_stop_complete', {
-            'status': 'success',
-            'cancelled_count': cancelled_count,
-            'timestamp': time.time()
-        })
-        
-    except Exception as e:
-        logger.error(f"[EMERGENCY] Socket.IO emergency stop error: {e}")
-        emit('emergency_stop_error', {
-            'error': str(e),
-            'timestamp': time.time()
-        })
 
 
 def emit_cancellation_event(task_id: str, task_type: str, reason: str = "Task cancelled") -> None:

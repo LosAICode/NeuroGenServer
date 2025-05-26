@@ -1,0 +1,98 @@
+
+<!-- Emergency Stop Button - Add this to your main template -->
+<div id="emergency-stop-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;">
+    <button id="emergency-stop-btn" class="btn btn-danger btn-lg" onclick="emergencyStop()">
+        <i class="fas fa-stop-circle"></i> EMERGENCY STOP
+    </button>
+</div>
+
+<script>
+// Emergency Stop Functionality
+function showEmergencyStop() {
+    const container = document.getElementById('emergency-stop-container');
+    if (container) {
+        container.style.display = 'block';
+    }
+}
+
+function hideEmergencyStop() {
+    const container = document.getElementById('emergency-stop-container');
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
+async function emergencyStop() {
+    if (!confirm('⚠️ EMERGENCY STOP ⚠️\n\nThis will forcefully cancel ALL running tasks!\n\nAre you sure?')) {
+        return;
+    }
+    
+    console.log('[EMERGENCY] Initiating emergency stop...');
+    
+    // Disable the button
+    const btn = document.getElementById('emergency-stop-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Stopping...';
+    }
+    
+    try {
+        // Try Socket.IO first
+        if (window.socket && window.socket.connected) {
+            window.socket.emit('emergency_stop', {
+                timestamp: Date.now()
+            });
+            
+            // Listen for response
+            window.socket.once('emergency_stop_complete', (data) => {
+                console.log('[EMERGENCY] Stop complete:', data);
+                alert(`Emergency stop executed. ${data.cancelled_count} tasks cancelled.`);
+                location.reload();
+            });
+            
+            window.socket.once('emergency_stop_error', (data) => {
+                console.error('[EMERGENCY] Stop error:', data);
+                alert('Emergency stop encountered an error. Please refresh the page.');
+            });
+        }
+        
+        // Also try REST API
+        const response = await fetch('/api/emergency-stop', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Emergency stop failed: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('[EMERGENCY] REST API response:', result);
+        
+    } catch (error) {
+        console.error('[EMERGENCY] Error:', error);
+        alert('Emergency stop failed. Please refresh the page manually.');
+    }
+}
+
+// Show emergency stop button if any task is running for more than 30 seconds
+setInterval(() => {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    let shouldShow = false;
+    
+    progressBars.forEach(bar => {
+        const width = parseFloat(bar.style.width) || 0;
+        if (width > 0 && width < 100) {
+            shouldShow = true;
+        }
+    });
+    
+    if (shouldShow) {
+        showEmergencyStop();
+    } else {
+        hideEmergencyStop();
+    }
+}, 5000); // Check every 5 seconds
+</script>
