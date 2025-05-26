@@ -869,3 +869,699 @@ InterruptedError: Task cancelled by user
 2025-05-26 16:53:59,073 - werkzeug - INFO -  * Debugger PIN: 328-316-705
 2025-05-26 17:01:59,334 - __main__ - INFO - Successfully imported academic_api module
 2025-05-26 17:01:59,390 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:08:06,972 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:08:07,036 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:08:09,018 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:08:09,018 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:08:09,076 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:08:09,198 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:08:09,335 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:08:09,335 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:08:09,335 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:08:09,335 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:08:09,335 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:08:09,335 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:08:09,518 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:08:09,518 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:08:09,518 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:08:09,518 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:08:09,955 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:08:09,955 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:08:09,955 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:08:09,974 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:08:09,977 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:08:09,977 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:08:09,978 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:08:09,979 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:08:09,979 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:08:09,981 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:08:09,982 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:08:09,983 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:08:10,127 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:08:19,152 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:08:19,552 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:08:24,901 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:08:24,901 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:08:24,923 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:08:24,976 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:08:25,095 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:08:25,095 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:08:25,098 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:08:25,098 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:08:25,098 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:08:25,099 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:08:25,318 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:08:25,318 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:08:25,318 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:08:25,318 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:08:26,691 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:08:26,696 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:08:26,698 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:08:26,700 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:08:26,709 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:08:26,709 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:08:26,711 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:08:26,712 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:08:26,713 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:08:26,715 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:08:26,716 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:08:26,726 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:08:26,966 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:08:26,975 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 17:10:14,138 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:10:14,162 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:10:16,449 - matplotlib.font_manager - INFO - generated new fontManager
+2025-05-26 17:10:20,089 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:10:20,142 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:10:21,837 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:10:22,160 - __main__ - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-26 17:10:22,317 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:10:22,318 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:10:22,322 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:10:22,322 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:10:22,324 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:10:22,324 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:10:22,927 - __main__ - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-26 17:10:23,260 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:10:23,260 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:10:23,261 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:10:23,262 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:10:23,309 - __main__ - WARNING - playlists_downloader module not available. Playlist functionality will be limited.
+2025-05-26 17:10:23,330 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:10:23,367 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:10:23,416 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:10:23,457 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:10:23,461 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:10:23,461 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:10:23,464 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: /root/Documents
+2025-05-26 17:10:23,479 - __main__ - INFO - Created output directory: /root/Documents
+2025-05-26 17:10:23,493 - __main__ - INFO - Verified write permissions for: /root/Documents
+2025-05-26 17:10:23,493 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:10:23,556 - __main__ - WARNING - academic_api_redis module not available: No module named 'redis'
+2025-05-26 17:10:23,612 - __main__ - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-26 17:10:23,626 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:12:00,247 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:12:00,269 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:12:06,542 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:12:06,564 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:12:06,698 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:12:06,740 - __main__ - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-26 17:12:06,898 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:12:06,898 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:12:06,901 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:12:06,903 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:12:06,908 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:12:06,908 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:12:07,083 - __main__ - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-26 17:12:07,394 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:12:07,394 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:12:07,395 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:12:07,397 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:12:07,410 - __main__ - WARNING - playlists_downloader module not available. Playlist functionality will be limited.
+2025-05-26 17:12:07,428 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:12:07,436 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:12:07,444 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:12:07,451 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:12:07,458 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:12:07,458 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:12:07,460 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: /root/Documents
+2025-05-26 17:12:07,462 - __main__ - INFO - Verified write permissions for: /root/Documents
+2025-05-26 17:12:07,463 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:12:07,475 - __main__ - WARNING - academic_api_redis module not available: No module named 'redis'
+2025-05-26 17:12:07,507 - __main__ - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-26 17:12:07,515 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:13:29,892 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:13:29,921 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:13:33,440 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:13:33,591 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:13:33,651 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:13:33,699 - __main__ - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-26 17:13:33,868 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:13:33,869 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:13:33,881 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:13:33,881 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:13:33,884 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:13:33,885 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:13:34,036 - __main__ - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-26 17:13:34,310 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:13:34,311 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:13:34,312 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:13:34,315 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:13:34,331 - __main__ - WARNING - playlists_downloader module not available. Playlist functionality will be limited.
+2025-05-26 17:13:34,341 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:13:34,351 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:13:34,358 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:13:34,369 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:13:34,374 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:13:34,374 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:13:34,377 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: /root/Documents
+2025-05-26 17:13:34,378 - __main__ - INFO - Verified write permissions for: /root/Documents
+2025-05-26 17:13:34,379 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:13:34,390 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:13:34,412 - __main__ - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-26 17:13:34,424 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:13:34,488 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:13:44,452 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:13:44,476 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:13:47,061 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:13:47,077 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:13:47,118 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:13:47,166 - __main__ - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-26 17:13:47,513 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:13:47,514 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:13:47,519 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:13:47,520 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:13:47,528 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:13:47,529 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:13:47,659 - __main__ - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-26 17:13:48,243 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:13:48,244 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:13:48,245 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:13:48,248 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:13:48,262 - __main__ - WARNING - playlists_downloader module not available. Playlist functionality will be limited.
+2025-05-26 17:13:48,279 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:13:48,300 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:13:48,325 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:13:48,344 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:13:48,378 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:13:48,384 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:13:48,394 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: /root/Documents
+2025-05-26 17:13:48,395 - __main__ - INFO - Verified write permissions for: /root/Documents
+2025-05-26 17:13:48,395 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:13:48,411 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:13:48,484 - __main__ - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-26 17:13:48,561 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:13:48,679 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:13:48,688 - werkzeug - INFO -  * Debugger PIN: 538-512-611
+2025-05-26 17:14:26,910 - engineio.server - ERROR - 'Session is disconnected' Brm9dyBupKFH5KluAAAB (further occurrences of this error will be logged with level INFO)
+2025-05-26 17:14:27,379 - __main__ - INFO - Processing request: input_dir=/workspace/modules/C:\Users\Los\Documents\NeuroGenServer, output_file=/workspace/modules/C:\Users\Los\Documents\NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json, output_dir=None
+2025-05-26 17:14:27,389 - __main__ - INFO - Output file will be saved at: /workspace/modules/C:\Users\Los\Documents\NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 17:14:27,390 - __main__ - INFO - Resolved output path: /workspace/modules/C:\Users\Los\Documents\NeuroGenServer/C_Users_Los_Documents_NeuroGen.Server.json
+2025-05-26 17:14:27,390 - __main__ - INFO - BaseTask 6f29388d-1170-43ee-812e-28283b779ae9 (file_processing) created.
+2025-05-26 17:14:27,391 - __main__ - ERROR - Task 6f29388d-1170-43ee-812e-28283b779ae9 (file_processing) failed: Input directory does not exist: /workspace/modules/C:/Users/Los/Documents/NeuroGenServer. Details: {'suggested_action': 'Create the directory or specify an existing path', 'current_working_dir': '/workspace/modules', 'absolute_path': '/workspace/modules/C:/Users/Los/Documents/NeuroGenServer', 'stage_at_failure': 'initialization'}
+2025-05-26 17:14:27,405 - __main__ - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-05-26 17:14:27,406 - __main__ - INFO - Added task 6f29388d-1170-43ee-812e-28283b779ae9 to active tasks.
+2025-05-26 17:14:27,410 - __main__ - INFO - Task 6f29388d-1170-43ee-812e-28283b779ae9 (file_processing) started processing.
+2025-05-26 17:14:27,412 - __main__ - INFO - Task 6f29388d-1170-43ee-812e-28283b779ae9 (file_processing) thread started.
+2025-05-26 17:14:27,412 - __main__ - INFO - Started processing task: 6f29388d-1170-43ee-812e-28283b779ae9 for input directory: /workspace/modules/C:\Users\Los\Documents\NeuroGenServer
+2025-05-26 17:14:27,563 - __main__ - INFO - Task 6f29388d-1170-43ee-812e-28283b779ae9: Starting enhanced file processing for directory: /workspace/modules/C:/Users/Los/Documents/NeuroGenServer
+2025-05-26 17:14:27,590 - __main__ - INFO - Task 6f29388d-1170-43ee-812e-28283b779ae9 progress: 1% - Processing files in /workspace/modules/C:/Users/Los/Documents/NeuroGenServer with enhanced analytics...
+2025-05-26 17:14:27,605 - __main__ - INFO - Using direct import of process_all_files
+2025-05-26 17:14:27,792 - __main__ - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-05-26 17:14:27,810 - file_processor - INFO - Found 0 valid files in /workspace/modules/C:/Users/Los/Documents/NeuroGenServer (0.01s)
+2025-05-26 17:14:27,814 - file_processor - WARNING - No files found in /workspace/modules/C:/Users/Los/Documents/NeuroGenServer matching the provided criteria
+2025-05-26 17:14:27,844 - __main__ - ERROR - Task 6f29388d-1170-43ee-812e-28283b779ae9 (file_processing) failed: Processing completed but output file was not created. Details: {'stage_at_failure': 'output_validation'}
+2025-05-26 17:14:27,876 - __main__ - INFO - Removed task 6f29388d-1170-43ee-812e-28283b779ae9 from active tasks.
+2025-05-26 17:14:27,890 - __main__ - INFO - Task 6f29388d-1170-43ee-812e-28283b779ae9 enhanced final stats: processed=0, errors=0, skipped=0, pdfs=0, duration=0.50s, efficiency=50
+2025-05-26 17:15:01,521 - __main__ - INFO - [CANCEL] REST API cancellation request for task: 6f29388d-1170-43ee-812e-28283b779ae9
+2025-05-26 17:15:01,523 - __main__ - INFO - Emitted task_cancelled for task 6f29388d-1170-43ee-812e-28283b779ae9
+2025-05-26 17:21:38,335 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\app.py', reloading
+2025-05-26 17:21:43,569 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:21:51,216 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:21:51,231 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:21:55,129 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:21:55,139 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:21:55,166 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:21:55,208 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:21:55,351 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:21:55,351 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:21:55,351 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:21:55,351 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:21:55,351 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:21:55,351 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:21:55,551 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:21:55,551 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:21:55,562 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:21:55,562 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:21:55,918 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:21:55,918 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:21:55,918 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:21:55,918 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:21:55,930 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:21:55,930 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:21:55,933 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:21:55,936 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:21:55,937 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:21:55,940 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:21:55,940 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:21:55,942 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:21:55,989 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:21:55,999 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 17:25:58,807 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\app.py', reloading
+2025-05-26 17:26:03,799 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:26:18,976 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:26:18,986 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:26:20,458 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:26:20,458 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:26:20,483 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:26:20,517 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:26:20,618 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:26:20,619 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:26:20,624 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:26:20,624 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:26:20,628 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:26:20,629 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:26:20,785 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:26:20,785 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:26:20,785 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:26:20,785 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:26:21,059 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:26:21,059 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:26:21,059 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:26:21,078 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:26:21,081 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:26:21,081 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:26:21,084 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:26:21,086 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:26:21,087 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:26:21,089 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:26:21,091 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:26:21,098 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:26:21,146 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:26:24,804 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:26:24,808 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:26:26,344 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:26:26,344 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:26:26,363 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:26:26,396 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:26:26,505 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:26:26,505 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:26:26,505 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:26:26,505 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:26:26,511 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:26:26,511 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:26:26,724 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:26:26,724 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:26:26,724 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:26:26,724 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:26:27,091 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:26:27,174 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:26:27,192 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:26:27,195 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:26:27,197 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:26:27,204 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:26:27,210 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:26:27,213 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:26:27,218 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:26:27,229 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:26:27,239 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:26:27,243 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:26:27,326 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:26:27,341 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 17:48:07,394 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:48:07,418 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:48:09,866 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:48:09,866 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:48:09,954 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:48:10,018 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:48:10,135 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:48:10,135 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:48:10,150 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:48:10,150 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:48:10,156 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:48:10,157 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:48:10,329 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:48:10,329 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:48:10,329 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:48:10,329 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:48:10,643 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:48:10,653 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:48:10,663 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:48:10,671 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:48:10,673 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:48:10,673 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:48:10,673 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:48:10,684 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:48:10,684 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:48:10,694 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:48:10,694 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:48:10,694 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:48:10,735 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:48:15,181 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:48:15,195 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:48:16,682 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:48:16,692 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:48:16,714 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:48:16,727 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:48:16,820 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:48:16,820 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:48:16,826 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:48:16,830 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:48:16,831 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:48:16,831 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:48:16,972 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:48:16,974 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:48:16,975 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:48:16,978 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:48:17,201 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:48:17,212 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:48:17,221 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:48:17,233 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:48:17,235 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:48:17,236 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:48:17,249 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:48:17,255 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:48:17,260 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:48:17,265 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:48:17,266 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:48:17,267 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:48:17,314 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:48:17,329 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 17:49:43,285 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\run_server.py', reloading
+2025-05-26 17:49:44,389 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:49:52,107 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:49:52,146 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:49:55,677 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:49:55,689 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:49:55,737 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:49:55,901 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:49:56,236 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:49:56,246 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:49:56,248 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:49:56,253 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:49:56,263 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:49:56,264 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:49:56,520 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:49:56,542 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:49:56,562 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:49:56,587 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:49:57,616 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:49:57,627 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:49:57,634 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:49:57,637 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:49:57,638 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:49:57,638 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:49:57,646 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:49:57,647 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:49:57,649 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:49:57,661 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:49:57,664 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:49:57,665 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:49:57,753 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:49:57,771 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 17:55:38,599 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\app.py', reloading
+2025-05-26 17:55:42,313 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:55:47,216 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:55:47,228 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:55:48,943 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:55:48,953 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:55:48,980 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:55:49,014 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:55:49,116 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:55:49,127 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:55:49,127 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:55:49,127 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:55:49,132 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:55:49,133 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:55:49,351 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:55:49,352 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:55:49,353 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:55:49,354 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:55:49,654 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:55:49,654 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:55:49,660 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:55:49,665 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:55:49,667 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:55:49,667 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:55:49,667 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:55:49,667 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:55:49,667 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:55:49,682 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:55:49,684 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:55:49,688 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:55:49,763 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:55:49,770 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 17:57:19,111 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:57:19,121 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:57:20,466 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:57:20,466 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:57:20,486 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:57:20,528 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:57:20,616 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:57:20,620 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:57:20,620 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:57:20,620 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:57:20,620 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:57:20,628 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:57:20,750 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:57:20,750 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:57:20,750 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:57:20,766 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:57:21,000 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:57:21,000 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:57:21,000 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:57:21,000 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:57:21,015 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:57:21,015 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:57:21,021 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:57:21,024 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:57:21,026 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:57:21,028 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:57:21,028 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:57:21,031 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:57:21,068 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 17:57:24,246 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 17:57:24,252 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 17:57:25,145 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 17:57:25,156 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 17:57:25,179 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 17:57:25,206 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 17:57:25,278 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 17:57:25,279 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 17:57:25,281 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 17:57:25,282 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 17:57:25,282 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 17:57:25,283 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 17:57:25,405 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:57:25,405 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 17:57:25,405 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 17:57:25,405 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 17:57:25,606 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 17:57:25,606 - neurogenlib - INFO - File path utility is available
+2025-05-26 17:57:25,606 - neurogenlib - INFO - Error handler is available
+2025-05-26 17:57:25,612 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 17:57:25,615 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 17:57:25,615 - neurogenlib - INFO - Structify module is available
+2025-05-26 17:57:25,618 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 17:57:25,623 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 17:57:25,624 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 17:57:25,627 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 17:57:25,627 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 17:57:25,633 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 17:57:25,681 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 17:57:25,681 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 18:24:26,775 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 18:24:26,786 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 18:24:29,404 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 18:24:29,404 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 18:24:29,442 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 18:24:29,487 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 18:24:29,629 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 18:24:29,629 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 18:24:29,641 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 18:24:29,641 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 18:24:29,641 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 18:24:29,651 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 18:24:29,819 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:24:29,819 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 18:24:29,819 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 18:24:29,819 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 18:24:30,195 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 18:24:30,195 - neurogenlib - INFO - File path utility is available
+2025-05-26 18:24:30,204 - neurogenlib - INFO - Error handler is available
+2025-05-26 18:24:30,207 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 18:24:30,208 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:24:30,208 - neurogenlib - INFO - Structify module is available
+2025-05-26 18:24:30,210 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 18:24:30,215 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 18:24:30,215 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 18:24:30,218 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 18:24:30,219 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 18:24:30,221 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 18:24:30,319 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 18:24:35,294 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 18:24:35,306 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 18:24:36,276 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 18:24:36,286 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 18:24:36,296 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 18:24:36,313 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 18:24:36,377 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 18:24:36,378 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 18:24:36,381 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 18:24:36,381 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 18:24:36,381 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 18:24:36,382 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 18:24:36,540 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:24:36,540 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 18:24:36,540 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 18:24:36,540 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 18:24:36,780 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 18:24:36,780 - neurogenlib - INFO - File path utility is available
+2025-05-26 18:24:36,784 - neurogenlib - INFO - Error handler is available
+2025-05-26 18:24:36,784 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 18:24:36,784 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:24:36,784 - neurogenlib - INFO - Structify module is available
+2025-05-26 18:24:36,788 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 18:24:36,790 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 18:24:36,790 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 18:24:36,795 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 18:24:36,796 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 18:24:36,798 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 18:24:36,838 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 18:24:36,852 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 18:42:09,175 - academic_api_redis - INFO - Connected to Redis at redis://localhost:6379/0
+2025-05-26 18:42:20,623 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 18:42:20,645 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 18:42:21,728 - academic_api_redis - INFO - Rate limiter connected to Redis at redis://localhost:6379/0
+2025-05-26 18:42:21,728 - __main__ - INFO - Initialized Redis cache and rate limiter
+2025-05-26 18:42:21,782 - __main__ - INFO - Starting NeuroGen Processor Server on 0.0.0.0:5025
+2025-05-26 18:42:21,783 - __main__ - INFO - Debug mode enabled
+2025-05-26 18:42:21,783 - __main__ - INFO - Claude module available - PDF processing enabled
+2025-05-26 18:42:21,785 - __main__ - INFO - Claude module capabilities: Direct PDF processing, Table extraction, Document type detection
+2025-05-26 18:42:21,813 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 18:42:22,510 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 18:42:22,521 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 18:42:22,552 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 18:42:22,628 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 18:42:22,768 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 18:42:22,768 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 18:42:22,778 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 18:42:22,778 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 18:42:22,778 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 18:42:22,778 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 18:42:22,937 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:42:22,937 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 18:42:22,937 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 18:42:22,947 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 18:42:23,262 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 18:42:23,262 - neurogenlib - INFO - File path utility is available
+2025-05-26 18:42:23,273 - neurogenlib - INFO - Error handler is available
+2025-05-26 18:42:23,273 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 18:42:23,273 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:42:23,273 - neurogenlib - INFO - Structify module is available
+2025-05-26 18:42:23,279 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 18:42:23,281 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 18:42:23,281 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 18:42:23,291 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 18:42:23,291 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 18:42:23,293 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 18:42:23,338 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 18:42:27,263 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 18:42:27,265 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 18:42:28,059 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 18:42:28,077 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 18:42:33,386 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 18:42:33,389 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 18:42:33,444 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 18:42:33,488 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 18:42:33,725 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 18:42:33,726 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 18:42:33,734 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 18:42:33,735 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 18:42:33,735 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 18:42:33,735 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 18:42:34,374 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:42:34,374 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 18:42:34,375 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 18:42:34,379 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 18:42:35,441 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 18:42:35,444 - neurogenlib - INFO - File path utility is available
+2025-05-26 18:42:35,447 - neurogenlib - INFO - Error handler is available
+2025-05-26 18:42:35,450 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 18:42:35,451 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:42:35,451 - neurogenlib - INFO - Structify module is available
+2025-05-26 18:42:35,453 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 18:42:35,455 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 18:42:35,455 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 18:42:35,458 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 18:42:35,459 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 18:42:35,462 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 18:42:35,510 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 18:42:35,517 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 18:42:35,852 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 18:42:35,855 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 18:42:35,891 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 18:42:35,955 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 18:42:36,079 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 18:42:36,087 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 18:42:36,092 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 18:42:36,092 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 18:42:36,096 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 18:42:36,096 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 18:42:36,393 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:42:36,393 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 18:42:36,394 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 18:42:36,394 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 18:42:36,978 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 18:42:36,980 - neurogenlib - INFO - File path utility is available
+2025-05-26 18:42:36,980 - neurogenlib - INFO - Error handler is available
+2025-05-26 18:42:36,988 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 18:42:36,990 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:42:36,991 - neurogenlib - INFO - Structify module is available
+2025-05-26 18:42:36,991 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 18:42:36,991 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 18:42:36,995 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 18:42:37,002 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 18:42:37,004 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 18:42:37,006 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 18:42:37,101 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 18:42:37,113 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-26 18:59:56,140 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 18:59:56,397 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 18:59:59,113 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 18:59:59,116 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 18:59:59,147 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 18:59:59,213 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 18:59:59,382 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 18:59:59,382 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 18:59:59,390 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 18:59:59,390 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 18:59:59,390 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 18:59:59,390 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 18:59:59,620 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 18:59:59,620 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 18:59:59,621 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 18:59:59,623 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 19:00:00,425 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 19:00:00,433 - neurogenlib - INFO - File path utility is available
+2025-05-26 19:00:00,433 - neurogenlib - INFO - Error handler is available
+2025-05-26 19:00:00,433 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 19:00:00,433 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 19:00:00,433 - neurogenlib - INFO - Structify module is available
+2025-05-26 19:00:00,441 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 19:00:00,470 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 19:00:00,471 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 19:00:00,477 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 19:00:00,485 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 19:00:00,485 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 19:00:01,037 - werkzeug - INFO -  * Restarting with stat
+2025-05-26 19:00:23,542 - __main__ - INFO - Successfully imported academic_api module
+2025-05-26 19:00:23,740 - __main__ - INFO - Successfully imported academic_api_client module
+2025-05-26 19:00:29,516 - __main__ - INFO - Successfully imported citation_network_visualizer module
+2025-05-26 19:00:29,523 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-05-26 19:00:29,590 - socketio - INFO - Server initialized for eventlet.
+2025-05-26 19:00:29,689 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-05-26 19:00:29,936 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-26 19:00:29,937 - file_processor - INFO - Started temp file cleanup service
+2025-05-26 19:00:29,940 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-26 19:00:29,940 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-26 19:00:29,940 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-26 19:00:29,941 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-26 19:00:30,679 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 19:00:30,680 - web_scraper - INFO - Claude module is available for processing
+2025-05-26 19:00:30,680 - web_scraper - INFO - PDF extractor module is available
+2025-05-26 19:00:30,681 - __main__ - INFO - Successfully imported web_scraper module
+2025-05-26 19:00:31,067 - neurogenlib - WARNING - Memory-efficient PDF processor not available, using fallback
+2025-05-26 19:00:31,099 - neurogenlib - INFO - File path utility is available
+2025-05-26 19:00:31,101 - neurogenlib - INFO - Error handler is available
+2025-05-26 19:00:31,104 - neurogenlib - INFO - Improved web scraper is available
+2025-05-26 19:00:31,105 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-26 19:00:31,105 - neurogenlib - INFO - Structify module is available
+2025-05-26 19:00:31,107 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-05-26 19:00:31,108 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-05-26 19:00:31,108 - __main__ - INFO - Successfully imported constants from claude.py
+2025-05-26 19:00:31,111 - __main__ - INFO - Successfully imported academic_api_redis module
+2025-05-26 19:00:31,113 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\temp\tessdata\eng.traineddata
+2025-05-26 19:00:31,114 - __main__ - INFO - Loaded 1 API keys
+2025-05-26 19:00:31,158 - werkzeug - WARNING -  * Debugger is active!
+2025-05-26 19:00:31,210 - werkzeug - INFO -  * Debugger PIN: 328-316-705

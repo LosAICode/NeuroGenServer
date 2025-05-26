@@ -1625,7 +1625,7 @@ const moduleLoader = {
         default:
           return baseFallback;
         }
-        };
+      },
         
   /**
    * Create a fallback for feature modules
@@ -2574,12 +2574,12 @@ fixFailedModules() {
         const module = await Promise.race([modulePromise, timeoutPromise]);
         
         // Get module name for auto-export creation
-        const moduleName = this.getModuleName(modulePath) + '.js';
+        const moduleNameWithExt = this.getModuleName(modulePath) + '.js';
         
         // Enhance module with missing exports if needed
         let enhancedModule = module;
         if (standardizeExports) {
-          enhancedModule = this.autoCreateMissingExports(module, moduleName);
+          enhancedModule = this.autoCreateMissingExports(module, moduleNameWithExt);
         }
         
         // Get the default export or the module itself

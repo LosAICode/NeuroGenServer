@@ -12,7 +12,7 @@ import os
 class NeuroGenServer:
     def __init__(self):
         self.process = None
-        self.port = 5000
+        self.port = 5025
         
     def start(self):
         """Start the NeuroGen server"""
@@ -24,7 +24,7 @@ class NeuroGenServer:
         
         # Start the server
         self.process = subprocess.Popen(
-            [sys.executable, 'main.py'],
+            [sys.executable, 'app.py'],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             universal_newlines=True,

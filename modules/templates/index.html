@@ -992,8 +992,12 @@
                         '<i class="fas fa-moon fa-lg"></i>';
                 }
                 
-                // Add direct event listener as fallback
+                // Add direct event listener as fallback (only if modules not loaded)
                 darkModeToggle.addEventListener('click', function() {
+                    // Skip if module system is handling themes
+                    if (window.appInitialized || (window.moduleInstances && window.moduleInstances.themeManager)) {
+                        return;
+                    }
                     const currentTheme = document.body.getAttribute('data-theme') || 'dark';
                     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                     
@@ -1029,8 +1033,8 @@
 <script>
     // Set up basic tab navigation as a fallback when modules fail to load
     document.addEventListener('click', function(event) {
-        // Only activate if modules aren't initialized
-        if (window.appInitialized) return;
+        // Only activate if modules aren't initialized AND check if it's been enough time
+        if (window.appInitialized || (window.moduleInstances && Object.keys(window.moduleInstances).length > 0)) return;
         
         // Handle tab navigation
         if (event.target.hasAttribute('data-bs-toggle') && event.target.getAttribute('data-bs-toggle') === 'tab') {
@@ -1067,8 +1071,8 @@
     
     // Modal control fallback
     document.addEventListener('click', function(event) {
-        // Only activate if modules aren't initialized
-        if (window.appInitialized) return;
+        // Only activate if modules aren't initialized AND no module instances
+        if (window.appInitialized || (window.moduleInstances && Object.keys(window.moduleInstances).length > 0)) return;
         
         // Handle modal toggling
         if (event.target.hasAttribute('data-bs-toggle') && event.target.getAttribute('data-bs-toggle') === 'modal') {
@@ -1221,7 +1225,9 @@
     
     // Simple toast notification system as fallback
     function setupFallbackToasts() {
-        window.showToast = function(title, message, type = 'info', duration = 5000) {
+        // Only create fallback toast if no module toast system exists
+        if (!window.showToast) {
+            window.showToast = function(title, message, type = 'info', duration = 5000) {
             // Check if toastContainer exists, create if not
             let toastContainer = document.getElementById('toast-container');
             if (!toastContainer) {
@@ -1285,6 +1291,7 @@
                 toastElement.remove();
             });
         };
+        }
     }
     
     // Initialize fallback systems

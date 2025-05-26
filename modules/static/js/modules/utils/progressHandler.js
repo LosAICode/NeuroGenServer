@@ -1390,7 +1390,7 @@ function createProgressUI(containerId, elementPrefix = '') {
       </div>
       <div class="mt-2 d-flex justify-content-between align-items-center">
         <div id="${prefix}progress-status" class="text-muted">Initializing...</div>
-        <div id="${prefix}progress-percentage" class="badge bg-primary">0%</div>
+        <!-- Removed duplicate percentage display - progress bar already shows percentage -->
       </div>
       <div class="d-flex justify-content-between align-items-center mt-1">
         <div id="${prefix}elapsed-time" class="small text-muted elapsed-time">Elapsed: 0s</div>
@@ -1418,7 +1418,7 @@ function createProgressUI(containerId, elementPrefix = '') {
     progressBar: document.getElementById(`${prefix}progress-bar`),
     progressStatus: document.getElementById(`${prefix}progress-status`),
     progressStats: document.getElementById(`${prefix}progress-stats`),
-    progressPercentage: document.getElementById(`${prefix}progress-percentage`),
+    // progressPercentage removed - using progress bar text instead
     etaDisplay: document.getElementById(`${prefix}eta-display`),
     elapsedTime: document.getElementById(`${prefix}elapsed-time`),
     progressRateDisplay: document.getElementById(`${prefix}progress-rate`),
@@ -2162,10 +2162,7 @@ function updateProgressUI(taskId, progress, message, stats = null) {
     }
   }
 
-  // Update progress percentage display if available
-  if (elements.progressPercentage) {
-    elements.progressPercentage.textContent = `${Math.round(smoothedProgress)}%`;
-  }
+  // Progress percentage is now shown inside the progress bar itself
 
   // Update status message
   if (elements.progressStatus && message) {
@@ -2287,7 +2284,21 @@ function completeTask(taskId, result) {
 
   // Update stats display if we have result stats
   if (elements.progressStats && result && result.stats) {
+    // Force the stats container to be visible
+    elements.progressStats.style.display = 'block';
+    elements.progressStats.classList.remove('d-none');
     updateStatsDisplay(elements.progressStats, result.stats);
+  } else if (elements.progressStats) {
+    // Even without stats, show completion summary
+    elements.progressStats.style.display = 'block';
+    elements.progressStats.classList.remove('d-none');
+    elements.progressStats.innerHTML = `
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i>
+        Task completed successfully!
+        <div class="mt-2">Duration: ${formatDuration(task.endTime - task.startTime)}</div>
+      </div>
+    `;
   }
 
   // Stop status polling

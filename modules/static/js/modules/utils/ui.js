@@ -13,22 +13,17 @@ import { updateUIBridge } from '../core/module-bridge.js';
 // Import only the DOM utilities we actually use to avoid unused declaration warnings
 import { 
     getElement as domGetElement, 
-    toggleElementVisibility as domToggleElementVisibility,
-    createElement
+    toggleElementVisibility as domToggleElementVisibility
   } from './domUtils.js';
   
 // Import only the specific functions we need from uiRegistry to avoid circular dependencies
-import { registerElement } from './uiRegistry.js';
+import { registerElement } from '../core/uiRegistry.js';
   
 /**
- * Module state using WeakMap for better memory management
- * and a Symbol for private state to avoid external manipulation
+ * Module state using a simple object for state management
+ * @private
  */
-const STATE_KEY = Symbol('ui-state');
-const moduleState = new WeakMap();
-  
-// Initialize module state
-const state = {
+const moduleState = {
   toastContainer: null,
   modalInstances: new Map(),
   errorHandler: null,
@@ -37,16 +32,13 @@ const state = {
   themeObserver: null
 };
   
-// Store state in WeakMap
-moduleState.set(STATE_KEY, state);
-  
 /**
  * Get the module state
  * @returns {Object} The module state
  * @private
  */
 function getState() {
-  return moduleState.get(STATE_KEY);
+  return moduleState;
 }
   
 /**

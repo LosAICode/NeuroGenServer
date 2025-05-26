@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Diagnostics</title>
+</head>
+<body>
+    <h1>NeuroGen Module Diagnostics</h1>
+    <p>Open the browser console to see diagnostic results</p>
+    
+    <script type="module">
+        console.log("Starting module diagnostics...");
+        
+        // Import the diagnostic module
+        import moduleDiagnostics, { 
+            logDiagnosticReport, 
+            generateDiagnosticReport,
+            fixModuleIssues 
+        } from '/static/js/modules/utils/moduleDiagnostics.js';
+        
+        // Initialize diagnostics
+        const diagnostics = moduleDiagnostics();
+        console.log("Module diagnostics initialized");
+        
+        // Wait a moment then run diagnostics
+        setTimeout(() => {
+            console.log("Running diagnostic report...");
+            logDiagnosticReport();
+            
+            // Generate detailed report
+            const report = generateDiagnosticReport();
+            console.log("Full report:", report);
+            
+            // Try to load index.js and see what happens
+            console.log("\nAttempting to load index.js...");
+            import('/static/js/index.js')
+                .then(module => {
+                    console.log("✅ index.js loaded successfully!", module);
+                })
+                .catch(error => {
+                    console.error("❌ Failed to load index.js:", error);
+                    console.error("Error stack:", error.stack);
+                });
+        }, 1000);
+    </script>
+</body>
+</html>

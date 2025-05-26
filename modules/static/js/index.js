@@ -828,7 +828,7 @@ async function loadPlaylistDownloaderSafely() {
     // If we get here, all paths failed - try using loadModuleWithDependencies
     try {
       console.log("Attempting to load playlistDownloader with dependencies...");
-      const result = await moduleLoader.loadModuleWithDependencies(
+      const result = await moduleLoader.loadModule(
         './modules/features/playlistDownloader.js',
         {
           retries: 3,
@@ -878,7 +878,7 @@ async function loadWebScraperSafely() {
     });
     
     // Then load webScraper with dependencies
-    const result = await moduleLoader.loadModuleWithDependencies(
+    const result = await moduleLoader.loadModule(
       './modules/features/webScraper.js',
       {
         retries: 3,

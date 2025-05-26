@@ -21,7 +21,7 @@ import {
   } from './domUtils.js';
   
   // Import from uiRegistry without unused imports to prevent circular dependencies
-  import * as uiRegistry from './uiRegistry.js';
+  import * as uiRegistry from '../core/uiRegistry.js';
   
   // Explicitly use the registerElement function to avoid unused import warning
   const { registerElement } = uiRegistry;

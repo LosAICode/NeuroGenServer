@@ -41,11 +41,12 @@ import progressHandler, {
   createProgressUI 
 } from '../utils/progressHandler.js';
 
-// Safely import UI module - no change needed here
+// Safely import UI module
+let ui;
 try {
-// Use the imported createProgressUI function
-// Use the imported createProgressUI function
-const progressUI = createProgressUI('progress-container', 'scraper');
+  ui = await import('../utils/ui.js');
+} catch (e) {
+  console.warn("UI module import failed, creating fallback:", e);
   // Create fallback UI module with minimal functionality
   ui = {
     showToast: (title, message, type = 'info') => {
@@ -129,6 +130,7 @@ const progressUI = createProgressUI('progress-container', 'scraper');
 }
 
 // Safely import utils module
+let utils;
 try {
   utils = await import('../utils/utils.js');
 } catch (e) {
@@ -171,6 +173,7 @@ try {
 }
 
 // Safely import fileHandler module
+let fileHandler;
 try {
   fileHandler = await import('../utils/fileHandler.js');
 } catch (e) {
@@ -3164,7 +3167,6 @@ export const handleNewTaskClick = fileProcessor.handleNewTaskClick.bind(fileProc
 export const handleFileSubmit = fileProcessor.handleFileSubmit.bind(fileProcessor);
 export const handleFileSelection = fileProcessor.handleFileSelection.bind(fileProcessor);
 export const extractPdfContent = fileProcessor.extractPdfContent.bind(fileProcessor);
-import uiUtils from '../utils/uiBridge.js';
 
 
 // Add keyboard shortcut for emergency stop (Ctrl+Shift+X)

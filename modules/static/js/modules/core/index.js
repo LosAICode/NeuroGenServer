@@ -1,12 +1,15 @@
 // Core modules index
-export { default as app } from './app.js';
-export { default as errorHandler } from './errorHandler.js';
-export { default as eventManager } from './eventManager.js';
-export { default as eventRegistry } from './eventRegistry.js';
-export { default as moduleLoader } from './moduleLoader.js';
-export { default as stateManager } from './stateManager.js';
-export { default as themeManager } from './themeManager.js';
-export { default as uiRegistry } from './uiRegistry.js';
+import app from './app.js';
+import errorHandler from './errorHandler.js';
+import eventManager from './eventManager.js';
+import eventRegistry from './eventRegistry.js';
+import moduleLoader from './moduleLoader.js';
+import stateManager from './stateManager.js';
+import themeManager from './themeManager.js';
+import uiRegistry from './uiRegistry.js';
+
+// Re-export as named exports
+export { app, errorHandler, eventManager, eventRegistry, moduleLoader, stateManager, themeManager, uiRegistry };
 
 // Named exports from core modules
 export * from './uiRegistry.js';
@@ -16,6 +19,18 @@ export * from './errorHandler.js';
 export * from './eventManager.js';
 export * from './moduleLoader.js';
 export * from './themeManager.js';
+
+// Create index object with all exports
+const index = {
+  app,
+  errorHandler,
+  eventManager,
+  eventRegistry,
+  moduleLoader,
+  stateManager,
+  themeManager,
+  uiRegistry
+};
 
 // Export default module
 export default index;

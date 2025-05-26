@@ -17,14 +17,14 @@
 // Import from core modules with proper destructuring
 import { registerEvents } from '../core/eventManager.js';
 import { registerElement } from '../core/uiRegistry.js';
-import { showError, showSuccess } from '../core/errorHandler.js';
+import { showErrorNotification, showSuccess } from '../core/errorHandler.js';
 import { setState } from '../core/stateManager.js';
 
 // Import DOM utilities from domUtils - correctly pull these in from a single source
 import { getElement } from '../utils/domUtils.js';
 
 // Import from utility modules - remove unused imports
-import { showLoading, hideLoading, showToast } from '../utils/ui.js';
+import { showLoadingSpinner, showToast } from '../utils/ui.js';
 import { generateId } from '../utils/utils.js';
 
 // Import progress handler utilities - only include what we actually use
@@ -52,11 +52,33 @@ class AcademicSearch {
             initialized: false,
             lastSearch: null,
             now: () => Date.now(),
+            currentSpinner: null, // Track current loading spinner
             from: (timestamp) => new Date(timestamp)
         };
         
         // Initialize the module
         this.initialize();
+    }
+    
+    /**
+     * Show loading spinner (internal helper)
+     * @param {string} message - Loading message
+     */
+    showLoading(message) {
+        // Hide any existing spinner first
+        this.hideLoading();
+        // Create new spinner and store reference
+        this.state.currentSpinner = showLoadingSpinner(message);
+    }
+    
+    /**
+     * Hide current loading spinner (internal helper)
+     */
+    hideLoading() {
+        if (this.state.currentSpinner && this.state.currentSpinner.hide) {
+            this.state.currentSpinner.hide();
+            this.state.currentSpinner = null;
+        }
     }
 
     /**
@@ -270,12 +292,12 @@ class AcademicSearch {
             const source = sourceSelect ? sourceSelect.value : 'arxiv';
 
             if (!query) {
-                showError('Please enter a search query');
+                showErrorNotification(new Error('Please enter a search query'), { message: 'Please enter a search query' });
                 return;
             }
 
             // Show loading indicator
-            showLoading('Searching for papers...');
+            this.showLoading('Searching for papers...');
 
             // Save current search in state
             this.state.lastSearch = {
@@ -309,7 +331,7 @@ class AcademicSearch {
             this.activeSearches.delete(searchId);
             
             // Hide loading indicator
-            hideLoading();
+            this.hideLoading();
             
             // Display results
             this.displaySearchResults(this.searchResults);
@@ -323,10 +345,10 @@ class AcademicSearch {
             };
         } catch (error) {
             // Hide loading indicator
-            hideLoading();
+            this.hideLoading();
             
             // Show error
-            showError('Academic search failed: ' + error.message);
+            showErrorNotification(error, { message: 'Academic search failed' });
             
             // Log error
             console.error('Search error:', error);
@@ -416,7 +438,7 @@ class AcademicSearch {
         if (!paperId) return;
         
         try {
-            showLoading('Loading paper details...');
+            this.showLoading('Loading paper details...');
             
             // Generate request ID
             const requestId = generateId();
@@ -439,13 +461,13 @@ class AcademicSearch {
             // Update state
             setState('currentPaperDetails', paperDetails);
             
-            hideLoading();
+            this.hideLoading();
             this.displayPaperDetails(paperDetails);
             
             return paperDetails;
         } catch (error) {
-            hideLoading();
-            showError('Failed to load paper details: ' + error.message);
+            this.hideLoading();
+            showErrorNotification(error, { message: 'Failed to load paper details' });
             console.error('Error loading paper details:', error);
             
             return { error: error.message };
@@ -520,7 +542,7 @@ class AcademicSearch {
         let downloadId;
         
         try {
-            showLoading('Downloading paper...');
+            this.showLoading('Downloading paper...');
             
             const downloadUrl = pdfUrl || (this.currentPaperDetails?.pdf_url);
             
@@ -595,7 +617,7 @@ class AcademicSearch {
             // Save state
             this.saveState();
             
-            hideLoading();
+            this.hideLoading();
             showSuccess('Paper downloaded successfully');
             
             return {
@@ -605,7 +627,7 @@ class AcademicSearch {
                 fileName: data.file_name
             };
         } catch (error) {
-            hideLoading();
+            this.hideLoading();
             
             // Update download status to failed
             if (downloadId) {
@@ -621,7 +643,7 @@ class AcademicSearch {
                 }
             }
             
-            showError('Paper download failed: ' + error.message);
+            showErrorNotification(error, { message: 'Paper download failed' });
             console.error('Download error:', error);
             
             return {
@@ -692,7 +714,7 @@ class AcademicSearch {
         if (!paperId) return;
         
         try {
-            showLoading('Loading citation data...');
+            this.showLoading('Loading citation data...');
             
             // Generate request ID
             const requestId = generateId();
@@ -710,13 +732,13 @@ class AcademicSearch {
             // Remove from active requests
             this.activePaperRequests.delete(requestId);
             
-            hideLoading();
+            this.hideLoading();
             this.displayCitationData(citationData);
             
             return citationData;
         } catch (error) {
-            hideLoading();
-            showError('Failed to load citations: ' + error.message);
+            this.hideLoading();
+            showErrorNotification(error, { message: 'Failed to load citations' });
             console.error('Error loading citations:', error);
             
             return { error: error.message };
@@ -839,13 +861,13 @@ class AcademicSearch {
             // Remove from active requests
             this.activePaperRequests.delete(requestId);
             
-            hideLoading();
+            this.hideLoading();
             this.displayRecommendations(data);
             
             return data;
         } catch (error) {
-            hideLoading();
-            showError('Failed to load recommendations: ' + error.message);
+            this.hideLoading();
+            showErrorNotification(error, { message: 'Failed to load recommendations' });
             console.error('Error loading recommendations:', error);
             
             return { error: error.message };
@@ -917,13 +939,13 @@ class AcademicSearch {
             
             const data = await response.json();
             
-            hideLoading();
+            this.hideLoading();
             this.displayExtractedPapers(data);
             
             return data;
         } catch (error) {
-            hideLoading();
-            showError('Failed to extract papers: ' + error.message);
+            this.hideLoading();
+            showErrorNotification(error, { message: 'Failed to extract papers' });
             console.error('Extraction error:', error);
             
             return { error: error.message };
@@ -1055,15 +1077,15 @@ class AcademicSearch {
             this.activeSearches.delete(searchId);
             
             // Hide loading indicator
-            hideLoading();
+            this.hideLoading();
             
             // Display results with source distribution information
             this.displayMultiSourceResults(data);
             
             return data;
         } catch (error) {
-            hideLoading();
-            showError('Multi-source search failed: ' + error.message);
+            this.hideLoading();
+            showErrorNotification(error, { message: 'Multi-source search failed' });
             console.error('Multi-source search error:', error);
             
             return { error: error.message };
@@ -1169,15 +1191,15 @@ class AcademicSearch {
             // Remove from active requests
             this.activePaperRequests.delete(analysisId);
             
-            hideLoading();
+            this.hideLoading();
             
             // Display analysis results
             this.displayAnalysisResults(analysisData);
             
             return analysisData;
         } catch (error) {
-            hideLoading();
-            showError('Paper analysis failed: ' + error.message);
+            this.hideLoading();
+            showErrorNotification(error, { message: 'Paper analysis failed' });
             console.error('Analysis error:', error);
             
             return { error: error.message };
