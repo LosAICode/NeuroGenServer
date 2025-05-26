@@ -1,0 +1,783 @@
+openapi: 3.0.0
+info:
+  title: Academic API
+  description: |
+    A RESTful API for searching academic resources and retrieving structured results.
+    This API wraps the web_scraper module to provide a standardized interface for
+    querying academic resources like arXiv, Semantic Scholar, and OpenAlex.
+  version: 1.0.0
+  contact:
+    email: support@example.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5001
+    description: Local development server
+
+tags:
+  - name: search
+    description: Academic paper search operations
+  - name: papers
+    description: Operations for retrieving paper details
+  - name: system
+    description: System-related operations
+
+security:
+  - apiKeyHeader: []
+
+paths:
+  /api/health:
+    get:
+      tags:
+        - system
+      summary: API Health Check
+      description: Returns a simple status message to indicate the API is running
+      responses:
+        '200':
+          description: Status information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: number
+                    format: float
+                    example: 1679012345.678
+                  web_scraper_available:
+                    type: boolean
+                    example: true
+
+  /api/search:
+    get:
+      tags:
+        - search
+      summary: Search for academic papers
+      description: Search for academic papers matching a query
+      parameters:
+        - name: query
+          in: query
+          description: The search term
+          required: true
+          schema:
+            type: string
+        - name: source
+          in: query
+          description: The source to search (e.g., arxiv, semantic, openalex)
+          required: false
+          schema:
+            type: string
+            default: arxiv
+            enum:
+              - arxiv
+              - semantic
+              - openalex
+        - name: limit
+          in: query
+          description: Maximum number of results
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+      security:
+        - apiKeyHeader: []
+      responses:
+        '200':
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResults'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/details/{id}:
+    get:
+      tags:
+        - papers
+      summary: Get paper details
+      description: Get detailed information about a specific paper
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier for the article (e.g., arXiv ID)
+          required: true
+          schema:
+            type: string
+        - name: source
+          in: query
+          description: The source platform
+          required: false
+          schema:
+            type: string
+            default: arxiv
+            enum:
+              - arxiv
+              - semantic
+              - openalex
+      security:
+        - apiKeyHeader: []
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaperDetails'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Paper not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/download/{id}:
+    get:
+      tags:
+        - papers
+      summary: Download paper PDF
+      description: Download the PDF for a specific paper
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier for the article (e.g., arXiv ID)
+          required: true
+          schema:
+            type: string
+        - name: source
+          in: query
+          description: The source platform
+          required: false
+          schema:
+            type: string
+            default: arxiv
+            enum:
+              - arxiv
+        - name: filename
+          in: query
+          description: Custom filename for the downloaded PDF
+          required: false
+          schema:
+            type: string
+      security:
+        - apiKeyHeader: []
+      responses:
+        '200':
+          description: Successful download
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: PDF downloaded successfully
+                  file_path:
+                    type: string
+                    example: /path/to/file.pdf
+                  file_name:
+                    type: string
+                    example: paper_1234.pdf
+                  file_size:
+                    type: integer
+                    example: 1234567
+                  task_id:
+                    type: string
+                    example: 550e8400-e29b-41d4-a716-446655440000
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Paper not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /api/multi-source:
+    get:
+      tags:
+        - search
+      summary: Search multiple sources
+      description: Search multiple sources simultaneously and combine results
+      parameters:
+        - name: query
+          in: query
+          description: The search term
+          required: true
+          schema:
+            type: string
+        - name: sources
+          in: query
+          description: Comma-separated list of sources to search
+          required: false
+          schema:
+            type: string
+            default: arxiv,semantic,openalex
+        - name: limit
+          in: query
+          description: Maximum results per source
+          required: false
+          schema:
+            type: integer
+            default: 5
+            minimum: 1
+            maximum: 50
+      security:
+        - apiKeyHeader: []
+      responses:
+        '200':
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SearchResults'
+                  - type: object
+                    properties:
+                      source_distribution:
+                        type: object
+                        additionalProperties:
+                          type: integer
+                        example:
+                          arxiv: 5
+                          semantic: 3
+                          openalex: 2
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /api/citations/{id}:
+    get:
+      tags:
+        - papers
+        - analysis
+      summary: Get citation analysis
+      description: Get citation analysis for a specific paper
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier for the article (e.g., arXiv ID)
+          required: true
+          schema:
+            type: string
+        - name: source
+          in: query
+          description: The source platform
+          required: false
+          schema:
+            type: string
+            default: arxiv
+        - name: depth
+          in: query
+          description: Depth of citation analysis (1 = direct citations only)
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 2
+      security:
+        - apiKeyHeader: []
+      responses:
+        '200':
+          description: Successful citation analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paper_id:
+                    type: string
+                    example: arXiv:2101.00001
+                  paper_title:
+                    type: string
+                    example: Example Paper Title
+                  total_citations:
+                    type: integer
+                    example: 42
+                  citation_by_year:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                    example:
+                      "2020": 5
+                      "2021": 12
+                      "2022": 15
+                      "2023": 10
+                  top_citing_authors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: Author X
+                        count:
+                          type: integer
+                          example: 4
+                        h_index:
+                          type: integer
+                          example: 25
+                  top_citing_venues:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: Journal A
+                        count:
+                          type: integer
+                          example: 8
+                        impact_factor:
+                          type: number
+                          format: float
+                          example: 4.2
+                  citation_network:
+                    type: object
+                    properties:
+                      nodes:
+                        type: array
+                        items:
+                          type: object
+                      links:
+                        type: array
+                        items:
+                          type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Paper not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /api/recommendations/{id}:
+    get:
+      tags:
+        - papers
+        - analysis
+      summary: Get related paper recommendations
+      description: Get recommended papers related to a specific paper
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier for the article (e.g., arXiv ID)
+          required: true
+          schema:
+            type: string
+        - name: source
+          in: query
+          description: The source platform
+          required: false
+          schema:
+            type: string
+            default: arxiv
+        - name: limit
+          in: query
+          description: Maximum number of recommendations
+          required: false
+          schema:
+            type: integer
+            default: 5
+            minimum: 1
+            maximum: 20
+      security:
+        - apiKeyHeader: []
+      responses:
+        '200':
+          description: Successful recommendations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paper_id:
+                    type: string
+                    example: arXiv:2101.00001
+                  source:
+                    type: string
+                    example: arxiv
+                  recommendations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: arXiv:2101.00002
+                        title:
+                          type: string
+                          example: Related Paper Title
+                        authors:
+                          type: array
+                          items:
+                            type: string
+                          example: ["Researcher A", "Researcher B"]
+                        abstract:
+                          type: string
+                          example: This paper relates to the concepts...
+                        similarity_score:
+                          type: number
+                          format: float
+                          example: 0.87
+                        shared_keywords:
+                          type: array
+                          items:
+                            type: string
+                          example: ["machine learning", "neural networks"]
+                        publication_date:
+                          type: string
+                          example: 2022-01-01
+                        source:
+                          type: string
+                          example: arxiv
+                        pdf_url:
+                          type: string
+                          example: https://arxiv.org/pdf/2101.00002.pdf
+                  recommendation_count:
+                    type: integer
+                    example: 5
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Paper not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /api/bulk/download:
+    post:
+      tags:
+        - papers
+        - bulk
+      summary: Bulk download papers
+      description: Download multiple papers in bulk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - paper_ids
+              properties:
+                paper_ids:
+                  type: array
+                  items:
+                    type: string
+                  example: ["arXiv:2101.00001", "arXiv:2101.00002"]
+                  description: List of paper IDs to download
+                source:
+                  type: string
+                  default: arxiv
+                  description: Source platform
+      security:
+        - apiKeyHeader: []
+      responses:
+        '200':
+          description: Successful bulk download
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: completed
+                  batch_id:
+                    type: string
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  batch_directory:
+                    type: string
+                    example: /path/to/batch_550e8400-e29b-41d4-a716-446655440000
+                  total_papers:
+                    type: integer
+                    example: 5
+                  successful_downloads:
+                    type: integer
+                    example: 4
+                  failed_downloads:
+                    type: integer
+                    example: 1
+                  successful:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        paper_id:
+                          type: string
+                          example: arXiv:2101.00001
+                        title:
+                          type: string
+                          example: Paper Title
+                        file_path:
+                          type: string
+                          example: /path/to/paper.pdf
+                        file_name:
+                          type: string
+                          example: paper.pdf
+                        file_size:
+                          type: integer
+                          example: 1234567
+                  failed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        paper_id:
+                          type: string
+                          example: arXiv:2101.00005
+                        error:
+                          type: string
+                          example: Failed to download PDF
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      
+  schemas:
+    SearchResults:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaperSummary'
+        total_results:
+          type: integer
+          example: 10
+          
+    PaperSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          example: arXiv:2101.00001
+        title:
+          type: string
+          example: Example Paper Title
+        authors:
+          type: array
+          items:
+            type: string
+          example: ["Author One", "Author Two"]
+        abstract:
+          type: string
+          example: A short abstract excerpt...
+        source:
+          type: string
+          example: arxiv
+        pdf_url:
+          type: string
+          example: https://arxiv.org/pdf/2101.00001.pdf
+          
+    PaperDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          example: arXiv:2101.00001
+        title:
+          type: string
+          example: Example Paper Title
+        authors:
+          type: array
+          items:
+            type: string
+          example: ["Author One", "Author Two"]
+        abstract:
+          type: string
+          example: The full abstract text...
+        publication_date:
+          type: string
+          format: date
+          example: 2021-01-01
+        source:
+          type: string
+          example: arxiv
+        pdf_url:
+          type: string
+          example: https://arxiv.org/pdf/2101.00001.pdf
+        metadata:
+          type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: string
+              example: ["cs.AI", "cs.LG"]
+            comments:
+              type: string
+              example: Submitted to AAAI
+            doi:
+              type: string
+              example: 10.1000/example
+          additionalProperties: true
+          
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: INVALID_QUERY
+            message:
+              type: string
+              example: The query parameter is missing.

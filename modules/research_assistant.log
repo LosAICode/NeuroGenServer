@@ -1,0 +1,17 @@
+2025-03-17 20:31:21,106 - __main__ - INFO - Successfully imported academic_research_assistant module
+2025-03-17 20:31:21,115 - __main__ - WARNING - academic_api_redis module not available: No module named 'redis'
+2025-03-17 20:31:21,115 - __main__ - INFO - Using in-memory cache (Redis not available)
+2025-03-17 20:31:21,179 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-03-17 20:31:21,281 - Structify.claude - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-03-17 20:31:21,283 - Structify.claude - INFO - Started temp file cleanup service
+2025-03-17 20:31:21,291 - Structify.claude - INFO - Successfully imported pdf_extractor module
+2025-03-17 20:31:21,293 - pdf_extractor - INFO - PDF extractor module already initialized
+2025-03-17 20:31:21,293 - Structify.claude - INFO - PDF extractor initialized with capabilities: {'text_extraction': True, 'table_extraction': True, 'ocr': True, 'structure_analysis': True, 'reference_extraction': True}
+2025-03-17 20:31:21,295 - Structify.claude - INFO - Successfully imported pdf_output_enhancer module
+2025-03-17 20:31:21,572 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-03-17 20:31:21,573 - web_scraper - INFO - Claude module is available for processing
+2025-03-17 20:31:21,574 - web_scraper - INFO - PDF extractor module is available
+2025-03-17 20:31:21,575 - __main__ - INFO - Successfully imported web_scraper module
+2025-03-17 20:31:21,867 - __main__ - INFO - DEFAULT_OUTPUT_FOLDER not set in environment, using: C:\Users\Los\Documents
+2025-03-17 20:31:21,868 - __main__ - INFO - Verified write permissions for: C:\Users\Los\Documents
+2025-03-17 20:31:21,869 - __main__ - INFO - Confirmed eng.traineddata exists at: C:\Users\Los\Documents\NeuroGen Server\modules\temp\tessdata\eng.traineddata

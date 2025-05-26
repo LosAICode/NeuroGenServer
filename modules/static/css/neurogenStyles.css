@@ -1,0 +1,2349 @@
+/* =============================================================================
+ * NeuroGen Processor - Enhanced CSS Styles
+ * Optimized for the fileProcessor.js module and modern ES6 architecture
+ * Includes additional styles for progress tracking, file selection, and UI transitions
+ * =============================================================================
+ */
+
+/* -----------------------------------------------------------------------------
+ * 1. CSS VARIABLES - Define all theme colors and styles in one place
+ * -----------------------------------------------------------------------------
+ */
+ :root {
+  /* Light theme variables */
+  --light-bg-primary: #ffffff;
+  --light-bg-secondary: #f8f9fa;
+  --light-bg-card: #ffffff;
+  --light-bg-input: #ffffff;
+  --light-border-color: #dee2e6;
+  --light-text-primary: #212529;
+  --light-text-secondary: #6c757d;
+  
+  /* Dark theme variables */
+  --dark-bg-primary: #121212;
+  --dark-bg-secondary: #1c3156;  /* Header background */
+  --dark-bg-card: #2d3238;       /* Card background */
+  --dark-bg-input: #343a40;      /* Form input background */
+  --dark-border-color: #495057;  /* Border color */
+  --dark-text-primary: #f8f9fa;  /* Main text color */
+  --dark-text-secondary: #adb5bd; /* Secondary text color */
+  --dark-muted-text: #a0aec0;     /* Muted text color */
+  
+  /* Component-specific dark theme colors */
+  --dark-alert-info-bg: #1f4f6e;
+  --dark-alert-info-border: #216d93;
+  --dark-alert-success-bg: #1e5631;
+  --dark-alert-success-border: #2a7342;
+  --dark-alert-danger-bg: #742029;
+  --dark-alert-danger-border: #972b35;
+  --dark-alert-warning-bg: #7a5a10;
+  --dark-alert-warning-border: #9d7213;
+  
+  /* Code display */
+  --dark-code-bg: #2a2a2a;
+  --dark-code-color: #e0e0e0;
+  
+  /* Bootstrap color overrides */
+  --primary-color: #0d6efd;
+  --secondary-color: #6c757d;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+  
+  /* Layout variables */
+  --border-radius: 0.5rem;
+  --transition-speed: 0.3s;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --dark-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* -----------------------------------------------------------------------------
+ * 2. FILE PROCESSOR MODULE STYLES
+ * -----------------------------------------------------------------------------
+ */
+
+/* Form container transitions */
+#form-container, 
+#progress-container, 
+#result-container, 
+#error-container,
+#cancelled-container {
+  transition: opacity var(--transition-speed) ease, 
+              transform var(--transition-speed) ease;
+}
+
+/* File information container */
+.file-info-container {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* File list card enhancements */
+.file-list-card {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .file-list-card {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.file-list-card .card-header {
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+}
+
+.file-list-card .list-group-item {
+  padding: 0.5rem 1rem;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.file-list-card .list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"] .file-list-card .list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Input directory validation states */
+.is-validating {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%236c757d' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+  padding-right: calc(1.5em + 0.75rem) !important;
+}
+
+.is-warning {
+  border-color: var(--warning-color);
+  padding-right: calc(1.5em + 0.75rem) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffc107' d='M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Directory warning message */
+.directory-warning {
+  margin-top: 0.5rem;
+  color: var(--warning-color);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+.directory-warning::before {
+  content: '\f071';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  margin-right: 0.5rem;
+}
+
+/* Path info styles with improved validation UI */
+#path-info .alert {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  transition: all var(--transition-speed) ease;
+}
+
+#path-info .path-info-text {
+  font-size: 0.9rem;
+}
+
+/* Directory status with enhanced visual indicators */
+.dir-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.dir-status-text {
+  flex-grow: 1;
+}
+
+/* Improved drop zone styles with animation */
+.drop-zone {
+  border: 2px dashed #ced4da;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  transition: all var(--transition-speed) ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.drop-zone:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(13, 110, 253, 0.05);
+}
+
+.drop-zone.drag-highlight {
+  border-color: var(--primary-color);
+  background-color: rgba(13, 110, 253, 0.1);
+  transform: scale(1.01);
+}
+
+.drop-zone.drag-highlight::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(13, 110, 253, 0.1) 0%, transparent 70%);
+  animation: pulse-animation 2s ease-in-out infinite;
+}
+
+[data-theme="dark"] .drop-zone {
+  border-color: #495057;
+}
+
+[data-theme="dark"] .drop-zone:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+[data-theme="dark"] .drop-zone.drag-highlight {
+  background-color: rgba(13, 110, 253, 0.15);
+}
+
+/* Enhanced progress container */
+#progress-container, 
+#playlist-progress-container, 
+#scraper-progress-container {
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.02);
+  animation: fade-in 0.3s ease;
+}
+
+[data-theme="dark"] #progress-container, 
+[data-theme="dark"] #playlist-progress-container, 
+[data-theme="dark"] #scraper-progress-container {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Progress bar animations and styling */
+.progress {
+  height: 25px;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background-color: #e9ecef;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Progress bar completion animation */
+@keyframes progress-complete-pulse {
+  0% { background-color: var(--success-color); }
+  50% { background-color: rgba(25, 135, 84, 0.8); }
+  100% { background-color: var(--success-color); }
+}
+
+.progress-bar[aria-valuenow="100"] {
+  animation: progress-complete-pulse 2s ease infinite;
+}
+
+/* Progress stats container with improved styling */
+.progress-stats-container h6 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .progress-stats-container h6 {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.progress-stats-container .list-group {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .progress-stats-container .list-group {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.progress-stats-container .current-file {
+  display: flex;
+  align-items: center;
+}
+
+/* Improved JSON view in results */
+.json-view-card {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .json-view-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.json-view-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.json-view-card .json-content {
+  max-height: 400px;
+  overflow: auto;
+}
+
+/* Result container improvements */
+.stats-header {
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .stats-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.stats-list {
+  margin-bottom: 1.5rem;
+}
+
+/* Card for performance metrics */
+.card .metric-item {
+  margin-bottom: 0.75rem;
+}
+
+.card .metric-item:last-child {
+  margin-bottom: 0;
+}
+
+.metric-label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.metric-value {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+[data-theme="dark"] .metric-value {
+  color: #5c9eff;
+}
+
+/* Cancelled container styles */
+#cancelled-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+#cancelled-container .alert {
+  display: inline-flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 2rem;
+}
+
+/* Enhanced transitions between containers */
+.slide-left-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.slide-left-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.slide-left-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-left-exit-active {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+/* Enhanced fade animations */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* Additional color schemes for file types */
+.badge.file-type-pdf {
+  background-color: #f40f02;
+  color: white;
+}
+
+.badge.file-type-word {
+  background-color: #2b579a;
+  color: white;
+}
+
+.badge.file-type-excel {
+  background-color: #217346;
+  color: white;
+}
+
+.badge.file-type-image {
+  background-color: #e91e63;
+  color: white;
+}
+
+.badge.file-type-text {
+  background-color: #607d8b;
+  color: white;
+}
+
+.badge.file-type-code {
+  background-color: #ff9800;
+  color: white;
+}
+
+/* Ensure the file type badges work in dark mode */
+[data-theme="dark"] .badge.file-type-pdf,
+[data-theme="dark"] .badge.file-type-word,
+[data-theme="dark"] .badge.file-type-excel,
+[data-theme="dark"] .badge.file-type-image,
+[data-theme="dark"] .badge.file-type-text,
+[data-theme="dark"] .badge.file-type-code {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Form validation improvements */
+.form-control.is-validating {
+  border-color: #6c757d;
+}
+
+/* Directory path validation */
+.directory-validation-icon {
+  position: absolute;
+  top: 50%;
+  right: 3rem;
+  transform: translateY(-50%);
+}
+
+.directory-validation-icon.valid {
+  color: var(--success-color);
+}
+
+.directory-validation-icon.invalid {
+  color: var(--danger-color);
+}
+
+.directory-validation-icon.warning {
+  color: var(--warning-color);
+}
+
+/* Create directory button animation */
+.create-dir-btn {
+  animation: highlight-btn 1.5s ease-in-out;
+}
+
+@keyframes highlight-btn {
+  0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+}
+
+/* Enhance browse button */
+.browse-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.browse-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.browse-btn:hover::before {
+  left: 100%;
+}
+
+/* -----------------------------------------------------------------------------
+ * 3. PROGRESS HANDLER SPECIFIC STYLES
+ * -----------------------------------------------------------------------------
+ */
+
+/* Progress container created by createProgressUI */
+.progress-container {
+  margin-bottom: 1.5rem;
+  animation: fade-in 0.3s ease;
+}
+
+/* Progress bar animations */
+.progress-bar-animated {
+  animation: progress-bar-stripes 1s linear infinite,
+             progress-pulse 2s ease-in-out infinite;
+}
+
+@keyframes progress-pulse {
+  0% { background-color: #0d6efd; }
+  50% { background-color: #0a58ca; }
+  100% { background-color: #0d6efd; }
+}
+
+/* Progress updates animation */
+@keyframes update-flash {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(13, 110, 253, 0.1); }
+  100% { background-color: transparent; }
+}
+
+.progress-update-flash {
+  animation: update-flash 1s ease;
+}
+
+/* Progress status with improved visibility */
+.progress-status {
+  padding: 0.5rem 0.75rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .progress-status {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Cancel button styles */
+.cancel-btn {
+  transition: all var(--transition-speed) ease;
+}
+
+.cancel-btn:hover {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.cancel-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Task completion effect */
+.task-complete-effect {
+  animation: complete-pulse 2s ease;
+}
+
+@keyframes complete-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(25, 135, 84, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
+}
+
+/* Task error effect */
+.task-error-effect {
+  animation: error-shake 0.5s ease;
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* -----------------------------------------------------------------------------
+ * 4. FILE SELECTION AND MANAGEMENT STYLES
+ * -----------------------------------------------------------------------------
+ */
+
+/* Selected files feedback */
+.selected-files-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* File type icons */
+.file-type-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 0.5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.file-type-icon.pdf {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23f40f02' d='M320 464C328.8 464 336 456.8 336 448V416H384V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V416H48V448C48 456.8 55.16 464 64 464H320zM256 160C238.3 160 224 145.7 224 128V48H64C55.16 48 48 55.16 48 64V192H0V64C0 28.65 28.65 0 64 0H229.5C246.5 0 262.7 6.743 274.7 18.75L365.3 109.3C377.3 121.3 384 137.5 384 154.5V192H336V160H256zM88 224C88 202.3 105.5 184 128 184H256C277.7 184 296 202.3 296 224V336C296 357.7 277.7 376 256 376H128C106.3 376 88 357.7 88 336V224zM144 208V240H240V208H144zM240 336V272H144V336H240z'/%3E%3C/svg%3E");
+}
+
+.file-type-icon.word {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%232b579a' d='M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm57.1 120H305c7.7 0 13.4 7.1 11.7 14.7l-38 168c-1.2 5.5-6.1 9.3-11.7 9.3h-38c-5.5 0-10.3-3.8-11.6-9.1-25.8-103.5-20.8-83.2-25.6-102.5H191c-5.5 0-10.3 3.8-11.6 9.1-4.8 19.3.1-.8-25.6 102.5-1.3 5.3-6.1 9.1-11.6 9.1H104c-5.6 0-10.5-3.8-11.7-9.3l-38-168c-1.7-7.6 4-14.7 11.7-14.7h24.7c5.9 0 11 4.3 12 10.1l23.5 96.7c1.3 5.4 7.9 5.6 9.5.4l25.4-80.9c1.5-4.9 6.1-8.3 11.3-8.3h24.5c5.2 0 9.8 3.4 11.3 8.3l25.4 80.9c1.6 5.2 8.2 5 9.5-.4l23.5-96.7c1-5.8 6.1-10.1 12-10.1zM384 121.9v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7L376.9 104c4.5 4.5 7.1 10.6 7.1 17z'/%3E%3C/svg%3E");
+}
+
+.file-type-icon.excel {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23217346' d='M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm60.1 106.5L224 336l60.1 93.5c5.1 8-.6 18.5-10.1 18.5h-34.9c-4.4 0-8.5-2.4-10.6-6.3C208.9 405.5 192 373 192 373c-6.4 14.8-10 20-36.6 68.8-2.1 3.9-6.1 6.3-10.5 6.3H110c-9.5 0-15.2-10.5-10.1-18.5l60.3-93.5-60.3-93.5c-5.2-8 .6-18.5 10.1-18.5h34.8c4.4 0 8.5 2.4 10.6 6.3 26.1 48.8 20 33.6 36.6 68.5 0 0 6.1-11.7 36.6-68.5 2.1-3.9 6.2-6.3 10.6-6.3H274c9.5-.1 15.2 10.4 10.1 18.4zM384 121.9v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7L376.9 104c4.5 4.5 7.1 10.6 7.1 17z'/%3E%3C/svg%3E");
+}
+
+.file-type-icon.image {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23e91e63' d='M320 464C328.8 464 336 456.8 336 448V416H384V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V416H48V448C48 456.8 55.16 464 64 464H320zM320 48V153.9C320 177.1 301.1 196 278 196H242.9C236.7 196 230.1 192.9 226.8 187.8L223.9 183.7C220.6 178.6 214.9 175.4 208.7 175.4H175.3C169.1 175.4 163.4 178.6 160.1 183.7L157.2 187.8C153 192.9 147.3 196 141.1 196H106C82.91 196 64 177.1 64 153.9V48C64 39.16 71.16 32 80 32H304C312.8 32 320 39.16 320 48V48zM256 351.1C256 330.3 238.6 313 217.7 313H166.3C145.4 313 128 330.3 128 351.1C128 373 145.4 390.3 166.3 390.3H217.7C238.6 390.3 256 373 256 351.1z'/%3E%3C/svg%3E");
+}
+
+.file-type-icon.text {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23607d8b' d='M320 464C328.8 464 336 456.8 336 448V416H384V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V416H48V448C48 456.8 55.16 464 64 464H320zM256 0H64C28.65 0 0 28.65 0 64V352C0 369.7 14.33 384 32 384H256C273.7 384 288 369.7 288 352V64C288 28.65 259.3 0 256 0zM224 128C224 136.8 216.8 144 208 144H80C71.16 144 64 136.8 64 128C64 119.2 71.16 112 80 112H208C216.8 112 224 119.2 224 128zM208 208H80C71.16 208 64 200.8 64 192C64 183.2 71.16 176 80 176H208C216.8 176 224 183.2 224 192C224 200.8 216.8 208 208 208zM208 272H80C71.16 272 64 264.8 64 256C64 247.2 71.16 240 80 240H208C216.8 240 224 247.2 224 256C224 264.8 216.8 272 208 272z'/%3E%3C/svg%3E");
+}
+
+.file-type-icon.code {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23ff9800' d='M153.7 144.8L126.9 118C120.4 111.5 109.6 111.5 103.1 118C96.54 124.5 96.54 135.3 103.1 141.8L142.7 180.4L103.1 218.9C96.54 225.4 96.54 236.2 103.1 242.7C109.6 249.2 120.4 249.2 126.9 242.7L175.7 193.8C181.9 187.6 181.9 177.2 175.7 171.1L153.7 144.8zM358.6 118C352.1 111.5 341.3 111.5 334.8 118L274.9 177.9L215.1 118C209.5 111.5 198.7 111.5 192.2 118C185.8 124.5 185.8 135.3 192.2 141.8L251.1 200.7L192.2 259.5C185.8 266 185.8 276.8 192.2 283.3C198.7 289.8 209.5 289.8 215.1 283.3L274.9 224.4L334.8 283.3C341.3 289.8 352.1 289.8 358.6 283.3C365.1 276.8 365.1 266 358.6 259.5L299.7 200.7L358.6 141.8C365.1 135.3 365.1 124.5 358.6 118H358.6z'/%3E%3C/svg%3E");
+}
+
+/* File selection visualization */
+.file-selection-visualizer {
+  position: relative;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .file-selection-visualizer {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.file-selection-visualizer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary-color), var(--info-color));
+}
+
+/* Files summary row */
+.files-summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.files-summary-item {
+  flex: 1;
+  min-width: 100px;
+  background-color: white;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+[data-theme="dark"] .files-summary-item {
+  background-color: var(--dark-bg-card);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.files-summary-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.25rem;
+}
+
+[data-theme="dark"] .files-summary-value {
+  color: #5c9eff;
+}
+
+.files-summary-label {
+  font-size: 0.875rem;
+  color: var(--light-text-secondary);
+}
+
+[data-theme="dark"] .files-summary-label {
+  color: var(--dark-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+ * 5. PATH VALIDATION AND DIRECTORY OPERATIONS
+ * -----------------------------------------------------------------------------
+ */
+
+/* Path validation indicators */
+.path-validation-container {
+  margin-top: 0.5rem;
+  transition: all var(--transition-speed) ease;
+}
+
+.path-validation-message {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.path-validation-message.valid {
+  background-color: rgba(25, 135, 84, 0.1);
+  border-left: 3px solid var(--success-color);
+}
+
+.path-validation-message.warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  border-left: 3px solid var(--warning-color);
+}
+
+.path-validation-message.invalid {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 3px solid var(--danger-color);
+}
+
+[data-theme="dark"] .path-validation-message.valid {
+  background-color: rgba(25, 135, 84, 0.2);
+}
+
+[data-theme="dark"] .path-validation-message.warning {
+  background-color: rgba(255, 193, 7, 0.2);
+}
+
+[data-theme="dark"] .path-validation-message.invalid {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+.path-validation-icon {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.path-validation-message.valid .path-validation-icon {
+  color: var(--success-color);
+}
+
+.path-validation-message.warning .path-validation-icon {
+  color: var(--warning-color);
+}
+
+.path-validation-message.invalid .path-validation-icon {
+  color: var(--danger-color);
+}
+
+/* Directory operations */
+.directory-operations {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .directory-operations {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.directory-operations-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.directory-create-btn {
+  background-color: rgba(25, 135, 84, 0.1);
+  border: 1px solid rgba(25, 135, 84, 0.3);
+  color: var(--success-color);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+}
+
+.directory-create-btn:hover {
+  background-color: var(--success-color);
+  color: white;
+}
+
+[data-theme="dark"] .directory-create-btn {
+  background-color: rgba(25, 135, 84, 0.2);
+  border-color: rgba(25, 135, 84, 0.4);
+}
+
+/* Path info with folder structure visualization */
+.path-structure {
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: var(--border-radius);
+  margin-top: 0.5rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875rem;
+}
+
+[data-theme="dark"] .path-structure {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.path-item {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+.path-item-icon {
+  margin-right: 0.5rem;
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] .path-item-icon {
+  color: #5c9eff;
+}
+
+.path-item-name {
+  flex-grow: 1;
+}
+
+.path-item-size {
+  color: var(--light-text-secondary);
+  font-size: 0.8125rem;
+}
+
+[data-theme="dark"] .path-item-size {
+  color: var(--dark-text-secondary);
+}
+
+/* Path creation animation */
+@keyframes path-creation {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.path-item.created {
+  animation: path-creation 0.3s ease forwards;
+}
+
+/* -----------------------------------------------------------------------------
+ * 6. EXPANDED STATISTIC VISUALIZATIONS FOR FILE PROCESSOR
+ * -----------------------------------------------------------------------------
+ */
+
+/* Collapsible detail sections */
+.stats-section {
+  margin-bottom: 1.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .stats-section {
+  border-color: var(--dark-border-color);
+}
+
+.stats-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+
+[data-theme="dark"] .stats-section-header {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.stats-section-header:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .stats-section-header:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.stats-section-title {
+  font-weight: 500;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.stats-section-title i {
+  margin-right: 0.75rem;
+}
+
+.stats-section-content {
+  padding: 1rem;
+  display: none;
+}
+
+.stats-section.expanded .stats-section-content {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.stats-section-toggle {
+  font-size: 1.25rem;
+  color: var(--light-text-secondary);
+  transition: transform var(--transition-speed) ease;
+}
+
+[data-theme="dark"] .stats-section-toggle {
+  color: var(--dark-text-secondary);
+}
+
+.stats-section.expanded .stats-section-toggle {
+  transform: rotate(180deg);
+}
+
+/* Processing details panel */
+.processing-details {
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .processing-details {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.processing-details-title {
+  font-weight: 500;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .processing-details-title {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.processing-metric-group {
+  margin-bottom: 1rem;
+}
+
+.processing-metric-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.processing-metric-value {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] .processing-metric-value {
+  color: #5c9eff;
+}
+
+/* Statistical visualizations */
+.stats-visualization {
+  position: relative;
+  height: 250px;
+  margin-bottom: 1.5rem;
+}
+
+.bar-chart {
+  display: flex;
+  height: 200px;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding-bottom: 2rem;
+  overflow: hidden;
+}
+
+.bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.bar {
+  width: 100%;
+  background-color: var(--primary-color);
+  transition: height 1s ease;
+  border-radius: 4px 4px 0 0;
+}
+
+.bar-label {
+  position: absolute;
+  bottom: -2rem;
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.bar-value {
+  position: absolute;
+  top: -1.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* File types distribution visualization */
+.file-type-chart {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.file-type-item {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.75rem;
+  border-radius: var(--border-radius);
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+[data-theme="dark"] .file-type-item {
+  background-color: var(--dark-bg-card);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.file-type-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.file-type-count {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.file-type-percentage {
+  font-size: 0.75rem;
+  color: var(--light-text-secondary);
+}
+
+[data-theme="dark"] .file-type-percentage {
+  color: var(--dark-text-secondary);
+}
+
+/* Processing time distribution */
+.time-distribution {
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .time-distribution {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.time-bar {
+  height: 2rem;
+  display: flex;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.time-segment {
+  height: 100%;
+  transition: width 1s ease;
+}
+
+.time-segment.loading {
+  background-color: var(--info-color);
+}
+
+.time-segment.processing {
+  background-color: var(--primary-color);
+}
+
+.time-segment.extraction {
+  background-color: var(--warning-color);
+}
+
+.time-segment.saving {
+  background-color: var(--success-color);
+}
+
+.time-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.time-legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.time-legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  margin-right: 0.5rem;
+}
+
+.time-legend-color.loading {
+  background-color: var(--info-color);
+}
+
+.time-legend-color.processing {
+  background-color: var(--primary-color);
+}
+
+.time-legend-color.extraction {
+  background-color: var(--warning-color);
+}
+
+.time-legend-color.saving {
+  background-color: var(--success-color);
+}
+
+/* -----------------------------------------------------------------------------
+ * 7. ENHANCED ERROR HANDLING AND VISUALIZATION
+ * -----------------------------------------------------------------------------
+ */
+
+/* Error container styling */
+.error-container {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 4px solid var(--danger-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+[data-theme="dark"] .error-container {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+.error-title {
+  font-weight: 500;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.error-title i {
+  margin-right: 0.75rem;
+  font-size: 1.5rem;
+  color: var(--danger-color);
+}
+
+.error-message {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.error-details {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+[data-theme="dark"] .error-details {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.error-action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.error-action-buttons .btn {
+  padding: 0.375rem 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.error-action-buttons .btn i {
+  margin-right: 0.5rem;
+}
+
+/* Error type indicators */
+.error-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-right: 0.75rem;
+}
+
+.error-badge.api {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--danger-color);
+}
+
+.error-badge.validation {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: var(--warning-color);
+}
+
+.error-badge.file {
+  background-color: rgba(13, 110, 253, 0.1);
+  color: var(--primary-color);
+}
+
+.error-badge.network {
+  background-color: rgba(108, 117, 125, 0.1);
+  color: var(--secondary-color);
+}
+
+[data-theme="dark"] .error-badge.api {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+[data-theme="dark"] .error-badge.validation {
+  background-color: rgba(255, 193, 7, 0.2);
+}
+
+[data-theme="dark"] .error-badge.file {
+  background-color: rgba(13, 110, 253, 0.2);
+}
+
+[data-theme="dark"] .error-badge.network {
+  background-color: rgba(108, 117, 125, 0.2);
+}
+
+/* Error stack trace with collapsible sections */
+.error-stack {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 1rem;
+}
+
+[data-theme="dark"] .error-stack {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.error-stack-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+.error-stack-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.error-stack-title i {
+  margin-right: 0.5rem;
+}
+
+.error-stack-content {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  display: none;
+}
+
+[data-theme="dark"] .error-stack-content {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.error-stack.expanded .error-stack-content {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+.error-stack-toggle {
+  color: var(--light-text-secondary);
+  transition: transform var(--transition-speed) ease;
+}
+
+[data-theme="dark"] .error-stack-toggle {
+  color: var(--dark-text-secondary);
+}
+
+.error-stack.expanded .error-stack-toggle {
+  transform: rotate(180deg);
+}
+
+/* Error resolution suggestions */
+.error-suggestions {
+  margin-top: 1rem;
+}
+
+.error-suggestions-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.error-suggestion-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.error-suggestion-item {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.error-suggestion-item::before {
+  content: '\f0eb';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  color: var(--warning-color);
+}
+
+/* Animation for error resolution */
+@keyframes error-resolution {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+.error-resolving {
+  animation: error-resolution 0.5s ease forwards;
+}
+
+/* -----------------------------------------------------------------------------
+ * 8. SOCKET COMMUNICATION VISUALIZATION
+ * -----------------------------------------------------------------------------
+ */
+
+/* Socket status indicators */
+.socket-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-left: 0.75rem;
+}
+
+.socket-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.socket-status-indicator.connected {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: var(--success-color);
+}
+
+.socket-status-indicator.connected .socket-status-dot {
+  background-color: var(--success-color);
+}
+
+.socket-status-indicator.connecting {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: var(--warning-color);
+}
+
+.socket-status-indicator.connecting .socket-status-dot {
+  background-color: var(--warning-color);
+  animation: blink 1s infinite;
+}
+
+.socket-status-indicator.disconnected {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--danger-color);
+}
+
+.socket-status-indicator.disconnected .socket-status-dot {
+  background-color: var(--danger-color);
+}
+
+[data-theme="dark"] .socket-status-indicator.connected {
+  background-color: rgba(25, 135, 84, 0.2);
+}
+
+[data-theme="dark"] .socket-status-indicator.connecting {
+  background-color: rgba(255, 193, 7, 0.2);
+}
+
+[data-theme="dark"] .socket-status-indicator.disconnected {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Socket activity visualization */
+.socket-activity {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  z-index: 1000;
+}
+
+.socket-activity.active {
+  background-color: var(--primary-color);
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* Socket reconnection animation */
+.socket-reconnecting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  background-color: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .socket-reconnecting {
+  background-color: rgba(255, 193, 7, 0.2);
+  border-color: rgba(255, 193, 7, 0.4);
+}
+
+/* Socket reconnection animation icon */
+.socket-reconnecting-icon {
+  margin-right: 0.75rem;
+}
+
+.socket-reconnecting-icon i {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* -----------------------------------------------------------------------------
+ * 9. THEME MANAGER INTEGRATION AND TRANSITIONS
+ * -----------------------------------------------------------------------------
+ */
+
+/* Theme transition effects for body and elements */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card,
+.modal-content,
+.list-group-item,
+.btn,
+.alert,
+.progress,
+.nav-tabs .nav-link,
+.form-control,
+.form-select,
+input,
+textarea,
+select {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease, 
+              box-shadow 0.3s ease;
+}
+
+/* Theme toggle button animations */
+#darkModeToggle {
+  position: relative;
+  overflow: hidden;
+}
+
+#darkModeToggle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+}
+
+#darkModeToggle:active::after {
+  transform: translate(-50%, -50%) scale(2);
+}
+
+/* Theme icon transitions */
+#darkModeToggle i {
+  transition: transform 0.5s ease;
+}
+
+#darkModeToggle:hover i {
+  transform: scale(1.2);
+}
+
+/* Theme change indicator */
+.theme-change-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  pointer-events: none;
+  z-index: 9999;
+  transition: background-color 0.5s ease;
+}
+
+.theme-changing-to-dark .theme-change-indicator {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-changing-to-light .theme-change-indicator {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Theme transition for fileProcessor elements */
+#form-container,
+#progress-container,
+#result-container,
+#error-container,
+#cancelled-container,
+.progress-bar,
+.file-info-container,
+.drop-zone,
+.path-validation-message,
+.stats-section,
+.json-view-card,
+.error-container {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease, 
+              box-shadow 0.3s ease;
+}
+
+/* -----------------------------------------------------------------------------
+ * 10. RESPONSIVE DESIGN ENHANCEMENTS
+ * -----------------------------------------------------------------------------
+ */
+
+/* Responsive adjustments for all screen sizes */
+@media (max-width: 768px) {
+  /* Adjust file processor layout */
+  .files-summary-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .files-summary-item {
+    min-width: auto;
+  }
+  
+  /* Improve error display on small screens */
+  .error-action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .error-action-buttons .btn {
+    width: 100%;
+  }
+  
+  /* Better progress stats display */
+  .progress-stats-container .list-group-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .progress-stats-container .badge {
+    margin-top: 0.5rem;
+    align-self: flex-start;
+  }
+  
+  /* File list improvements */
+  .file-list-card .list-group-item {
+    flex-direction: column;
+  }
+  
+  .file-list-card .text-truncate {
+    max-width: 100% !important;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Smaller screens adjustments */
+  .drop-zone {
+    padding: 1rem;
+  }
+  
+  /* Adjust form controls */
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .input-group > .form-control,
+  .input-group > .btn,
+  .input-group > .input-group-text {
+    width: 100%;
+    margin-right: 0;
+    border-radius: 0.375rem !important;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-group > :last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Better directory validation display */
+  .directory-validation-icon {
+    position: static;
+    transform: none;
+    margin-top: 0.5rem;
+  }
+  
+  /* Adjust error stack display */
+  .error-stack-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .error-stack-toggle {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 577px) and (max-width: 992px) {
+  /* Adjust file type visualizations */
+  .file-type-chart {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Better progress display */
+  .progress {
+    height: 20px;
+  }
+  
+  .progress-bar {
+    font-size: 0.75rem;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 993px) {
+  /* Multi-column layout for results */
+  .stats-section-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .stats-section-content > .chart-container {
+    grid-column: span 2;
+  }
+  
+  /* Enhanced json view */
+  .json-view-card .json-content {
+    max-height: 600px;
+  }
+}
+
+/* High resolution screens */
+@media (min-width: 1440px) {
+  .progress {
+    height: 30px;
+  }
+  
+  .progress-bar {
+    font-size: 1rem;
+  }
+  
+  .file-type-chart {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * 11. ANIMATION AND INTERACTION IMPROVEMENTS
+ * -----------------------------------------------------------------------------
+ */
+
+/* Pulse animation for elements that need attention */
+@keyframes attention-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+}
+
+.needs-attention {
+  animation: attention-pulse 2s infinite;
+}
+
+/* Button hover effects */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+.btn:active::after {
+  opacity: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  transform: scale(0, 0) translate(-50%, -50%);
+  transition: transform 0.3s, opacity 1s;
+}
+
+/* Form feedback animations */
+@keyframes form-success-feedback {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.feedback-success {
+  animation: form-success-feedback 0.5s ease-in-out;
+}
+
+/* Loading and processing animations */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spinner 0.8s linear infinite;
+}
+
+[data-theme="dark"] .loading-spinner {
+  border-color: rgba(255, 255, 255, 0.1);
+  border-top-color: var(--primary-color);
+}
+
+@keyframes spinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Progress stepper animation */
+.stepper-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.stepper-container::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--light-border-color);
+  z-index: 1;
+}
+
+[data-theme="dark"] .stepper-container::before {
+  background-color: var(--dark-border-color);
+}
+
+.stepper-step {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepper-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid var(--light-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .stepper-circle {
+  background-color: var(--dark-bg-card);
+  border-color: var(--dark-border-color);
+}
+
+.stepper-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.stepper-step.completed .stepper-circle {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+  color: white;
+}
+
+.stepper-step.active .stepper-circle {
+  border-color: var(--primary-color);
+  border-width: 3px;
+  color: var(--primary-color);
+}
+
+.stepper-step.error .stepper-circle {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+  color: white;
+}
+
+/* Progress completed celebration animation */
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-60vh) rotate(720deg); opacity: 0; }
+}
+
+.celebration-confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+}
+
+.task-completed-celebration {
+  position: relative;
+}
+
+.task-completed-celebration.active .celebration-confetti {
+  animation: confetti 1.5s ease-out forwards;
+}
+
+/* -----------------------------------------------------------------------------
+ * 12. ACCESSIBILITY IMPROVEMENTS
+ * -----------------------------------------------------------------------------
+ */
+
+/* Focus indicators */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+.form-control:focus,
+.btn:focus,
+.form-select:focus,
+.form-check-input:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+[data-theme="dark"] a:focus,
+[data-theme="dark"] button:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .btn:focus,
+[data-theme="dark"] .form-select:focus,
+[data-theme="dark"] .form-check-input:focus {
+  outline-color: #5c9eff;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  z-index: 9999;
+  background: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+  text-decoration: none;
+  opacity: 0;
+}
+
+.skip-to-content:focus {
+  left: 0;
+  top: 0;
+  opacity: 1;
+  outline: none;
+}
+
+/* Accessible tooltips */
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-content {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background-color: #333;
+  color: white;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip-container:hover .tooltip-content,
+.tooltip-container:focus-within .tooltip-content {
+  opacity: 1;
+}
+
+/* Improved color contrast */
+.text-muted {
+  color: #6c757d !important; /* Darker than Bootstrap default */
+}
+
+[data-theme="dark"] .text-muted {
+  color: #adb5bd !important; /* Lighter in dark mode for better contrast */
+}
+
+/* -----------------------------------------------------------------------------
+ * 13. INTEGRATION WITH FILEPROCESSOR.JS AND PROGRESSHANDLER.JS
+ * -----------------------------------------------------------------------------
+ */
+
+/* File processor status display */
+.file-processor-status {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .file-processor-status {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.file-processor-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+}
+
+.file-processor-status.idle .file-processor-status-dot {
+  background-color: var(--secondary-color);
+}
+
+.file-processor-status.processing .file-processor-status-dot {
+  background-color: var(--primary-color);
+  animation: status-pulse 1.5s infinite;
+}
+
+.file-processor-status.success .file-processor-status-dot {
+  background-color: var(--success-color);
+}
+
+.file-processor-status.error .file-processor-status-dot {
+  background-color: var(--danger-color);
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Progressive ETA display */
+.progress-eta {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--light-text-secondary);
+  margin-left: 1rem;
+}
+
+[data-theme="dark"] .progress-eta {
+  color: var(--dark-text-secondary);
+}
+
+.progress-eta i {
+  margin-right: 0.5rem;
+}
+
+.progress-eta-time {
+  font-weight: 500;
+}
+
+/* Progress handler integration */
+.progress-handler-created {
+  animation: fade-in 0.3s ease;
+}
+
+.progress-handler-updated {
+  animation: progress-update-flash 0.5s ease;
+}
+
+.progress-handler-completed {
+  animation: complete-pulse 1s ease;
+}
+
+.progress-handler-error {
+  animation: error-shake 0.5s ease;
+}
+
+/* Custom progress UI elements from createProgressUI */
+.custom-progress-container {
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.02);
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .custom-progress-container {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.custom-progress-bar {
+  height: 20px;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background-color: #e9ecef;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .custom-progress-bar {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.custom-progress-status {
+  font-size: 0.875rem;
+  color: var(--light-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .custom-progress-status {
+  color: var(--dark-text-secondary);
+}
+
+.custom-progress-button {
+  margin-top: 1rem;
+}
+
+/* -----------------------------------------------------------------------------
+ * 14. PRINT STYLES FOR REPORTS AND DOCUMENTATION
+ * -----------------------------------------------------------------------------
+ */
+
+@media print {
+  /* Hide non-essential elements when printing */
+  header, 
+  footer,
+  .nav-tabs,
+  button:not(.essential-for-print),
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Ensure proper background colors and text contrast */
+  body, 
+  .card, 
+  .container {
+    background-color: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  /* Format results and statistics properly */
+  #result-stats,
+  .stats-header,
+  .stats-list,
+  .processing-details,
+  .file-type-chart {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Format code blocks for printing */
+  pre, code {
+    font-size: 10pt;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+  }
+  
+  /* Ensure proper width for print */
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
+  /* Add URL references for links */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    font-weight: normal;
+  }
+  
+  /* Don't add URL for buttons that open files */
+  .open-json-btn:after {
+    content: none !important;
+  }
+  
+  /* Page breaks */
+  h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  img, tr, .card, .alert {
+    page-break-inside: avoid;
+  }
+  
+  /* Adjust font sizes for printing */
+  body {
+    font-size: 12pt;
+  }
+  
+  h1 {
+    font-size: 18pt;
+  }
+  
+  h2 {
+    font-size: 16pt;
+  }
+  
+  h3 {
+    font-size: 14pt;
+  }
+}
+
+/* Enhanced statistics display */
+.stats-container {
+  background-color: #2d3748;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.stats-header {
+  background-color: #1a202c;
+  padding: 15px 20px;
+  border-bottom: 1px solid #4a5568;
+}
+
+.stats-header h5 {
+  margin: 0;
+  color: white;
+  font-weight: 600;
+}
+
+.stats-section {
+  padding: 20px;
+  border-bottom: 1px solid #4a5568;
+}
+
+.stats-section:last-child {
+  border-bottom: none;
+}
+
+.stat-card {
+  background-color: #2d3748;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #4a5568;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card .icon {
+  font-size: 1.5rem;
+  margin-right: 15px;
+  color: #63b3ed;
+}
+
+.stat-card .value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.stat-card .label {
+  color: #a0aec0;
+  font-size: 0.875rem;
+}
+
+.pdf-stats {
+  background-color: #2c3e50;
+}
+
+.processing-complete-banner {
+  background-color: #276749;
+  color: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.processing-complete-banner i {
+  font-size: 1.5rem;
+  margin-right: 12px;
+}
+
+.time-badge {
+  background-color: #38a169;
+  color: white;
+  border-radius: 30px;
+  padding: 8px 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+}
+
+.time-badge i {
+  margin-right: 8px;
+}
+
+.performance-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background-color: #1a202c;
+  border-radius: 8px;
+}
+
+.performance-metric {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px;
+  background-color: #2d3748;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.performance-metric .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.performance-metric .label {
+  color: #a0aec0;
+  font-size: 0.875rem;
+}
+
+/* For zero values */
+.zero-value {
+  color: #a0aec0;
+  opacity: 0.7;
+}

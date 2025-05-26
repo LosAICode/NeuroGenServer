@@ -1,0 +1,72 @@
+/**
+ * Enhanced Cancel button handler for playlist downloads
+ */
+function handlePlaylistCancelClick() {
+    if (!window.currentTaskId) {
+        console.warn("No active task ID found");
+        return;
+    }
+    
+    // Confirm cancellation - can be bypassed for automatic testing
+    if (window.skipCancelConfirm !== true && !confirm('Are you sure you want to cancel the current playlist download?')) {
+        return;
+    }
+    
+    // Disable cancel button to prevent multiple clicks
+    const cancelBtn = document.getElementById('playlist-cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.disabled = true;
+        cancelBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Cancelling...';
+    }
+    
+    console.log("Cancelling task:", window.currentTaskId);
+    
+    // Call the cancel endpoint
+    fetch(`/api/cancel/${window.currentTaskId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || `Server error: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Cancel response:", data);
+        
+        // Show cancellation message
+        if (typeof showToast === 'function') {
+            showToast('Cancelled', data.message || 'Download cancelled', 'warning');
+        } else {
+            alert('Download cancelled');
+        }
+        
+        // Handle UI updates
+        handleTaskCancelled({
+            task_id: window.currentTaskId,
+            status: 'cancelled',
+            message: data.message || 'Task cancelled by user'
+        });
+    })
+    .catch(error => {
+        console.error('Cancel error:', error);
+        
+        // Show error message
+        if (typeof showToast === 'function') {
+            showToast('Error', 'Failed to cancel task: ' + error.message, 'error');
+        } else {
+            alert('Error: ' + error.message);
+        }
+        
+        // Re-enable cancel button
+        if (cancelBtn) {
+            cancelBtn.disabled = false;
+            cancelBtn.innerHTML = '<i class="fas fa-times me-2"></i>Cancel';
+        }
+    });
+}

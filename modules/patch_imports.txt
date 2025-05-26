@@ -1,0 +1,3 @@
+from utils import setup_logging
+
+# Apply at the beginning of the file, after importing modules

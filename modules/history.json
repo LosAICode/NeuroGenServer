@@ -1,0 +1,130 @@
+[
+  {
+    "task_id": "c4ef9e68-a050-4e89-bb17-70a51fa32ff8",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 20:58:26",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  },
+  {
+    "task_id": "83aaee40-2626-4fb8-b6d1-c0ce9f8be3db",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 20:57:47",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  },
+  {
+    "task_id": "5d185628-5f9e-428c-a2ee-04190906c8ba",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 20:02:45",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  },
+  {
+    "task_id": "32125e2e-9571-4b44-8f35-4081644bb7e4",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 19:18:15",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  },
+  {
+    "task_id": "064a76cd-dc3e-4026-b6fd-001e48016f2a",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 19:17:09",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  },
+  {
+    "task_id": "5c6df2f1-7025-40d4-928d-693dfee155e0",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 18:30:59",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  },
+  {
+    "task_id": "e6b31684-77ce-49d7-97e1-da7f1a106a70",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 18:09:05",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  },
+  {
+    "task_id": "ae7176e7-4f51-404b-9aa6-2412119884b6",
+    "type": "web_scraper",
+    "status": "processing",
+    "urls_count": 1,
+    "download_directory": "C:\\Users\\Los\\Documents\\Scientific Papers",
+    "output_file": "C:\\Users\\Los\\Documents\\Scientific Papers\\C_Users_Los_Documents_Scientific.Paper.json",
+    "timestamp": "2025-03-28 18:03:48",
+    "pdf_options": {
+      "process_pdfs": true,
+      "extract_tables": true,
+      "use_ocr": true,
+      "extract_structure": true,
+      "chunk_size": 4096
+    }
+  }
+]

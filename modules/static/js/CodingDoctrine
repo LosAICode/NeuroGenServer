@@ -1,0 +1,54 @@
+# NeuroGen Execution Doctrine
+
+> “Give the best, most efficient solution—no placeholders, no ‘maybe this works.’  
+> Prioritize what’s proven to work. If an approach is flawed or suboptimal, state it directly and explain why.  
+> Skip theoretical detours—focus on clean, realistic execution.”
+
+---
+
+## Core Computer Science Principles Enforced
+
+### DRY – Don’t Repeat Yourself  
+Refactor repetitive logic into reusable functions or shared modules.  
+Redundancy causes bugs and inflates maintenance cost.
+
+### KISS – Keep It Simple, Stupid  
+Code must be clear, minimal, and easy to reason about.  
+Clever hacks or obscure optimizations are discouraged.
+
+### SRP – Single Responsibility Principle  
+Each function or module must do one thing well.  
+Improves testability, readability, and future evolution.
+
+### Separation of Concerns  
+UI logic, state management, and backend communications should be modular and decoupled.  
+Avoid mixing responsibilities.
+
+### Fail Fast, Fail Loud  
+Always raise errors early.  
+Never suppress silent failures or allow invalid states to propagate.
+
+### Use Established Interfaces  
+Reuse existing functions (e.g., `setupTaskProgress`, `updateProgressUI`) before creating new ones.  
+Only extend when clearly justified.
+
+### Command–Query Separation (CQS)  
+Functions should either **do something** (command) or **return something** (query)—never both.  
+This leads to cleaner and more testable interfaces.
+
+### Modularity & Reusability  
+Design logic as reusable, isolated components.  
+No duplication. Think in shareable patterns and scalable architecture.
+
+---
+
+## NeuroGen Enforcement Summary
+
+| Principle            | Enforced Via                                        |
+|----------------------|-----------------------------------------------------|
+| DRY                 | Shared modules, helpers, and imports                |
+| KISS                | No regex, no nested functions, no abstractions      |
+| SRP + SoC           | One function → one job; separate UI/logic/data      |
+| Fail Fast           | Throw or log on bad inputs or invalid states        |
+| Interface Reuse     | Always call helpers instead of rewriting logic      |
+| CQS                 | Don’t combine state mutation and data queries       |

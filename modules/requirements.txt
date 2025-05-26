@@ -1,0 +1,21 @@
+# Core requirements
+flask>=2.0.0
+flask-socketio>=5.0.0
+beautifulsoup4>=4.9.0
+requests>=2.25.0
+Werkzeug>=2.0.0
+python-dotenv>=0.15.0
+
+# For web scraping and PDF processing
+pymupdf>=1.18.0  # PyMuPDF/fitz
+PyPDF2>=2.0.0
+tabula-py>=2.2.0
+pytesseract>=0.3.8
+jpype1>=1.2.0
+python-magic>=0.4.0  # for MIME type detection
+
+# For image processing
+Pillow>=8.0.0
+
+# For concurrent processing
+concurrent-futures>=3.0.0

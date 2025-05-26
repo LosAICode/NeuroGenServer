@@ -1,0 +1,55 @@
+def cancel(self) -> bool:
+    """
+    Cancel the task with improved force termination support.
+    
+    Returns:
+        bool: True if cancellation was initiated, False if already cancelled/finished
+    """
+    if self.is_cancelled_flag or self.status in ["completed", "failed", "cancelled"]:
+        logger.info(f"Task {self.task_id} already cancelled or finished. Current status: {self.status}")
+        return False
+
+    # Set cancellation flag
+    self.is_cancelled_flag = True
+    previous_status = self.status
+    self.status = "cancelling"  # Intermediate state
+    self.message = "Task cancellation in progress."
+    logger.info(f"Attempting to cancel task {self.task_id} ({self.task_type}). Previous status: {previous_status}")
+    
+    # Thread termination support - more aggressive cancellation
+    try:
+        if self.thread and self.thread.is_alive():
+            # The thread should check is_cancelled_flag, but if it's stuck
+            # we need a way to interrupt it more forcefully
+            # This isn't perfect but it helps in many cases
+            import ctypes
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(
+                ctypes.c_long(self.thread.ident),
+                ctypes.py_object(InterruptedError)
+            )
+            logger.info(f"Sent InterruptedError to thread {self.thread.ident}")
+    except Exception as e:
+        logger.error(f"Error attempting to force thread cancellation: {e}")
+
+    # Set final cancelled state
+    self.status = "cancelled"
+    self.message = "Task cancelled by user."
+    
+    # Emit cancellation event
+    payload = {
+        "task_id": self.task_id,
+        "task_type": self.task_type,
+        "status": self.status,
+        "message": self.message,
+        "timestamp": time.time()
+    }
+    try:
+        socketio.emit("task_cancelled", payload)
+        logger.info(f"Emitted task_cancelled for {self.task_id}")
+    except Exception as e:
+        logger.error(f"Error emitting task_cancelled for {self.task_id}: {e}")
+    
+    # Remove task from active tasks
+    if self.task_id in active_tasks:
+        remove_task(self.task_id)
+    return True

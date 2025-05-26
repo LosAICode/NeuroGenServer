@@ -1,0 +1,2059 @@
+/* =============================================================================
+ * NeuroGen Processor - Main CSS Styles
+ * Enhanced with better organization, variable usage, and optimized selectors
+ * =============================================================================
+ */
+
+/* -----------------------------------------------------------------------------
+ * 1. CSS VARIABLES - Define all theme colors and styles in one place
+ * -----------------------------------------------------------------------------
+ */
+ :root {
+  /* Light theme variables */
+  --light-bg-primary: #ffffff;
+  --light-bg-secondary: #f8f9fa;
+  --light-bg-card: #ffffff;
+  --light-bg-input: #ffffff;
+  --light-border-color: #dee2e6;
+  --light-text-primary: #212529;
+  --light-text-secondary: #6c757d;
+  
+  /* Dark theme variables */
+  --dark-bg-primary: #121212;
+  --dark-bg-secondary: #1c3156;  /* Header background */
+  --dark-bg-card: #2d3238;       /* Card background */
+  --dark-bg-input: #343a40;      /* Form input background */
+  --dark-border-color: #495057;  /* Border color */
+  --dark-text-primary: #f8f9fa;  /* Main text color */
+  --dark-text-secondary: #adb5bd; /* Secondary text color */
+  --dark-muted-text: #a0aec0;     /* Muted text color */
+  
+  /* Component-specific dark theme colors */
+  --dark-alert-info-bg: #1f4f6e;
+  --dark-alert-info-border: #216d93;
+  --dark-alert-success-bg: #1e5631;
+  --dark-alert-success-border: #2a7342;
+  --dark-alert-danger-bg: #742029;
+  --dark-alert-danger-border: #972b35;
+  --dark-alert-warning-bg: #7a5a10;
+  --dark-alert-warning-border: #9d7213;
+  
+  /* Code display */
+  --dark-code-bg: #2a2a2a;
+  --dark-code-color: #e0e0e0;
+  
+  /* Bootstrap color overrides */
+  --primary-color: #0d6efd;
+  --secondary-color: #6c757d;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+  
+  /* Layout variables */
+  --border-radius: 0.5rem;
+  --transition-speed: 0.3s;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --dark-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* -----------------------------------------------------------------------------
+ * 2. BASE STYLES
+ * -----------------------------------------------------------------------------
+ */
+body {
+  font-family: var(--font-family);
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  background-color: var(--light-bg-secondary);
+  color: var(--light-text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+footer {
+  margin-top: auto;
+  padding: 1.5rem 0;
+}
+
+/* -----------------------------------------------------------------------------
+ * 3. DARK MODE BASE THEME
+ * -----------------------------------------------------------------------------
+ */
+[data-theme="dark"] {
+  background-color: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .text-muted {
+  color: var(--dark-text-secondary) !important;
+}
+
+[data-theme="dark"] .bg-light {
+  background-color: var(--dark-bg-input) !important;
+}
+
+[data-theme="dark"] .text-dark {
+  color: var(--dark-text-primary) !important;
+}
+
+/* -----------------------------------------------------------------------------
+ * 4. HEADER & NAVIGATION
+ * -----------------------------------------------------------------------------
+ */
+header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color var(--transition-speed) ease;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+[data-theme="dark"] .header-container {
+  background-color: var(--dark-bg-secondary);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] header {
+  background-color: var(--dark-bg-secondary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Toggle Buttons */
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform var(--transition-speed) ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.toggle-btn:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-btn.active {
+  color: var(--warning-color);
+}
+
+/* Tabs Navigation */
+.nav-tabs {
+  margin-bottom: 1.5rem;
+}
+
+.nav-tabs .nav-link {
+  padding: 0.75rem 1.25rem;
+  border-radius: 0;
+  transition: all var(--transition-speed) ease;
+  font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+  font-weight: 600;
+}
+
+[data-theme="dark"] .nav-tabs {
+  border-color: var(--dark-border-color);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link {
+  color: var(--dark-text-secondary);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  background-color: var(--dark-bg-card);
+  border-color: var(--dark-border-color);
+  border-bottom-color: var(--dark-bg-card);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:hover:not(.active) {
+  border-color: var(--dark-border-color);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tab-pane {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.tab-pane.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* -----------------------------------------------------------------------------
+ * 5. CARDS & CONTAINERS
+ * -----------------------------------------------------------------------------
+ */
+.custom-card, .card {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: all var(--transition-speed) ease;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .custom-card {
+  background-color: var(--dark-bg-card);
+  border-color: var(--dark-border-color);
+  box-shadow: var(--dark-shadow);
+}
+
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .card-footer {
+  border-color: var(--dark-border-color);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Container Transitions */
+.transition-container {
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* -----------------------------------------------------------------------------
+ * 6. FORM ELEMENTS
+ * -----------------------------------------------------------------------------
+ */
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .input-group-text {
+  background-color: var(--dark-bg-input);
+  border-color: var(--dark-border-color);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+  background-color: var(--dark-bg-input);
+  border-color: #6c757d;
+  box-shadow: 0 0 0 0.25rem rgba(130, 138, 145, 0.25);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .form-text {
+  color: var(--dark-text-secondary);
+}
+
+/* Input Groups */
+.input-group > *:not(:first-child) {
+  margin-left: -1px;
+}
+
+.input-group > *:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group > *:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Form Validation */
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+  background-image: none;
+  padding-right: 0.75rem;
+}
+
+.input-group.has-validation .invalid-feedback {
+  position: absolute;
+  width: auto;
+  margin-top: calc(1.5em + 0.75rem);
+}
+
+/* Directory Status Icons */
+.dir-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.dir-status.exists {
+  background-color: var(--bs-success-bg-subtle);
+  color: var(--bs-success);
+}
+
+.dir-status.not-exists {
+  background-color: var(--bs-warning-bg-subtle);
+  color: var(--bs-warning);
+}
+
+.dir-status.error {
+  background-color: var(--bs-danger-bg-subtle);
+  color: var(--bs-danger);
+}
+
+[data-theme="dark"] .dir-status.exists {
+  background-color: rgba(25, 135, 84, 0.2);
+}
+
+[data-theme="dark"] .dir-status.not-exists {
+  background-color: rgba(255, 193, 7, 0.2);
+}
+
+[data-theme="dark"] .dir-status.error {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+/* Drop Zone */
+.drop-zone {
+  border: 2px dashed #ced4da;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  margin: 1rem 0;
+  transition: all var(--transition-speed) ease;
+  cursor: pointer;
+}
+
+.drop-zone:hover {
+  border-color: var(--secondary-color);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.drop-zone.drag-active {
+  border-color: var(--primary-color);
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+[data-theme="dark"] .drop-zone {
+  border-color: #495057;
+}
+
+[data-theme="dark"] .drop-zone:hover {
+  border-color: #adb5bd;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .drop-zone.drag-active {
+  border-color: var(--primary-color);
+  background-color: rgba(13, 110, 253, 0.2);
+}
+
+/* -----------------------------------------------------------------------------
+ * 7. BUTTONS
+ * -----------------------------------------------------------------------------
+ */
+.btn {
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+  padding: 0.5rem 1rem;
+}
+
+.btn-primary, .btn-success {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary:hover, 
+.btn-success:hover, 
+.btn-danger:hover, 
+.btn-warning:hover, 
+.btn-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .btn-outline-secondary {
+  color: #adb5bd;
+  border-color: #6c757d;
+}
+
+[data-theme="dark"] .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: var(--dark-text-primary);
+}
+
+.btn-highlight {
+  animation: pulse-animation 1s ease-in-out 2;
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+  }
+}
+
+/* Fix for close buttons in dark mode */
+[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* -----------------------------------------------------------------------------
+ * 8. ALERTS & TOASTS
+ * -----------------------------------------------------------------------------
+ */
+/* Toasts */
+.toast-container {
+  z-index: 9999;
+}
+
+[data-theme="dark"] .toast {
+  background-color: transparent !important;
+  border-color: var(--dark-border-color) !important;
+}
+
+[data-theme="dark"] .toast-header {
+  background-color: var(--dark-bg-card) !important;
+  color: var(--dark-text-primary) !important;
+  border-bottom-color: var(--dark-border-color) !important;
+}
+
+[data-theme="dark"] .toast-body {
+  background-color: var(--dark-bg-input) !important;
+  color: var(--dark-text-primary) !important;
+}
+
+/* Alerts */
+[data-theme="dark"] .alert-info {
+  background-color: var(--dark-alert-info-bg);
+  border-color: var(--dark-alert-info-border);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .alert-success {
+  background-color: var(--dark-alert-success-bg);
+  border-color: var(--dark-alert-success-border);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .alert-danger {
+  background-color: var(--dark-alert-danger-bg);
+  border-color: var(--dark-alert-danger-border);
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .alert-warning {
+  background-color: var(--dark-alert-warning-bg);
+  border-color: var(--dark-alert-warning-border);
+  color: var(--dark-text-primary);
+}
+
+/* Path info styling */
+#path-info.success .alert {
+  background-color: var(--bs-success-bg-subtle);
+  border-color: var(--bs-success);
+}
+
+#path-info.warning .alert {
+  background-color: var(--bs-warning-bg-subtle);
+  border-color: var(--bs-warning);
+}
+
+#path-info.error .alert {
+  background-color: var(--bs-danger-bg-subtle);
+  border-color: var(--bs-danger);
+}
+
+/* -----------------------------------------------------------------------------
+ * 9. PROGRESS BARS
+ * -----------------------------------------------------------------------------
+ */
+.progress {
+  height: 25px;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background-color: #e9ecef;
+  margin-bottom: 1rem;
+}
+
+
+
+.progress-bar {
+  transition: width 0.5s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.completed-animation {
+  transition: all 0.5s ease-in-out;
+  animation: pulse 1.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* -----------------------------------------------------------------------------
+ * 10. TABLES
+ * -----------------------------------------------------------------------------
+ */
+[data-theme="dark"] .table {
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .table-hover tbody tr:hover {
+  background-color: var(--dark-bg-input);
+}
+
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+  border-color: var(--dark-border-color);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* History Table */
+#history-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#history-table thead th {
+  background-color: #f8f9fa;
+  border-bottom-width: 2px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+[data-theme="dark"] #history-table thead th {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+#history-table tbody tr {
+  transition: all 0.2s ease;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+#history-table tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+[data-theme="dark"] #history-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Empty state styling */
+.history-empty-row td {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Task type badge styling */
+#history-table .badge {
+  padding: 0.35em 0.5em;
+  font-size: 75%;
+}
+
+/* Improve button hover state */
+#history-table .btn-group .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Task details */
+#task-details-content {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#task-details-content .border {
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+#task-details-content .border:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+[data-theme="dark"] #task-details-content .border:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* List Items */
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+}
+
+.list-group-item .badge {
+  min-width: 70px;
+  text-align: center;
+}
+
+[data-theme="dark"] .list-group-item {
+  background-color: var(--dark-bg-card);
+  border-color: var(--dark-border-color);
+  color: var(--dark-text-primary);
+}
+
+/* Recent Tasks */
+.recent-task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: background-color var(--transition-speed) ease;
+}
+
+.recent-task-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"] .recent-task-item {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .recent-task-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* -----------------------------------------------------------------------------
+ * 11. PDF DOWNLOAD & VIEWER
+ * -----------------------------------------------------------------------------
+ */
+/* PDF Download Item Styling */
+.pdf-download-item {
+  padding: 10px;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pdf-download-item:hover {
+  background-color: var(--bs-gray-100);
+}
+
+[data-theme="dark"] .pdf-download-item:hover {
+  background-color: var(--bs-gray-700);
+}
+
+/* Status-specific styling */
+.pdf-download-item[data-status="downloading"] {
+  border-left-color: var(--bs-info);
+}
+
+.pdf-download-item[data-status="success"] {
+  border-left-color: var(--bs-success);
+}
+
+.pdf-download-item[data-status="error"] {
+  border-left-color: var(--bs-danger);
+}
+
+/* PDF download progress bar */
+.pdf-download-item .progress {
+  height: 6px;
+  transition: all 0.5s ease;
+  margin-top: 4px;
+}
+
+/* PDF item title with truncation */
+.pdf-item-title {
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  padding-left: 20px;
+}
+
+.pdf-item-title:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23ff4136' d='M320 464C328.8 464 336 456.8 336 448V416H384V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V416H48V448C48 456.8 55.16 464 64 464H320zM256 160C238.3 160 224 145.7 224 128V48H64C55.16 48 48 55.16 48 64V192H0V64C0 28.65 28.65 0 64 0H229.5C246.5 0 262.7 6.743 274.7 18.75L365.3 109.3C377.3 121.3 384 137.5 384 154.5V192H336V160H256zM88 224C88 202.3 105.5 184 128 184H256C277.7 184 296 202.3 296 224V336C296 357.7 277.7 376 256 376H128C106.3 376 88 357.7 88 336V224zM144 208V240H240V208H144zM240 336V272H144V336H240z'/%3E%3C/svg%3E") no-repeat center center / contain;
+}
+
+/* Action buttons styling */
+.pdf-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.pdf-actions .btn {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* PDF Viewer container */
+.pdf-viewer-container {
+  background-color: var(--bs-gray-200);
+  border-radius: 0.25rem;
+  height: 75vh;
+  overflow: auto;
+}
+
+[data-theme="dark"] .pdf-viewer-container {
+  background-color: var(--bs-gray-700);
+}
+
+/* PDF Page rendering */
+.pdf-page {
+  display: block;
+  margin: 1rem auto;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .pdf-page {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Navigation controls */
+.pdf-nav-controls {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 16px;
+}
+
+[data-theme="dark"] .pdf-nav-controls {
+  background-color: var(--bs-gray-700);
+  border-bottom-color: var(--bs-gray-600);
+}
+
+/* PDF info section styling */
+#pdf-info-section {
+  border-left: 4px solid var(--bs-info);
+}
+
+/* PDF downloads progress section */
+#pdf-download-progress {
+  transition: all 0.3s ease;
+  border-left: 4px solid var(--bs-info);
+}
+
+/* -----------------------------------------------------------------------------
+ * 12. MODALS
+ * -----------------------------------------------------------------------------
+ */
+[data-theme="dark"] .modal-content {
+  background-color: var(--dark-bg-card);
+  border-color: var(--dark-border-color);
+}
+
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+  border-color: var(--dark-border-color);
+}
+
+/* -----------------------------------------------------------------------------
+ * 13. CODE & PRE ELEMENTS
+ * -----------------------------------------------------------------------------
+ */
+[data-theme="dark"] pre,
+[data-theme="dark"] code {
+  background-color: var(--dark-code-bg);
+  color: var(--dark-code-color);
+}
+
+/* -----------------------------------------------------------------------------
+ * 14. HELP MODE
+ * -----------------------------------------------------------------------------
+ */
+.help-mode * {
+  cursor: help !important;
+}
+
+.help-mode button.toggle-btn {
+  cursor: pointer !important;
+}
+
+.help-mode .help-target {
+  position: relative;
+  outline: 2px dashed var(--bs-primary);
+}
+
+.help-tooltip {
+  position: absolute;
+  z-index: 1050;
+  background-color: var(--bs-dark);
+  color: var(--bs-white);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  max-width: 350px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.help-tooltip.active {
+  opacity: 1;
+}
+
+.help-close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: transparent;
+  color: var(--bs-white);
+  border: none;
+  font-size: 14px;
+}
+
+.help-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
+
+[data-theme="dark"] .help-tooltip {
+  background-color: var(--dark-bg-card);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .help-content {
+  color: var(--dark-text-primary);
+}
+
+[data-theme="dark"] .help-close-btn {
+  color: var(--dark-text-secondary);
+}
+
+[data-theme="dark"] .help-close-btn:hover {
+  color: var(--dark-text-primary);
+}
+
+/* -----------------------------------------------------------------------------
+ * 15. UTILITIES AND BADGES
+ * -----------------------------------------------------------------------------
+ */
+/* Badges */
+[data-theme="dark"] .badge.bg-light {
+  background-color: #495057 !important;
+  color: var(--dark-text-primary) !important;
+}
+
+/* -----------------------------------------------------------------------------
+ * 16. MEDIA QUERIES FOR RESPONSIVE DESIGN
+ * -----------------------------------------------------------------------------
+ */
+@media (max-width: 768px) {
+  .header-container h1 {
+    font-size: 1.5rem;
+  }
+  
+  /* Stack input groups on mobile */
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .input-group > * {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    border-radius: 0.375rem !important;
+  }
+  
+  .input-group > *:not(:first-child) {
+    margin-left: 0;
+  }
+  
+  .input-group > :last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Stack button groups on mobile */
+  .d-flex.gap-2 {
+    flex-direction: column;
+  }
+  
+  .d-flex.gap-2 > * {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+  
+  .d-flex.gap-2 > :last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Smaller tabs on mobile */
+  .nav-tabs .nav-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Stack PDF items on mobile */
+  .pdf-download-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .pdf-item-title {
+    max-width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .pdf-actions {
+    margin-top: 8px;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  /* History table adjustments */
+  #history-table {
+    font-size: 0.85rem;
+  }
+  
+  #history-table .btn-group .btn {
+    padding: 0.2rem 0.4rem;
+  }
+  
+  /* Stack form controls on mobile */
+  .form-floating {
+    margin-bottom: 1rem;
+  }
+  
+  /* PDF summary cards */
+  .pdf-summary-card {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+  /* Further reduce font sizes */
+  body {
+    font-size: 0.875rem;
+  }
+  
+  /* Shrink buttons further */
+  .btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Make cards full width */
+  .card {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    border-radius: 0;
+  }
+  
+  /* Adjust padding for containers */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Simplify modals */
+  .modal-header,
+  .modal-footer {
+    padding: 0.75rem;
+  }
+  
+  .modal-body {
+    padding: 0.75rem;
+  }
+  
+  /* Stack input groups even more tightly */
+  .input-group > * {
+    margin-bottom: 0.25rem;
+  }
+  
+  /* Simplify PDF viewer on mobile */
+  .pdf-viewer-container {
+    height: 65vh;
+  }
+  
+  .pdf-nav-controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * 17. ANIMATIONS AND TRANSITIONS
+ * -----------------------------------------------------------------------------
+ */
+/* Page transition animations */
+.transition-container {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.transition-container.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Progress completion animation */
+@keyframes completed {
+  0% { background-color: var(--primary-color); }
+  100% { background-color: var(--success-color); }
+}
+
+.progress-bar.completed {
+  animation: completed 0.5s ease forwards;
+}
+
+/* Button click animation */
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Loading spinner */
+.spinner {
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Notification badges animation */
+@keyframes notification-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.badge-notification {
+  animation: notification-pulse 1s ease infinite;
+}
+
+/* PDF processing effect */
+@keyframes processing-pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.processing-item {
+  animation: processing-pulse 1.5s ease-in-out infinite;
+}
+
+/* Help mode highlight animation */
+@keyframes help-highlight {
+  0% { outline-color: rgba(13, 110, 253, 0.5); }
+  50% { outline-color: rgba(13, 110, 253, 1); }
+  100% { outline-color: rgba(13, 110, 253, 0.5); }
+}
+
+.help-mode .help-target {
+  animation: help-highlight 2s ease-in-out infinite;
+}
+
+/* -----------------------------------------------------------------------------
+ * 18. PRINT STYLES
+ * -----------------------------------------------------------------------------
+ */
+@media print {
+  /* Hide navigation, buttons, and other UI elements not needed for printing */
+  header, footer, .nav-tabs, .btn, .form-control, .no-print {
+    display: none !important;
+  }
+  
+  /* Adjust container width */
+  .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Remove shadows and borders to save ink */
+  .card, .custom-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+  
+  /* Force background colors to white and text to black */
+  body, .card, .table {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+  
+  /* Ensure table content is readable */
+  .table th, .table td {
+    border-color: #000 !important;
+  }
+  
+  /* Break long strings if needed */
+  pre, code {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+  }
+  
+  /* Expand all collapse elements */
+  .collapse {
+    display: block !important;
+    height: auto !important;
+  }
+  
+  /* Display URLs after links for reference */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    font-weight: normal;
+  }
+  
+  /* But don't display URLs for internal links or javascript */
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+  
+  /* Add page breaks where appropriate */
+  h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  img {
+    page-break-inside: avoid;
+  }
+  
+  /* Break to new page when printing multiple cards */
+  .card {
+    page-break-inside: avoid;
+  }
+}
+
+/* Academic Search Integration CSS */
+
+/* Academic source badges */
+.academic-source-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+}
+
+.academic-source-arxiv {
+  background-color: #b31b1b;
+  color: white;
+}
+
+.academic-source-semantic {
+  background-color: #1857b8;
+  color: white;
+}
+
+.academic-source-openalex {
+  background-color: #00a396;
+  color: white;
+}
+
+/* Academic search card styling */
+.card.border-primary {
+  border-width: 1px;
+  transition: all 0.3s ease;
+}
+
+.card.border-primary:hover {
+  box-shadow: 0 0.125rem 0.25rem rgba(13, 110, 253, 0.2);
+}
+
+/* Enhanced PDF Download Item Styling */
+.pdf-download-item {
+  padding: 10px;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pdf-download-item:hover {
+  background-color: var(--bs-gray-100);
+}
+
+[data-theme="dark"] .pdf-download-item:hover {
+  background-color: var(--bs-gray-700);
+}
+
+
+/* PDF download progress bar */
+.pdf-download-item .progress {
+  height: 6px;
+  transition: all 0.5s ease;
+  margin-top: 4px;
+}
+
+/* PDF item title with truncation */
+.pdf-item-title {
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  padding-left: 20px;
+}
+
+.pdf-item-title:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23ff4136' d='M320 464C328.8 464 336 456.8 336 448V416H384V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V416H48V448C48 456.8 55.16 464 64 464H320zM256 160C238.3 160 224 145.7 224 128V48H64C55.16 48 48 55.16 48 64V192H0V64C0 28.65 28.65 0 64 0H229.5C246.5 0 262.7 6.743 274.7 18.75L365.3 109.3C377.3 121.3 384 137.5 384 154.5V192H336V160H256zM88 224C88 202.3 105.5 184 128 184H256C277.7 184 296 202.3 296 224V336C296 357.7 277.7 376 256 376H128C106.3 376 88 357.7 88 336V224zM144 208V240H240V208H144zM240 336V272H144V336H240z'/%3E%3C/svg%3E") no-repeat center center / contain;
+}
+
+/* Action buttons styling */
+.pdf-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.pdf-actions .btn {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .academic-search-card {
+  background-color: #2d3238;
+}
+
+[data-theme="dark"] .academic-search-card .card-header {
+  background-color: #1c3156;
+}
+
+/* =============================================================================
+ * PROGRESS BAR ENHANCEMENTS FOR NEUROGEN
+ * =============================================================================
+ */
+
+/* Base progress bar styling improvements */
+.progress {
+  height: 25px;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background-color: #e9ecef;
+  margin-bottom: 1rem;
+  position: relative; /* Required for absolute positioning of child elements */
+}
+
+
+/* Improved progress bar animation and transitions */
+.progress-bar {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother easing */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 0.875rem;
+  position: relative; /* For z-index control */
+  z-index: 10;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure text remains visible at all times */
+.progress-bar::after {
+  content: attr(aria-valuenow) '%';
+  position: absolute;
+  right: 8px;
+  color: white;
+}
+
+/* Ensure the progress percentage is always visible */
+.progress-bar[aria-valuenow="0"]::after {
+  color: #212529;
+  right: 8px;
+  left: auto;
+}
+
+/* Better striped and animated styles */
+.progress-bar-striped {
+  background-image: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.15) 25%, 
+    transparent 25%, 
+    transparent 50%, 
+    rgba(255, 255, 255, 0.15) 50%, 
+    rgba(255, 255, 255, 0.15) 75%, 
+    transparent 75%, 
+    transparent);
+  background-size: 1rem 1rem;
+}
+
+.progress-bar-animated {
+  animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+  from { background-position: 1rem 0; }
+  to { background-position: 0 0; }
+}
+
+/* Completed state styling - for 100% progress */
+.progress-bar.completed,
+.progress-bar[aria-valuenow="100"] {
+  background-color: #198754 !important; /* Success green */
+  transition: background-color 0.5s ease;
+}
+
+/* Add pulsing effect for completed progress bars */
+.progress-bar.completed-animation,
+.progress-bar[aria-valuenow="100"] {
+  animation: pulse 1.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* Progress bar containers visibility transitions */
+#progress-container,
+#playlist-progress-container,
+#scraper-progress-container {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#progress-container.d-none,
+#playlist-progress-container.d-none,
+#scraper-progress-container.d-none {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Improve indeterminate state for when progress isn't known */
+.progress-bar.indeterminate {
+  width: 100%;
+  background-color: #0d6efd;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+  animation: progress-bar-stripes 1s linear infinite, 
+             indeterminate-bar 1.5s ease-in-out infinite;
+}
+
+@keyframes indeterminate-bar {
+  0% { background-position: 1rem 0; }
+  100% { background-position: 0 0; }
+}
+
+/* Progress status text improvements */
+#progress-status,
+#playlist-progress-status,
+#scraper-progress-status {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  transition: opacity 0.2s ease;
+}
+
+/* Ensure stats containers have proper spacing and styling */
+#progress-stats,
+#playlist-progress-stats,
+#scraper-progress-stats {
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] #progress-stats,
+[data-theme="dark"] #playlist-progress-stats,
+[data-theme="dark"] #scraper-progress-stats {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Enhance result containers styling */
+#result-container,
+#playlist-results-container,
+#scraper-results-container {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+#result-container:not(.d-none),
+#playlist-results-container:not(.d-none),
+#scraper-results-container:not(.d-none) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fix issues with progress bar at 99% */
+.progress-bar[aria-valuenow="99"] {
+  position: relative;
+}
+
+.progress-bar[aria-valuenow="99"]::after {
+  content: '99%';
+  position: absolute;
+  right: 8px;
+}
+
+/* Visual indicator for in-progress tasks */
+.task-running {
+  position: relative;
+}
+
+.task-running::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, #0d6efd, #6610f2);
+  animation: loading-bar 2s infinite linear;
+  z-index: 1000;
+}
+
+@keyframes loading-bar {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+/* Fix "Open File" buttons styling */
+.open-json-btn,
+.open-output-folder {
+  position: relative;
+  overflow: hidden;
+}
+
+.open-json-btn::after,
+.open-output-folder::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+.open-json-btn:focus:not(:active)::after,
+.open-output-folder:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(50, 50);
+    opacity: 0;
+  }
+}
+
+/* Ensure PDF download progress is visible */
+#pdf-download-progress {
+  opacity: 1;
+  max-height: 1000px; /* Large value to allow for any number of items */
+  transition: opacity 0.3s ease, max-height 0.5s ease;
+  overflow: hidden;
+}
+
+#pdf-download-progress.d-none {
+  opacity: 0;
+  max-height: 0;
+}
+
+/* Style each PDF download item better */
+.pdf-download-item {
+  transition: all 0.3s ease;
+}
+
+.pdf-download-item[data-status="success"] {
+  background-color: rgba(25, 135, 84, 0.1);
+}
+
+.pdf-download-item[data-status="error"] {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Dark mode specific fixes */
+[data-theme="dark"] .progress {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .progress-bar[aria-valuenow="0"]::after {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Fix for modal buttons */
+.modal-footer .btn {
+  transition: all 0.2s ease;
+}
+
+.modal-footer .btn:active {
+  transform: scale(0.96);
+}
+
+.diagnostic-panel {
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.diagnostic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.diagnostic-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.diagnostic-results {
+  max-height: calc(100% - 4rem);
+  overflow: auto;
+}
+
+/* Enhanced statistics display */
+.stats-container {
+  background-color: #2d3748;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.stats-header {
+  background-color: #1a202c;
+  padding: 15px 20px;
+  border-bottom: 1px solid #4a5568;
+}
+
+.stats-header h5 {
+  margin: 0;
+  color: white;
+  font-weight: 600;
+}
+
+.stats-section {
+  padding: 20px;
+  border-bottom: 1px solid #4a5568;
+}
+
+.stats-section:last-child {
+  border-bottom: none;
+}
+
+.stat-card {
+  background-color: #2d3748;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #4a5568;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card .icon {
+  font-size: 1.5rem;
+  margin-right: 15px;
+  color: #63b3ed;
+}
+
+.stat-card .value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.stat-card .label {
+  color: #a0aec0;
+  font-size: 0.875rem;
+}
+
+.pdf-stats {
+  background-color: #2c3e50;
+}
+
+.processing-complete-banner {
+  background-color: #276749;
+  color: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.processing-complete-banner i {
+  font-size: 1.5rem;
+  margin-right: 12px;
+}
+
+.time-badge {
+  background-color: #38a169;
+  color: white;
+  border-radius: 30px;
+  padding: 8px 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+}
+
+.time-badge i {
+  margin-right: 8px;
+}
+
+.performance-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background-color: #1a202c;
+  border-radius: 8px;
+}
+
+.performance-metric {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px;
+  background-color: #2d3748;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.performance-metric .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.performance-metric .label {
+  color: #a0aec0;
+  font-size: 0.875rem;
+}
+
+/* For zero values */
+.zero-value {
+  color: #a0aec0;
+  opacity: 0.7;
+}
+
+/* Dark theme adjustments for playlist results */
+html.dark-theme .stats-container {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+html.dark-theme .card {
+  background-color: #333;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+html.dark-theme .icon-container {
+  background-color: rgba(255,255,255,0.05);
+}
+
+html.dark-theme .card .value,
+html.dark-theme .card h3 {
+  color: #fff;
+}
+
+html.dark-theme .card .text-muted,
+html.dark-theme .card .label {
+  color: #aaa !important;
+}
+
+html.dark-theme .list-group-item {
+  background-color: #333;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+html.dark-theme .bg-light {
+  background-color: #2a2a2a !important;
+  color: #e0e0e0;
+}
+
+html.dark-theme .text-muted {
+  color: #aaa !important;
+}
+
+html.dark-theme .text-primary {
+  color: #5b9eff !important;
+}
+
+html.dark-theme #playlist-results-container {
+  background-color: #222;
+  color: #e0e0e0;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+html.dark-theme #download-results {
+  background-color: #333;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Progress bar label positioning */
+.progress {
+  position: relative;
+}
+
+/* Progress bar text styling */
+.progress-bar {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.progress-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Fix for dark theme */
+[data-theme="dark"] .progress-label {
+  color: white;
+}
+
+/* When progress is low, position label to be visible */
+.progress-bar[aria-valuenow="0"] .progress-label,
+.progress-bar[aria-valuenow="1"] .progress-label,
+.progress-bar[aria-valuenow="2"] .progress-label,
+.progress-bar[aria-valuenow="3"] .progress-label,
+.progress-bar[aria-valuenow="4"] .progress-label,
+.progress-bar[aria-valuenow="5"] .progress-label {
+  left: 10px;
+  transform: translateY(-50%);
+  color: var(--bs-dark);
+  text-shadow: none;
+}
+/* Enhanced detailed stats styling */
+.metric-card {
+    background-color: white;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-color: rgba(0,0,0,0.1) !important;
+  }
+  
+  .metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  }
+  
+  .metric-icon {
+    color: rgba(0,0,0,0.5);
+  }
+  
+  .metric-value {
+    font-weight: 700;
+    color: #212529;
+  }
+  
+  .technical-details {
+    font-size: 0.85rem;
+  }
+  
+  .technical-details .table {
+    background-color: white;
+    margin-bottom: 0;
+  }
+  
+  .technical-details .table td {
+    padding: 0.5rem 0.75rem;
+    vertical-align: middle;
+  }
+  
+  .file-info-card {
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    border-left: 4px solid #0d6efd;
+  }
+  
+  .file-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: rgba(13, 110, 253, 0.1);
+  }
+  
+  .file-path {
+    font-weight: 500;
+    color: #0d6efd;
+  }
+  
+  .file-details {
+    overflow: hidden;
+  }
+  
+  /* Animation for stats elements */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+    
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  
+  .animate__fadeInUp {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  /* Staggered animation for metric cards */
+  .metric-card:nth-child(1) {
+    animation: fadeInUp 0.5s ease-out;
+  }
+  
+  .metric-card:nth-child(2) {
+    animation: fadeInUp 0.5s ease-out 0.1s;
+    animation-fill-mode: both;
+  }
+  
+  .metric-card:nth-child(3) {
+    animation: fadeInUp 0.5s ease-out 0.2s;
+    animation-fill-mode: both;
+  }
+  
+  /* Detailed progress bars styling */
+  .stat-progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  
+  .stat-details {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .stat-detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+  
+  .stat-detail-item i {
+    margin-right: 0.5rem;
+    width: 16px;
+    text-align: center;
+  }
+  
+  /* Modal to show detailed stats/charts if needed */
+  .stats-modal .modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .stats-modal .modal-body {
+    padding-top: 0;
+  }
+  
+  .stats-modal .nav-tabs {
+    border-bottom: none;
+    margin-bottom: 1rem;
+  }
+  
+  .stats-modal .nav-tabs .nav-link {
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    font-weight: 500;
+  }
+  
+  .stats-modal .nav-tabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 3px solid #0d6efd;
+    background-color: transparent;
+  }
+  
+  .stats-modal .tab-content {
+    padding-top: 1rem;
+  }
+  
+  /* Stats badges styling */
+  .stat-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 30px;
+    color: white;
+    font-weight: 600;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .summary-section {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .success-icon-container {
+      margin-bottom: 1rem;
+      margin-right: 0;
+    }
+    
+    .time-badge {
+      margin-top: 1rem;
+    }
+    
+    .file-info-card .d-flex {
+      flex-direction: column;
+    }
+    
+    .file-icon-container {
+      margin-bottom: 1rem;
+    }
+    
+    .file-actions {
+      margin-top: 1rem;
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .file-actions .btn {
+      flex-grow: 1;
+      margin: 0 0.25rem;
+    }
+    
+    /* Improve table display on mobile */
+    .technical-details .table td {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.8rem;
+    }
+  }

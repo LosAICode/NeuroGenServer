@@ -1,0 +1,28 @@
+@app.route("/api/cancel/<task_id>", methods=["POST"])
+def cancel_task(task_id):
+    """
+    API endpoint to cancel a task by ID
+    
+    Args:
+        task_id: The task ID to cancel
+        
+    Returns:
+        JSON response with cancellation status
+    """
+    task = get_task(task_id)
+    if not task:
+        return structured_error_response("TASK_NOT_FOUND", f"Task with ID {task_id} not found.", 404)
+    
+    # Call the task's cancel method
+    result = task.cancel()
+    
+    if result:
+        return jsonify({
+            "status": "success",
+            "message": f"Task {task_id} cancelled successfully"
+        })
+    else:
+        return jsonify({
+            "status": "warning",
+            "message": f"Task {task_id} already cancelled or completed"
+        })

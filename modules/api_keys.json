@@ -1,0 +1,9 @@
+{
+  "d8f74c02-e1a9-4b2f-a6b3-c9e57d28b153": {
+    "name": "Master Key",
+    "description": "Initial master key created during setup",
+    "created": "2025-03-17T00:00:00.000000",
+    "last_used": null,
+    "active": true
+  }
+}
