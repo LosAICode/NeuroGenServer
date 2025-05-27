@@ -630,6 +630,7 @@ async function initializeApp() {
     setTimeout(() => {
       enhanceSocketIOIntegration();
       registerGlobalErrorHandlers();
+      ensureFormHandlersWork();
     }, 500);
     
     // Development tools
@@ -1131,6 +1132,137 @@ function handleServerStatus(data) {
   
   const event = new CustomEvent('serverStatusUpdate', { detail: data });
   document.dispatchEvent(event);
+}
+
+// --------------------------------------------------------------------------
+// Ensure Form Handlers Work
+// --------------------------------------------------------------------------
+
+function ensureFormHandlersWork() {
+  try {
+    console.log('🔧 Ensuring form handlers are properly set up...');
+    
+    // Fix File Processor form
+    const processForm = document.getElementById('process-form');
+    if (processForm && !processForm._enhancedHandler) {
+      const fileProcessor = window.moduleInstances?.fileProcessor || window.fileProcessor;
+      if (fileProcessor && typeof fileProcessor.handleFileSubmit === 'function') {
+        processForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          fileProcessor.handleFileSubmit(e);
+        });
+        processForm._enhancedHandler = true;
+        console.log('✅ File Processor form handler ensured');
+      }
+    }
+    
+    // Fix Playlist Downloader form
+    const playlistForm = document.getElementById('playlist-form');
+    if (playlistForm && !playlistForm._enhancedHandler) {
+      playlistForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('Playlist form submitted');
+        
+        // Get the URLs
+        const urlInputs = document.querySelectorAll('.playlist-url-input');
+        const urls = Array.from(urlInputs)
+          .map(input => input.value.trim())
+          .filter(url => url.length > 0);
+        
+        if (urls.length === 0) {
+          const ui = window.moduleInstances?.ui || window.ui;
+          if (ui) {
+            ui.showToast('Error', 'Please enter at least one playlist URL', 'error');
+          } else {
+            alert('Please enter at least one playlist URL');
+          }
+          return;
+        }
+        
+        // Get other form data
+        const rootDir = document.getElementById('playlist-root')?.value || '';
+        const outputFile = document.getElementById('playlist-output')?.value || 'output';
+        
+        // Show loading state
+        const submitBtn = document.getElementById('playlist-submit-btn');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Starting...';
+        }
+        
+        try {
+          const response = await fetch('/api/start-playlists', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              urls: urls,
+              root_dir: rootDir,
+              output_file: outputFile
+            })
+          });
+          
+          const data = await response.json();
+          if (response.ok && data.task_id) {
+            console.log('Playlist download started:', data.task_id);
+            // Progress updates will be handled by socket events
+            sessionStorage.setItem('ongoingTaskId', data.task_id);
+            sessionStorage.setItem('ongoingTaskType', 'playlist');
+          } else {
+            throw new Error(data.error || 'Failed to start playlist download');
+          }
+        } catch (error) {
+          console.error('Error starting playlist download:', error);
+          const ui = window.moduleInstances?.ui || window.ui;
+          if (ui) {
+            ui.showToast('Error', error.message, 'error');
+          } else {
+            alert('Error: ' + error.message);
+          }
+          // Reset button
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-download me-2"></i> Download Playlists';
+          }
+        }
+      });
+      playlistForm._enhancedHandler = true;
+      console.log('✅ Playlist Downloader form handler ensured');
+    }
+    
+    // Fix Web Scraper form
+    const scraperForm = document.getElementById('scraper-form');
+    if (scraperForm && !scraperForm._enhancedHandler) {
+      const webScraper = window.moduleInstances?.webScraper || window.webScraper;
+      if (webScraper && typeof webScraper.startScraping === 'function') {
+        // The webScraper module should already have its handler set up
+        // Just ensure the form is not preventing submission
+        const existingHandler = scraperForm.onsubmit;
+        if (!existingHandler) {
+          scraperForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            webScraper.startScraping();
+          });
+        }
+        scraperForm._enhancedHandler = true;
+        console.log('✅ Web Scraper form handler ensured');
+      }
+    }
+    
+    // Enable all submit buttons
+    ['submit-btn', 'playlist-submit-btn', 'scrape-btn'].forEach(btnId => {
+      const btn = document.getElementById(btnId);
+      if (btn && btn.disabled && !btn.hasAttribute('data-keep-disabled')) {
+        btn.disabled = false;
+        console.log(`✅ Enabled button: ${btnId}`);
+      }
+    });
+    
+  } catch (error) {
+    diagnostics.logError(error, 'ensureFormHandlersWork');
+    console.error('Error ensuring form handlers:', error);
+  }
 }
 
 // --------------------------------------------------------------------------

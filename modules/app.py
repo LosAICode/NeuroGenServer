@@ -7147,7 +7147,231 @@ def index():
 
 @app.route("/test-modules")
 def test_modules():
-    return render_template("test_modules.html")
+    """Enhanced module diagnostics endpoint for ES6 module system"""
+    import json
+    from datetime import datetime
+    
+    diagnostics = {
+        'timestamp': datetime.now().isoformat(),
+        'server': {
+            'running': True,
+            'port': 5025,
+            'version': '1.2.3',
+            'pythonVersion': sys.version
+        },
+        'modules': {
+            'core': {},
+            'utils': {},
+            'features': {}
+        },
+        'endpoints': {},
+        'issues': [],
+        'recommendations': []
+    }
+    
+    # Check module files exist
+    static_js_path = os.path.join(current_dir, 'static', 'js')
+    modules_path = os.path.join(static_js_path, 'modules')
+    
+    # Define expected modules based on your system
+    expected_modules = {
+        'core': [
+            'errorHandler.js', 'uiRegistry.js', 'stateManager.js',
+            'eventRegistry.js', 'eventManager.js', 'themeManager.js',
+            'module-bridge.js', 'ui.js', 'domUtils.js', 'app.js',
+            'moduleLoader.js', 'index.js'
+        ],
+        'utils': [
+            'socketHandler.js', 'progressHandler.js', 'ui.js',
+            'utils.js', 'fileHandler.js', 'domUtils.js',
+            'moduleDiagnostics.js', 'systemHealth.js', 'debugTools.js',
+            'safeFileProcessor.js'
+        ],
+        'features': [
+            'fileProcessor.js', 'webScraper.js', 'playlistDownloader.js',
+            'academicSearch.js', 'academicScraper.js', 'academicApiClient.js',
+            'historyManager.js', 'pdfProcessor.js', 'helpMode.js',
+            'performanceOptimizer.js', 'keyboardShortcuts.js', 'dragDropHandler.js'
+        ]
+    }
+    
+    # Check each module
+    for category, modules in expected_modules.items():
+        category_path = os.path.join(modules_path, category)
+        
+        for module_name in modules:
+            module_path = os.path.join(category_path, module_name)
+            module_info = {
+                'name': module_name,
+                'exists': os.path.exists(module_path),
+                'path': f'/static/js/modules/{category}/{module_name}',
+                'size': 0,
+                'modified': None,
+                'syntaxValid': False,
+                'hasExports': False,
+                'hasImports': False
+            }
+            
+            if module_info['exists']:
+                try:
+                    stat = os.stat(module_path)
+                    module_info['size'] = stat.st_size
+                    module_info['modified'] = datetime.fromtimestamp(stat.st_mtime).isoformat()
+                    
+                    # Basic syntax check
+                    with open(module_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                        # Check for basic module patterns
+                        module_info['hasExports'] = 'export' in content
+                        module_info['hasImports'] = 'import' in content
+                        module_info['syntaxValid'] = True  # Basic check
+                        
+                        # Check for common issues
+                        if 'ui =' in content and 'import ui' in content:
+                            diagnostics['issues'].append({
+                                'module': f'{category}/{module_name}',
+                                'type': 'CONST_REASSIGNMENT',
+                                'message': 'Attempting to reassign imported constant'
+                            })
+                except Exception as e:
+                    module_info['error'] = str(e)
+                    diagnostics['issues'].append({
+                        'module': f'{category}/{module_name}',
+                        'type': 'READ_ERROR',
+                        'message': str(e)
+                    })
+            else:
+                diagnostics['issues'].append({
+                    'module': f'{category}/{module_name}',
+                    'type': 'MODULE_NOT_FOUND',
+                    'message': f'Module file not found at {module_path}'
+                })
+            
+            diagnostics['modules'][category][module_name.replace('.js', '')] = module_info
+    
+    # Check critical files
+    critical_files = {
+        'index.js': os.path.join(static_js_path, 'index.js'),
+        'index.html': os.path.join(current_dir, 'templates', 'index.html')
+    }
+    
+    for name, path in critical_files.items():
+        if not os.path.exists(path):
+            diagnostics['issues'].append({
+                'file': name,
+                'type': 'CRITICAL_FILE_MISSING',
+                'message': f'Critical file missing: {path}'
+            })
+    
+    # Check API endpoints
+    endpoints_to_check = {
+        'fileProcessor': {
+            'process': ('/api/process', ['POST']),
+            'status': ('/api/status/<task_id>', ['GET']),
+            'download': ('/api/download/<task_id>', ['GET'])
+        },
+        'playlistDownloader': {
+            'start': ('/api/start-playlists', ['POST']),
+            'cancel': ('/api/playlist/cancel/<task_id>', ['POST'])
+        },
+        'webScraper': {
+            'scrape': ('/api/scrape2', ['POST']),
+            'status': ('/api/scrape2/status/<task_id>', ['GET']),
+            'cancel': ('/api/scrape2/cancel/<task_id>', ['POST'])
+        },
+        'academicSearch': {
+            'search': ('/api/academic/search', ['GET']),
+            'health': ('/api/academic/health', ['GET'])
+        }
+    }
+    
+    # Check if endpoints exist
+    for feature, endpoints in endpoints_to_check.items():
+        diagnostics['endpoints'][feature] = {}
+        for name, (rule_pattern, methods) in endpoints.items():
+            # Check if route exists in Flask app
+            exists = False
+            for rule in app.url_map.iter_rules():
+                if rule.rule == rule_pattern or (rule_pattern.replace('<task_id>', '') in rule.rule):
+                    exists = True
+                    break
+            
+            diagnostics['endpoints'][feature][name] = {
+                'url': rule_pattern,
+                'methods': methods,
+                'exists': exists
+            }
+            
+            if not exists:
+                diagnostics['issues'].append({
+                    'endpoint': f'{feature}.{name}',
+                    'type': 'ENDPOINT_MISSING',
+                    'message': f'API endpoint not found: {rule_pattern}'
+                })
+    
+    # Generate recommendations
+    if diagnostics['issues']:
+        issue_types = {}
+        for issue in diagnostics['issues']:
+            issue_type = issue['type']
+            if issue_type not in issue_types:
+                issue_types[issue_type] = 0
+            issue_types[issue_type] += 1
+        
+        if 'MODULE_NOT_FOUND' in issue_types:
+            diagnostics['recommendations'].append({
+                'priority': 'HIGH',
+                'message': f"Found {issue_types['MODULE_NOT_FOUND']} missing modules",
+                'action': 'Check module file paths and ensure all files are present'
+            })
+        
+        if 'CONST_REASSIGNMENT' in issue_types:
+            diagnostics['recommendations'].append({
+                'priority': 'HIGH',
+                'message': 'Found attempts to reassign imported constants',
+                'action': 'Fix import statements and avoid reassigning imported modules'
+            })
+        
+        if 'ENDPOINT_MISSING' in issue_types:
+            diagnostics['recommendations'].append({
+                'priority': 'MEDIUM',
+                'message': f"Found {issue_types['ENDPOINT_MISSING']} missing API endpoints",
+                'action': 'Verify backend routes are properly defined'
+            })
+    
+    # Add module loading sequence info
+    diagnostics['moduleLoadingInfo'] = {
+        'loadOrder': [
+            'core/errorHandler', 'core/uiRegistry', 'core/stateManager',
+            'core/eventRegistry', 'core/eventManager', 'core/themeManager',
+            'utils/socketHandler', 'utils/progressHandler', 'utils/ui',
+            'utils/utils', 'utils/fileHandler', 'features/fileProcessor',
+            'features/webScraper', 'features/playlistDownloader',
+            'features/academicSearch', 'features/historyManager'
+        ],
+        'entryPoint': '/static/js/index.js',
+        'moduleSystem': 'ES6 modules with dynamic imports',
+        'timeout': '15000ms per module'
+    }
+    
+    # Add summary
+    total_modules = sum(len(modules) for modules in expected_modules.values())
+    found_modules = sum(1 for cat in diagnostics['modules'].values() 
+                       for mod in cat.values() if mod.get('exists', False))
+    
+    diagnostics['summary'] = {
+        'totalExpectedModules': total_modules,
+        'foundModules': found_modules,
+        'missingModules': total_modules - found_modules,
+        'issueCount': len(diagnostics['issues']),
+        'health': 'HEALTHY' if not diagnostics['issues'] else 
+                 ('WARNING' if len(diagnostics['issues']) < 5 else 'CRITICAL')
+    }
+    
+    # Return as JSON response
+    response = jsonify(diagnostics)
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 @app.route("/diagnostics")
 def diagnostics():

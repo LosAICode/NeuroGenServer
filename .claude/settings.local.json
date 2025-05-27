@@ -12,7 +12,9 @@
       "Bash(node:*)",
       "Bash(true)",
       "Bash(awk:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(chmod:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

@@ -43,7 +43,9 @@ import progressHandler, {
 
 // Import UI module
 import ui from '../utils/ui.js';
-  ui = {
+
+// Create fallback UI if needed
+const fallbackUI = {
     showToast: (title, message, type = 'info') => {
       console.log(`TOAST [${type}]: ${title} - ${message}`);
       try {
