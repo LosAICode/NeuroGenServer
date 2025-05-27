@@ -41,13 +41,8 @@ import progressHandler, {
   createProgressUI 
 } from '../utils/progressHandler.js';
 
-// Safely import UI module
-let ui;
-try {
-  ui = await import('../utils/ui.js');
-} catch (e) {
-  console.warn("UI module import failed, creating fallback:", e);
-  // Create fallback UI module with minimal functionality
+// Import UI module
+import ui from '../utils/ui.js';
   ui = {
     showToast: (title, message, type = 'info') => {
       console.log(`TOAST [${type}]: ${title} - ${message}`);
@@ -127,7 +122,6 @@ try {
       alert(options.content || 'Modal content');
     }
   };
-}
 
 // Safely import utils module
 let utils;
@@ -474,7 +468,7 @@ const fileProcessor = {
       }
       
       // File input change handler
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       if (fileInput) {
         fileInput.addEventListener('change', this.handleFileSelection.bind(this));
       }
@@ -532,7 +526,7 @@ const fileProcessor = {
         resultContainer: getElement('result-container'),
         errorContainer: getElement('error-container'),
         cancelledContainer: getElement('cancelled-container'),
-        fileInput: getElement('file-input'),
+        fileInput: getElement('folder-input'),
         submitBtn: getElement('submit-btn'),
         cancelBtn: getElement('cancel-btn'),
         newTaskBtn: getElement('new-task-btn'),
@@ -1444,7 +1438,7 @@ const fileProcessor = {
   initializeInputOutputRelationship() {
     try {
       // Get file input element
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       
       // Get output format select element
       const outputFormat = getElement('output-format');
@@ -1552,7 +1546,7 @@ const fileProcessor = {
     try {
       // Get browse button for file input
       const browseBtn = getElement('browse-btn');
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       
       if (browseBtn && fileInput) {
         // Set up browse button to trigger file input
@@ -1631,7 +1625,7 @@ const fileProcessor = {
   handleBrowseClick() {
     try {
       // Get the file input element
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       if (fileInput) {
         fileInput.click();
       }
@@ -1647,7 +1641,7 @@ const fileProcessor = {
     try {
       // Get drop zone element
       const dropZone = getElement('drop-zone');
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       
       if (!dropZone || !fileInput) return;
       
@@ -1750,7 +1744,7 @@ const fileProcessor = {
   initializeFormValidation() {
     try {
       const form = getElement('process-form');
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       const submitBtn = getElement('submit-btn');
       
       if (!form || !fileInput || !submitBtn) return;
@@ -1872,7 +1866,7 @@ const fileProcessor = {
       
       // Get form and files
       const form = event.target;
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       
       if (!fileInput || !fileInput.files.length) {
         ui.showToast('Error', 'No file selected', 'error');
@@ -2590,7 +2584,7 @@ const fileProcessor = {
       this.showForm();
       
       // Clear any selected files
-      const fileInput = getElement('file-input');
+      const fileInput = getElement('folder-input');
       if (fileInput) {
         fileInput.value = '';
       }

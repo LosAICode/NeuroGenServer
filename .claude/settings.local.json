@@ -8,7 +8,11 @@
       "Bash(apt-get install:*)",
       "Bash(grep:*)",
       "Bash(python3 -m pip:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(node:*)",
+      "Bash(true)",
+      "Bash(awk:*)",
+      "Bash(rg:*)"
     ],
     "deny": []
   }

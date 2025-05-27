@@ -16,12 +16,22 @@ NeuroGenServer is a comprehensive AI-powered document processing and web scrapin
 
 ## Master To-Do List
 
+### Critical ###
+
+Resolve index.js and moduleLoader.js startup issues on the frontend 
+
+C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\static\js\index.js
+
+C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\static\js\modules\core\moduleLoader.js
+
 ### 🔴 High Priority - CRITICAL FIXES
 - [x] **FIX PROGRESS BAR STUCK AT 50%** - **RESOLVED** (May 26, 2025)
 - [x] Debug SocketIO event flow between backend and frontend - **COMPLETED**
 - [x] Remove duplicate progress indicators - **FIXED** (removed from progressHandler.js)
 - [x] Standardize backend emit_progress_update function calls - **VERIFIED**
 - [x] Fix module loading errors - **RESOLVED** (fixed getElement redeclarations)
+- [ ] Fix File Processing, Playlist Downloader and Web Scraping Start buttons. 
+- [ ] Ensure the system loads all modules successfully is the #1 priority. 
 - [ ] Test File Processor, Playlist Downloader, Web Scraper progress tracking
 - [ ] Verify stats display on task completion across all modules
 
@@ -86,6 +96,12 @@ app.py is the main backend module, for new Developers, the file has been broken 
     ├── main_part3_routes_part2.py  # Additional API routes
 
 The system runs with app.py 
+
+### To start and shutdown server 
+
+python run_server.py 
+python shutdown_server.py 
+
 ### Directory Structure
 ```
 NeuroGenServer/

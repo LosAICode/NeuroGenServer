@@ -820,8 +820,29 @@ function showLoading(options = {}) {
 }
 // At the end of ui.js - After all exports
 
+// Create ui object with all exports
+const ui = {
+  initUI,
+  showPanel,
+  hidePanel,
+  togglePanel,
+  showModal,
+  closeModal,
+  showNotification,
+  clearNotifications,
+  showLoading,
+  hideLoading,
+  updateProgressBar,
+  confirm,
+  alert,
+  prompt,
+  toggleElementVisibility,
+  toggleClass,
+  createTabs,
+  setTheme
+};
 
-// Update the bridge with the real UI module (use the default export)
+// Update the bridge with the real UI module
 updateUIBridge(ui);
 
 console.log("UI module initialized and bridge updated");

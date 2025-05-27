@@ -1,16 +1,17 @@
 /**
- * Module Diagnostics Tool
+ * Enhanced Module Diagnostics Tool
  * 
- * This utility script allows real-time diagnosis of module loading issues
- * in the NeuroGen Server frontend. It can be included at the top of your index.js
- * file or loaded separately to help identify and fix module problems.
+ * Advanced diagnostics for module loading issues in the NeuroGen Server.
+ * Provides detailed error tracking, performance monitoring, and visual reporting.
  * 
  * Features:
- * - Real-time module load monitoring
- * - Circular dependency detection
- * - Useful console output for debugging
- * - Fallback creation tracking
- * - Module initialization timing
+ * - Real-time module load monitoring with error locations
+ * - Circular dependency detection and visualization
+ * - Performance profiling for each module
+ * - Memory usage tracking
+ * - Visual diagnostic dashboard
+ * - Export diagnostic reports
+ * - Auto-fix suggestions for common issues
  */
 
 // Module loading status tracking
@@ -88,11 +89,17 @@ export async function loadModuleWithDiagnostics(modulePath, retry = false) {
       moduleTracker.failures.set(modulePath, []);
     }
     
-    moduleTracker.failures.get(modulePath).push({
+    // Enhanced error tracking with location
+    const errorDetails = {
       error: error.message,
       stack: error.stack,
-      timestamp: Date.now()
-    });
+      timestamp: Date.now(),
+      type: error.name,
+      location: extractErrorLocation(error),
+      suggestions: getSuggestionsForError(error, modulePath)
+    };
+    
+    moduleTracker.failures.get(modulePath).push(errorDetails);
     
     originalConsole.error(`❌ Failed to load module: ${modulePath}`);
     originalConsole.error(error);
@@ -357,23 +364,38 @@ export function generateDiagnosticReport() {
 export function logDiagnosticReport() {
   const report = generateDiagnosticReport();
   
-  originalConsole.log('%c📊 Module Diagnostics Report', 'font-size: 16px; font-weight: bold; color: blue;');
-  originalConsole.log(`Timestamp: ${report.timestamp}`);
-  originalConsole.log(`Status: ${report.status.toUpperCase()}`);
-  originalConsole.log(`Loaded Modules: ${report.loadedModules.length}`);
-  originalConsole.log(`Failed Modules: ${report.failedModules.length}`);
-  originalConsole.log(`Fallbacks Used: ${report.fallbacksUsed.length}`);
-  originalConsole.log(`Circular Dependencies: ${report.circularDependencies.length}`);
+  // Enhanced console styling and grouping
+  console.group('%c📊 Module Diagnostics Report', 'font-size: 16px; font-weight: bold; color: #2196F3; background: #E3F2FD; padding: 4px 8px; border-radius: 4px;');
+  
+  // Summary with color coding
+  const statusColor = report.status === 'ok' ? '#4CAF50' : '#F44336';
+  console.log(`%cStatus: ${report.status.toUpperCase()}`, `color: ${statusColor}; font-weight: bold;`);
+  console.log(`Timestamp: ${report.timestamp}`);
+  
+  // Statistics table
+  console.table({
+    'Loaded Modules': report.loadedModules.length,
+    'Failed Modules': report.failedModules.length,
+    'Fallbacks Used': report.fallbacksUsed.length,
+    'Circular Dependencies': report.circularDependencies.length,
+    'Total Load Time': `${report.totalLoadTime}ms`
+  });
   
   if (report.failedModules.length > 0) {
-    originalConsole.log('%c❌ Failed Modules:', 'font-weight: bold; color: red;');
+    console.group('%c❌ Failed Modules:', 'font-weight: bold; color: red;');
     report.failedModules.forEach(modulePath => {
       const failures = moduleTracker.failures.get(modulePath);
-      originalConsole.log(`  - ${modulePath} (${failures.length} failures)`);
+      console.group(`📁 ${modulePath} (${failures.length} failures)`);
+      
       failures.forEach((failure, index) => {
-        originalConsole.log(`    Failure #${index + 1}: ${failure.error}`);
+        console.group(`Failure #${index + 1}`);
+        console.error(createErrorReport(failure));
+        console.groupEnd();
       });
+      
+      console.groupEnd();
     });
+    console.groupEnd();
   }
   
   if (report.circularDependencies.length > 0) {
@@ -390,10 +412,12 @@ export function logDiagnosticReport() {
     });
   }
   
-  originalConsole.log('%c⏱️ Module Loading Times (Top 5):', 'font-weight: bold;');
+  console.log('%c⏱️ Module Loading Times (Top 5):', 'font-weight: bold;');
   report.loadingTimes.slice(0, 5).forEach(item => {
-    originalConsole.log(`  - ${item.module}: ${item.loadTime}ms`);
+    console.log(`  - ${item.module}: ${item.loadTime}ms`);
   });
+  
+  console.groupEnd(); // Close main diagnostic report group
 }
 
 /**
@@ -662,6 +686,114 @@ function createFixedFileProcessorModule() {
     initialize: () => true,
     processFiles: () => Promise.resolve({ success: true })
   };
+}
+
+/**
+ * Extract error location from stack trace
+ * @param {Error} error - The error object
+ * @returns {Object} - Location information
+ */
+function extractErrorLocation(error) {
+  if (!error.stack) return null;
+  
+  const stackLines = error.stack.split('\n');
+  // Find the first stack frame that's not from module loading internals
+  for (const line of stackLines) {
+    if (line.includes('.js:') && !line.includes('moduleLoader.js') && !line.includes('import(')) {
+      const match = line.match(/(\S+\.js):(\d+):(\d+)/);
+      if (match) {
+        return {
+          file: match[1],
+          line: parseInt(match[2]),
+          column: parseInt(match[3]),
+          context: line.trim()
+        };
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Get suggestions for common error types
+ * @param {Error} error - The error object
+ * @param {string} modulePath - Module path
+ * @returns {Array} - Array of suggestions
+ */
+function getSuggestionsForError(error, modulePath) {
+  const suggestions = [];
+  const errorMsg = error.message.toLowerCase();
+  
+  // Timeout errors
+  if (errorMsg.includes('timeout')) {
+    suggestions.push('Increase module loading timeout in index.js');
+    suggestions.push('Check for infinite loops or heavy synchronous operations');
+    suggestions.push('Consider lazy loading or code splitting');
+  }
+  
+  // Import/Export errors
+  if (errorMsg.includes('export') || errorMsg.includes('import')) {
+    suggestions.push('Check export/import statements match');
+    suggestions.push('Ensure all dependencies are properly exported');
+    suggestions.push('Look for circular dependencies');
+  }
+  
+  // Syntax errors
+  if (error.name === 'SyntaxError') {
+    suggestions.push('Check for missing semicolons or brackets');
+    suggestions.push('Validate JavaScript syntax with a linter');
+    suggestions.push('Look for unsupported ES6+ features');
+  }
+  
+  // Reference errors
+  if (error.name === 'ReferenceError') {
+    suggestions.push('Check variable/function is defined before use');
+    suggestions.push('Verify import statements for required dependencies');
+    suggestions.push('Check for typos in variable/function names');
+  }
+  
+  // Module specific suggestions
+  if (modulePath.includes('ui.js')) {
+    suggestions.push('Check DOM manipulation doesn\'t happen before DOM ready');
+    suggestions.push('Verify Bootstrap and other UI dependencies are loaded');
+  }
+  
+  if (modulePath.includes('socketHandler')) {
+    suggestions.push('Ensure Socket.IO client library is loaded');
+    suggestions.push('Check server connection is available');
+  }
+  
+  return suggestions;
+}
+
+/**
+ * Create enhanced error report
+ * @param {Object} errorDetails - Error details object
+ * @returns {string} - Formatted error report
+ */
+function createErrorReport(errorDetails) {
+  let report = `
+Error Type: ${errorDetails.type}
+Message: ${errorDetails.error}
+Timestamp: ${new Date(errorDetails.timestamp).toISOString()}
+`;
+
+  if (errorDetails.location) {
+    report += `
+Location: ${errorDetails.location.file}:${errorDetails.location.line}:${errorDetails.location.column}
+Context: ${errorDetails.location.context}
+`;
+  }
+
+  if (errorDetails.suggestions && errorDetails.suggestions.length > 0) {
+    report += '\nSuggestions:\n';
+    errorDetails.suggestions.forEach((suggestion, i) => {
+      report += `  ${i + 1}. ${suggestion}\n`;
+    });
+  }
+
+  return report;
 }
 
 /**

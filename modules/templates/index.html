@@ -848,95 +848,153 @@
         }
     </script>
     
-    <!-- Keyboard Shortcuts Handler -->
-    <script>
-        document.addEventListener('keydown', function(e) {
-            // Ctrl + Digit shortcuts for tab navigation
-            if (e.ctrlKey && e.code.startsWith('Digit')) {
-                const digit = parseInt(e.code.replace('Digit', ''));
-                if (digit >= 1 && digit <= 4) {
-                    e.preventDefault();
-                    const tabButtons = document.querySelectorAll('#processorTabs .nav-link');
-                    if (tabButtons.length >= digit) {
-                        tabButtons[digit - 1].click();
-                    }
-                }
-            }
-            
-            // Ctrl + O to open JSON when available
-            if (e.ctrlKey && e.code === 'KeyO') {
-                e.preventDefault();
-                const openButton = document.querySelector('.open-json-btn:not(.d-none)');
-                if (openButton) {
-                    openButton.click();
-                }
-            }
-            
-            // Ctrl + N for new task when available
-            if (e.ctrlKey && e.code === 'KeyN') {
-                e.preventDefault();
-                const newTaskBtn = document.querySelector('#new-task-btn:not(.d-none), #playlist-new-task-btn:not(.d-none), #scraper-new-task-btn:not(.d-none), #cancelled-new-task-btn:not(.d-none)');
-                if (newTaskBtn) {
-                    newTaskBtn.click();
-                }
-            }
-            
-            // Ctrl + H for help
-            if (e.ctrlKey && e.code === 'KeyH') {
-                e.preventDefault();
-                const shortcutsModal = new bootstrap.Modal(document.getElementById('keyboard-shortcuts-modal'));
-                shortcutsModal.show();
-            }
-        });
-    </script>
+    <!-- Keyboard shortcuts are now handled by keyboardShortcuts.js module -->
     
-    <!-- Module Loader -->
+    <!-- Enhanced Module Loader -->
     <script type="module">
-        // Log the module loading attempt
-        console.log("Initializing NeuroGen Processor module system...");
+        // Track initialization stages
+        window.__moduleLoadStart = performance.now();
+        window.__loadingStages = {
+            scriptLoaded: false,
+            modulesImported: false,
+            appInitialized: false,
+            errors: []
+        };
         
-        // Import the main module
-        import { default as app } from "{{ url_for('static', filename='js/index.js') }}";
+        // Create loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.id = 'module-loading-indicator';
+        loadingIndicator.className = 'position-fixed top-0 start-0 w-100';
+        loadingIndicator.style.cssText = 'height: 3px; background: linear-gradient(90deg, #007bff 0%, #0056b3 50%, #007bff 100%); background-size: 200% 100%; animation: loading 1.5s ease-in-out infinite; z-index: 9999;';
+        loadingIndicator.innerHTML = '<style>@keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }</style>';
+        document.body.appendChild(loadingIndicator);
         
-        // Log successful module loading
-        console.log("NeuroGen Processor module system loaded successfully!");
-        
-        // Add a hidden error container that we can use to show problems
-        const errorContainer = document.getElementById('app-loading-error') || 
-            document.createElement('div');
-        
-        if (!document.getElementById('app-loading-error')) {
-            errorContainer.id = 'app-loading-error';
-            errorContainer.className = 'alert alert-danger m-3';
-            errorContainer.style.display = 'none';
-            document.body.appendChild(errorContainer);
-        }
-        
-        window.addEventListener('load', () => {
-            // Set a timeout to check if app was initialized
-            setTimeout(() => {
-                if (!window.appInitialized && !document.body.classList.contains('app-initialized')) {
-                    console.warn("App not initialized after 2 seconds, showing error");
-                    errorContainer.innerHTML = `
-                        <h4>Application Initialization Failed</h4>
-                        <p>The application modules could not be loaded properly. This may be due to:</p>
-                        <ul>
-                            <li>Network connectivity issues</li>
-                            <li>JavaScript errors in the modules</li>
-                            <li>Missing dependencies</li>
-                        </ul>
-                        <p>Please check your browser console for errors and try refreshing the page.</p>
-                        <button class="btn btn-sm btn-primary mt-2" onclick="location.reload()">Refresh Page</button>
-                    `;
-                    errorContainer.style.display = 'block';
-                    
-                    // Try to access module instances for debugging
-                    if (window.moduleInstances) {
-                        console.log("Available modules:", Object.keys(window.moduleInstances));
-                    }
-                }
-            }, 2000);
+        // Enhanced error handling
+        window.addEventListener('error', (event) => {
+            window.__loadingStages.errors.push({
+                message: event.message,
+                filename: event.filename,
+                line: event.lineno,
+                column: event.colno,
+                timestamp: new Date().toISOString()
+            });
         });
+        
+        window.addEventListener('unhandledrejection', (event) => {
+            window.__loadingStages.errors.push({
+                message: event.reason?.message || event.reason,
+                type: 'promise_rejection',
+                timestamp: new Date().toISOString()
+            });
+        });
+        
+        try {
+            console.log("🚀 Initializing NeuroGen module system...");
+            
+            // Import with proper error handling
+            const moduleUrl = "{{ url_for('static', filename='js/index.js') }}";
+            const module = await import(moduleUrl);
+            
+            window.__loadingStages.modulesImported = true;
+            console.log("✅ Modules imported successfully");
+            
+            // Wait for app initialization with progressive timeout
+            const checkInitialization = async () => {
+                const maxAttempts = 30; // 30 seconds total
+                let attempts = 0;
+                
+                while (attempts < maxAttempts) {
+                    if (window.appInitialized || window.__appReady) {
+                        window.__loadingStages.appInitialized = true;
+                        const loadTime = performance.now() - window.__moduleLoadStart;
+                        console.log(`✅ Application initialized in ${loadTime.toFixed(0)}ms`);
+                        
+                        // Remove loading indicator with fade
+                        loadingIndicator.style.transition = 'opacity 0.3s';
+                        loadingIndicator.style.opacity = '0';
+                        setTimeout(() => loadingIndicator.remove(), 300);
+                        
+                        // Dispatch custom event
+                        window.dispatchEvent(new CustomEvent('appReady', {
+                            detail: { loadTime, stages: window.__loadingStages }
+                        }));
+                        
+                        return true;
+                    }
+                    
+                    // Progressive delay: faster checks initially, slower later
+                    const delay = attempts < 5 ? 200 : attempts < 10 ? 500 : 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    attempts++;
+                }
+                
+                return false;
+            };
+            
+            const initialized = await checkInitialization();
+            
+            if (!initialized) {
+                throw new Error('Application failed to initialize within timeout period');
+            }
+            
+        } catch (error) {
+            console.error("❌ Module loading failed:", error);
+            window.__loadingStages.errors.push({
+                message: error.message,
+                stack: error.stack,
+                type: 'module_load_error',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Enhanced error display
+            loadingIndicator.remove();
+            
+            const errorContainer = document.createElement('div');
+            errorContainer.id = 'app-loading-error';
+            errorContainer.className = 'alert alert-danger m-3 shadow-lg';
+            errorContainer.innerHTML = `
+                <div class="d-flex align-items-start">
+                    <i class="fas fa-exclamation-triangle fa-2x me-3 text-danger"></i>
+                    <div class="flex-grow-1">
+                        <h4 class="alert-heading">Application Loading Error</h4>
+                        <p class="mb-2">The application failed to load properly. Error details:</p>
+                        <div class="bg-dark text-light p-2 rounded mb-3" style="font-family: monospace; font-size: 0.9em;">
+                            ${error.message}
+                        </div>
+                        
+                        <details class="mb-3">
+                            <summary class="cursor-pointer">Technical Details</summary>
+                            <pre class="mt-2 p-2 bg-light rounded" style="font-size: 0.8em; max-height: 200px; overflow-y: auto;">
+Loading Stages: ${JSON.stringify(window.__loadingStages, null, 2)}
+
+Error Stack:
+${error.stack || 'No stack trace available'}
+                            </pre>
+                        </details>
+                        
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="location.reload()">
+                                <i class="fas fa-redo me-1"></i> Reload Page
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="this.closest('.alert').remove()">
+                                <i class="fas fa-times me-1"></i> Dismiss
+                            </button>
+                            <button class="btn btn-outline-info" onclick="window.__showModuleDiagnostics?.()">
+                                <i class="fas fa-stethoscope me-1"></i> Run Diagnostics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertBefore(errorContainer, document.body.firstChild);
+            
+            // Try to run diagnostics if available
+            if (window.moduleInstances?.moduleDiagnostics) {
+                console.log("📊 Running module diagnostics...");
+                window.moduleInstances.moduleDiagnostics.logReport();
+            }
+        }
     </script>
     
     <!-- Fallback for older browsers that don't support ES modules -->
@@ -1118,61 +1176,7 @@
 
 <!-- Page initialization and error recovery -->
 <script>
-    // Function to check system health
-    function checkSystemHealth() {
-        // Create a simple health check display
-        const healthIndicator = document.createElement('div');
-        healthIndicator.id = 'system-health-indicator';
-        healthIndicator.style.position = 'fixed';
-        healthIndicator.style.bottom = '10px';
-        healthIndicator.style.left = '10px';
-        healthIndicator.style.background = 'rgba(0,0,0,0.7)';
-        healthIndicator.style.color = 'white';
-        healthIndicator.style.padding = '5px 10px';
-        healthIndicator.style.borderRadius = '5px';
-        healthIndicator.style.fontSize = '12px';
-        healthIndicator.style.zIndex = '9999';
-        healthIndicator.style.display = 'none';
-        
-        document.body.appendChild(healthIndicator);
-        
-        // Function to update health status
-        window.updateSystemHealth = function(status, message) {
-            if (!document.getElementById('system-health-indicator')) return;
-            
-            const indicator = document.getElementById('system-health-indicator');
-            indicator.style.display = 'block';
-            
-            switch(status) {
-                case 'ok':
-                    indicator.style.background = 'rgba(40, 167, 69, 0.8)';
-                    indicator.innerHTML = '<i class="fas fa-check-circle"></i> System healthy';
-                    setTimeout(() => {
-                        indicator.style.display = 'none';
-                    }, 2000);
-                    break;
-                case 'warning':
-                    indicator.style.background = 'rgba(255, 193, 7, 0.8)';
-                    indicator.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message || 'Warning: System experiencing issues'}`;
-                    break;
-                case 'error':
-                    indicator.style.background = 'rgba(220, 53, 69, 0.8)';
-                    indicator.innerHTML = `<i class="fas fa-times-circle"></i> ${message || 'Error: System failed'}`;
-                    break;
-                default:
-                    indicator.style.display = 'none';
-            }
-        };
-        
-        // Initial health check
-        setTimeout(() => {
-            if (window.appInitialized) {
-                window.updateSystemHealth('ok');
-            } else {
-                window.updateSystemHealth('warning', 'Modules loading...');
-            }
-        }, 3000);
-    }
+    // System health monitoring is now handled by systemHealth.js module
     
     // Socket.io connection status indicator
     function setupSocketIndicator() {
@@ -1180,12 +1184,19 @@
         
         if (!socketStatus) return;
         
+        // Only setup socket if modules aren't handling it
+        if (window.appInitialized || (window.moduleInstances && window.moduleInstances.socketHandler)) {
+            return; // Let module system handle socket
+        }
+        
         // Setup initial state
         socketStatus.classList.remove('d-none');
         
         // Try to connect to socket.io
+        // DISABLED: Socket connection is handled by socketHandler module
+        /*
         try {
-            if (typeof io !== 'undefined') {
+            if (typeof io !== 'undefined' && !window.socket) {
                 const socket = io();
                 
                 socket.on('connect', () => {
@@ -1221,6 +1232,7 @@
             socketStatus.classList.add('disconnected');
             socketStatus.querySelector('.socket-status-text').textContent = 'Unavailable';
         }
+        */
     }
     
     // Simple toast notification system as fallback
@@ -1294,71 +1306,16 @@
         }
     }
     
-    // Initialize fallback systems
+    // Initialize minimal fallback systems
     document.addEventListener('DOMContentLoaded', function() {
-        checkSystemHealth();
+        // Only setup socket indicator and toasts as fallbacks
         setupSocketIndicator();
         setupFallbackToasts();
         
-        // Register drag and drop event handlers
-        const dropZone = document.getElementById('drop-zone');
-        if (dropZone) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }, false);
-            });
-            
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, function() {
-                    this.classList.add('drag-highlight');
-                }, false);
-            });
-            
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, function() {
-                    this.classList.remove('drag-highlight');
-                }, false);
-            });
-            
-            dropZone.addEventListener('drop', function(e) {
-                const files = e.dataTransfer.files;
-                const fileInput = document.getElementById('folder-input');
-                if (fileInput && files.length > 0) {
-                    // Update the file input (doesn't work directly, but we can use it for display)
-                    const inputDirField = document.getElementById('input-dir');
-                    if (inputDirField) {
-                        // Try to find a common directory path from the files
-                        const paths = Array.from(files).map(file => file.name);
-                        const folderName = paths[0].split('/')[0] || 'Selected Files';
-                        inputDirField.value = folderName;
-                    }
-                    
-                    // Show selected files info
-                    const selectedFilesInfo = document.getElementById('selected-files-info');
-                    if (selectedFilesInfo) {
-                        const totalSize = Array.from(files).reduce((sum, file) => sum + file.size, 0);
-                        const formatBytes = bytes => {
-                            if (bytes === 0) return '0 Bytes';
-                            const k = 1024;
-                            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                            const i = Math.floor(Math.log(bytes) / Math.log(k));
-                            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-                        };
-                        
-                        selectedFilesInfo.innerHTML = `
-                            <div class="alert alert-info mt-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <strong>${files.length} files selected</strong>
-                                    <span class="badge bg-primary">${formatBytes(totalSize)}</span>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-            }, false);
-        }
+        // Other functionality is handled by modules:
+        // - System health: systemHealth.js
+        // - Drag and drop: dragDropHandler.js
+        // - Keyboard shortcuts: keyboardShortcuts.js
     });
 </script>
 

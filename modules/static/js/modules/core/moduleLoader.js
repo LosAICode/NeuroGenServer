@@ -46,7 +46,7 @@ const moduleLoader = {
   // Default options for module loading
   defaultOptions: {
     maxRetries: 3,
-    timeout: 8000,
+    timeout: 15000, // Increased from 8000ms to 15000ms for better compatibility
     concurrencyLimit: 5,
     ignoreErrors: false,
     skipCache: false,

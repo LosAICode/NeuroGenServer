@@ -3,23 +3,30 @@
  * Main entry point for the NeuroGen Server frontend.
  * Initializes and connects all modules into a cohesive application.
  * 
- * Enhancements:
+ * Enhanced with:
  * 1. Improved module loading sequence with proper dependencies
  * 2. Better error handling and recovery mechanisms
  * 3. Streamlined initialization process
- * 4. Module dependency management
- * 5. Optimized module loading order for faster startup
- * 6. Circular dependency detection and resolution
- * 7. Proper handling of webScraper module
- * 8. Fixed function redeclaration issues
- * 9. Improved path resolution for module loading
- * 10. Enhanced playlistDownloader integration
+ * 4. Robust module dependency management
+ * 5. Special handling for playlistDownloader and other critical modules
+ * 6. Comprehensive diagnostics and recovery options
+ * 7. Performance tracking and optimization
+ * 8. Enhanced event handling for module communication
  */
 
-// Import moduleLoader as default only - we'll use its methods directly
+// Track initialization start time for performance metrics
+window.performanceStartTime = Date.now();
+
+// Import module diagnostics for better error detection and reporting
+import moduleDiagnostics from './modules/utils/moduleDiagnostics.js';
+
+// Import moduleLoader with only the methods we need
 import moduleLoader from './modules/core/moduleLoader.js';
 import themeManager from './modules/core/themeManager.js';
 
+// Initialize module diagnostics early
+const diagnostics = moduleDiagnostics();
+console.log("Module diagnostics initialized");
 
 // --------------------------------------------------------------------------
 // Module Path Definitions – optimized for proper dependency loading
@@ -42,18 +49,41 @@ const UTILITY_MODULES = [
   './modules/utils/fileHandler.js',
   './modules/utils/progressHandler.js',
   './modules/utils/socketHandler.js'
-  // Utility modules with explicit loading to ensure availability
 ];
 
 const OPTIONAL_MODULES = [
   './modules/features/fileProcessor.js',
-  './modules/features/webScraper.js',  // Now properly handled with special loading
+  './modules/features/webScraper.js',  
   './modules/features/historyManager.js',
   './modules/features/academicSearch.js',
-  './modules/features/playlistDownloader.js',  // Ensure this is present
+  './modules/features/playlistDownloader.js',
+  './modules/features/keyboardShortcuts.js',
+  './modules/features/dragDropHandler.js',
+  './modules/utils/systemHealth.js',
   './modules/utils/debugTools.js',
   './modules/utils/moduleDiagnostics.js'
 ];
+
+// Module dependencies - inform moduleLoader about dependencies
+const MODULE_DEPENDENCIES = {
+  'playlistDownloader.js': ['progressHandler.js', 'socketHandler.js', 'ui.js'],
+  'webScraper.js': ['progressHandler.js', 'socketHandler.js', 'ui.js'],
+  'fileProcessor.js': ['progressHandler.js', 'ui.js'],
+  'progressHandler.js': ['socketHandler.js'],
+  'academicSearch.js': ['webScraper.js'],
+  'keyboardShortcuts.js': ['ui.js'],
+  'dragDropHandler.js': ['utils.js', 'ui.js', 'domUtils.js'],
+  'systemHealth.js': ['domUtils.js']
+};
+
+// --------------------------------------------------------------------------
+// Module Path Overrides – ensures consistent path resolution
+// --------------------------------------------------------------------------
+const MODULE_PATH_OVERRIDES = {
+  './modules/features/playlistDownloader.js': '/static/js/modules/features/playlistDownloader.js',
+  'playlistDownloader.js': '/static/js/modules/features/playlistDownloader.js',
+  './playlistDownloader.js': '/static/js/modules/features/playlistDownloader.js'
+};
 
 // Make loaded modules available globally for backward compatibility
 window.moduleInstances = {};
@@ -85,25 +115,86 @@ if (typeof lockdown === 'function') {
   console.log("No lockdown function detected; proceeding without intrinsic whitelisting");
 }
 
+// Initialize diagnostics
+const diagnosticsModule = diagnostics || null;
+
+// Log after all modules are loaded
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    if (diagnosticsModule && typeof diagnosticsModule.logReport === 'function') {
+      diagnosticsModule.logReport();
+    }
+  }, 2000); // Wait for modules to finish loading
+});
+
+// --------------------------------------------------------------------------
+// Initialize immediately when module loads
+// --------------------------------------------------------------------------
+console.log("🔧 Index.js module loaded, waiting for DOM...");
+console.log("📊 Document readyState:", document.readyState);
+
+// Forward declarations - these functions are defined later in the file
+let createErrorContainer;
+let createLoadingOverlay;
+
+// Assign the functions immediately to avoid hoisting issues
+createErrorContainer = function() {
+  let errorContainer = document.getElementById('app-loading-error');
+  if (!errorContainer && document.body) {
+    errorContainer = document.createElement('div');
+    errorContainer.id = 'app-loading-error';
+    errorContainer.className = 'alert alert-danger m-3';
+    errorContainer.style.display = 'none';
+    document.body.appendChild(errorContainer);
+  }
+  return errorContainer;
+};
+
+createLoadingOverlay = function() {
+  // This will be properly defined later, for now just log
+  console.log("📋 Loading overlay requested (function will be defined later)");
+};
+
 // --------------------------------------------------------------------------
 // Document Ready – Application Initialization
 // --------------------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', async () => {
-  console.log("Page initialization started");
+async function initializeApp() {
+  console.log("🚀 Starting app initialization...");
   console.log("Initial localStorage theme:", localStorage.getItem('theme'));
   window.appInitializationStarted = true;
   
   // Create an error container early for any startup errors
   createErrorContainer();
   
+  // Create loading overlay to show initialization progress
+  createLoadingOverlay();
+  
   try {
-    // Initialize module loader with debug mode if on localhost
+    // Initialize module loader with enhanced settings
     const isDevEnvironment = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    
+    // Set up dependency configuration
+    moduleLoader.MODULE_DEPENDENCIES = MODULE_DEPENDENCIES;
+    
     moduleLoader.initialize({
       debug: isDevEnvironment,
       verboseLogging: isDevEnvironment,
-      timeout: 10000          // Longer timeout for module loading
+      timeout: 10000,          // Longer timeout for module loading
+      clearFailedModules: true, // Clear any previously failed modules
+      maxRetries: 3,           // Increase retries for better reliability
+      concurrencyLimit: 3      // Limit concurrent loading for stability
     });
+    
+    // Apply path overrides
+    Object.entries(MODULE_PATH_OVERRIDES).forEach(([path, target]) => {
+      moduleLoader.PATH_OVERRIDES[path] = target;
+    });
+    
+    // Fix any previously failed modules
+    if (moduleLoader.failedModules && moduleLoader.failedModules.size > 0) {
+      console.log("Fixing previously failed modules before loading");
+      moduleLoader.fixFailedModules();
+    }
     
     console.log("NeuroGen module system loaded successfully!");
 
@@ -113,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Set up basic fallback event handlers for early UI interaction
     setupBasicEventHandlers();
 
-    // Start a timeout for error detection
+    // Start a timeout for error detection with recovery mode
     const initTimeout = setTimeout(() => {
       if (!window.appInitialized) {
         console.warn("App not initialized after 10 seconds, activating recovery mode");
@@ -123,24 +214,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }, 10000);
 
+    // Set up error handlers to catch global errors
+    window.addEventListener('error', handleWindowError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
     // Sequential module loading for better dependency management
     console.log("Starting module loading sequence...");
     
     // Step 1: Load core modules (required)
     const coreModules = await loadCoreModules();
+    updateLoadingProgress(20, "Core modules loaded");
+    
     if (!coreModules) {
       throw new Error("Failed to load core modules");
     }
     
+    // Register module events after core modules are loaded
+    if (window.eventRegistry && window.registerModuleEvents) {
+      window.registerModuleEvents();
+      console.log("✅ Module events registered");
+    }
+    
     // Step 2: Load utility modules, as they're required by most features
-    // Handle problematic modules with special loading
     const utilModules = await loadUtilityModulesWithRetry();
+    updateLoadingProgress(40, "Utility modules loaded");
+    
     if (!utilModules) {
       console.warn("Some utility modules failed to load, continuing with fallbacks");
     }
     
     // Step 3: Load feature modules (app and UI functionality)
     const featureModules = await loadFeatureModules();
+    updateLoadingProgress(60, "Feature modules loaded");
     
     // Step 4: Load the UI module specifically since it's likely to have issues
     const uiModule = await loadUiModule();
@@ -152,9 +257,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Step 5: Initialize the application with loaded modules
     await initializeApplication(coreModules, featureModules, utilModules);
+    updateLoadingProgress(80, "Application initialized");
     
-    // Step 6: Load optional modules (including webScraper) after main initialization
+    // Step 6: Load optional modules (including playlistDownloader) after main initialization
     const optionalModules = await loadOptionalModules();
+    updateLoadingProgress(90, "Optional modules loaded");
 
     // Step 7: Initialize optional modules
     await initializeOptionalModules(optionalModules, coreModules);
@@ -171,42 +278,154 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Clear the timeout since initialization succeeded
     clearTimeout(initTimeout);
     
+    // Record initialization time for performance tracking
+    const initTime = Date.now() - (window.performanceStartTime || 0);
+    console.log(`App initialized in ${initTime}ms`);
+    
+    // Record performance metrics
+    recordPerformanceMetrics();
+    
     console.log('NeuroGen Server frontend initialized successfully');
 
     // Emit app.initialized event if eventRegistry is available
     if (coreModules.eventRegistry) {
-      coreModules.eventRegistry.emit('app.initialized', { timestamp: new Date().toISOString() });
+      coreModules.eventRegistry.emit('app.initialized', { 
+        timestamp: new Date().toISOString(),
+        initTime
+      });
     }
     
-    // Remove loading overlay if it exists
-    const loadingOverlay = document.getElementById('app-loading-overlay');
-    if (loadingOverlay) {
-      loadingOverlay.classList.add('fade-out');
-      setTimeout(() => {
-        loadingOverlay.remove();
-      }, 500);
+    // Verify important modules are loaded
+    if (moduleLoader.checkModuleHealth) {
+      const moduleHealthCheck = moduleLoader.checkModuleHealth();
+      if (moduleHealthCheck && moduleHealthCheck.moduleIsFallback) {
+        console.warn("Warning: Some critical modules are using fallback implementations");
+      }
     }
+    
+    // Complete loading progress
+    updateLoadingProgress(100, "Application loaded");
+    
+    // Remove loading overlay with a fade effect
+    setTimeout(() => {
+      removeLoadingOverlay();
+    }, 500);
     
     // Add diagnostics button if in development mode
     if (isDevEnvironment) {
-      setTimeout(addDiagnosticsButton, 1000);
+      setTimeout(() => {
+        if (moduleLoader.createDiagnosticsButton) {
+          moduleLoader.createDiagnosticsButton();
+        } else {
+          addDiagnosticsButton();
+        }
+      }, 1000);
     }
+    
+    // Enhance Socket.IO integration for playlist events
+    setTimeout(() => {
+      enhanceSocketIOIntegration();
+    }, 1500);
   } catch (error) {
     console.error("Error during application initialization:", error);
     showErrorMessage("Application initialization failed: " + error.message);
     
     // Activate recovery mode
+    await setupRecoveryMode();
+    
+    // Try direct activation of recovery mode in moduleLoader
     if (moduleLoader.activateRecoveryMode) {
       await moduleLoader.activateRecoveryMode();
     }
-    setupRecoveryMode();
+    
+    // Remove loading overlay
+    removeLoadingOverlay();
   }
-});
+}
 
+// Call initialization when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  // DOM already loaded, initialize immediately
+  initializeApp();
+}
+
+// Also set a flag for the module loader in index.html
+window.__appReady = true;
+
+// --------------------------------------------------------------------------
+// Error Handling Functions
+// --------------------------------------------------------------------------
+
+/**
+ * Handle window errors and detect module loading issues
+ * @param {ErrorEvent} event - The error event
+ * @returns {boolean} - Whether the error was handled
+ */
+function handleWindowError(event) {
+  // If we're in recovery mode, suppress additional errors
+  if (window._inRecoveryMode) return true;
+  
+  console.error("Window error caught:", event.message);
+  
+  // Check if the error is related to module loading
+  if (event.message && (
+    event.message.includes('module') || 
+    event.message.includes('import') || 
+    event.message.includes('undefined') ||
+    event.message.includes('is not a function') ||
+    event.message.includes('Cannot read property')
+  )) {
+    // This could be a module loading issue, trigger recovery
+    setupRecoveryMode();
+    
+    // Prevent default handling to keep console cleaner
+    event.preventDefault();
+    return true;
+  }
+  
+  return false;
+}
+
+/**
+ * Handle unhandled promise rejections
+ * @param {PromiseRejectionEvent} event - The rejection event
+ * @returns {boolean} - Whether the rejection was handled
+ */
+function handleUnhandledRejection(event) {
+  // If we're in recovery mode, suppress additional errors
+  if (window._inRecoveryMode) return true;
+  
+  console.error("Unhandled promise rejection:", event.reason);
+  
+  // Check if rejection is related to module loading
+  const reason = event.reason ? (event.reason.toString ? event.reason.toString() : String(event.reason)) : '';
+  
+  if (reason.includes('module') || 
+      reason.includes('import') || 
+      reason.includes('failed') ||
+      reason.includes('is not a function') ||
+      reason.includes('Cannot read property')) {
+    // This could be a module loading issue, trigger recovery
+    setupRecoveryMode();
+    
+    // Prevent default handling
+    event.preventDefault();
+    return true;
+  }
+  
+  return false;
+}
 
 // --------------------------------------------------------------------------
 // Core Module Loader Functions
 // --------------------------------------------------------------------------
+
+/**
+ * Load core modules with optimized loading and error handling
+ * @returns {Promise<Object>} - Loaded core modules
+ */
 async function loadCoreModules() {
   console.log("Loading core modules...");
 
@@ -222,10 +441,10 @@ async function loadCoreModules() {
 
     // Import core modules with retry to ensure they load
     const modules = await moduleLoader.importModules(normalizedPaths, true, {
-      retries: 2,
+      retries: 3,
       timeout: 8000,
-      // Important: This fixes the auto-creating exports error
-      standardizeExports: false
+      standardizeExports: true,
+      clearFailedModules: true
     });
 
     // Extract module instances
@@ -259,203 +478,9 @@ async function loadCoreModules() {
 }
 
 /**
- * Load feature modules with enhanced safe file processor integration
- * @returns {Object} - Loaded feature modules
+ * Load utility modules with enhanced retry mechanism and special handling
+ * @returns {Promise<Object>} - Loaded utility modules
  */
-async function loadFeatureModules() {
-  console.log("Loading feature modules...");
-
-  try {
-    // Normalize paths
-    const normalizedPaths = FEATURE_MODULES.map(path => {
-      if (!path.startsWith('/static/js/') && !path.startsWith('./')) {
-        return `/static/js/${path}`;
-      }
-      return path;
-    });
-
-    const modules = await moduleLoader.importModules(normalizedPaths, false, {
-      retries: 1,
-      timeout: 5000,
-      standardizeExports: false // Disable auto-export to prevent errors
-    });
-    
-    // Extract module instances
-    const featureModuleInstances = {};
-    
-    for (const [moduleName, moduleExport] of Object.entries(modules)) {
-      if (!moduleExport) {
-        console.warn(`Feature module failed to load: ${moduleName}`);
-        continue;
-      }
-
-      featureModuleInstances[moduleName] = moduleExport;
-      
-      // Make global reference
-      window[moduleName] = moduleExport;
-      window.moduleInstances[moduleName] = moduleExport;
-    }
-    
-    // Load safe file processor wrapper
-    try {
-      console.log("Loading safe file processor wrapper...");
-      const safeFileProcessor = await moduleLoader.loadModule('./modules/utils/safeFileProcessor.js');
-      if (safeFileProcessor) {
-        console.log("Safe file processor module loaded successfully");
-        featureModuleInstances.fileProcessor = safeFileProcessor;
-        window.fileProcessor = safeFileProcessor;
-        window.moduleInstances.fileProcessor = safeFileProcessor;
-      }
-    } catch (safeFileProcessorError) {
-      console.error("Error loading safe file processor:", safeFileProcessorError);
-      
-      // Try to fallback to regular fileProcessor if safe version fails
-      try {
-        console.log("Attempting fallback to standard fileProcessor...");
-        const fileProcessor = await moduleLoader.loadModule('./modules/features/fileProcessor.js');
-        if (fileProcessor) {
-          console.log("Standard file processor loaded as fallback");
-          featureModuleInstances.fileProcessor = fileProcessor;
-          window.fileProcessor = fileProcessor;
-          window.moduleInstances.fileProcessor = fileProcessor;
-        }
-      } catch (fileProcessorError) {
-        console.error("Error loading standard file processor fallback:", fileProcessorError);
-      }
-    }
-    
-    console.log("Feature modules loaded successfully");
-    return featureModuleInstances;
-  } catch (error) {
-    console.error("Error loading feature modules:", error);
-    return {}; // Return empty object to continue initialization
-  }
-}
-
-// Special handling for UI module which had redeclaration issues
-async function loadUiModule() {
-  console.log("Loading UI module with special handling...");
-  
-  try {
-    const modulePath = './modules/utils/ui.js';
-    
-    // Try to load the UI module with multiple retries
-    const uiModule = await moduleLoader.importModule(modulePath, {
-      retries: 3,
-      timeout: 5000,
-      standardizeExports: false // Disable auto-export to prevent errors
-    });
-    
-    if (uiModule) {
-      console.log("UI module loaded successfully");
-      return uiModule;
-    } else {
-      console.warn("UI module failed to load, using fallback");
-      return createUiFallback();
-    }
-  } catch (error) {
-    console.error("Error loading UI module:", error);
-    return createUiFallback();
-  }
-}
-
-// Basic UI fallback in case the module fails to load
-function createUiFallback() {
-  console.warn("Creating fallback for UI module");
-  
-  return {
-    __isFallback: true,
-    
-    initialize() {
-      console.warn("Using fallback UI module");
-      return Promise.resolve(true);
-    },
-    
-    showToast(title, message, type = 'info') {
-      console.log(`[${type.toUpperCase()}] ${title}: ${message}`);
-      
-      // Try to create a simple toast
-      const toastContainer = document.getElementById('toast-container') || document.createElement('div');
-      if (!toastContainer.id) {
-        toastContainer.id = 'toast-container';
-        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-        document.body.appendChild(toastContainer);
-      }
-      
-      const toast = document.createElement('div');
-      toast.className = 'toast fade show';
-      
-      // Choose color based on type
-      let headerClass = 'bg-primary';
-      if (type === 'error' || type === 'danger') headerClass = 'bg-danger';
-      if (type === 'success') headerClass = 'bg-success';
-      if (type === 'warning') headerClass = 'bg-warning';
-      
-      toast.innerHTML = `
-        <div class="toast-header ${headerClass} text-white">
-          <strong class="me-auto">${title}</strong>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body">${message}</div>
-      `;
-      
-      toastContainer.appendChild(toast);
-      
-      // Auto-remove toast after 5 seconds
-      setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 150);
-      }, 5000);
-    },
-    
-    showLoading() {
-      console.warn("Fallback UI showLoading called");
-      return { hide: () => {} };
-    },
-    
-    hideLoading() {
-      return true;
-    },
-    
-    updateProgressBarElement(progressBar, progress) {
-      if (!progressBar) return;
-      const percent = Math.round(progress);
-      progressBar.style.width = `${percent}%`;
-      progressBar.setAttribute('aria-valuenow', percent);
-      progressBar.textContent = `${percent}%`;
-    },
-    
-    updateProgressStatus(statusElement, message) {
-      if (!statusElement) return;
-      statusElement.textContent = message;
-    }
-  };
-}
-
-// Override the initialize method to add extra logging
-const originalInitialize = themeManager.initialize;
-themeManager.initialize = function(options) {
-  console.log("Theme manager initialize called with options:", options);
-  console.log("localStorage theme before initialization:", localStorage.getItem('theme'));
-  const result = originalInitialize.call(this, options);
-  console.log("localStorage theme after initialization:", localStorage.getItem('theme'));
-  console.log("Current theme after initialization:", this.getTheme());
-  return result;
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-  console.log("DOM loaded, initializing theme manager...");
-  
-  // Initialize with proper options
-  themeManager.initialize();
-  
-  // Add extra checks after initialization
-  setTimeout(() => {
-    console.log("DELAYED CHECK - Current theme:", themeManager.getTheme());
-    console.log("DELAYED CHECK - localStorage theme:", localStorage.getItem('theme'));
-  }, 1000);
-});
-
 async function loadUtilityModulesWithRetry() {
   console.log("Loading utility modules with special handling...");
   
@@ -470,9 +495,10 @@ async function loadUtilityModulesWithRetry() {
 
     const modules = await moduleLoader.importModules(normalizedPaths, false, {
       concurrencyLimit: 2,
-      retries: 2,
-      timeout: 5000,
-      standardizeExports: false // Disable auto-export to prevent errors
+      retries: 3,
+      timeout: 15000, // Increased from 6000ms to 15000ms
+      standardizeExports: true,
+      clearFailedModules: true
     });
     
     // Extract module instances
@@ -495,10 +521,10 @@ async function loadUtilityModulesWithRetry() {
     if (!utilityModuleInstances.progressHandler) {
       console.warn("progressHandler not loaded, attempting direct load");
       try {
-        const progressHandler = await moduleLoader.importModule('./modules/utils/progressHandler.js', {
+        const progressHandler = await moduleLoader.ensureModule('progressHandler', {
           retries: 3,
           timeout: 8000,
-          standardizeExports: false
+          required: true
         });
         
         if (progressHandler) {
@@ -516,10 +542,10 @@ async function loadUtilityModulesWithRetry() {
     if (!utilityModuleInstances.socketHandler) {
       console.warn("socketHandler not loaded, attempting direct load");
       try {
-        const socketHandler = await moduleLoader.importModule('./modules/utils/socketHandler.js', {
+        const socketHandler = await moduleLoader.ensureModule('socketHandler', {
           retries: 3,
           timeout: 8000,
-          standardizeExports: false
+          required: true
         });
         
         if (socketHandler) {
@@ -541,16 +567,145 @@ async function loadUtilityModulesWithRetry() {
   }
 }
 
+/**
+ * Load feature modules with enhanced handling
+ * @returns {Promise<Object>} - Loaded feature modules
+ */
+async function loadFeatureModules() {
+  console.log("Loading feature modules...");
+
+  try {
+    // Normalize paths
+    const normalizedPaths = FEATURE_MODULES.map(path => {
+      if (!path.startsWith('/static/js/') && !path.startsWith('./')) {
+        return `/static/js/${path}`;
+      }
+      return path;
+    });
+
+    const modules = await moduleLoader.importModules(normalizedPaths, false, {
+      retries: 2,
+      timeout: 15000, // Increased from 6000ms to 15000ms
+      standardizeExports: true
+    });
+    
+    // Extract module instances
+    const featureModuleInstances = {};
+    
+    for (const [moduleName, moduleExport] of Object.entries(modules)) {
+      if (!moduleExport) {
+        console.warn(`Feature module failed to load: ${moduleName}`);
+        continue;
+      }
+
+      featureModuleInstances[moduleName] = moduleExport;
+      
+      // Make global reference
+      window[moduleName] = moduleExport;
+      window.moduleInstances[moduleName] = moduleExport;
+    }
+    
+    // Load safe file processor wrapper
+    try {
+      console.log("Loading safe file processor wrapper...");
+      const safeFileProcessor = await moduleLoader.loadModule('./modules/utils/safeFileProcessor.js', {
+        retries: 2,
+        timeout: 5000
+      });
+      if (safeFileProcessor) {
+        console.log("Safe file processor module loaded successfully");
+        featureModuleInstances.fileProcessor = safeFileProcessor;
+        window.fileProcessor = safeFileProcessor;
+        window.moduleInstances.fileProcessor = safeFileProcessor;
+      }
+    } catch (safeFileProcessorError) {
+      console.error("Error loading safe file processor:", safeFileProcessorError);
+      
+      // Try to fallback to regular fileProcessor if safe version fails
+      try {
+        console.log("Attempting fallback to standard fileProcessor...");
+        const fileProcessor = await moduleLoader.loadModule('./modules/features/fileProcessor.js', {
+          retries: 2,
+          timeout: 5000
+        });
+        if (fileProcessor) {
+          console.log("Standard file processor loaded as fallback");
+          featureModuleInstances.fileProcessor = fileProcessor;
+          window.fileProcessor = fileProcessor;
+          window.moduleInstances.fileProcessor = fileProcessor;
+        }
+      } catch (fileProcessorError) {
+        console.error("Error loading standard file processor fallback:", fileProcessorError);
+      }
+    }
+    
+    console.log("Feature modules loaded successfully");
+    return featureModuleInstances;
+  } catch (error) {
+    console.error("Error loading feature modules:", error);
+    return {}; // Return empty object to continue initialization
+  }
+}
+
+/**
+ * Special handling for UI module which had redeclaration issues
+ * @returns {Promise<Object>} - Loaded UI module or fallback
+ */
+async function loadUiModule() {
+  console.log("Loading UI module with special handling...");
+  
+  try {
+    const modulePath = './modules/utils/ui.js';
+    
+    // Try to load the UI module with multiple retries
+    const uiModule = await moduleLoader.ensureModule('ui', {
+      retries: 3,
+      timeout: 5000,
+      standardizeExports: true,
+      clearFailedModules: true
+    });
+    
+    if (uiModule) {
+      console.log("UI module loaded successfully");
+      return uiModule;
+    } else {
+      console.warn("UI module failed to load, using fallback");
+      return createUiFallback();
+    }
+  } catch (error) {
+    console.error("Error loading UI module:", error);
+    return createUiFallback();
+  }
+}
+
+/**
+ * Load optional modules with special handling for critical modules like playlistDownloader
+ * @returns {Promise<Object>} - Loaded optional modules
+ */
 async function loadOptionalModules() {
   console.log("Loading optional modules...");
   
+  // Clear any failed modules before attempting to load
+  if (moduleLoader.failedModules && moduleLoader.failedModules.size > 0) {
+    console.log(`Clearing ${moduleLoader.failedModules.size} failed modules before loading`);
+    moduleLoader.fixFailedModules();
+  }
+  
   try {
+    // Special handling for playlistDownloader since it's a critical module
+    const playlistDownloaderModule = await loadPlaylistDownloaderSafely();
+    
     // Special handling for webScraper since it may have issues
     const webScraperModule = await loadWebScraperSafely();
     
+    // Special handling for academicSearch module (common issue reported)
+    const academicSearchModule = await loadAcademicSearchSafely();
+    
     // Normalize paths for other optional modules
     const normalizedPaths = OPTIONAL_MODULES
-      .filter(path => !path.includes('webScraper')) // Skip webScraper as it's loaded separately
+      .filter(path => !path.includes('playlistDownloader') && 
+                      !path.includes('webScraper') && 
+                      !path.includes('academicSearch')) 
       .map(path => {
         if (!path.startsWith('/static/js/') && !path.startsWith('./')) {
           return `/static/js/${path}`;
@@ -561,8 +716,9 @@ async function loadOptionalModules() {
     // Load other optional modules
     const modules = await moduleLoader.importModules(normalizedPaths, false, {
       concurrencyLimit: 2,
-      timeout: 8000,
-      standardizeExports: false, // Disable auto-export to prevent errors
+      timeout: 15000, // Increased from 8000ms to 15000ms
+      standardizeExports: true, 
+      retries: 2,
       ignoreErrors: true // Continue even if some fail
     });
     
@@ -582,11 +738,23 @@ async function loadOptionalModules() {
       window.moduleInstances[moduleName] = moduleExport;
     }
     
-    // Add webScraper module if loaded
+    // Add specifically loaded modules if they succeeded
     if (webScraperModule) {
       optionalModuleInstances.webScraper = webScraperModule;
       window.webScraper = webScraperModule;
       window.moduleInstances.webScraper = webScraperModule;
+    }
+    
+    if (playlistDownloaderModule) {
+      optionalModuleInstances.playlistDownloader = playlistDownloaderModule;
+      window.playlistDownloader = playlistDownloaderModule;
+      window.moduleInstances.playlistDownloader = playlistDownloaderModule;
+    }
+    
+    if (academicSearchModule) {
+      optionalModuleInstances.academicSearch = academicSearchModule;
+      window.academicSearch = academicSearchModule;
+      window.moduleInstances.academicSearch = academicSearchModule;
     }
     
     console.log("Optional modules loaded successfully");
@@ -597,38 +765,1347 @@ async function loadOptionalModules() {
   }
 }
 
-// Special handling for webScraper module
+/**
+ * Special loader for academicSearch module
+ * @returns {Promise<Object>} - Loaded academicSearch module or fallback
+ */
+async function loadAcademicSearchSafely() {
+  try {
+    console.log("Loading academicSearch module carefully...");
+    
+    // Try to load dependencies first - webScraper is a dependency
+    await moduleLoader.ensureModule('webScraper', {
+      retries: 2,
+      timeout: 8000
+    });
+    
+    // Then try to load academicSearch with extra care
+    const module = await moduleLoader.importModule('./modules/features/academicSearch.js', {
+      retries: 2,
+      timeout: 8000,
+      standardizeExports: true,
+      clearFailedModules: true
+    });
+    
+    if (module) {
+      console.log("academicSearch module loaded successfully");
+      return module;
+    } else {
+      console.warn("academicSearch module failed to load, will use fallback");
+      return createAcademicSearchFallback();
+    }
+  } catch (error) {
+    console.error("Error loading academicSearch module:", error);
+    return createAcademicSearchFallback();
+  }
+}
+
+/**
+ * Special loader function for the playlist downloader module
+ * Handles various loading scenarios with fallbacks
+ * @returns {Promise<Object>} - Loaded playlistDownloader module or fallback
+ */
+async function loadPlaylistDownloaderSafely() {
+  try {
+    console.log("Loading playlist downloader module with special handling...");
+    
+    // Check if we already have the module loaded
+    if (window.playlistDownloader && typeof window.playlistDownloader.initialize === 'function') {
+      console.log("PlaylistDownloader already loaded, using existing instance");
+      return window.playlistDownloader;
+    }
+    
+    // Try to load dependencies first
+    await moduleLoader.ensureModule('socketHandler', {
+      retries: 2,
+      timeout: 8000
+    });
+    
+    await moduleLoader.ensureModule('progressHandler', {
+      retries: 2,
+      timeout: 8000
+    });
+    
+    await moduleLoader.ensureModule('ui', {
+      retries: 2,
+      timeout: 8000
+    });
+    
+    // Define all potential paths to try in order
+    const possiblePaths = [
+      './modules/features/playlistDownloader.js',
+      '/static/js/modules/features/playlistDownloader.js',
+      'playlistDownloader.js',
+      './modules/playlistDownloader.js'
+    ];
+    
+    // Try each path in sequence until one succeeds
+    for (const path of possiblePaths) {
+      try {
+        console.log(`Attempting to load playlistDownloader from: ${path}`);
+        
+        const playlistModule = await moduleLoader.importModule(path, {
+          retries: 3,
+          timeout: 10000,
+          standardizeExports: true,
+          clearFailedModules: true
+        });
+        
+        if (playlistModule) {
+          console.log(`Successfully loaded playlistDownloader from ${path}`);
+          
+          // Initialize if not already initialized
+          if (typeof playlistModule.initialize === 'function' && 
+              !(playlistModule.initialized || 
+                (typeof playlistModule.isInitialized === 'function' && 
+                 playlistModule.isInitialized()))) {
+            try {
+              console.log("Initializing playlistDownloader module");
+              await playlistModule.initialize();
+              console.log("playlistDownloader module initialized successfully");
+            } catch (initError) {
+              console.warn("Error initializing playlistDownloader module:", initError);
+            }
+          }
+          
+          return playlistModule;
+        }
+      } catch (loadError) {
+        console.warn(`Failed to load from ${path}:`, loadError);
+        // Continue to next path
+      }
+    }
+    
+    // If we get here, all paths failed - try using loadModuleWithDependencies
+    try {
+      console.log("Attempting to load playlistDownloader with dependencies...");
+      const result = await moduleLoader.loadModule(
+        './modules/features/playlistDownloader.js',
+        {
+          retries: 3,
+          timeout: 10000,
+          clearFailedModules: true
+        }
+      );
+      
+      if (result && result.module) {
+        console.log("Successfully loaded playlistDownloader with dependencies");
+        return result.module;
+      }
+    } catch (depError) {
+      console.error("Failed to load playlistDownloader with dependencies:", depError);
+    }
+    
+    // All approaches failed, create a fallback as last resort
+    console.warn("All approaches failed for playlistDownloader, using fallback implementation");
+    return moduleLoader.createPlaylistDownloaderFallback ? 
+           moduleLoader.createPlaylistDownloaderFallback() : 
+           createPlaylistDownloaderFallback();
+  } catch (error) {
+    console.error("Error in loadPlaylistDownloaderSafely:", error);
+    return moduleLoader.createPlaylistDownloaderFallback ? 
+           moduleLoader.createPlaylistDownloaderFallback() : 
+           createPlaylistDownloaderFallback();
+  }
+}
+
+/**
+ * Special handling for webScraper module
+ * @returns {Promise<Object>} - Loaded webScraper module or fallback
+ */
 async function loadWebScraperSafely() {
   try {
     console.log("Loading webScraper module carefully...");
     
-    // Attempt to load the webScraper module directly
-    const modulePath = './modules/features/webScraper.js';
-    const module = await moduleLoader.importModule(modulePath, {
+    // Try to load dependencies first
+    await moduleLoader.ensureModule('progressHandler', {
       retries: 2,
-      timeout: 10000, // Longer timeout for this complex module
-      standardizeExports: false // Disable auto-export to prevent errors
+      timeout: 8000
     });
     
-    if (module) {
+    await moduleLoader.ensureModule('socketHandler', {
+      retries: 2,
+      timeout: 8000
+    });
+    
+    // Then load webScraper with dependencies
+    const result = await moduleLoader.loadModule(
+      './modules/features/webScraper.js',
+      {
+        retries: 3,
+        timeout: 8000,
+        clearFailedModules: true
+      }
+    );
+    
+    if (result && result.module) {
       console.log("webScraper module loaded successfully");
-      return module;
+      return result.module;
     } else {
       console.warn("webScraper module failed to load, will use fallback");
-      return createWebScraperFallback();
+      return moduleLoader.createWebScraperFallback ? 
+             moduleLoader.createWebScraperFallback() : 
+             createWebScraperFallback();
     }
   } catch (error) {
     console.error("Error loading webScraper module:", error);
-    return createWebScraperFallback();
+    return moduleLoader.createWebScraperFallback ? 
+           moduleLoader.createWebScraperFallback() : 
+           createWebScraperFallback();
   }
 }
-/**
- * Modifications needed for index.js to ensure progress bar updates correctly
- * Add these functions to your existing index.js file
- */
 
-// Add this function at the appropriate place in index.js initialization
-function initializeProgressSystem() {
+/**
+* Initialize application with loaded modules
+* @param {Object} coreModules - Core modules
+* @param {Object} featureModules - Feature modules
+* @param {Object} utilModules - Utility modules
+* @returns {Promise<boolean>} - Success state
+*/
+async function initializeApplication(coreModules, featureModules, utilModules) {
+  console.log("Initializing application...");
+
+  try {
+    // Initialize errorHandler first to capture any errors during initialization
+    if (coreModules.errorHandler && typeof coreModules.errorHandler.initialize === 'function') {
+      try {
+        await coreModules.errorHandler.initialize();
+        console.log("Error handler initialized");
+      } catch (errorHandlerInitError) {
+        console.error("Error initializing errorHandler:", errorHandlerInitError);
+      }
+    }
+    
+    // Initialize UI registry next
+    if (coreModules.uiRegistry && typeof coreModules.uiRegistry.initialize === 'function') {
+      try {
+        await coreModules.uiRegistry.initialize();
+        console.log("UI Registry initialized");
+      } catch (uiRegistryInitError) {
+        console.error("Error initializing uiRegistry:", uiRegistryInitError);
+      }
+    }
+    
+    // Initialize state manager
+    if (coreModules.stateManager && typeof coreModules.stateManager.initialize === 'function') {
+      try {
+        await coreModules.stateManager.initialize({
+          version: '1.0.0',
+          initialized: true,
+          theme: localStorage.getItem('theme') || 'light'
+        });
+        console.log("State manager initialized");
+      } catch (stateManagerInitError) {
+        console.error("Error initializing stateManager:", stateManagerInitError);
+      }
+    }
+    
+    // Initialize event registry
+    if (coreModules.eventRegistry && typeof coreModules.eventRegistry.initialize === 'function') {
+      try {
+        await coreModules.eventRegistry.initialize();
+        console.log("Event registry initialized");
+      } catch (eventRegistryInitError) {
+        console.error("Error initializing eventRegistry:", eventRegistryInitError);
+      }
+    }
+    
+    // Initialize event manager
+    if (coreModules.eventManager && typeof coreModules.eventManager.initialize === 'function') {
+      try {
+        await coreModules.eventManager.initialize();
+        console.log("Event manager initialized");
+      } catch (eventManagerInitError) {
+        console.error("Error initializing eventManager:", eventManagerInitError);
+      }
+    }
+
+    // Initialize theme manager
+    if (coreModules.themeManager && typeof coreModules.themeManager.initialize === 'function') {
+      try {
+        await coreModules.themeManager.initialize();
+        console.log("Theme manager initialized");
+      } catch (themeManagerInitError) {
+        console.error("Error initializing themeManager:", themeManagerInitError);
+      }
+    }
+    
+    // Initialize socketHandler first to ensure socket functions are available
+    if (utilModules.socketHandler && typeof utilModules.socketHandler.initialize === 'function') {
+      try {
+        await utilModules.socketHandler.initialize();
+        console.log("Socket handler initialized");
+      } catch (socketHandlerInitError) {
+        console.error("Error initializing socketHandler:", socketHandlerInitError);
+      }
+    }
+    
+    // Initialize progressHandler next since it depends on socket
+    if (utilModules.progressHandler && typeof utilModules.progressHandler.initialize === 'function') {
+      try {
+        await utilModules.progressHandler.initialize();
+        console.log("Progress handler initialized");
+      } catch (progressHandlerInitError) {
+        console.error("Error initializing progressHandler:", progressHandlerInitError);
+      }
+    }
+    
+    // Initialize UI utility module
+    if (featureModules.ui && typeof featureModules.ui.initialize === 'function') {
+      try {
+        await featureModules.ui.initialize();
+        console.log("UI utility initialized");
+      } catch (uiInitError) {
+        console.error("Error initializing UI:", uiInitError);
+      }
+    }
+    
+    // Initialize remaining utility modules
+    for (const [moduleName, module] of Object.entries(utilModules)) {
+      // Skip modules we've already explicitly initialized
+      if (['socketHandler', 'progressHandler'].includes(moduleName)) {
+        continue;
+      }
+      
+      if (module && typeof module.initialize === 'function' && !module.initialized) {
+        try {
+          await module.initialize();
+          console.log(`${moduleName} utility initialized`);
+        } catch (utilModuleInitError) {
+          console.warn(`Error initializing ${moduleName}:`, utilModuleInitError);
+        }
+      }
+    }
+    
+    // Finally initialize the app module
+    if (featureModules.app && typeof featureModules.app.initialize === 'function') {
+      try {
+        await featureModules.app.initialize();
+        console.log("App module initialized");
+      } catch (appInitError) {
+        console.error("Error initializing app module:", appInitError);
+      }
+    }
+
+    // Initialize progress system for proper UI updates
+    initializeProgressSystem();
+    
+    // Check for ongoing tasks from previous sessions
+    checkForOngoingTasks();
+
+    console.log("Core application initialized successfully");
+    
+    // Show success message if UI is available
+    if (featureModules.ui && typeof featureModules.ui.showToast === 'function') {
+      featureModules.ui.showToast('Ready', 'NeuroGen Server initialized successfully', 'success');
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error initializing application:", error);
+    showErrorMessage(`Application initialization error: ${error.message}`);
+    throw error;
+  }
+}
+
+/**
+* Initialize optional modules with enhanced priority handling
+* @param {Object} optionalModules - Optional modules
+* @param {Object} coreModules - Core modules for event registry integration
+* @returns {Promise<boolean>} - Success state
+*/
+async function initializeOptionalModules(optionalModules, coreModules) {
+  console.log("Initializing optional modules...");
+  
+  if (!optionalModules || Object.keys(optionalModules).length === 0) {
+    console.log("No optional modules to initialize");
+    return true;
+  }
+  
+  try {
+    // Priority initialization for critical modules
+    const priorityModules = ['historyManager', 'playlistDownloader', 'fileProcessor', 'webScraper'];
+    
+    // First initialize priority modules in specific order
+    for (const moduleName of priorityModules) {
+      const module = optionalModules[moduleName];
+      if (module && typeof module.initialize === 'function' && 
+          !(module.initialized || (typeof module.isInitialized === 'function' && module.isInitialized()))) {
+        try {
+          await module.initialize();
+          console.log(`Priority module ${moduleName} initialized`);
+        } catch (priorityModuleInitError) {
+          console.warn(`Error initializing priority module ${moduleName}:`, priorityModuleInitError);
+        }
+      }
+    }
+    
+    // Initialize other modules
+    for (const [moduleName, module] of Object.entries(optionalModules)) {
+      // Skip priority modules since we already handled them
+      if (priorityModules.includes(moduleName)) continue;
+      
+      if (module && typeof module.initialize === 'function' && 
+          !(module.initialized || (typeof module.isInitialized === 'function' && module.isInitialized()))) {
+        try {
+          await module.initialize();
+          console.log(`${moduleName} initialized`);
+        } catch (optionalModuleInitError) {
+          console.warn(`Error initializing ${moduleName}:`, optionalModuleInitError);
+        }
+      }
+    }
+    
+    // Connect UI registry with modules if possible
+    if (coreModules.uiRegistry && typeof coreModules.uiRegistry.registerUIElements === 'function') {
+      try {
+        coreModules.uiRegistry.registerUIElements();
+        console.log("UI elements registered with UI registry");
+      } catch (uiRegistryError) {
+        console.warn("Error registering UI elements:", uiRegistryError);
+      }
+    }
+    
+    // Connect event registry with modules if possible
+    if (coreModules.eventRegistry && typeof coreModules.eventRegistry.registerEvents === 'function') {
+      try {
+        coreModules.eventRegistry.registerEvents();
+        console.log("Events registered with event registry");
+      } catch (eventRegistryError) {
+        console.warn("Error registering events:", eventRegistryError);
+      }
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Error initializing optional modules:", error);
+    return false; // Continue even if optional modules fail
+  }
+}
+
+/**
+* Initialize module diagnostics for development
+*/
+function initializeModuleDiagnostics() {
+  try {
+    // Check if we have the diagnostics module
+    if (!diagnosticsModule) {
+      console.warn("Module diagnostics not available for initialization");
+      return;
+    }
+    
+    // Initialize diagnostics with moduleLoader
+    if (typeof diagnosticsModule.initialize === 'function') {
+      diagnosticsModule.initialize(moduleLoader);
+      console.log("Module diagnostics initialized");
+      
+      // Schedule a report after all modules are loaded
+      setTimeout(() => {
+        if (typeof diagnosticsModule.logReport === 'function') {
+          diagnosticsModule.logReport();
+        }
+      }, 3000);
+    }
+  } catch (error) {
+    console.error("Error initializing module diagnostics:", error);
+  }
+}
+
+/**
+* Add diagnostics button to the page for debugging
+*/
+function addDiagnosticsButton() {
+  if (document.getElementById('diagnostics-button')) return;
+  
+  const button = document.createElement('button');
+  button.id = 'diagnostics-button';
+  button.className = 'btn btn-info btn-sm position-fixed';
+  button.style.bottom = '20px';
+  button.style.right = '20px';
+  button.style.zIndex = '9999';
+  button.innerHTML = '<i class="fas fa-stethoscope"></i> Diagnostics';
+  
+  button.addEventListener('click', () => {
+    if (diagnosticsModule && typeof diagnosticsModule.showReport === 'function') {
+      diagnosticsModule.showReport();
+    } else if (moduleLoader && typeof moduleLoader.showDiagnostics === 'function') {
+      moduleLoader.showDiagnostics();
+    } else {
+      alert('Diagnostics unavailable. Check console for module status.');
+      console.log('Module Status:', {
+        loadedModules: Object.keys(window.moduleInstances),
+        failedModules: moduleLoader.failedModules ? Array.from(moduleLoader.failedModules) : [],
+        fallbacks: moduleLoader.fallbacksUsed ? Array.from(moduleLoader.fallbacksUsed) : []
+      });
+    }
+  });
+  
+  document.body.appendChild(button);
+}
+
+/**
+* Enhance Socket.IO integration for playlist and module events
+*/
+function enhanceSocketIOIntegration() {
+  try {
+    // Check if socket is available
+    if (typeof window.socket === 'undefined') {
+      console.warn("Socket.IO not available for enhancement");
+      return;
+    }
+    
+    // Register task-related event handlers
+    if (window.socket.on) {
+      // Generic task progress and completion events
+      window.socket.on('task_progress', handleTaskProgress);
+      window.socket.on('task_completed', handleTaskCompleted);
+      window.socket.on('task_error', handleTaskError);
+      window.socket.on('task_cancelled', handleTaskCancelled);
+      
+      // Playlist-specific events
+      window.socket.on('playlist_progress', handlePlaylistProgress);
+      window.socket.on('playlist_completed', handlePlaylistCompleted);
+      window.socket.on('playlist_error', handlePlaylistError);
+      
+      // PDF extraction events
+      window.socket.on('pdf_extraction_progress', handlePdfExtractionProgress);
+      window.socket.on('pdf_extraction_completed', handlePdfExtractionCompleted);
+      
+      // Module-specific state updates
+      window.socket.on('module_state_update', handleModuleStateUpdate);
+      
+      // Server status events
+      window.socket.on('server_status', handleServerStatus);
+      
+      console.log("Enhanced Socket.IO event handlers registered");
+    }
+  } catch (error) {
+    console.error("Error enhancing Socket.IO integration:", error);
+  }
+}
+
+/**
+* Handle task progress updates from Socket.IO
+* @param {Object} data - Progress data
+*/
+function handleTaskProgress(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.log(`Task progress update for ${data.task_id}: ${data.progress}%`);
+    
+    // Update UI using progressHandler if available
+    const progressHandler = window.progressHandler || window.moduleInstances?.progressHandler;
+    if (progressHandler && typeof progressHandler.updateTaskProgress === 'function') {
+      progressHandler.updateTaskProgress(data.task_id, data.progress, data.message, data.stats);
+    }
+    
+    // Dispatch event for other modules to respond
+    const event = new CustomEvent('taskProgress', { detail: data });
+    document.dispatchEvent(event);
+  } catch (error) {
+    console.error("Error handling task progress update:", error);
+  }
+}
+
+/**
+* Handle task completion notification from Socket.IO
+* @param {Object} data - Completion data
+*/
+function handleTaskCompleted(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.log(`Task ${data.task_id} completed successfully`);
+    
+    // Update UI using progressHandler if available
+    const progressHandler = window.progressHandler || window.moduleInstances?.progressHandler;
+    if (progressHandler && typeof progressHandler.completeTask === 'function') {
+      progressHandler.completeTask(data.task_id, data);
+    }
+    
+    // Dispatch event for other modules to respond
+    const event = new CustomEvent('taskCompleted', { detail: data });
+    document.dispatchEvent(event);
+    
+    // If UI is available, show toast notification
+    const ui = window.ui || window.moduleInstances?.ui;
+    if (ui && typeof ui.showToast === 'function') {
+      ui.showToast('Success', 'Task completed successfully', 'success');
+    }
+  } catch (error) {
+    console.error("Error handling task completion:", error);
+  }
+}
+
+/**
+* Handle task error notification from Socket.IO
+* @param {Object} data - Error data
+*/
+function handleTaskError(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.error(`Task ${data.task_id} failed with error: ${data.error}`);
+    
+    // Update UI using progressHandler if available
+    const progressHandler = window.progressHandler || window.moduleInstances?.progressHandler;
+    if (progressHandler && typeof progressHandler.errorTask === 'function') {
+      progressHandler.errorTask(data.task_id, data.error, data);
+    }
+    
+    // Dispatch event for other modules to respond
+    const event = new CustomEvent('taskError', { detail: data });
+    document.dispatchEvent(event);
+    
+    // If UI is available, show toast notification
+    const ui = window.ui || window.moduleInstances?.ui;
+    if (ui && typeof ui.showToast === 'function') {
+      ui.showToast('Error', data.error || 'Task failed', 'error');
+    }
+  } catch (error) {
+    console.error("Error handling task error notification:", error);
+  }
+}
+
+/**
+* Handle task cancellation notification from Socket.IO
+* @param {Object} data - Cancellation data
+*/
+function handleTaskCancelled(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.log(`Task ${data.task_id} cancelled`);
+    
+    // Update UI using progressHandler if available
+    const progressHandler = window.progressHandler || window.moduleInstances?.progressHandler;
+    if (progressHandler && typeof progressHandler.cancelTask === 'function') {
+      progressHandler.cancelTask(data.task_id, data);
+    }
+    
+    // Dispatch event for other modules to respond
+    const event = new CustomEvent('taskCancelled', { detail: data });
+    document.dispatchEvent(event);
+    
+    // If UI is available, show toast notification
+    const ui = window.ui || window.moduleInstances?.ui;
+    if (ui && typeof ui.showToast === 'function') {
+      ui.showToast('Cancelled', 'Task was cancelled', 'warning');
+    }
+  } catch (error) {
+    console.error("Error handling task cancellation:", error);
+  }
+}
+
+/**
+* Handle playlist progress updates from Socket.IO
+* @param {Object} data - Playlist progress data
+*/
+function handlePlaylistProgress(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.log(`Playlist progress update for ${data.task_id}: ${data.progress}%`);
+    
+    // Forward to task progress handler
+    handleTaskProgress(data);
+    
+    // Update playlist UI if playlistDownloader is available
+    const playlistDownloader = window.playlistDownloader || window.moduleInstances?.playlistDownloader;
+    if (playlistDownloader && typeof playlistDownloader.updateProgress === 'function') {
+      playlistDownloader.updateProgress(data);
+    }
+  } catch (error) {
+    console.error("Error handling playlist progress update:", error);
+  }
+}
+
+/**
+* Handle playlist completion notification from Socket.IO
+* @param {Object} data - Playlist completion data
+*/
+function handlePlaylistCompleted(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.log(`Playlist ${data.task_id} completed successfully`);
+    
+    // Forward to task completion handler
+    handleTaskCompleted(data);
+    
+    // Update playlist UI if playlistDownloader is available
+    const playlistDownloader = window.playlistDownloader || window.moduleInstances?.playlistDownloader;
+    if (playlistDownloader && typeof playlistDownloader.handleCompletion === 'function') {
+      playlistDownloader.handleCompletion(data);
+    }
+  } catch (error) {
+    console.error("Error handling playlist completion:", error);
+  }
+}
+
+/**
+* Handle playlist error notification from Socket.IO
+* @param {Object} data - Playlist error data
+*/
+function handlePlaylistError(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.error(`Playlist ${data.task_id} failed with error: ${data.error}`);
+    
+    // Forward to task error handler
+    handleTaskError(data);
+    
+    // Update playlist UI if playlistDownloader is available
+    const playlistDownloader = window.playlistDownloader || window.moduleInstances?.playlistDownloader;
+    if (playlistDownloader && typeof playlistDownloader.handleError === 'function') {
+      playlistDownloader.handleError(data);
+    }
+  } catch (error) {
+    console.error("Error handling playlist error notification:", error);
+  }
+}
+
+/**
+* Handle PDF extraction progress updates from Socket.IO
+* @param {Object} data - PDF extraction progress data
+*/
+function handlePdfExtractionProgress(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.log(`PDF extraction progress update for ${data.task_id}: ${data.progress}%`);
+    
+    // Forward to task progress handler
+    handleTaskProgress(data);
+    
+    // Update file processor UI if available
+    const fileProcessor = window.fileProcessor || window.moduleInstances?.fileProcessor;
+    if (fileProcessor && typeof fileProcessor.updatePdfExtractionProgress === 'function') {
+      fileProcessor.updatePdfExtractionProgress(data);
+    }
+  } catch (error) {
+    console.error("Error handling PDF extraction progress update:", error);
+  }
+}
+
+/**
+* Handle PDF extraction completion notification from Socket.IO
+* @param {Object} data - PDF extraction completion data
+*/
+function handlePdfExtractionCompleted(data) {
+  try {
+    if (!data || !data.task_id) return;
+    
+    console.log(`PDF extraction ${data.task_id} completed successfully`);
+    
+    // Forward to task completion handler
+    handleTaskCompleted(data);
+    
+    // Update file processor UI if available
+    const fileProcessor = window.fileProcessor || window.moduleInstances?.fileProcessor;
+    if (fileProcessor && typeof fileProcessor.handlePdfExtractionCompleted === 'function') {
+      fileProcessor.handlePdfExtractionCompleted(data);
+    }
+  } catch (error) {
+    console.error("Error handling PDF extraction completion:", error);
+  }
+}
+
+/**
+* Handle module state updates from Socket.IO
+* @param {Object} data - Module state update data
+*/
+function handleModuleStateUpdate(data) {
+  try {
+    if (!data || !data.module) return;
+    
+    console.log(`Module state update for ${data.module}`);
+    
+    // Update state manager if available
+    const stateManager = window.stateManager || window.moduleInstances?.stateManager;
+    if (stateManager && typeof stateManager.handleExternalStateUpdate === 'function') {
+      stateManager.handleExternalStateUpdate(data.module, data.state);
+    }
+    
+    // Dispatch event for the specific module to respond
+    const event = new CustomEvent(`${data.module}StateUpdate`, { detail: data });
+    document.dispatchEvent(event);
+  } catch (error) {
+    console.error("Error handling module state update:", error);
+  }
+}
+
+/**
+* Handle server status updates from Socket.IO
+* @param {Object} data - Server status data
+*/
+function handleServerStatus(data) {
+  try {
+    console.log(`Server status update: ${data.status}`);
+    
+    // Update UI indicator if available
+    const statusIndicator = document.getElementById('server-status-indicator');
+    if (statusIndicator) {
+      statusIndicator.className = `server-status-indicator ${data.status}`;
+      statusIndicator.title = `Server status: ${data.status}`;
+    }
+    
+    // Dispatch event for other modules to respond
+    const event = new CustomEvent('serverStatusUpdate', { detail: data });
+    document.dispatchEvent(event);
+    
+    // Show toast notification for important status changes
+    const ui = window.ui || window.moduleInstances?.ui;
+    if (ui && typeof ui.showToast === 'function' && 
+        (data.status === 'error' || data.status === 'restarting')) {
+      ui.showToast('Server Status', `Server is ${data.status}`, data.status === 'error' ? 'error' : 'warning');
+    }
+  } catch (error) {
+    console.error("Error handling server status update:", error);
+  }
+}
+
+// --------------------------------------------------------------------------
+// UI Utility Functions
+// --------------------------------------------------------------------------
+
+/**
+* Create an error container for displaying application errors
+* @returns {HTMLElement} - The error container
+*/
+createErrorContainer = function() {
+  let errorContainer = document.getElementById('app-loading-error');
+  if (!errorContainer) {
+    errorContainer = document.createElement('div');
+    errorContainer.id = 'app-loading-error';
+    errorContainer.className = 'alert alert-danger m-3';
+    errorContainer.style.display = 'none';
+    document.body.appendChild(errorContainer);
+  }
+  return errorContainer;
+}
+
+/**
+* Create a loading overlay to show initialization progress
+*/
+createLoadingOverlay = function() {
+  // Check if it already exists
+  if (document.getElementById('app-loading-overlay')) return;
+  
+  const overlay = document.createElement('div');
+  overlay.id = 'app-loading-overlay';
+  overlay.className = 'position-fixed top-0 start-0 end-0 bottom-0 d-flex flex-column justify-content-center align-items-center';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  overlay.style.zIndex = '9999';
+  
+  // Create logo or title
+  const title = document.createElement('h3');
+  title.textContent = 'NeuroGen Server';
+  title.className = 'text-light mb-4';
+  
+  // Create loading spinner
+  const spinner = document.createElement('div');
+  spinner.className = 'spinner-border text-light mb-3';
+  spinner.style.width = '3rem';
+  spinner.style.height = '3rem';
+  
+  // Create status message
+  const status = document.createElement('div');
+  status.id = 'loading-status';
+  status.className = 'text-light mb-3';
+  status.textContent = 'Loading modules...';
+  
+  // Create progress bar
+  const progressContainer = document.createElement('div');
+  progressContainer.className = 'progress w-50 mb-3';
+  progressContainer.style.height = '4px';
+  
+  const progressBar = document.createElement('div');
+  progressBar.id = 'loading-progress-bar';
+  progressBar.className = 'progress-bar bg-info';
+  progressBar.role = 'progressbar';
+  progressBar.style.width = '0%';
+  progressBar.setAttribute('aria-valuenow', '0');
+  progressBar.setAttribute('aria-valuemin', '0');
+  progressBar.setAttribute('aria-valuemax', '100');
+  
+  progressContainer.appendChild(progressBar);
+  
+  // Assemble the overlay
+  overlay.appendChild(title);
+  overlay.appendChild(spinner);
+  overlay.appendChild(status);
+  overlay.appendChild(progressContainer);
+  
+  // Add to document
+  document.body.appendChild(overlay);
+  
+  // Start progress animation
+  startProgressAnimation();
+}
+
+/**
+* Animate the progress bar during initialization
+*/
+function startProgressAnimation() {
+  const progressBar = document.getElementById('loading-progress-bar');
+  if (!progressBar) return;
+  
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 1;
+    
+    // Slow down as we approach 90%
+    if (progress > 70) {
+      progress += 0.1;
+    } else if (progress > 50) {
+      progress += 0.3;
+    }
+    
+    // Cap at 90% - the remaining 10% will be completed when initialization is done
+    if (progress >= 90) {
+      clearInterval(interval);
+      progress = 90;
+    }
+    
+    progressBar.style.width = `${progress}%`;
+    progressBar.setAttribute('aria-valuenow', progress);
+  }, 100);
+  
+  // Store the interval for cleanup
+  window._progressInterval = interval;
+}
+
+/**
+* Update the loading progress display
+* @param {number} progress - Progress percentage (0-100)
+* @param {string} message - Status message to display
+*/
+function updateLoadingProgress(progress, message) {
+  const progressBar = document.getElementById('loading-progress-bar');
+  const statusEl = document.getElementById('loading-status');
+  
+  if (progressBar) {
+    progressBar.style.width = `${progress}%`;
+    progressBar.setAttribute('aria-valuenow', progress);
+  }
+  
+  if (statusEl && message) {
+    statusEl.textContent = message;
+  }
+  
+  // If we've reached 100%, prepare to remove the overlay
+  if (progress >= 100 && window._progressInterval) {
+    clearInterval(window._progressInterval);
+    window._progressInterval = null;
+  }
+}
+
+/**
+* Remove the loading overlay with a smooth fade effect
+*/
+function removeLoadingOverlay() {
+  const overlay = document.getElementById('app-loading-overlay');
+  if (!overlay) return;
+  
+  // Ensure progress is at 100%
+  const progressBar = document.getElementById('loading-progress-bar');
+  if (progressBar) {
+    progressBar.style.width = '100%';
+    progressBar.setAttribute('aria-valuenow', '100');
+  }
+  
+  // Clean up interval if it's still running
+  if (window._progressInterval) {
+    clearInterval(window._progressInterval);
+    window._progressInterval = null;
+  }
+  
+  // Add fade-out animation
+  overlay.style.transition = 'opacity 0.5s ease-out';
+  overlay.style.opacity = '0';
+ 
+  // Remove after animation completes
+  setTimeout(() => {
+    overlay.remove();
+  }, 500);
+}
+
+/**
+* Apply stored theme to the document
+*/
+function applyStoredTheme() {
+  const storedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', storedTheme);
+  document.body.setAttribute('data-theme', storedTheme);
+  document.documentElement.setAttribute('data-bs-theme', storedTheme);
+
+  // Set theme toggle icon
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  if (darkModeToggle) {
+    const isDark = storedTheme === 'dark';
+    darkModeToggle.innerHTML = isDark ? 
+      '<i class="fas fa-sun fa-lg"></i>' : 
+      '<i class="fas fa-moon fa-lg"></i>';
+    darkModeToggle.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+  }
+}
+
+/**
+* Setup basic UI event handlers for application-wide functionality
+* Ensures proper theme management and event handling
+*/
+function setupBasicEventHandlers() {
+  // Setup theme toggle with improved handling
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  if (darkModeToggle && !darkModeToggle._hasEventListener) {
+    darkModeToggle.addEventListener('click', function() {
+      try {
+        // Primary approach: Use the globally exposed themeManager
+        if (window.themeManager && typeof window.themeManager.toggleTheme === 'function') {
+          window.themeManager.toggleTheme();
+        }
+        // Fallback: Try module instances registry if main approach fails
+        else if (window.moduleInstances && 
+                window.moduleInstances.themeManager && 
+                typeof window.moduleInstances.themeManager.toggleTheme === 'function') {
+          window.moduleInstances.themeManager.toggleTheme();
+        }
+        else {
+          console.warn("Theme manager not directly available, using manual theme toggle");
+          // Last resort: Manual implementation that ensures persistence
+          const currentTheme = localStorage.getItem('theme') || 
+                            document.documentElement.getAttribute('data-theme') || 
+                            'dark';
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          
+          // Update DOM
+          document.body.setAttribute('data-theme', newTheme);
+          document.documentElement.setAttribute('data-theme', newTheme);
+          document.documentElement.setAttribute('data-bs-theme', newTheme); // Bootstrap compatibility
+          
+          // Persist setting
+          localStorage.setItem('theme', newTheme);
+          
+          // Update toggle button
+          this.innerHTML = newTheme === 'dark' ?
+            '<i class="fas fa-sun fa-lg"></i>' :
+            '<i class="fas fa-moon fa-lg"></i>';
+          this.title = newTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+      } catch (error) {
+        console.error("Error toggling theme:", error);
+      }
+    });
+    darkModeToggle._hasEventListener = true;
+  }
+  
+  // Setup tab navigation
+  setupBasicTabNavigation();
+  
+  // Setup help mode toggle
+  const helpToggle = document.getElementById('helpToggle');
+  if (helpToggle && !helpToggle._hasEventListener) {
+    helpToggle.addEventListener('click', function() {
+      // Toggle help mode class on body
+      document.body.classList.toggle('help-mode');
+      
+      // Toggle active class on button
+      this.classList.toggle('active');
+      
+      // Notify help mode module if available
+      try {
+        if (window.moduleInstances.helpMode && typeof window.moduleInstances.helpMode.toggleHelpMode === 'function') {
+          window.moduleInstances.helpMode.toggleHelpMode();
+        }
+      } catch (error) {
+        console.warn("Could not notify helpMode module of toggle:", error);
+      }
+    });
+    helpToggle._hasEventListener = true;
+  }
+  
+  // Form submission blocking in recovery mode
+  document.querySelectorAll('form').forEach(form => {
+    if (!form._hasEventListener) {
+      form.addEventListener('submit', function(e) {
+        if (!window.appInitialized) {
+          e.preventDefault();
+          showErrorMessage("Application is not fully initialized. Please try refreshing the page.");
+        }
+      });
+      form._hasEventListener = true;
+    }
+  });
+}
+ 
+/**
+ * Setup basic tab navigation for better user experience
+ */
+function setupBasicTabNavigation() {
+  // If already set up, don't do it again
+  if (window._tabNavigationSetup) return;
+  
+  document.addEventListener('click', function(event) {
+    if (event.target.hasAttribute('data-bs-toggle') &&
+        event.target.getAttribute('data-bs-toggle') === 'tab') {
+      event.preventDefault();
+      const tabEl = event.target.closest('[data-bs-toggle="tab"]');
+      if (!tabEl) return;
+      const target = tabEl.getAttribute('data-bs-target') || tabEl.getAttribute('href');
+      if (!target) return;
+      
+      // Deactivate all tabs
+      document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+        pane.classList.remove('show');
+      });
+      
+      // Activate selected tab
+      tabEl.classList.add('active');
+      const targetPane = document.querySelector(target);
+      if (targetPane) {
+        targetPane.classList.add('active');
+        targetPane.classList.add('show');
+      }
+    }
+  });
+  
+  window._tabNavigationSetup = true;
+}
+ 
+ /**
+ * Show an error message to the user
+ * @param {string} message - Error message to display
+ */
+ function showErrorMessage(message) {
+  console.error(message);
+  
+  // Try to use UI module if available
+  const uiModule = window.ui || window.moduleInstances?.ui;
+  if (uiModule && typeof uiModule.showToast === 'function') {
+    uiModule.showToast('Error', message, 'error');
+    return;
+  }
+  
+  // Fallback to error container
+  const appLoadingError = document.getElementById('app-loading-error');
+  if (appLoadingError) {
+    appLoadingError.textContent = message;
+    appLoadingError.style.display = 'block';
+    return;
+  }
+  
+  // Last resort: create a new error element
+  const errorElement = document.createElement('div');
+  errorElement.id = 'app-loading-error';
+  errorElement.className = 'alert alert-danger m-3';
+  errorElement.textContent = message;
+  document.body.prepend(errorElement);
+ }
+ 
+ /**
+ * Sets up recovery mode for failed modules
+ * @returns {Promise<boolean>} - Success state
+ */
+ async function setupRecoveryMode() {
+  console.log("Setting up recovery mode for failed modules");
+  
+  // Set recovery mode flag
+  window._inRecoveryMode = true;
+  
+  try {
+    // Create recovery UI
+    createRecoveryUI();
+    
+    return true;
+  } catch (error) {
+    console.error("Error setting up recovery mode:", error);
+    return false;
+  }
+ }
+ 
+ /**
+ * Creates recovery UI to help the user handle module loading failures
+ */
+ function createRecoveryUI() {
+  // Try to find or create recovery container
+  let recoveryContainer = document.getElementById('recovery-container');
+  if (recoveryContainer) {
+    recoveryContainer.style.display = 'block';
+    return;
+  }
+  
+  // Create container
+  recoveryContainer = document.createElement('div');
+  recoveryContainer.id = 'recovery-container';
+  recoveryContainer.className = 'container mt-4 p-4 border rounded bg-light';
+  
+  // Get failed modules
+  const failedModules = moduleLoader.failedModules ? Array.from(moduleLoader.failedModules) : [];
+  const fallbackModules = moduleLoader.fallbacksUsed ? Array.from(moduleLoader.fallbacksUsed) : [];
+  
+  // Create content with helpful options
+  recoveryContainer.innerHTML = `
+    <div class="alert alert-warning mb-4">
+      <h4><i class="fas fa-exclamation-triangle me-2"></i>Limited Functionality Mode</h4>
+      <p>Some modules failed to load correctly. The application is running with reduced functionality.</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header bg-primary text-white">
+            Recovery Options
+          </div>
+          <div class="card-body">
+            <button id="refresh-page-btn" class="btn btn-primary mb-2 w-100">
+              <i class="fas fa-sync-alt me-2"></i>Refresh Page
+            </button>
+            <button id="clear-cache-btn" class="btn btn-secondary mb-2 w-100">
+              <i class="fas fa-broom me-2"></i>Clear Cache & Reload
+            </button>
+            <button id="diagnostics-btn" class="btn btn-info mb-2 w-100">
+              <i class="fas fa-stethoscope me-2"></i>Run Diagnostics
+            </button>
+            <button id="retry-modules-btn" class="btn btn-warning mb-2 w-100">
+              <i class="fas fa-redo me-2"></i>Retry Failed Modules
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-info text-white">
+            Technical Information
+          </div>
+          <div class="card-body">
+            <p><strong>Failed Modules:</strong> <span id="failed-modules-count">${failedModules.length}</span></p>
+            <p><strong>Using Fallbacks:</strong> <span id="fallback-modules-count">${fallbackModules.length}</span></p>
+            <p><strong>Browser:</strong> ${navigator.userAgent}</p>
+            <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="failed-modules-details" class="mt-3 ${failedModules.length > 0 ? '' : 'd-none'}">
+      <h5>Failed Module Details</h5>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Path</th>
+              <th>Error</th>
+              <th>Fallback</th>
+            </tr>
+          </thead>
+          <tbody id="failed-modules-table">
+          ${failedModules.map(path => {
+            const moduleName = path.split('/').pop().replace('.js', '');
+            const hasFallback = fallbackModules.includes(moduleName);
+            return `
+              <tr>
+                <td>${moduleName}</td>
+                <td><small>${path}</small></td>
+                <td>Failed to load</td>
+                <td>${hasFallback ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-danger">No</span>'}</td>
+              </tr>
+            `;
+          }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  
+  // Add to document
+  document.body.appendChild(recoveryContainer);
+  
+  // Add button event handlers
+  const refreshBtn = document.getElementById('refresh-page-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      window.location.reload();
+    });
+  }
+  
+  const clearCacheBtn = document.getElementById('clear-cache-btn');
+  if (clearCacheBtn) {
+    clearCacheBtn.addEventListener('click', () => {
+      try {
+        // Clear localStorage cache flags
+        localStorage.removeItem('moduleCache');
+        
+        // Clear failed modules state
+        localStorage.removeItem('failedModules');
+        
+        // Reload page
+        window.location.reload();
+      } catch (error) {
+        console.error("Error clearing cache:", error);
+        window.location.reload();
+      }
+    });
+  }
+  
+  const diagnosticsBtn = document.getElementById('diagnostics-btn');
+  if (diagnosticsBtn) {
+    diagnosticsBtn.addEventListener('click', () => {
+      if (window.diagnostics && window.diagnostics.showReport) {
+        window.diagnostics.showReport();
+      } else if (diagnostics && diagnostics.logReport) {
+        diagnostics.logReport();
+        alert("Diagnostics report logged to console");
+      } else {
+        alert("Diagnostics not available");
+      }
+    });
+  }
+  
+  const retryModulesBtn = document.getElementById('retry-modules-btn');
+  if (retryModulesBtn) {
+    retryModulesBtn.addEventListener('click', async () => {
+      try {
+        retryModulesBtn.disabled = true;
+        retryModulesBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Retrying...';
+        
+        // Use moduleLoader to retry failed modules
+        if (moduleLoader && typeof moduleLoader.retryFailedModules === 'function') {
+          const result = await moduleLoader.retryFailedModules();
+          
+          if (result && result.success) {
+            alert(`Successfully reloaded ${result.reloadedCount} modules. Reloading page...`);
+            window.location.reload();
+          } else {
+            alert(`Failed to reload all modules. ${result?.reloadedCount || 0} were successful.`);
+            retryModulesBtn.disabled = false;
+            retryModulesBtn.innerHTML = '<i class="fas fa-redo me-2"></i>Retry Failed Modules';
+          }
+        } else {
+          alert("Module reloading not available");
+          retryModulesBtn.disabled = false;
+          retryModulesBtn.innerHTML = '<i class="fas fa-redo me-2"></i>Retry Failed Modules';
+        }
+      } catch (error) {
+        console.error("Error retrying modules:", error);
+        alert("Error retrying modules: " + error.message);
+        retryModulesBtn.disabled = false;
+        retryModulesBtn.innerHTML = '<i class="fas fa-redo me-2"></i>Retry Failed Modules';
+      }
+    });
+  }
+ }
+ 
+ /**
+ * Initialize progress system for proper UI updates
+ */
+ function initializeProgressSystem() {
   console.log("Initializing enhanced progress system");
   
   // Ensure progress bar transitions are smooth
@@ -672,2007 +2149,980 @@ function initializeProgressSystem() {
     });
   }, 2000);
   
-  // Initialize playlist UI if available
-  if (window.playlistUI && typeof window.playlistUI.initialize === 'function') {
-    window.playlistUI.initialize();
-  }
-  
   console.log("Progress system initialized");
-}
-function createWebScraperFallback() {
-  console.warn("Creating fallback for webScraper module");
-  
-  // Create a basic fallback that won't crash the app
-  return {
-    __isFallback: true,
-    initialized: false,
-    
-    initialize() {
-      console.warn("Using fallback webScraper module");
-      this.initialized = true;
-      
-      // Setup event listeners for the UI
-      this.setupListeners();
-      
-      return Promise.resolve(true);
-    },
-    
-    setupListeners() {
-      // Form submit
-      const scraperForm = document.getElementById('scraper-form');
-      if (scraperForm) {
-        scraperForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          this.handleStartScraping();
-        });
-      }
-      
-      // Cancel button
-      const cancelButton = document.getElementById('scraper-cancel-btn');
-      if (cancelButton) {
-        cancelButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          this.handleCancelScraping();
-        });
-      }
-      
-      // New task button
-      const newTaskButton = document.getElementById('scraper-new-task-btn');
-      if (newTaskButton) {
-        newTaskButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          this.showForm();
-        });
-      }
-      
-      // Add URL button
-      const addUrlButton = document.getElementById('add-scraper-url');
-      if (addUrlButton) {
-        addUrlButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          this.addUrlField();
-        });
-      }
-      
-      // Setting change handlers - delegated event
-      const urlContainer = document.getElementById('scraper-urls-container');
-      if (urlContainer) {
-        urlContainer.addEventListener('change', (e) => {
-          if (e.target.classList.contains('scraper-settings')) {
-            this.handleSettingsChange(e.target);
-          }
-        });
-      }
-      
-      // PDF switch
-      const pdfSwitch = document.getElementById('process-pdf-switch');
-      if (pdfSwitch) {
-        pdfSwitch.addEventListener('change', () => {
-          if (window.moduleInstances.stateManager) {
-            window.moduleInstances.stateManager.setState({
-              processPdf: pdfSwitch.checked
-            });
-          }
-        });
-      }
-    },
-    
-    handleStartScraping() {
-      showErrorMessage("Web scraper functionality is currently unavailable. Please try refreshing the page.");
-      return false;
-    },
-    
-    handleCancelScraping() {
-      return false;
-    },
-    
-    addUrlField() {
-      const container = document.getElementById('scraper-urls-container');
-      if (!container) return;
-      
-      const newField = document.createElement('div');
-      newField.className = 'input-group mb-2';
-      newField.innerHTML = `
-        <input type="url" class="form-control scraper-url" placeholder="Enter Website URL" required>
-        <select class="form-select scraper-settings" style="max-width: 160px;">
-          <option value="full">Full Text</option>
-          <option value="metadata">Metadata Only</option>
-          <option value="title">Title Only</option>
-          <option value="keyword">Keyword Search</option>
-          <option value="pdf">PDF Download</option>
-        </select>
-        <input type="text" class="form-control scraper-keyword" placeholder="Keyword (optional)" style="display:none;">
-        <button type="button" class="btn btn-outline-danger remove-url">
-          <i class="fas fa-trash"></i>
-        </button>
-      `;
-      
-      container.appendChild(newField);
-      
-      // Add remove handler
-      const removeBtn = newField.querySelector('.remove-url');
-      if (removeBtn) {
-        removeBtn.addEventListener('click', () => {
-          newField.remove();
-        });
-      }
-    },
-    
-    handleSettingsChange(select) {
-      if (!select) return;
-      
-      const row = select.closest('.input-group');
-      if (!row) return;
-      
-      const keywordField = row.querySelector('.scraper-keyword');
-      if (!keywordField) return;
-      
-      // Show/hide keyword field based on selection
-      if (select.value === 'keyword') {
-        keywordField.style.display = '';
-        keywordField.required = true;
-      } else {
-        keywordField.style.display = 'none';
-        keywordField.required = false;
-      }
-      
-      // Update PDF info section visibility
-      this.updatePdfInfoSection();
-    },
-    
-    updatePdfInfoSection() {
-      const selects = document.querySelectorAll('.scraper-settings');
-      const pdfInfoSection = document.getElementById('pdf-info-section');
-      
-      if (!pdfInfoSection) return;
-      
-      // Check if any select has "pdf" value
-      const hasPdfOption = Array.from(selects).some(select => select.value === 'pdf');
-      
-      pdfInfoSection.classList.toggle('d-none', !hasPdfOption);
-    },
-    
-    showForm() {
-      console.warn("Fallback webScraper.showForm called");
-      // Show a message in the UI if possible
-      const container = document.querySelector('#scraper-container');
-      
-      // Show form container
-      const formContainer = document.getElementById('scraper-form-container');
-      const progressContainer = document.getElementById('scraper-progress-container');
-      const resultsContainer = document.getElementById('scraper-results-container');
-      
-      if (formContainer) formContainer.style.display = 'block';
-      if (formContainer) formContainer.classList.remove('d-none');
-      if (progressContainer) progressContainer.style.display = 'none';
-      if (progressContainer) progressContainer.classList.add('d-none');
-      if (resultsContainer) resultsContainer.style.display = 'none';
-      if (resultsContainer) resultsContainer.classList.add('d-none');
-      
-      // Add warning message
-      if (formContainer && !formContainer.querySelector('.scraper-warning')) {
-        const warningAlert = document.createElement('div');
-        warningAlert.className = 'alert alert-warning mb-3 scraper-warning';
-        warningAlert.innerHTML = `
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          <strong>Web Scraper Module Unavailable</strong>
-          <p class="mb-0 mt-1">The web scraper module failed to load. Some functionality may be limited. Please refresh the page and try again.</p>
-          <button class="btn btn-sm btn-primary mt-2" onclick="window.location.reload()">Refresh Page</button>
-        `;
-        
-        formContainer.prepend(warningAlert);
-      }
-    },
-    
-    showProgress() {
-      return false;
-    },
-    
-    handleTaskCompleted() {
-      return false;
-    },
-    
-    handleTaskError() {
-      return false;
-    },
-    
-    updatePdfDownloadsList() {
-      return false;
-    },
-    
-    handleOpenOutput() {
-      return false;
-    }
-  };
-}
-
-// --------------------------------------------------------------------------
-// Application Initialization Functions
-// --------------------------------------------------------------------------
-/**
- * Initialize application with enhanced safe file processor integration
- * @param {Object} coreModules - Core modules
- * @param {Object} featureModules - Feature modules
- * @param {Object} utilModules - Utility modules
- * @returns {Promise<boolean>} - Success state
+ }
+ 
+ /**
+ * Check for ongoing tasks from previous sessions
  */
-async function initializeApplication(coreModules, featureModules, utilModules) {
-  console.log("Initializing application...");
-
-  try {
-    // Initialize fileProcessor safely first to ensure DOM is ready for other modules
-    if (featureModules.fileProcessor && featureModules.fileProcessor.initializeSafe) {
-      try {
-        console.log("Initializing file processor safely...");
-        await featureModules.fileProcessor.initializeSafe();
-        console.log("File processor safely initialized");
-      } catch (fileProcessorError) {
-        console.error("Failed to safely initialize file processor:", fileProcessorError);
-      }
-    } else {
-      console.warn("Safe file processor not available, will use standard initialization");
-    }
-    
-    // Initialize core modules in specific order for proper dependency management
-    if (coreModules.errorHandler && typeof coreModules.errorHandler.initialize === 'function') {
-      await coreModules.errorHandler.initialize();
-      console.log("Error handler initialized");
-    }
-    
-    if (coreModules.uiRegistry && typeof coreModules.uiRegistry.initialize === 'function') {
-      await coreModules.uiRegistry.initialize();
-      console.log("UI Registry initialized");
-    }
-    
-    if (coreModules.stateManager && typeof coreModules.stateManager.initialize === 'function') {
-      await coreModules.stateManager.initialize({
-        version: '1.0.0',
-        initialized: true,
-        theme: localStorage.getItem('theme') || 'light'
-      });
-      console.log("State manager initialized");
-    }
-    
-    if (coreModules.eventRegistry && typeof coreModules.eventRegistry.initialize === 'function') {
-      await coreModules.eventRegistry.initialize();
-      console.log("Event registry initialized");
-    }
-    
-    if (coreModules.eventManager && typeof coreModules.eventManager.initialize === 'function') {
-      await coreModules.eventManager.initialize();
-      console.log("Event manager initialized");
-    }
-
-    if (coreModules.themeManager && typeof coreModules.themeManager.initialize === 'function') {
-      await coreModules.themeManager.initialize();
-      console.log("Theme manager initialized");
-    }
-    
-    // Initialize UI utility module
-    if (featureModules.ui && typeof featureModules.ui.initialize === 'function') {
-      await featureModules.ui.initialize();
-      console.log("UI utility initialized");
-    }
-    
-    // Initialize utility modules in a specific order
-    
-    // First initialize socketHandler since it's needed by progressHandler
-    if (utilModules.socketHandler && typeof utilModules.socketHandler.initialize === 'function' && !utilModules.socketHandler.initialized) {
-      try {
-        await utilModules.socketHandler.initialize();
-        console.log("Socket handler initialized");
-      } catch (err) {
-        console.warn(`Error initializing socketHandler:`, err);
-      }
-    }
-    
-    // Then initialize progressHandler which depends on socketHandler
-    if (utilModules.progressHandler && typeof utilModules.progressHandler.initialize === 'function' && !utilModules.progressHandler.initialized) {
-      try {
-        await utilModules.progressHandler.initialize();
-        console.log("Progress handler initialized");
-      } catch (err) {
-        console.warn(`Error initializing progressHandler:`, err);
-      }
-    }
-    
-    // Initialize the rest of utility modules
-    for (const [moduleName, module] of Object.entries(utilModules)) {
-      // Skip the modules we've already initialized
-      if (moduleName === 'socketHandler' || moduleName === 'progressHandler') continue;
-      
-      if (module && typeof module.initialize === 'function' && !module.initialized) {
-        try {
-          await module.initialize();
-          console.log(`${moduleName} utility initialized`);
-        } catch (err) {
-          console.warn(`Error initializing ${moduleName}:`, err);
-        }
-      }
-    }
-    
-    // Finally initialize the main app module
-    if (featureModules.app && typeof featureModules.app.initialize === 'function') {
-      await featureModules.app.initialize();
-      console.log("App module initialized");
-    } else {
-      console.warn("App module not available or missing initialize method");
-    }
-
-    // Re-check fileProcessor to ensure it's fully initialized 
-    if (featureModules.fileProcessor && 
-        typeof featureModules.fileProcessor.initialize === 'function' && 
-        !featureModules.fileProcessor.initialized) {
-      try {
-        // Try standard initialization if safe initialization was not available
-        console.log("Performing standard initialization for fileProcessor as fallback...");
-        await featureModules.fileProcessor.initialize();
-        console.log("File processor initialized through standard method");
-      } catch (fileProcessorError) {
-        console.warn("Could not initialize fileProcessor through standard method:", fileProcessorError);
-      }
-    }
-    
-    // Check for ongoing tasks from previous sessions
-    checkForOngoingTasks();
-
-    console.log("Core application initialized successfully");
-    
-    // Show success message if UI is available
-    if (featureModules.ui && typeof featureModules.ui.showToast === 'function') {
-      featureModules.ui.showToast('Ready', 'NeuroGen Server initialized successfully', 'success');
-    }
-
-    return true;
-  } catch (error) {
-    console.error("Error initializing application:", error);
-    showErrorMessage(`Application initialization error: ${error.message}`);
-    throw error;
-  }
-}
-
-// PATCH 4: Enhanced initializeOptionalModules function
-async function initializeOptionalModules(optionalModules, coreModules) {
-  console.log("Initializing optional modules...");
-  
-  if (!optionalModules || Object.keys(optionalModules).length === 0) {
-    console.log("No optional modules to initialize");
-    return true;
-  }
-  
-  try {
-    // Priority initialization for critical modules
-    const priorityModules = ['historyManager', 'playlistDownloader', 'fileProcessor'];
-    
-    // First initialize priority modules in specific order
-    for (const moduleName of priorityModules) {
-      const module = optionalModules[moduleName];
-      if (module && typeof module.initialize === 'function' && 
-          !(module.initialized || (typeof module.isInitialized === 'function' && module.isInitialized()))) {
-        try {
-          await module.initialize();
-          console.log(`Priority module ${moduleName} initialized`);
-        } catch (err) {
-          console.warn(`Error initializing priority module ${moduleName}:`, err);
-        }
-      }
-    }
-    
-    // Initialize other modules
-    for (const [moduleName, module] of Object.entries(optionalModules)) {
-      // Skip priority modules since we already handled them
-      if (priorityModules.includes(moduleName)) continue;
-      
-      if (module && typeof module.initialize === 'function' && 
-          !(module.initialized || (typeof module.isInitialized === 'function' && module.isInitialized()))) {
-        try {
-          await module.initialize();
-          console.log(`${moduleName} initialized`);
-        } catch (err) {
-          console.warn(`Error initializing ${moduleName}:`, err);
-        }
-      }
-    }
-    
-    // Connect UI registry with modules if possible
-    if (coreModules.uiRegistry && typeof coreModules.uiRegistry.registerUIElements === 'function') {
-      try {
-        coreModules.uiRegistry.registerUIElements();
-        console.log("UI elements registered with UI registry");
-      } catch (error) {
-        console.warn("Error registering UI elements:", error);
-      }
-    }
-    
-    // Connect event registry with modules if possible
-    if (coreModules.eventRegistry && typeof coreModules.eventRegistry.registerEvents === 'function') {
-      try {
-        coreModules.eventRegistry.registerEvents();
-        console.log("Events registered with event registry");
-      } catch (error) {
-        console.warn("Error registering events:", error);
-      }
-    }
-    
-    return true;
-  } catch (error) {
-    console.error("Error initializing optional modules:", error);
-    return false; // Continue even if optional modules fail
-  }
-}
-
-function initializeModuleDiagnostics() {
-  try {
-    const moduleDiagnosticsModule = window.moduleInstances.moduleDiagnostics;
-    
-    if (moduleDiagnosticsModule) {
-      if (typeof moduleDiagnosticsModule.initializeModuleDiagnostics === 'function') {
-        moduleDiagnosticsModule.initializeModuleDiagnostics();
-        console.log("Module diagnostics initialized directly");
-        return true;
-      }
-    }
-    
-    // Try moduleLoader's initializeModuleDiagnostics method
-    if (moduleLoader.initializeModuleDiagnostics) {
-      moduleLoader.initializeModuleDiagnostics();
-      console.log("Module diagnostics initialized via moduleLoader");
-      return true;
-    }
-    
-    // Fallback - create a simple diagnostics function
-    window.launchDiagnostics = function() {
-      console.log("Basic diagnostics:");
-      console.log("- Loaded modules:", Object.keys(window.moduleInstances));
-      console.log("- Total modules:", Object.keys(window.moduleInstances).length);
-      
-      // Create system health report
-      const report = {
-        status: 'unknown',
-        loadedModules: Object.keys(window.moduleInstances),
-        failedModules: moduleLoader.failedModules ? Array.from(moduleLoader.failedModules) : [],
-        browser: navigator.userAgent,
-        timestamp: new Date().toISOString(),
-        appInitialized: window.appInitialized,
-        moduleSystemHealth: moduleLoader.initialized ? 'ok' : 'error'
-      };
-      
-      if (moduleLoader.generateHealthReport) {
-        Object.assign(report, moduleLoader.generateHealthReport());
-      }
-      
-      console.log("Module Health Report:", report);
-      
-      // Try to show a dialog with this information
-      if (window.ui && typeof window.ui.showModal === 'function') {
-        let reportContent = `<h5>System Health Report</h5>
-        <div class="mb-3">
-          <p><strong>Status:</strong> <span class="badge ${report.status === 'ok' ? 'bg-success' : 'bg-warning'}">${report.status}</span></p>
-          <p><strong>App Initialized:</strong> ${window.appInitialized ? 'Yes' : 'No'}</p>
-          <p><strong>Module System Health:</strong> ${report.moduleSystemHealth}</p>
-          <p><strong>Timestamp:</strong> ${report.timestamp}</p>
-        </div>
-        <h6>Loaded Modules (${report.loadedModules.length})</h6>
-        <ul class="small">
-          ${report.loadedModules.map(m => `<li>${m}</li>`).join('')}
-        </ul>`;
-        
-        if (report.failedModules && report.failedModules.length > 0) {
-          reportContent += `<h6>Failed Modules (${report.failedModules.length})</h6>
-          <ul class="small text-danger">
-            ${report.failedModules.map(m => `<li>${m}</li>`).join('')}
-          </ul>`;
-        }
-        
-        window.ui.showModal({
-          title: 'Module Diagnostics',
-          content: reportContent,
-          size: 'large',
-          buttons: [
-            {
-              text: 'Close',
-              type: 'btn-secondary',
-              handler: () => {}
-            },
-            {
-              text: 'Copy to Clipboard',
-              type: 'btn-primary',
-              handler: () => {
-                try {
-                  navigator.clipboard.writeText(JSON.stringify(report, null, 2));
-                  window.ui.showToast('Success', 'Report copied to clipboard', 'success');
-                } catch (e) {
-                  console.error('Failed to copy report:', e);
-                  window.ui.showToast('Error', 'Failed to copy report', 'error');
-                }
-              }
-            }
-          ]
-        });
-      } else {
-        alert("Basic diagnostics logged to console");
-      }
-    };
-    
-    console.log("Basic diagnostics available via window.launchDiagnostics()");
-    return true;
-  } catch (error) {
-    console.warn("Error initializing module diagnostics:", error);
-    return false;
-  }
-}
-
-/**
- * PATCH-compatible task resumption
- * Aligns with index.js's PATCH 2 for playlist task handling
- */
-function checkForOngoingTasks() {
+ function checkForOngoingTasks() {
   try {
     // Use consistent naming with progressHandler
     const taskId = sessionStorage.getItem('ongoingTaskId');
     const taskType = sessionStorage.getItem('ongoingTaskType');
     const taskStartTime = sessionStorage.getItem('taskStartTime');
     
-    if (taskStartTime) {
-      _taskStartTime = parseInt(taskStartTime, 10);
-    }
-    
-    if (taskId && taskType === 'playlist') {
-      console.log(`Found ongoing playlist task: ${taskId}`);
-      _currentTaskId = taskId;
-      
-      // Start performance tracking for resumed tasks
-      if (window.performance && window.performance.mark) {
-        window.performance.mark('playlist_task_resumed');
-      }
-      
-      // CRITICAL FIX: Improved task resumption that handles various UI states
-      
-      // Ensure progress UI is visible first
-      showProgress();
-      
-      // PATCH 2 Integration: Check module initialization state in a way compatible with index.js
-      if (typeof window.playlistDownloader === 'object' && 
-          typeof window.playlistDownloader.isInitialized === 'function' && 
-          !window.playlistDownloader.isInitialized()) {
-            
-        console.log("Module not fully initialized when resuming task - using deferred initialization");
-            
-        // Initialize via setTimeout to align with index.js's approach
-        setTimeout(async () => {
-          try {
-            // If we have our own initialization function
-            if (typeof initPlaylistDownloaderAfterDOMReady === 'function') {
-              await initPlaylistDownloaderAfterDOMReady();
-              console.log("Initialized playlist downloader for task resumption");
-            }
-            // Otherwise use the global one
-            else if (window.playlistDownloader && typeof window.playlistDownloader.initialize === 'function') {
-              await window.playlistDownloader.initialize();
-              console.log("Initialized playlist downloader via global reference for task resumption");
-            }
-            
-            // Now show progress after initialization is complete
-            setTimeout(() => {
-              showProgress();
-              console.log("Resumed playlist downloader progress UI");
-              
-              // Re-register event handlers to ensure they're properly set up
-              if (typeof registerEventHandlers === 'function') {
-                registerEventHandlers();
-              } else if (window.playlistDownloader && typeof window.playlistDownloader.registerEventHandlers === 'function') {
-                window.playlistDownloader.registerEventHandlers();
-              }
-              
-              resumeTaskMonitoring(taskId);
-            }, 500);
-          } catch (err) {
-            console.error("Error during deferred initialization for task resumption:", err);
-            handleRecoveryMode();
-          }
-        }, 100);
-        
-        return;
-      }
-      
-      // Standard task monitoring resumption
-      resumeTaskMonitoring(taskId);
-    }
-  } catch (error) {
-    console.error("Error checking for ongoing tasks:", error);
-    handleRecoveryMode();
-  }
-}
-/**
- * Resume monitoring for an ongoing task
- * Extracted as a separate function for better PATCH integration
- */
-function resumeTaskMonitoring(taskId) {
-  try {
-    // Set up progress tracking using progressHandler if available
-    if (window.progressHandler && typeof window.progressHandler.trackProgress === 'function') {
-      _progressTracker = window.progressHandler.trackProgress(taskId, {
-        elementPrefix: 'playlist',
-        taskType: 'playlist',
-        saveToSessionStorage: true
-      });
-      
-      console.log("Task progress tracking set up with progressHandler");
-      
-      // If we also have an event registry, register for playlist-specific events
-      if (_eventRegistry) {
-        // Listen for playlist-specific completion events
-        const playlistCompletedHandler = (data) => {
-          if (data.task_id === taskId) {
-            // Update our UI specifically for playlists
-            handlePlaylistCompletion(data);
-          }
-        };
-        
-        _eventRegistry.on('socket.task_completed', playlistCompletedHandler);
-        _eventRegistry.on('socket.playlist_completed', playlistCompletedHandler); // PATCH-specific event
-        
-        // Store handler reference for cleanup
-        _progressTracker._playlistCompletedHandler = playlistCompletedHandler;
-        
-        // Request a status update
-        _eventRegistry.emit('socket.request_status', { task_id: taskId });
-      }
-      
-      // If progressHandler has task details, use them to update the UI
-      const taskDetails = window.progressHandler.getTaskDetails(taskId);
-      if (taskDetails) {
-        // Update progress bar directly
-        const progressBar = document.getElementById('playlist-progress-bar');
-        if (progressBar) {
-          const percent = Math.round(taskDetails.progress || 0);
-          progressBar.style.width = `${percent}%`;
-          progressBar.setAttribute('aria-valuenow', percent);
-          progressBar.textContent = `${percent}%`;
-          
-          // Track the current progress
-          _lastProgress = percent;
-          _lastProgressUpdateTime = Date.now();
-        }
-        
-        // Update status message
-        const progressStatus = document.getElementById('playlist-progress-status');
-        if (progressStatus && taskDetails.message) {
-          progressStatus.textContent = taskDetails.message;
-        }
-        
-        // Update stats if available
-        if (taskDetails.stats) {
-          _lastStats = taskDetails.stats;
-          const progressStats = document.getElementById('playlist-progress-stats');
-          if (progressStats) {
-            updatePlaylistProgressStats(progressStats, taskDetails.stats);
-          }
-        }
-        
-        // If status is already completed, make sure to show results
-        if (taskDetails.status === 'completed') {
-          handlePlaylistCompletion(taskDetails);
-        } else {
-          // Start heartbeat monitoring for ongoing tasks
-          startHeartbeatTimer(taskId);
-        }
-      }
-    } 
-    // Fall back to direct Socket.IO or polling if progressHandler not available
-    else {
-      console.log("progressHandler not available, using direct socket or polling fallback");
-      
-      // Try to set up direct socket events
-      if (window.socket) {
-        setupDirectSocketListeners(taskId);
-        window.socket.emit('request_status', { task_id: taskId });
-      } 
-      // Try event registry
-      else if (_eventRegistry) {
-        setupSocketListeners(taskId);
-        _eventRegistry.emit('socket.request_status', { task_id: taskId });
-      }
-      // Last resort - use polling
-      else {
-        startStatusPolling(taskId);
-      }
-    }
-  } catch (error) {
-    console.error("Error resuming task monitoring:", error);
-  }
-}
-/**
- * Recovery mode integration
- * Aligns with index.js's recovery mode
- */
-function handleRecoveryMode() {
-  try {
-    // Check if we're initialized but app initialization failed
-    if (!window.appInitialized && window.appInitializationStarted) {
-      console.warn("App initialization appears to have failed - preparing for recovery mode");
-      
-      // Try to clean up any existing state
-      cleanupTracker();
-      
-      // Try to use global recovery mode
-      if (typeof window.setupRecoveryMode === 'function') {
-        window.setupRecoveryMode();
-        console.log("Activated global recovery mode");
-        return true;
-      }
-      
-      // If global recovery isn't available, create a basic recovery UI
-      createPlaylistRecoveryUI();
-      return true;
-    }
-    
-    return false;
-  } catch (error) {
-    console.error("Error handling recovery mode:", error);
-    return false;
-  }
-}
-/**
- * Module lifecycle management
- * Provides explicit shutdown support for index.js module system
- */
-function shutdown() {
-  try {
-    console.log("Shutting down playlist downloader module");
-    
-    // Clean up all resources
-    cleanupTracker();
-    
-    // Reset state
-    _currentTaskId = null;
-    _lastVisibleContainer = 'form';
-    _pollingInterval = null;
-    _progressTracker = null;
-    _lastProgress = 0;
-    _lastProgressUpdateTime = 0;
-    _lastSocketEvent = null;
-    _completionTimer = null;
-    _taskStartTime = null;
-    _lastStats = null;
-    _retryCount = 0;
-    _completionHandled.clear();
-    
-    // Reset initialization flag
-    _initialized = false;
-    
-    return true;
-  } catch (error) {
-    console.error("Error during playlist downloader shutdown:", error);
-    return false;
-  }
-}
-
-// --------------------------------------------------------------------------
-// Error Display & Recovery Mode Functions
-// --------------------------------------------------------------------------
-function createErrorContainer() {
-  let errorContainer = document.getElementById('app-loading-error');
-  if (!errorContainer) {
-    errorContainer = document.createElement('div');
-    errorContainer.id = 'app-loading-error';
-    errorContainer.className = 'alert alert-danger m-3';
-    errorContainer.style.display = 'none';
-    document.body.appendChild(errorContainer);
-  }
-  return errorContainer;
-}
-
-function showErrorMessage(message) {
-  console.error(message);
-  
-  // Try to use UI module if available
-  const uiModule = window.ui || window.moduleInstances.ui;
-  if (uiModule && typeof uiModule.showToast === 'function') {
-    uiModule.showToast('Error', message, 'error');
-    return;
-  }
-  
-  // Fallback to error container
-  const appLoadingError = document.getElementById('app-loading-error');
-  if (appLoadingError) {
-    appLoadingError.textContent = message;
-    appLoadingError.style.display = 'block';
-    return;
-  }
-  
-  // Last resort: create a new error element
-  const errorElement = document.createElement('div');
-  errorElement.id = 'app-loading-error';
-  errorElement.className = 'alert alert-danger m-3';
-  errorElement.textContent = message;
-  document.body.prepend(errorElement);
-}
-
-function setupRecoveryMode() {
-  console.log("Setting up recovery mode...");
-  
-  // Create recovery UI if it doesn't exist
-  let recoveryContainer = document.getElementById('recovery-container');
-  if (recoveryContainer) {
-    recoveryContainer.style.display = 'block';
-    return;
-  }
-  
-  recoveryContainer = document.createElement('div');
-  recoveryContainer.id = 'recovery-container';
-  recoveryContainer.className = 'container mt-4';
-  recoveryContainer.innerHTML = `
-    <div class="alert alert-warning">
-      <h4>Application Initialization Issue</h4>
-      <p>Some functionality may not be available. Try refreshing the page or checking your network connection.</p>
-      <button id="retry-initialization" class="btn btn-primary">Refresh Page</button>
-      <button id="debug-info" class="btn btn-outline-secondary ms-2">Show Debug Info</button>
-    </div>
-    <div id="debug-container" class="card mt-3 d-none">
-      <div class="card-header bg-dark text-white">Debug Information</div>
-      <div class="card-body">
-        <pre id="debug-info-content" class="small">Loading debug information...</pre>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(recoveryContainer);
-  
-  // Setup retry button
-  const retryButton = document.getElementById('retry-initialization');
-  if (retryButton) {
-    retryButton.addEventListener('click', () => {
-      window.location.reload();
-    });
-  }
-  
-  // Setup debug info button
-  const debugButton = document.getElementById('debug-info');
-  const debugContainer = document.getElementById('debug-container');
-  const debugContent = document.getElementById('debug-info-content');
-  
-  if (debugButton && debugContainer && debugContent) {
-    debugButton.addEventListener('click', () => {
-      debugContainer.classList.toggle('d-none');
-      if (!debugContainer.classList.contains('d-none')) {
-        // Generate health report if moduleLoader is available
-        const debugInfo = {
-          userAgent: navigator.userAgent,
-          timestamp: new Date().toISOString(),
-          appInitialized: window.appInitialized,
-          appInitializationStarted: window.appInitializationStarted,
-          loadedModules: window.moduleInstances ? Object.keys(window.moduleInstances) : [],
-          localStorage: Object.keys(localStorage),
-          sessionStorage: Object.keys(sessionStorage)
-        };
-        
-        // Try to add module health report
-        if (moduleLoader && typeof moduleLoader.generateHealthReport === 'function') {
-          debugInfo.moduleHealth = moduleLoader.generateHealthReport();
-        }
-        
-        debugContent.textContent = JSON.stringify(debugInfo, null, 2);
-      }
-    });
-  }
-  
-  // Setup basic tab navigation and theme toggle
-  setupBasicEventHandlers();
-}
-
-// --------------------------------------------------------------------------
-// Basic UI and Event Handlers
-// --------------------------------------------------------------------------
-/**
- * Setup basic UI event handlers for application-wide functionality
- * Ensures proper theme management and event handling
- */
-function setupBasicEventHandlers() {
-  // Setup theme toggle with improved handling
-  const darkModeToggle = document.getElementById('darkModeToggle');
-  if (darkModeToggle && !darkModeToggle._hasEventListener) {
-    darkModeToggle.addEventListener('click', function() {
-      try {
-        // Primary approach: Use the globally exposed themeManager
-        if (window.themeManager && typeof window.themeManager.toggleTheme === 'function') {
-          window.themeManager.toggleTheme();
-        }
-        // Fallback: Try module instances registry if main approach fails
-        else if (window.moduleInstances && 
-                window.moduleInstances.themeManager && 
-                typeof window.moduleInstances.themeManager.toggleTheme === 'function') {
-          window.moduleInstances.themeManager.toggleTheme();
-        }
-        else {
-          console.warn("Theme manager not directly available, using manual theme toggle");
-          // Last resort: Manual implementation that ensures persistence
-          const currentTheme = localStorage.getItem('theme') || 
-                             document.documentElement.getAttribute('data-theme') || 
-                             'dark';
-          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-          
-          // Update DOM
-          document.body.setAttribute('data-theme', newTheme);
-          document.documentElement.setAttribute('data-theme', newTheme);
-          document.documentElement.setAttribute('data-bs-theme', newTheme); // Bootstrap compatibility
-          
-          // Persist setting
-          localStorage.setItem('theme', newTheme);
-          
-          // Update toggle button
-          this.innerHTML = newTheme === 'dark' ?
-            '<i class="fas fa-sun fa-lg"></i>' :
-            '<i class="fas fa-moon fa-lg"></i>';
-          this.title = newTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
-        }
-      } catch (error) {
-        console.error("Error toggling theme:", error);
-      }
-    });
-    darkModeToggle._hasEventListener = true;
-  }
-  
-  // Setup initial theme on page load
-  try {
-    // Get saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    
-    // If we have a saved preference, apply it immediately
-    if (savedTheme && (savedTheme === 'dark' || savedTheme === 'light' || savedTheme === 'system')) {
-      // Apply to DOM first for immediate visual feedback
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      document.body.setAttribute('data-theme', savedTheme);
-      document.documentElement.setAttribute('data-bs-theme', savedTheme);
-      
-      // Then notify theme manager if available
-      if (window.themeManager && typeof window.themeManager.setTheme === 'function') {
-        window.themeManager.setTheme(savedTheme);
-      }
-      else if (window.moduleInstances && 
-              window.moduleInstances.themeManager && 
-              typeof window.moduleInstances.themeManager.setTheme === 'function') {
-        window.moduleInstances.themeManager.setTheme(savedTheme);
-      }
-    }
-  } catch (e) {
-    console.warn("Error applying saved theme:", e);
-  }
-  
-  // Setup tab navigation
-  setupBasicTabNavigation();
-  
-  // Setup help mode toggle
-  const helpToggle = document.getElementById('helpToggle');
-  if (helpToggle && !helpToggle._hasEventListener) {
-    helpToggle.addEventListener('click', function() {
-      // Toggle help mode class on body
-      document.body.classList.toggle('help-mode');
-      
-      // Toggle active class on button
-      this.classList.toggle('active');
-      
-      // Notify help mode module if available
-      try {
-        if (window.moduleInstances.helpMode && typeof window.moduleInstances.helpMode.toggleHelpMode === 'function') {
-          window.moduleInstances.helpMode.toggleHelpMode();
-        }
-      } catch (error) {
-        console.warn("Could not notify helpMode module of toggle:", error);
-      }
-    });
-    helpToggle._hasEventListener = true;
-  }
-  
-  // Form submission blocking in recovery mode
-  document.querySelectorAll('form').forEach(form => {
-    if (!form._hasEventListener) {
-      form.addEventListener('submit', function(e) {
-        if (!window.appInitialized) {
-          e.preventDefault();
-          showErrorMessage("Application is not fully initialized. Please try refreshing the page.");
-        }
-      });
-      form._hasEventListener = true;
-    }
-  });
-}
-
-function setupBasicTabNavigation() {
-  // If already set up, don't do it again
-  if (window._tabNavigationSetup) return;
-  
-  document.addEventListener('click', function(event) {
-    if (event.target.hasAttribute('data-bs-toggle') &&
-        event.target.getAttribute('data-bs-toggle') === 'tab') {
-      event.preventDefault();
-      const tabEl = event.target.closest('[data-bs-toggle="tab"]');
-      if (!tabEl) return;
-      const target = tabEl.getAttribute('data-bs-target') || tabEl.getAttribute('href');
-      if (!target) return;
-      
-      // Deactivate all tabs
-      document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.tab-pane').forEach(pane => {
-        pane.classList.remove('active');
-        pane.classList.remove('show');
-      });
-      
-      // Activate selected tab
-      tabEl.classList.add('active');
-      const targetPane = document.querySelector(target);
-      if (targetPane) {
-        targetPane.classList.add('active');
-        targetPane.classList.add('show');
-      }
-    }
-  });
-  
-  window._tabNavigationSetup = true;
-}
-
-// Apply stored theme
-function applyStoredTheme() {
-  const storedTheme = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', storedTheme);
-  document.body.setAttribute('data-theme', storedTheme);
-
-  // Set theme toggle icon
-  const darkModeToggle = document.getElementById('darkModeToggle');
-  if (darkModeToggle) {
-    const isDark = storedTheme === 'dark';
-    darkModeToggle.innerHTML = isDark ? 
-      '<i class="fas fa-sun fa-lg"></i>' : 
-      '<i class="fas fa-moon fa-lg"></i>';
-  }
-}
-// --------------------------------------------------------------------------
-// Playlist Downloader Module Integration
-// --------------------------------------------------------------------------
-
-/**
- * Special loader function for the playlist downloader module
- * Handles various loading scenarios with fallbacks
- */
-async function loadPlaylistDownloaderModule() {
-  try {
-    console.log("Loading playlist downloader module explicitly...");
-    
-    // First check if we can load it via the moduleLoader
-    const modulePath = './modules/features/playlistDownloader.js';
-    
-    let playlistDownloaderModule;
-    
-    // Try to use moduleLoader first
-    if (moduleLoader && typeof moduleLoader.importModule === 'function') {
-      playlistDownloaderModule = await moduleLoader.importModule(modulePath, {
-        retries: 3,
-        timeout: 10000,
-        standardizeExports: false // Disable auto-export to prevent errors
-      });
-      
-      if (playlistDownloaderModule) {
-        console.log("Playlist downloader module loaded via moduleLoader");
-      }
-    }
-    
-    // If moduleLoader failed, try direct import
-    if (!playlistDownloaderModule) {
-      console.log("Attempting direct import of playlistDownloader.js...");
-      try {
-        // Try dynamic import
-        const module = await import(modulePath);
-        playlistDownloaderModule = module.default || module;
-        console.log("Playlist downloader module loaded via direct import");
-      } catch (importError) {
-        console.error("Direct import failed:", importError);
-        
-        // Try one more approach - fetch the script and eval it (last resort)
-        try {
-          const response = await fetch('/static/js/modules/features/playlistDownloader.js');
-          if (response.ok) {
-            const scriptText = await response.text();
-            // This creates a global loadPlaylistDownloaderModule function
-            eval(scriptText);
-            console.log("Loaded playlist downloader script via fetch and eval");
-            
-            // Now call the function that was defined
-            if (typeof window.loadPlaylistDownloaderModule === 'function') {
-              playlistDownloaderModule = await window.loadPlaylistDownloaderModule();
-            }
-          }
-        } catch (fetchError) {
-          console.error("Fetch approach failed:", fetchError);
-        }
-      }
-    }
-    
-    // If we have the module loaded now, try to initialize it
-    if (playlistDownloaderModule) {
-      // Register it globally
-      window.playlistDownloader = playlistDownloaderModule;
-      window.moduleInstances.playlistDownloader = playlistDownloaderModule;
-      
-      // Initialize if not already initialized
-      if (typeof playlistDownloaderModule.initialize === 'function' && 
-          !(playlistDownloaderModule.initialized || 
-            (typeof playlistDownloaderModule.isInitialized === 'function' && 
-             playlistDownloaderModule.isInitialized()))) {
-        try {
-          await playlistDownloaderModule.initialize();
-          console.log("Playlist downloader module initialized");
-        } catch (initError) {
-          console.warn("Error initializing playlist downloader module:", initError);
-        }
-      }
-      
-      return playlistDownloaderModule;
-    }
-    
-    // Final attempt - try using the global function if available
-    if (typeof window.loadPlaylistDownloaderModule === 'function') {
-      console.log("Using global loadPlaylistDownloaderModule function directly...");
-      return window.loadPlaylistDownloaderModule();
-    }
-    
-    console.error("Failed to load playlist downloader module!");
-    return null;
-  } catch (error) {
-    console.error("Error loading playlist downloader module:", error);
-    return null;
-  }
-}
-
-// Make it available globally immediately
-window.loadPlaylistDownloaderModule = loadPlaylistDownloaderModule;
-
-// Modify the loadOptionalModules function to include special handling for playlistDownloader
-const originalLoadOptionalModules = loadOptionalModules;
-loadOptionalModules = async function() {
-  console.log("Enhanced loadOptionalModules with playlist downloader support");
-  
-  try {
-    // Use the original function first
-    const modules = await originalLoadOptionalModules();
-    
-    // Special handling for playlist downloader if it wasn't loaded yet
-    if (!modules.playlistDownloader && !window.playlistDownloader) {
-      console.log("Playlist downloader not loaded by standard mechanisms, trying special loader");
-      
-      // Try to load using our special function
-      const playlistDownloaderModule = await loadPlaylistDownloaderModule();
-      
-      if (playlistDownloaderModule) {
-        // Add it to the modules result
-        modules.playlistDownloader = playlistDownloaderModule;
-        console.log("Successfully added playlist downloader to module results");
-      }
-    }
-    
-    return modules;
-  } catch (error) {
-    console.error("Error in enhanced loadOptionalModules:", error);
-    // Fall back to original function
-    return originalLoadOptionalModules();
-  }
-};
-
-// Add special handling for socket events related to playlists
-function enhanceSocketIOIntegration() {
-  if (!window.socket) return;
-  
-  // Add specific event handlers for playlist events if they don't exist
-  const existingListeners = window.socket._callbacks || {};
-  
-  if (!existingListeners['$playlist_progress']) {
-    window.socket.on('playlist_progress', (data) => {
-      console.log("Received playlist_progress event:", data);
-      
-      // Forward to progress handler if available
-      if (window.progressHandler && typeof window.progressHandler.updateProgress === 'function') {
-        window.progressHandler.updateProgress(data.task_id, data);
-      }
-      
-      // Emit through event registry if available
-      if (window.eventRegistry && typeof window.eventRegistry.emit === 'function') {
-        window.eventRegistry.emit('socket.playlist_progress', data);
-      }
-      
-      // Direct call to playlistDownloader if available
-      if (window.playlistDownloader && typeof window.playlistDownloader.processStatusUpdate === 'function') {
-        window.playlistDownloader.processStatusUpdate(data);
-      }
-    });
-  }
-  
-  if (!existingListeners['$playlist_completed']) {
-    window.socket.on('playlist_completed', (data) => {
-      console.log("Received playlist_completed event:", data);
-      
-      // Set progress to 100% for completed tasks
-      if (data.progress !== undefined && data.progress < 100) {
-        data.progress = 100;
-      }
-      
-      // Forward to progress handler if available
-      if (window.progressHandler && typeof window.progressHandler.completeTask === 'function') {
-        window.progressHandler.completeTask(data.task_id, data);
-      }
-      
-      // Emit through event registry if available
-      if (window.eventRegistry && typeof window.eventRegistry.emit === 'function') {
-        window.eventRegistry.emit('socket.playlist_completed', data);
-      }
-      
-      // Direct call to playlistDownloader if available
-      if (window.playlistDownloader && typeof window.playlistDownloader.handlePlaylistCompletion === 'function') {
-        window.playlistDownloader.handlePlaylistCompletion(data);
-      }
-    });
-  }
-  
-  if (!existingListeners['$playlist_error']) {
-    window.socket.on('playlist_error', (data) => {
-      console.log("Received playlist_error event:", data);
-      
-      // Forward to progress handler if available
-      if (window.progressHandler && typeof window.progressHandler.errorTask === 'function') {
-        window.progressHandler.errorTask(data.task_id, data.error || 'Unknown error');
-      }
-      
-      // Emit through event registry if available
-      if (window.eventRegistry && typeof window.eventRegistry.emit === 'function') {
-        window.eventRegistry.emit('socket.playlist_error', data);
-      }
-      
-      // Direct call to playlistDownloader if available
-      if (window.playlistDownloader && typeof window.playlistDownloader.handleTaskError === 'function') {
-        window.playlistDownloader.handleTaskError(data);
-      }
-    });
-  }
-  
-  console.log("Enhanced Socket.IO integration for playlist events");
-}
-
-// Call this after setupSocketIO in the original code
-document.addEventListener('DOMContentLoaded', () => {
-  // Wait for socket.io to be set up
-  setTimeout(() => {
-    if (window.socket) {
-      enhanceSocketIOIntegration();
-    }
-  }, 2000);
-});
-
-// Try to load the playlist downloader module after the page loads
-window.addEventListener('DOMContentLoaded', async () => {
-  // Delay slightly to allow other modules to initialize first
-  setTimeout(async () => {
-    if (!window.playlistDownloader && typeof window.loadPlaylistDownloaderModule === 'function') {
-      console.log("Auto-loading playlist downloader module after page load");
-      try {
-        const module = await window.loadPlaylistDownloaderModule();
-        console.log("Auto-loaded playlist downloader module:", module ? "success" : "failed");
-      } catch (error) {
-        console.error("Error auto-loading playlist downloader module:", error);
-      }
-    }
-  }, 1000);
-});
-
-// --------------------------------------------------------------------------
-// Diagnostics Functions
-// --------------------------------------------------------------------------
-function addDiagnosticsButton() {
-  try {
-    // Check if button already exists
-    if (document.getElementById('diagnostics-button')) {
+    if (!taskId) {
       return;
     }
     
-    // Create diagnostics button
-    const diagnosticsButton = document.createElement('button');
-    diagnosticsButton.innerHTML = '<i class="fas fa-chart-bar"></i>';
-    diagnosticsButton.className = 'btn btn-sm btn-outline-primary position-fixed';
-    diagnosticsButton.id = 'diagnostics-button';
-    diagnosticsButton.title = 'Module Diagnostics';
-    diagnosticsButton.style.bottom = '20px';
-    diagnosticsButton.style.right = '20px';
-    diagnosticsButton.style.zIndex = '1000';
-    diagnosticsButton.style.opacity = '0.7';
+    console.log(`Found ongoing ${taskType} task: ${taskId}`);
     
-    // Add hover effect
-    diagnosticsButton.addEventListener('mouseenter', () => {
-      diagnosticsButton.style.opacity = '1.0';
-    });
-    
-    diagnosticsButton.addEventListener('mouseleave', () => {
-      diagnosticsButton.style.opacity = '0.7';
-    });
-    
-    // Add click handler
-    diagnosticsButton.addEventListener('click', () => {
-      if (window.launchDiagnostics) {
-        window.launchDiagnostics();
-      } else {
-        alert('Diagnostics tool not available');
-      }
-    });
-    
-    // Add to body
-    document.body.appendChild(diagnosticsButton);
-  } catch (error) {
-    console.warn("Could not add diagnostics button:", error);
-  }
-}
-
-// --------------------------------------------------------------------------
-// Performance Monitoring
-// --------------------------------------------------------------------------
-function startPerformanceMonitoring() {
-  if (!window.performance || !window.performance.mark) {
-    console.warn('Performance API not supported');
-    return;
-  }
-  
-  // Mark application load
-  window.performance.mark('app_load_start');
-  
-  // Create performance observer to track long tasks
-  if (typeof PerformanceObserver !== 'undefined') {
-    try {
-      // Check if longtask is supported
-      let supportedEntryTypes = [];
-      
-      if (PerformanceObserver.supportedEntryTypes) {
-        supportedEntryTypes = PerformanceObserver.supportedEntryTypes;
-      }
-      
-      // Only observe longtasks if supported
-      if (supportedEntryTypes.includes('longtask')) {
-        const observer = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries()) {
-            if (entry.duration > 50) {  // Tasks taking more than 50ms
-              console.warn(`Long task detected (${Math.round(entry.duration)}ms)`, entry);
-            }
-          }
-        });
-        
-        observer.observe({ entryTypes: ['longtask'] });
-      } else {
-        console.log('LongTask performance monitoring not supported by this browser');
-      }
-    } catch (e) {
-      console.warn('PerformanceObserver error:', e.message);
+    // Check for appropriate module
+    let handlerModule = null;
+    switch (taskType) {
+      case 'playlist':
+        handlerModule = window.moduleInstances.playlistDownloader;
+        break;
+      case 'scraper':
+        handlerModule = window.moduleInstances.webScraper;
+        break;
+      case 'file':
+        handlerModule = window.moduleInstances.fileProcessor;
+        break;
     }
-  }
-  
-  // Track initialization time
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      if (window.appInitialized) {
-        window.performance.mark('app_initialized');
-        try {
-          window.performance.measure('app_initialization_time', 'app_load_start', 'app_initialized');
-          
-          const measures = window.performance.getEntriesByName('app_initialization_time');
-          if (measures && measures.length > 0) {
-            const measure = measures[0];
-            console.log(`App initialized in ${Math.round(measure.duration)}ms`);
-          }
-        } catch (e) {
-          console.warn('Could not measure initialization time:', e.message);
+    
+    if (handlerModule) {
+      // Try to resume task with handler module
+      if (typeof handlerModule.resumeTask === 'function') {
+        handlerModule.resumeTask(taskId);
+      } else if (typeof handlerModule.showProgress === 'function') {
+        handlerModule.showProgress();
+        
+        // Request status update if socket is available
+        if (window.socket && window.socket.connected) {
+          window.socket.emit('request_status', { task_id: taskId });
         }
       }
-    }, 100);
-  });
-}
-
-// Start performance monitoring
-startPerformanceMonitoring();
-
-// --------------------------------------------------------------------------
-// Version Information
-// --------------------------------------------------------------------------
-window.appVersion = '1.0.0';
-window.appBuildDate = '2025-04-11';
-window.appEnvironment = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') 
-  ? 'development' 
-  : 'production';
-
-// --------------------------------------------------------------------------
-// Polyfills and Browser Compatibility Checks
-// --------------------------------------------------------------------------
-function checkBrowserCompatibility() {
-  const compatIssues = [];
+    } else {
+      // Generic task resumption via progress handler
+      if (window.moduleInstances.progressHandler) {
+        if (typeof window.moduleInstances.progressHandler.resumeTask === 'function') {
+          window.moduleInstances.progressHandler.resumeTask(taskId);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error checking for ongoing tasks:", error);
+  }
+ }
+ 
+ // --------------------------------------------------------------------------
+ // Fallback Module Implementations
+ // --------------------------------------------------------------------------
+ 
+ /**
+ * Create a fallback implementation for the UI module
+ * @returns {Object} - UI fallback implementation
+ */
+ function createUiFallback() {
+  console.log("Creating UI module fallback");
   
-  // Check for basic ES6 features
-  if (!window.Promise) compatIssues.push('Promise API');
-  if (!window.fetch) compatIssues.push('Fetch API');
-  if (!window.Map) compatIssues.push('Map API');
-  if (!window.Set) compatIssues.push('Set API');
-  if (!window.Intl) compatIssues.push('Internationalization API');
+  // Create a minimal UI implementation
+  const uiFallback = {
+    __isFallback: true,
+    initialized: true,
+    
+    // Toast notification
+    showToast: function(title, message, type = 'info') {
+      console.log(`[TOAST-${type.toUpperCase()}] ${title}: ${message}`);
+      
+      // Try to use Bootstrap toast if available
+      if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+        try {
+          // Create toast container if it doesn't exist
+          let toastContainer = document.getElementById('toast-container');
+          if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            document.body.appendChild(toastContainer);
+          }
+          
+          // Create toast element
+          const toastEl = document.createElement('div');
+          toastEl.className = `toast align-items-center border-0 bg-${type === 'error' ? 'danger' : type}`;
+          toastEl.setAttribute('role', 'alert');
+          toastEl.setAttribute('aria-live', 'assertive');
+          toastEl.setAttribute('aria-atomic', 'true');
+          
+          // Create toast content
+          toastEl.innerHTML = `
+            <div class="d-flex">
+              <div class="toast-body">
+                <strong>${title}</strong>: ${message}
+              </div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          `;
+          
+          // Append to container
+          toastContainer.appendChild(toastEl);
+          
+          // Show toast
+          const toast = new bootstrap.Toast(toastEl);
+          toast.show();
+          
+          // Remove after hiding
+          toastEl.addEventListener('hidden.bs.toast', () => {
+            toastEl.remove();
+          });
+        } catch (error) {
+          console.error("Error showing Bootstrap toast:", error);
+        }
+      }
+    },
+    
+    // Loading spinner
+    showLoadingSpinner: function(message = 'Loading...') {
+      console.log(`[LOADING] ${message}`);
+      
+      // Create loading container if it doesn't exist
+      let loadingContainer = document.getElementById('loading-container');
+      if (!loadingContainer) {
+        loadingContainer = document.createElement('div');
+        loadingContainer.id = 'loading-container';
+        loadingContainer.className = 'position-fixed top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center bg-dark bg-opacity-50';
+        loadingContainer.style.zIndex = '9999';
+        
+        loadingContainer.innerHTML = `
+          <div class="bg-white p-4 rounded shadow">
+            <div class="d-flex align-items-center">
+              <div class="spinner-border text-primary me-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span id="loading-message">${message}</span>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(loadingContainer);
+      } else {
+        // Update existing loading message
+        const loadingMessage = document.getElementById('loading-message');
+        if (loadingMessage) {
+          loadingMessage.textContent = message;
+        }
+        
+        // Show container
+        loadingContainer.style.display = 'flex';
+      }
+      
+      // Return control object
+      return {
+        hide: function() {
+          if (loadingContainer) {
+            loadingContainer.style.display = 'none';
+          }
+        },
+        
+        updateMessage: function(newMessage) {
+          const loadingMessage = document.getElementById('loading-message');
+          if (loadingMessage) {
+            loadingMessage.textContent = newMessage;
+          }
+        },
+        
+        updateProgress: function(progress) {
+          // Optional: Add progress bar if needed
+        }
+      };
+    },
+    
+    // Hide loading spinner
+    hideLoading: function() {
+      const loadingContainer = document.getElementById('loading-container');
+      if (loadingContainer) {
+        loadingContainer.style.display = 'none';
+      }
+    },
+    
+    // Modal dialog
+    showModal: function(title, content, options = {}) {
+      console.log(`[MODAL] ${title}`);
+      
+      // Create modal container if it doesn't exist
+      let modalContainer = document.getElementById('modal-container');
+      if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'modal-container';
+        document.body.appendChild(modalContainer);
+      }
+      
+      // Create modal ID
+      const modalId = `modal-${Date.now()}`;
+      
+      // Create modal HTML
+      modalContainer.innerHTML = `
+        <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="${modalId}-label" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="${modalId}-label">${title}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                ${content}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                ${options.buttons ? options.buttons.map(btn => 
+                  `<button type="button" class="btn btn-${btn.primary ? 'primary' : 'secondary'}" data-action="${btn.action || ''}">${btn.text}</button>`
+                ).join('') : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Show modal if Bootstrap is available
+      if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        const modalEl = document.getElementById(modalId);
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+        
+        // Add event listeners for buttons
+        if (options.buttons) {
+          options.buttons.forEach(btn => {
+            if (btn.onClick) {
+              const btnEl = modalEl.querySelector(`button[data-action="${btn.action || ''}"]`);
+              if (btnEl) {
+                btnEl.addEventListener('click', () => {
+                  btn.onClick();
+                  if (btn.closeModal !== false) {
+                    modal.hide();
+                  }
+                });
+              }
+            }
+          });
+        }
+        
+        // Return control object
+        return {
+          id: modalId,
+          element: modalEl,
+          hide: function() {
+            modal.hide();
+          },
+          updateContent: function(newContent) {
+            const body = modalEl.querySelector('.modal-body');
+            if (body) {
+              body.innerHTML = newContent;
+            }
+          },
+          updateTitle: function(newTitle) {
+            const title = modalEl.querySelector('.modal-title');
+            if (title) {
+              title.innerHTML = newTitle;
+            }
+          }
+        };
+      } else {
+        // Fallback for no Bootstrap
+        alert(`${title}\n\n${content.replace(/<[^>]*>/g, '')}`);
+        
+        // Return dummy control object
+        return {
+          id: modalId,
+          element: null,
+          hide: function() {},
+          updateContent: function() {},
+          updateTitle: function() {}
+        };
+      }
+    },
+    
+    // Hide modal
+    hideModal: function(modalId) {
+      if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        const modalEl = document.getElementById(modalId);
+        if (modalEl) {
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) {
+            modal.hide();
+          }
+        }
+      }
+    },
+    
+    // Element visibility toggling
+    toggleElementVisibility: function(elementId, visible, displayMode = 'block') {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.style.display = visible ? (displayMode || 'block') : 'none';
+      }
+    },
+    
+    // DOM utilities
+    getElement: function(selector) {
+      return document.querySelector(selector);
+    },
+    
+    findElement: function(selector) {
+      return document.querySelector(selector);
+    },
+    
+    findElements: function(selector) {
+      return Array.from(document.querySelectorAll(selector));
+    },
+    
+    createElement: function(tag, attributes = {}, content) {
+      const element = document.createElement(tag);
+      
+      // Set attributes
+      for (const [key, value] of Object.entries(attributes)) {
+        if (key === 'className') {
+          element.className = value;
+        } else {
+          element.setAttribute(key, value);
+        }
+      }
+      
+      // Set content
+      if (content) {
+        if (typeof content === 'string') {
+          element.innerHTML = content;
+        } else if (content instanceof HTMLElement) {
+          element.appendChild(content);
+        }
+      }
+      
+      return element;
+    },
+    
+    // Initialization method
+    initialize: function() {
+      console.log("UI fallback initialized");
+      return Promise.resolve(true);
+    }
+  };
   
-  // Check for required Web APIs
-  if (!window.localStorage) compatIssues.push('localStorage');
-  if (!window.sessionStorage) compatIssues.push('sessionStorage');
-  if (!window.WebSocket) compatIssues.push('WebSocket');
+  return uiFallback;
+ }
+ 
+ /**
+ * Create a fallback implementation for the WebScraper module
+ * @returns {Object} - WebScraper fallback implementation
+ */
+ function createWebScraperFallback() {
+  console.log("Creating WebScraper module fallback");
   
-  // Check CSS features that we rely on
-  const checkCSSFeature = (feature) => {
-    try {
-      return CSS.supports(feature);
-    } catch (e) {
+  // Create a minimal WebScraper implementation
+  const webScraperFallback = {
+    __isFallback: true,
+    initialized: true,
+    
+    // Initialization method
+    initialize: function() {
+      console.log("WebScraper fallback initialized");
+      
+      // Try to set up UI
+      this.setupUI();
+      
+      return Promise.resolve(true);
+    },
+    
+    // Setup UI elements
+    setupUI: function() {
+      // Find scraper container
+      const container = document.getElementById('scraper-container');
+      if (!container) return;
+      
+      // Add warning message about fallback
+      const warningEl = document.createElement('div');
+      warningEl.className = 'alert alert-warning';
+      warningEl.innerHTML = `
+        <h5><i class="fas fa-exclamation-triangle me-2"></i>Limited Functionality Mode</h5>
+        <p>The Web Scraper module is operating in fallback mode with limited functionality.</p>
+        <p>Please try refreshing the page or contact support if this issue persists.</p>
+      `;
+      
+      // Add to container
+      container.prepend(warningEl);
+      
+      // Disable scrape button
+      const scrapeBtn = document.getElementById('scrape-btn');
+      if (scrapeBtn) {
+        scrapeBtn.disabled = true;
+        scrapeBtn.title = 'Web scraper is in fallback mode with limited functionality';
+      }
+    },
+    
+    // Basic scraping operation (limited functionality)
+    startScraping: function() {
+      // Show error message
+      const ui = window.ui || window.moduleInstances?.ui;
+      if (ui && typeof ui.showToast === 'function') {
+        ui.showToast('Error', 'Web scraper is in fallback mode with limited functionality', 'error');
+      } else {
+        alert('Web scraper is in fallback mode with limited functionality');
+      }
+      
+      return Promise.reject(new Error('Web scraper is in fallback mode'));
+    },
+    
+    // Cancel scraping operation
+    cancelScraping: function() {
+      console.log("Cancelling web scraper operation (fallback mode)");
+      return Promise.resolve({ success: true });
+    },
+    
+    // Resume a task if needed
+    resumeTask: function(taskId) {
+      console.log(`Attempting to resume task ${taskId} (fallback mode)`);
+      
+      // Show message
+      const ui = window.ui || window.moduleInstances?.ui;
+      if (ui && typeof ui.showToast === 'function') {
+        ui.showToast('Warning', 'Cannot resume task in fallback mode', 'warning');
+      }
+      
       return false;
     }
   };
   
-  if (window.CSS && window.CSS.supports) {
-    if (!checkCSSFeature('display: flex')) compatIssues.push('Flexbox');
-    if (!checkCSSFeature('display: grid')) compatIssues.push('CSS Grid');
-    if (!checkCSSFeature('--var: value')) compatIssues.push('CSS Variables');
-  }
+  return webScraperFallback;
+ }
+ 
+ /**
+ * Create a fallback implementation for the PlaylistDownloader module
+ * @returns {Object} - PlaylistDownloader fallback implementation
+ */
+ function createPlaylistDownloaderFallback() {
+  console.log("Creating PlaylistDownloader module fallback");
   
-  // Report issues
-  if (compatIssues.length > 0) {
-    console.warn('Browser compatibility issues detected:', compatIssues);
-    return false;
-  }
-  
-  return true;
-}
-
-// Run compatibility check before initialization
-if (!checkBrowserCompatibility()) {
-  window.addEventListener('DOMContentLoaded', () => {
-    showErrorMessage("Your browser may not support all features needed by this application. Please use a modern browser like Chrome, Firefox, or Edge.");
-  });
-}
-
-// --------------------------------------------------------------------------
-// Add favicon to head if missing
-// --------------------------------------------------------------------------
-function addFaviconLink() {
-  if (!document.querySelector('link[rel="icon"]')) {
-    const link = document.createElement('link');
-    link.rel = 'icon';
-    link.type = 'image/png';
-    link.href = '/static/img/favicon.png';
-    document.head.appendChild(link);
+  // Create minimal PlaylistDownloader implementation
+  const playlistDownloaderFallback = {
+    __isFallback: true,
+    initialized: true,
     
-    console.log('Added missing favicon link');
+    // Initialization method
+    initialize: function() {
+      console.log("PlaylistDownloader fallback initialized");
+      
+      // Try to set up UI
+      this.setupUI();
+      
+      return Promise.resolve(true);
+    },
+    
+    // Setup UI elements
+    setupUI: function() {
+      // Find playlist container
+      const container = document.getElementById('playlist-container');
+      if (!container) return;
+      
+      // Add warning message about fallback
+      const warningEl = document.createElement('div');
+      warningEl.className = 'alert alert-warning';
+      warningEl.innerHTML = `
+        <h5><i class="fas fa-exclamation-triangle me-2"></i>Limited Functionality Mode</h5>
+        <p>The Playlist Downloader module is operating in fallback mode with limited functionality.</p>
+        <p>Please try refreshing the page or contact support if this issue persists.</p>
+      `;
+      
+      // Add to container
+      container.prepend(warningEl);
+      
+      // Disable download button
+      const downloadBtn = document.getElementById('playlist-download-btn');
+      if (downloadBtn) {
+        downloadBtn.disabled = true;
+        downloadBtn.title = 'Playlist downloader is in fallback mode with limited functionality';
+      }
+    },
+    
+    // Basic download operation (limited functionality)
+    downloadPlaylist: function() {
+      // Show error message
+      const ui = window.ui || window.moduleInstances?.ui;
+      if (ui && typeof ui.showToast === 'function') {
+        ui.showToast('Error', 'Playlist downloader is in fallback mode with limited functionality', 'error');
+      } else {
+        alert('Playlist downloader is in fallback mode with limited functionality');
+      }
+      
+      return Promise.reject(new Error('Playlist downloader is in fallback mode'));
+    },
+    
+    // Cancel download operation
+    cancelDownload: function() {
+      console.log("Cancelling playlist download operation (fallback mode)");
+      return Promise.resolve({ success: true });
+    },
+    
+    // Resume a task if needed
+    resumeTask: function(taskId) {
+      console.log(`Attempting to resume task ${taskId} (fallback mode)`);
+      
+      // Show message
+      const ui = window.ui || window.moduleInstances?.ui;
+      if (ui && typeof ui.showToast === 'function') {
+        ui.showToast('Warning', 'Cannot resume task in fallback mode', 'warning');
+      }
+      
+      return false;
+    },
+    
+    // Handle completion for task ID
+    handleCompletion: function(data) {
+      console.log("Handling playlist completion in fallback mode:", data);
+      // No-op in fallback mode
+    },
+    
+    // Handle error for task ID
+    handleError: function(data) {
+      console.error("Handling playlist error in fallback mode:", data);
+      // No-op in fallback mode
+    }
+  };
+  
+  return playlistDownloaderFallback;
+ }
+ 
+ /**
+ * Create a fallback implementation for the AcademicSearch module
+ * @returns {Object} - AcademicSearch fallback implementation
+ */
+ function createAcademicSearchFallback() {
+  console.log("Creating AcademicSearch module fallback");
+  
+  // Create minimal AcademicSearch implementation
+  const academicSearchFallback = {
+    __isFallback: true,
+    initialized: true,
+    
+    // Initialization method
+    initialize: function() {
+      console.log("AcademicSearch fallback initialized");
+      
+      // Try to set up UI
+      this.setupUI();
+      
+      return Promise.resolve(true);
+    },
+    
+    // Setup UI elements
+   setupUI: function() {
+    // Find academic search container
+    const container = document.getElementById('academic-container');
+    if (!container) return;
+    
+    // Add warning message about fallback
+    const warningEl = document.createElement('div');
+    warningEl.className = 'alert alert-warning';
+    warningEl.innerHTML = `
+      <h5><i class="fas fa-exclamation-triangle me-2"></i>Limited Functionality Mode</h5>
+      <p>The Academic Search module is operating in fallback mode with limited functionality.</p>
+      <p>Please try refreshing the page or contact support if this issue persists.</p>
+    `;
+    
+    // Add to container
+    container.prepend(warningEl);
+    
+    // Disable search button
+    const searchBtn = document.getElementById('academic-search-btn');
+    if (searchBtn) {
+      searchBtn.disabled = true;
+      searchBtn.title = 'Academic search is in fallback mode with limited functionality';
+    }
+  },
+  
+  // Basic search operation (limited functionality)
+  performSearch: function() {
+    // Show error message
+    const ui = window.ui || window.moduleInstances?.ui;
+    if (ui && typeof ui.showToast === 'function') {
+      ui.showToast('Error', 'Academic search is in fallback mode with limited functionality', 'error');
+    } else {
+      alert('Academic search is in fallback mode with limited functionality');
+    }
+    
+    return Promise.reject(new Error('Academic search is in fallback mode'));
+  },
+  
+  // Download PDF operation
+  downloadPaper: function() {
+    console.log("Attempting to download paper (fallback mode)");
+    
+    // Show message
+    const ui = window.ui || window.moduleInstances?.ui;
+    if (ui && typeof ui.showToast === 'function') {
+      ui.showToast('Error', 'Cannot download papers in fallback mode', 'error');
+    } else {
+      alert('Cannot download papers in fallback mode');
+    }
+    
+    return Promise.reject(new Error('Cannot download papers in fallback mode'));
   }
+};
+
+return academicSearchFallback;
 }
 
-// Add favicon link on page load
-window.addEventListener('DOMContentLoaded', addFaviconLink);
+// --------------------------------------------------------------------------
+// Performance Monitoring Functions
+// --------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------
-// Module Export Check Helper
-// --------------------------------------------------------------------------
-function checkModuleExports(moduleName) {
-  if (!window.moduleInstances[moduleName]) {
-    console.warn(`Cannot check exports for ${moduleName}: module not loaded`);
-    return false;
-  }
+/**
+* Record performance metrics for analysis
+*/
+function recordPerformanceMetrics() {
+try {
+  const metrics = {
+    totalTime: Date.now() - (window.performanceStartTime || 0),
+    domContentLoaded: window.performance && window.performance.timing ? 
+      window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart : 
+      null,
+    moduleCount: Object.keys(window.moduleInstances || {}).length,
+    failedModules: moduleLoader.failedModules ? Array.from(moduleLoader.failedModules) : [],
+    fallbacks: moduleLoader.fallbacksUsed ? Array.from(moduleLoader.fallbacksUsed) : [],
+    timestamp: new Date().toISOString(),
+    userAgent: navigator.userAgent,
+    screenWidth: window.innerWidth,
+    screenHeight: window.innerHeight,
+    devicePixelRatio: window.devicePixelRatio || 1,
+    connectionType: navigator.connection ? navigator.connection.effectiveType : 'unknown',
+    locationHref: window.location.href.split('?')[0] // Remove query parameters
+  };
   
-  const module = window.moduleInstances[moduleName];
+  console.log("Performance metrics:", metrics);
   
-  // Check if the module has the expected structure
-  const hasDefaultExport = typeof module === 'object' && module !== null;
-  
-  if (!hasDefaultExport) {
-    console.warn(`Module ${moduleName} does not have proper structure`);
-    return false;
-  }
-  
-  // Check for __isFallback flag
-  if (module.__isFallback) {
-    console.warn(`Module ${moduleName} is using fallback implementation`);
-    return false;
-  }
-  
-  // Check for initialize method
-  const hasInitialize = typeof module.initialize === 'function';
-  if (!hasInitialize) {
-    console.warn(`Module ${moduleName} is missing initialize() method`);
-  }
-  
-  return true;
-}
-
-// --------------------------------------------------------------------------
-// Setup Socket.IO Integration
-// --------------------------------------------------------------------------
-function setupSocketIO() {
+  // Store metrics for later analysis
   try {
-    // Check if Socket.IO is available globally
-    if (typeof io === 'undefined') {
-      console.warn('Socket.IO client not available');
-      return null;
+    // Get existing metrics
+    const storedMetrics = JSON.parse(localStorage.getItem('performanceMetrics') || '[]');
+    
+    // Add new metrics
+    storedMetrics.push(metrics);
+    
+    // Keep only the latest 10 metrics
+    if (storedMetrics.length > 10) {
+      storedMetrics.splice(0, storedMetrics.length - 10);
     }
     
-    // Check if socket is already initialized
-    if (window.socket) {
-      return window.socket;
-    }
-    
-    // Create Socket.IO connection
-    const socket = io({
-      reconnectionAttempts: 5,
-      timeout: 10000,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000
-    });
-    
-    // Setup basic event handlers
-    socket.on('connect', () => {
-      console.log('Socket.IO connected');
-      
-      // Update socket status indicator
-      const statusIndicator = document.getElementById('socket-status');
-      if (statusIndicator) {
-        statusIndicator.classList.remove('connecting', 'disconnected');
-        statusIndicator.classList.add('connected');
-        const statusText = statusIndicator.querySelector('.socket-status-text');
-        if (statusText) {
-          statusText.textContent = 'Connected';
-        }
-      }
-      
-      // Show success toast if UI is available
-      if (window.ui && typeof window.ui.showToast === 'function') {
-        window.ui.showToast('Server Connection', 'Connected to NeuroGen Server', 'success');
-      }
-      
-      // Emit connection event if event registry is available
-      if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-        window.moduleInstances.eventRegistry.emit('socket.connected', {
-          timestamp: new Date().toISOString(),
-          connectionId: socket.id
-        });
-      }
-    });
-    
-    socket.on('disconnect', () => {
-      console.log('Socket.IO disconnected');
-      
-      // Update socket status indicator
-      const statusIndicator = document.getElementById('socket-status');
-      if (statusIndicator) {
-        statusIndicator.classList.remove('connected', 'connecting');
-        statusIndicator.classList.add('disconnected');
-        const statusText = statusIndicator.querySelector('.socket-status-text');
-        if (statusText) {
-          statusText.textContent = 'Disconnected';
-        }
-      }
-      
-      // Show warning toast if UI is available
-      if (window.ui && typeof window.ui.showToast === 'function') {
-        window.ui.showToast('Server Connection', 'Disconnected from NeuroGen Server', 'warning');
-      }
-      
-      // Emit disconnection event if event registry is available
-      if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-        window.moduleInstances.eventRegistry.emit('socket.disconnected', {
-          timestamp: new Date().toISOString()
-        });
-      }
-    });
-    
-    socket.on('connect_error', (error) => {
-      console.error('Socket.IO connection error:', error);
-      
-      // Update socket status indicator
-      const statusIndicator = document.getElementById('socket-status');
-      if (statusIndicator) {
-        statusIndicator.classList.remove('connected', 'connecting');
-        statusIndicator.classList.add('disconnected');
-        const statusText = statusIndicator.querySelector('.socket-status-text');
-        if (statusText) {
-          statusText.textContent = 'Connection Error';
-        }
-      }
-      
-      // Show error toast if UI is available
-      if (window.ui && typeof window.ui.showToast === 'function') {
-        window.ui.showToast('Server Connection Error', 'Failed to connect to NeuroGen Server', 'error');
-      }
-      
-      // Emit error event if event registry is available
-      if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-        window.moduleInstances.eventRegistry.emit('socket.connection_error', {
-          timestamp: new Date().toISOString(),
-          error: error.toString()
-        });
-      }
-    });
-    
-    socket.on('connect_timeout', () => {
-      console.warn('Socket.IO connection timeout');
-      
-      // Update socket status indicator
-      const statusIndicator = document.getElementById('socket-status');
-      if (statusIndicator) {
-        statusIndicator.classList.remove('connected', 'connecting');
-        statusIndicator.classList.add('disconnected');
-        const statusText = statusIndicator.querySelector('.socket-status-text');
-        if (statusText) {
-          statusText.textContent = 'Connection Timeout';
-        }
-      }
-    });
-    
-    socket.on('reconnect_attempt', (attemptNumber) => {
-      console.log(`Socket.IO reconnect attempt ${attemptNumber}`);
-      
-      // Update socket status indicator
-      const statusIndicator = document.getElementById('socket-status');
-      if (statusIndicator) {
-        statusIndicator.classList.remove('connected', 'disconnected');
-        statusIndicator.classList.add('connecting');
-        const statusText = statusIndicator.querySelector('.socket-status-text');
-        if (statusText) {
-          statusText.textContent = `Reconnecting (${attemptNumber})...`;
-        }
-      }
-    });
-    
-    // Setup progress update handler
-    socket.on('progress_update', (data) => {
-      try {
-        console.log('Socket progress update:', data);
-        
-        // Find the task in progress handlers
-        if (window.moduleInstances.progressHandler && typeof window.moduleInstances.progressHandler.updateTaskProgress === 'function') {
-          window.moduleInstances.progressHandler.updateTaskProgress(
-            data.task_id,
-            data.progress,
-            data.message,
-            data.stats
-          );
-        }
-        
-        // Emit event via event registry
-        if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-          window.moduleInstances.eventRegistry.emit('socket.progress_update', data);
-        }
-      } catch (error) {
-        console.error('Error handling progress update:', error);
-      }
-    });
-    
-    // PATCH 3: Enhanced Socket.IO task_completed event handler
-    socket.on('task_completed', (data) => {
-      try {
-        console.log('Socket task completed:', data);
-        
-        // Find the task in progress handlers
-        if (window.moduleInstances.progressHandler && typeof window.moduleInstances.progressHandler.completeTask === 'function') {
-          window.moduleInstances.progressHandler.completeTask(data.task_id, data);
-        }
-        
-        // Emit event via event registry
-        if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-          window.moduleInstances.eventRegistry.emit('socket.task_completed', data);
-        }
-        
-        // Special handling for playlist tasks if needed
-        const taskType = sessionStorage.getItem('ongoingTaskType');
-        if ((taskType === 'playlist' || data.type === 'playlist') && data.task_id === window.currentTaskId) {
-          const playlistDownloader = window.playlistDownloader || window.moduleInstances.playlistDownloader;
-          if (playlistDownloader && typeof playlistDownloader.handlePlaylistCompletion === 'function') {
-            // Use a short delay to allow other handlers to process first
-            setTimeout(() => {
-              try {
-                playlistDownloader.handlePlaylistCompletion(data);
-              } catch (err) {
-                console.error("Error handling playlist completion:", err);
-              }
-            }, 100);
-          }
-        }
-        
-        // Clean up session storage if this task is the current task
-        const currentTaskId = sessionStorage.getItem('ongoingTaskId');
-        if (currentTaskId === data.task_id) {
-          sessionStorage.removeItem('ongoingTaskId');
-          sessionStorage.removeItem('ongoingTaskType');
-          sessionStorage.removeItem('taskStartTime');
-        }
-      } catch (error) {
-        console.error('Error handling task completion:', error);
-      }
-    });
-    
-    // Setup task error handler
-    socket.on('task_error', (data) => {
-      try {
-        console.error('Socket task error:', data);
-        
-        // Find the task in progress handlers
-        if (window.moduleInstances.progressHandler && typeof window.moduleInstances.progressHandler.errorTask === 'function') {
-          window.moduleInstances.progressHandler.errorTask(data.task_id, data.error || 'Unknown error');
-        }
-        
-        // Emit event via event registry
-        if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-          window.moduleInstances.eventRegistry.emit('socket.task_error', data);
-        }
-        
-        // Clean up session storage if this task is the current task
-        const currentTaskId = sessionStorage.getItem('ongoingTaskId');
-        if (currentTaskId === data.task_id) {
-          sessionStorage.removeItem('ongoingTaskId');
-          sessionStorage.removeItem('ongoingTaskType');
-          sessionStorage.removeItem('taskStartTime');
-        }
-        
-        // Show error toast if UI is available
-        if (window.ui && typeof window.ui.showToast === 'function') {
-          window.ui.showToast('Task Error', data.error || 'An error occurred with the task', 'error');
-        }
-      } catch (error) {
-        console.error('Error handling task error event:', error);
-      }
-    });
-    
-    // Setup task cancelled handler
-    socket.on('task_cancelled', (data) => {
-      try {
-        console.log('Socket task cancelled:', data);
-        
-        // Find the task in progress handlers
-        if (window.moduleInstances.progressHandler && typeof window.moduleInstances.progressHandler.cancelTask === 'function') {
-          window.moduleInstances.progressHandler.cancelTask(data.task_id);
-        }
-        
-        // Emit event via event registry
-        if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-          window.moduleInstances.eventRegistry.emit('socket.task_cancelled', data);
-        }
-        
-        // Clean up session storage if this task is the current task
-        const currentTaskId = sessionStorage.getItem('ongoingTaskId');
-        if (currentTaskId === data.task_id) {
-          sessionStorage.removeItem('ongoingTaskId');
-          sessionStorage.removeItem('ongoingTaskType');
-          sessionStorage.removeItem('taskStartTime');
-        }
-        
-        // Show info toast if UI is available
-        if (window.ui && typeof window.ui.showToast === 'function') {
-          window.ui.showToast('Task Cancelled', 'The task was cancelled', 'warning');
-        }
-      } catch (error) {
-        console.error('Error handling task cancellation:', error);
-      }
-    });
-    
-    // Setup PDF download progress handler
-    socket.on('pdf_download_progress', (data) => {
-      try {
-        console.log('PDF download progress:', data);
-        
-        // Emit event via event registry
-        if (window.moduleInstances.eventRegistry && typeof window.moduleInstances.eventRegistry.emit === 'function') {
-          window.moduleInstances.eventRegistry.emit('socket.pdf_download_progress', data);
-        }
-        
-        // Update PDF downloads list in webScraper module
-        if (window.moduleInstances.webScraper && typeof window.moduleInstances.webScraper.updatePdfDownloadsList === 'function') {
-          window.moduleInstances.webScraper.updatePdfDownloadsList(data);
-        }
-      } catch (error) {
-        console.error('Error handling PDF download progress:', error);
-      }
-    });
-    
-    // PATCH 5: Add event registry connection for playlist events
-    // Create a bridge between Socket.IO and event registry specifically for playlist events
-    if (window.moduleInstances.eventRegistry) {
-      const eventRegistry = window.moduleInstances.eventRegistry;
-      
-      // Listen for playlist-specific progress updates
-      socket.on('playlist_progress', (data) => {
-        eventRegistry.emit('socket.playlist_progress', data);
-      });
-      
-      // Listen for playlist-specific completion
-      socket.on('playlist_completed', (data) => {
-        eventRegistry.emit('socket.playlist_completed', data);
-      });
-      
-      // Listen for playlist-specific errors
-      socket.on('playlist_error', (data) => {
-        eventRegistry.emit('socket.playlist_error', data);
+    // Save back to localStorage
+    localStorage.setItem('performanceMetrics', JSON.stringify(storedMetrics));
+  } catch (storageError) {
+    console.warn("Error storing performance metrics:", storageError);
+  }
+  
+  // Send to server if available
+  try {
+    if (window.socket && typeof window.socket.emit === 'function') {
+      window.socket.emit('client_performance_metrics', {
+        metrics,
+        timestamp: Date.now() / 1000,
+        sessionId: sessionStorage.getItem('sessionId') || 'unknown'
       });
     }
+  } catch (socketError) {
+    console.warn("Error sending performance metrics to server:", socketError);
+  }
+  
+  return metrics;
+} catch (error) {
+  console.error("Error recording performance metrics:", error);
+  return null;
+}
+}
+
+/**
+* Long-running performance monitoring for large operations
+*/
+function startPerformanceMonitoring() {
+// Set up memory monitoring if available
+if (window.performance && window.performance.memory) {
+  const memoryMonitor = setInterval(() => {
+    try {
+      const memoryUsage = {
+        totalJSHeapSize: window.performance.memory.totalJSHeapSize,
+        usedJSHeapSize: window.performance.memory.usedJSHeapSize,
+        jsHeapSizeLimit: window.performance.memory.jsHeapSizeLimit,
+        timestamp: Date.now()
+      };
+      
+      // Store in session storage
+      const memoryUsageHistory = JSON.parse(sessionStorage.getItem('memoryUsageHistory') || '[]');
+      memoryUsageHistory.push(memoryUsage);
+      
+      // Keep only latest entries
+      if (memoryUsageHistory.length > 60) { // Keep about 5 minutes of data
+        memoryUsageHistory.shift();
+      }
+      
+      sessionStorage.setItem('memoryUsageHistory', JSON.stringify(memoryUsageHistory));
+      
+      // Check for memory leaks
+      const memoryUsagePercent = (memoryUsage.usedJSHeapSize / memoryUsage.jsHeapSizeLimit) * 100;
+      if (memoryUsagePercent > 80) {
+        console.warn(`High memory usage detected: ${memoryUsagePercent.toFixed(2)}%`);
+      }
+    } catch (error) {
+      console.warn("Error monitoring memory usage:", error);
+    }
+  }, 5000); // Every 5 seconds
+  
+  // Store for cleanup
+  window._memoryMonitor = memoryMonitor;
+}
+
+// Set up long task monitoring if available
+if (window.PerformanceObserver) {
+  try {
+    const longTaskObserver = new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      entries.forEach(entry => {
+        console.warn(`Long task detected: ${entry.duration}ms`, entry);
+      });
+    });
     
-    // Store socket instance globally
-    window.socket = socket;
+    longTaskObserver.observe({ entryTypes: ['longtask'] });
     
-    return socket;
+    // Store for cleanup
+    window._longTaskObserver = longTaskObserver;
   } catch (error) {
-    console.error('Error setting up Socket.IO:', error);
-    return null;
+    console.warn("LongTask performance monitoring not supported by this browser", error);
   }
 }
 
-// Setup Socket.IO connection on page load
-window.addEventListener('DOMContentLoaded', () => {
-  // Only show the socket status indicator once
-  const socketStatus = document.getElementById('socket-status');
-  if (socketStatus) {
-    socketStatus.classList.remove('d-none');
+// Set up user interaction monitoring
+document.addEventListener('click', (event) => {
+  try {
+    // Record click performance
+    const clickStartTime = performance.now();
+    
+    // Add a callback that runs after the event has been processed
+    setTimeout(() => {
+      const clickProcessingTime = performance.now() - clickStartTime;
+      
+      // Record slow interaction processing
+      if (clickProcessingTime > 100) {
+        console.warn(`Slow click processing detected: ${clickProcessingTime.toFixed(2)}ms on ${event.target.tagName}`);
+      }
+    }, 0);
+  } catch (error) {
+    // Ignore errors in performance monitoring
+  }
+}, { passive: true });
+}
+
+/**
+* Scheduled background tasks to optimize performance
+*/
+function scheduleBackgroundTasks() {
+// Setup background cleanup tasks
+const backgroundTasks = () => {
+  // Clear old console logs every 5 minutes
+  if (console.clear && typeof console.clear === 'function') {
+    console.clear();
+    console.log("Console cleared by scheduled task");
   }
   
-  // Attempt to set up Socket.IO after a short delay to allow page to render
-  setTimeout(() => {
-    setupSocketIO();
-  }, 1000);
+  // Clean up memory
+  if (window.gc && typeof window.gc === 'function') {
+    window.gc();
+  }
+  
+  // Report current module health
+  if (moduleLoader && typeof moduleLoader.reportModuleHealth === 'function') {
+    moduleLoader.reportModuleHealth();
+  }
+};
+
+// Schedule background tasks
+const backgroundTaskInterval = setInterval(backgroundTasks, 5 * 60 * 1000); // Every 5 minutes
+
+// Store for cleanup
+window._backgroundTaskInterval = backgroundTaskInterval;
+}
+
+// --------------------------------------------------------------------------
+// Module Event Registration
+// --------------------------------------------------------------------------
+
+/**
+* Register module events and initialize event-driven architecture
+*/
+function registerModuleEvents() {
+// Check if event registry exists
+if (!window.eventRegistry || !window.eventRegistry.on) {
+  return false;
+}
+
+// Register key application events
+window.eventRegistry.registerEvent('app.initialized');
+window.eventRegistry.registerEvent('app.moduleLoaded');
+window.eventRegistry.registerEvent('app.moduleFailed');
+window.eventRegistry.registerEvent('app.taskStarted');
+window.eventRegistry.registerEvent('app.taskCompleted');
+window.eventRegistry.registerEvent('app.taskError');
+
+// Handle module loaded events
+window.eventRegistry.on('app.moduleLoaded', function(data) {
+  console.log(`Module loaded: ${data.moduleName}`);
+  
+  // Record in performance metrics
+  const moduleLoadTimes = JSON.parse(sessionStorage.getItem('moduleLoadTimes') || '{}');
+  moduleLoadTimes[data.moduleName] = Date.now();
+  sessionStorage.setItem('moduleLoadTimes', JSON.stringify(moduleLoadTimes));
+  
+  // Update UI if possible
+  const ui = window.ui || window.moduleInstances?.ui;
+  if (ui && typeof ui.updateModuleStatus === 'function') {
+    ui.updateModuleStatus(data.moduleName, 'loaded');
+  }
 });
 
-// --------------------------------------------------------------------------
-// File System and File Management Helpers
-// --------------------------------------------------------------------------
-function requestSystemDirectory() {
-  try {
-    if (window.showDirectoryPicker && window.moduleInstances.fileHandler) {
-      return window.moduleInstances.fileHandler.requestSystemDirectory();
-    } else {
-      // Fallback for browsers without showDirectoryPicker
-      const input = document.getElementById('folder-input') || document.createElement('input');
-      input.type = 'file';
-      input.webkitdirectory = true;
-      input.directory = true;
-      input.multiple = true;
-      input.click();
-      
-      return new Promise((resolve) => {
-        input.onchange = () => {
-          if (input.files && input.files.length > 0) {
-            resolve({
-              files: Array.from(input.files),
-              directory: input.files[0].webkitRelativePath.split('/')[0]
-            });
-          } else {
-            resolve(null);
-          }
-        };
-      });
-    }
-  } catch (error) {
-    console.error('Error requesting system directory:', error);
-    return Promise.reject(error);
+// Handle module failed events
+window.eventRegistry.on('app.moduleFailed', function(data) {
+  console.error(`Module failed: ${data.moduleName}`, data.error);
+  
+  // Update UI if possible
+  const ui = window.ui || window.moduleInstances?.ui;
+  if (ui && typeof ui.updateModuleStatus === 'function') {
+    ui.updateModuleStatus(data.moduleName, 'failed');
   }
+});
+
+return true;
 }
 
-// Call this after DOM is fully loaded and modules are initialized
-function afterModulesInitialized() {
-  // Initialize progress system
-  initializeProgressSystem();
-  
-  // Make sure playlist downloader has UI integration
-  if (window.playlistUI && typeof window.playlistUI.verify === 'function') {
-    window.playlistUI.verify();
-  }
-  
-  // Check for any ongoing tasks
-  const taskId = sessionStorage.getItem('ongoingTaskId');
-  if (taskId) {
-    console.log(`Found ongoing task ${taskId}, ensuring progress is displayed`);
-    
-    // Request status update for ongoing task
-    if (window.socket && window.socket.connected) {
-      window.socket.emit('request_status', { task_id: taskId });
-    }
-  }
-}
+// Call registerModuleEvents during initialization
+// This will be called from initializeApp when eventRegistry is loaded
+window.registerModuleEvents = registerModuleEvents;
+
 // --------------------------------------------------------------------------
 // Exported API
 // --------------------------------------------------------------------------
 export default {
-  version: window.appVersion,
+  version: '1.3.0',
+  buildDate: '2025-05-15',
   
   /**
-   * Load a module by path.
-   * @param {string} path - Module path.
-   * @returns {Promise<Object>} - Loaded module.
+   * Get diagnostic report
+   * @returns {Object} - Diagnostic report
    */
-  loadModule: async (path) => {
-    return moduleLoader.importModule(path);
-  },
-  
-  /**
-   * Get a loaded module by name.
-   * @param {string} name - Module name.
-   * @returns {Object|null} - Module or null if not loaded.
-   */
-  getModule: (name) => {
-    return window.moduleInstances[name] || null;
-  },
-  
-  /**
-   * Run module diagnostics to check system health
-   * @returns {Promise<Object>} - Diagnostics report
-   */
-  runDiagnostics: async () => {
-    if (window.diagnostics && typeof window.diagnostics.runDiagnostics === 'function') {
-      return window.diagnostics.runDiagnostics();
+  getDiagnosticReport() {
+    if (diagnostics && typeof diagnostics.generateReport === 'function') {
+      return diagnostics.generateReport();
     }
     
-    if (moduleLoader && typeof moduleLoader.generateHealthReport === 'function') {
-      return moduleLoader.generateHealthReport();
-    }
-    
+    // Fallback report
     return {
-      status: 'unknown',
-      reason: 'Diagnostics tools not available',
-      loadedModules: Object.keys(window.moduleInstances || {})
+      timestamp: new Date().toISOString(),
+      status: moduleLoader.failedModules && moduleLoader.failedModules.size > 0 ? 'error' : 'ok',
+      failedModules: moduleLoader.failedModules ? Array.from(moduleLoader.failedModules) : [],
+      fallbacksUsed: moduleLoader.fallbacksUsed ? Array.from(moduleLoader.fallbacksUsed) : [],
+      initialized: window.appInitialized,
+      moduleSystemHealth: moduleLoader.failedModules && moduleLoader.failedModules.size > 0 ? 'issues' : 'ok'
     };
   },
   
   /**
-   * Reset the module system (useful for debugging)
+   * Log diagnostic report to console
    */
-  resetModuleSystem: async () => {
-    if (moduleLoader && typeof moduleLoader.clearCache === 'function') {
-      moduleLoader.clearCache();
-      return true;
+  logDiagnosticReport() {
+    if (diagnostics && typeof diagnostics.logReport === 'function') {
+      diagnostics.logReport();
+    } else {
+      console.log("Module Diagnostics Report: ", this.getDiagnosticReport());
     }
-    return false;
   },
   
   /**
-   * Show the diagnostics panel
+   * Get the module loading state
+   * @returns {Object} - Module loading state
    */
-  showDiagnostics: () => {
-    if (window.launchDiagnostics) {
-      window.launchDiagnostics();
-      return true;
+  getModuleLoadingState() {
+    return {
+      initialized: moduleLoader.loadedModules ? Array.from(moduleLoader.loadedModules) : [],
+      failed: moduleLoader.failedModules ? Array.from(moduleLoader.failedModules) : [],
+      fallbacks: moduleLoader.fallbacksUsed ? Array.from(moduleLoader.fallbacksUsed) : []
+    };
+  },
+  
+  /**
+   * Get a loaded module by name
+   * @param {string} name - Module name
+   * @returns {Object|null} - Module or null if not loaded
+   */
+  getModule(name) {
+    return window.moduleInstances?.[name] || null;
+  },
+  
+  /**
+   * Access system-level features
+   */
+  system: {
+    /**
+     * Get performance metrics
+     * @returns {Object} - Performance metrics
+     */
+    getPerformanceMetrics() {
+      return typeof recordPerformanceMetrics === 'function' ? recordPerformanceMetrics() : null;
+    },
+    
+    /**
+     * Start background performance monitoring
+     */
+    startPerformanceMonitoring() {
+      if (typeof startPerformanceMonitoring === 'function') {
+        startPerformanceMonitoring();
+      }
+    },
+    
+    /**
+     * Reset all modules and reload the page
+     */
+    resetAll() {
+      // Clear all storage
+      localStorage.removeItem('moduleCache');
+      localStorage.removeItem('failedModules');
+      
+      // Reload the page
+      window.location.reload();
     }
-    return false;
-  },
+  }
+}; // End of export default
+
+// --------------------------------------------------------------------------
+// Global Functions and Initialization
+// --------------------------------------------------------------------------
+
+/**
+ * Check application status - useful for debugging
+ */
+window.checkAppStatus = function() {
+  console.log("=== App Status Check ===");
+  console.log("appInitialized:", window.appInitialized);
+  console.log("appInitializationStarted:", window.appInitializationStarted);
+  console.log("moduleInstances:", window.moduleInstances ? Object.keys(window.moduleInstances) : "None");
+  console.log("Document ready state:", document.readyState);
+  console.log("Loading overlay exists:", !!document.getElementById('app-loading-overlay'));
+  console.log("Error container exists:", !!document.getElementById('app-loading-error'));
   
-  /**
-   * Check if a module follows the standard export pattern
-   */
-  checkModuleExports,
-  
-  /**
-   * Initialize the socket connection
-   */
-  initializeSocket: () => {
-    return setupSocketIO();
-  },
-  
-  /**
-   * Request a directory from the file system
-   */
-  requestDirectory: () => {
-    return requestSystemDirectory();
-  },
-  
-  /**
-   * Get the theme manager instance
-   */
-  getThemeManager: () => {
-    return window.moduleInstances.themeManager || null;
-  },
-  
-  /**
-   * Get the event registry instance
-   */
-  getEventRegistry: () => {
-    return window.moduleInstances.eventRegistry || null;
-  },
-  
-  /**
-   * Get the state manager instance
-   */
-  getStateManager: () => {
-    return window.moduleInstances.stateManager || null;
+  // Try to manually initialize if not started
+  if (!window.appInitializationStarted && typeof initializeApp === 'function') {
+    console.log("⚠️ App not initialized, attempting manual initialization...");
+    initializeApp();
   }
 };
+
+/**
+ * Quick diagnostic function
+ */
+window.runDiagnostics = function() {
+  if (window.__moduleDiagnostics) {
+    window.__moduleDiagnostics.logReport();
+  } else {
+    console.log("Module diagnostics not available");
+  }
+};
+
+// Log initialization status
+console.log("✅ Index.js module loaded successfully");
+
+// Export initializeApp for external access if needed
+window.initializeApp = initializeApp;
