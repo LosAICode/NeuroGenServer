@@ -26,14 +26,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     
-    <!-- Critical Performance Fixes - Must load first -->
-    <script src="{{ url_for('static', filename='js/ses-deprecation-fix.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/duplicate-load-fix.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/url-param-fix.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/performance-fix.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/performance-critical-fix.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/sw-fix.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/module-init-fix.js') }}"></script>
+    <!-- Essential fixes only -->
     <script src="{{ url_for('static', filename='js/fixThemePersistence.js') }}"></script>
     
 </head>
@@ -904,7 +897,7 @@
             console.log("🚀 Initializing NeuroGen module system...");
             
             // Import with proper error handling
-            const moduleUrl = "{{ url_for('static', filename='js/index.js') }}";
+            const moduleUrl = "{{ url_for('static', filename='js/index-simple.js') }}";
             const module = await import(moduleUrl);
             
             window.__loadingStages.modulesImported = true;
@@ -1333,9 +1326,6 @@ ${error.stack || 'No stack trace available'}
 
 <!-- Add a hidden error container that we can use to show problems -->
 <div id="app-loading-error" class="alert alert-danger m-3" style="display: none;"></div>
-
-<!-- Performance Diagnostic Tool -->
-<script src="{{ url_for('static', filename='js/performance-diagnostic.js') }}"></script>
 
 </body>
 </html>

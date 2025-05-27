@@ -1,0 +1,200 @@
+SES The 'dateTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
+SES The 'mathTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
+Theme applied before page load: light fixThemePersistence.js:34:15
+🔧 NeuroGen Diagnostics loaded. Run: NeuroGenDiagnostics.runFullDiagnostics() console-diagnostics.js:310:9
+🚀 Initializing NeuroGen module system... localhost:5025:897:21
+Theme persistence mechanisms initialized fixThemePersistence.js:63:15
+🚀 NeuroGen Server Starting... index-simple.js:8:9
+📦 Loading module manager... index-simple.js:21:17
+✅ Modules imported successfully localhost:5025:904:21
+🔧 Loading essential modules... index-simple.js:26:17
+📦 Loading errorHandler... index-simple.js:50:25
+🔧 Simple Debug Tool Loaded simple-debug.js:106:9
+💡 Commands available: simple-debug.js:107:9
+  - window.SimpleDebug.healthCheck() simple-debug.js:108:9
+  - window.SimpleDebug.listModules() simple-debug.js:109:9
+  - window.SimpleDebug.checkButtons() simple-debug.js:110:9
+  - window.SimpleDebug.testModuleManager() simple-debug.js:111:9
+🔧 Debug tools loaded index-simple.js:100:17
+📦 Registering module: errorHandler module-manager.js:17:17
+📦 Loading uiRegistry... index-simple.js:50:25
+Setting up error handler for uiRegistry uiRegistry.js:20:11
+📦 Registering module: uiRegistry module-manager.js:17:17
+📦 Loading stateManager... index-simple.js:50:25
+📦 Registering module: stateManager module-manager.js:17:17
+📦 Loading eventManager... index-simple.js:50:25
+📦 Registering module: eventManager module-manager.js:17:17
+📦 Loading socketHandler... index-simple.js:50:25
+📦 Registering module: socketHandler module-manager.js:17:17
+📦 Loading progressHandler... index-simple.js:50:25
+📦 Registering module: progressHandler module-manager.js:17:17
+📦 Loading ui... index-simple.js:50:25
+Module Bridge v2.1.0 initializing... module-bridge.js:15:9
+Module Bridge v2.1.0 initialized successfully module-bridge.js:325:9
+[Bridge] Updated ui bridge (update #1) module-bridge.js:228:13
+UI module initialized and bridge updated ui.js:1648:9
+📦 Registering module: ui module-manager.js:17:17
+📦 Loading fileProcessor... index-simple.js:50:25
+Event 'system.ready' registered successfully eventRegistry.js:205:15
+Event 'system.error' registered successfully eventRegistry.js:205:15
+Event 'system.warning' registered successfully eventRegistry.js:205:15
+Event 'system.info' registered successfully eventRegistry.js:205:15
+Event 'ui.ready' registered successfully eventRegistry.js:205:15
+Event 'ui.modal.open' registered successfully eventRegistry.js:205:15
+Event 'ui.modal.close' registered successfully eventRegistry.js:205:15
+Event 'ui.toast.show' registered successfully eventRegistry.js:205:15
+Event 'ui.theme.change' registered successfully eventRegistry.js:205:15
+Event 'app.initialized' registered successfully eventRegistry.js:205:15
+Event 'app.start' registered successfully eventRegistry.js:205:15
+Event 'app.shutdown' registered successfully
+SES The 'dateTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
+Event 'system.error' registered successfully eventRegistry.js:205:15
+Event 'system.warning' registered successfully eventRegistry.js:205:15
+Event 'system.info' registered successfully eventRegistry.js:205:15
+Event 'ui.ready' registered successfully eventRegistry.js:205:15
+Event 'ui.modal.open' registered successfully eventRegistry.js:205:15
+Event 'ui.modal.close' registered successfully eventRegistry.js:205:15
+Event 'ui.toast.show' registered successfully eventRegistry.js:205:15
+Event 'ui.theme.change' registered successfully eventRegistry.js:205:15
+Event 'app.initialized' registered successfully eventRegistry.js:205:15
+Event 'app.start' registered successfully eventRegistry.js:205:15
+Event 'app.shutdown' registered successfully eventRegistry.js:205:15
+Event 'app.error' registered successfully eventRegistry.js:205:15
+Event 'data.ready' registered successfully eventRegistry.js:205:15
+Event 'data.changed' registered successfully eventRegistry.js:205:15
+Event 'data.saved' registered successfully eventRegistry.js:205:15
+Event 'data.error' registered successfully eventRegistry.js:205:15
+Event 'session.login' registered successfully eventRegistry.js:205:15
+Event 'session.logout' registered successfully eventRegistry.js:205:15
+Event 'session.expired' registered successfully eventRegistry.js:205:15
+Event 'socket.connected' registered successfully eventRegistry.js:205:15
+Event 'socket.disconnected' registered successfully eventRegistry.js:205:15
+Event 'socket.error' registered successfully eventRegistry.js:205:15
+Event 'socket.message' registered successfully eventRegistry.js:205:15
+Event 'task.start' registered successfully eventRegistry.js:205:15
+Event 'task.progress' registered successfully eventRegistry.js:205:15
+Event 'task.complete' registered successfully eventRegistry.js:205:15
+Event 'task.error' registered successfully eventRegistry.js:205:15
+Event 'task.cancel' registered successfully eventRegistry.js:205:15
+Successfully registered 29 of 29 events eventRegistry.js:266:15
+Event Registry initialized eventRegistry.js:143:13
+📦 Registering module: fileProcessor module-manager.js:17:17
+📦 Loading playlistDownloader... index-simple.js:50:25
+📦 Registering module: playlistDownloader module-manager.js:17:17
+📦 Loading webScraper... index-simple.js:50:25
+📦 Registering module: webScraper module-manager.js:17:17
+🚀 Initializing all modules... module-manager.js:126:17
+🔧 Initializing errorHandler... module-manager.js:42:21
+🧹 Cleaning up errorHandler... module-manager.js:69:17
+Global error handlers set up errorHandler.js:187:13
+Loaded 5 error history items errorHandler.js:380:21
+Error handler initialized errorHandler.js:114:13
+✅ errorHandler initialized successfully module-manager.js:53:21
+🔧 Initializing uiRegistry... module-manager.js:42:21
+🧹 Cleaning up uiRegistry... module-manager.js:69:17
+Initializing UI Registry... uiRegistry.js:67:13
+UI Registry initialized successfully uiRegistry.js:95:15
+✅ uiRegistry initialized successfully module-manager.js:53:21
+🔧 Initializing stateManager... module-manager.js:42:21
+🧹 Cleaning up stateManager... module-manager.js:69:17
+State manager initialized stateManager.js:229:15
+✅ stateManager initialized successfully module-manager.js:53:21
+🔧 Initializing eventManager... module-manager.js:42:21
+🧹 Cleaning up eventManager... module-manager.js:69:17
+Event manager initialized eventManager.js:61:13
+✅ eventManager initialized successfully module-manager.js:53:21
+🔧 Initializing socketHandler... module-manager.js:42:21
+🧹 Cleaning up socketHandler... module-manager.js:69:17
+Initializing Socket Handler module... socketHandler.js:301:11
+Connecting to Socket.IO server... socketHandler.js:395:15
+Socket event handlers registered socketHandler.js:750:11
+Socket.IO connection initiated socketHandler.js:422:15
+Socket Handler module initialized successfully socketHandler.js:358:13
+✅ socketHandler initialized successfully module-manager.js:53:21
+🔧 Initializing progressHandler... module-manager.js:42:21
+🧹 Cleaning up progressHandler... module-manager.js:69:17
+✅ progressHandler initialized successfully module-manager.js:53:21
+🔧 Initializing ui... module-manager.js:42:21
+🧹 Cleaning up ui... module-manager.js:69:17
+Initializing Core UI module... ui.js:62:15
+Event 'ui.themeChanged' registered successfully eventRegistry.js:205:15
+Event emitted: ui.themeChanged 
+Object { theme: "light" }
+eventRegistry.js:535:17
+Invalid selector for global.ui: 
+Object { initialize: async initialize(options), cleanup: cleanup(), _addTrackedEventListener: _addTrackedEventListener(element, type, handler, options), _setupThemeObserver: _setupThemeObserver(), _handleThemeChange: _handleThemeChange(), _setupGlobalHandlers: _setupGlobalHandlers(), getElement: getElement(selector), ensureToastContainer: ensureToastContainer(), showToast: showToast(title, message, type, options), _removeToast: _removeToast(toast, onClose)
+, … }
+uiRegistry.js:279:15
+Core UI module initialized successfully ui.js:95:15
+✅ ui initialized successfully module-manager.js:53:21
+🔧 Initializing fileProcessor... module-manager.js:42:21
+🧹 Cleaning up fileProcessor... module-manager.js:69:17
+Initializing file processing module... fileProcessor.js:283:15
+Initializing history manager... historyManager.js:40:21
+Event 'history.refresh' registered successfully eventRegistry.js:205:15
+Event handler added for 'history.refresh', total handlers: 1 eventRegistry.js:330:17
+Event 'history.clear' registered successfully eventRegistry.js:205:15
+Event handler added for 'history.clear', total handlers: 1 eventRegistry.js:330:17
+Event 'history.filter' registered successfully eventRegistry.js:205:15
+Event handler added for 'history.filter', total handlers: 1 eventRegistry.js:330:17
+Event 'history.search' registered successfully eventRegistry.js:205:15
+Event handler added for 'history.search', total handlers: 1 eventRegistry.js:330:17
+Event 'history.sort' registered successfully eventRegistry.js:205:15
+Event handler added for 'history.sort', total handlers: 1 eventRegistry.js:330:17
+Event 'task.completed' registered successfully eventRegistry.js:205:15
+Event handler added for 'task.completed', total handlers: 1 eventRegistry.js:330:17
+Event 'file.downloaded' registered successfully eventRegistry.js:205:15
+Event handler added for 'file.downloaded', total handlers: 1 eventRegistry.js:330:17
+Event 'search.performed' registered successfully eventRegistry.js:205:15
+Event handler added for 'search.performed', total handlers: 1 eventRegistry.js:330:17
+Event 'file.accessed' registered successfully eventRegistry.js:205:15
+Event handler added for 'file.accessed', total handlers: 1 eventRegistry.js:330:17
+No valid history found in storage, using defaults historyManager.js:174:21
+History manager initialized successfully historyManager.js:47:21
+History manager initialized successfully fileProcessor.js:299:19
+Event 'socket.progress_update' registered successfully eventRegistry.js:205:15
+Event handler added for 'socket.progress_update', total handlers: 1 eventRegistry.js:330:17
+Event 'socket.task_completed' registered successfully eventRegistry.js:205:15
+Event handler added for 'socket.task_completed', total handlers: 1 eventRegistry.js:330:17
+Event 'socket.task_error' registered successfully eventRegistry.js:205:15
+Event handler added for 'socket.task_error', total handlers: 1 eventRegistry.js:330:17
+Event 'socket.task_cancelled' registered successfully eventRegistry.js:205:15
+Event handler added for 'socket.task_cancelled', total handlers: 1 eventRegistry.js:330:17
+Form element not found in uiRegistry, will use fallback fileProcessor.js:715:19
+Event 'history.saved' registered successfully eventRegistry.js:205:15
+Event handler added for 'history.saved', total handlers: 1 eventRegistry.js:330:17
+Event handlers registered through event registry fileProcessor.js:723:17
+Setting up direct event handlers as fallback fileProcessor.js:412:15
+Adding direct submit handler to form fileProcessor.js:417:17
+File processing module initialized successfully fileProcessor.js:351:15
+✅ fileProcessor initialized successfully module-manager.js:53:21
+🔧 Initializing playlistDownloader... module-manager.js:42:21
+🧹 Cleaning up playlistDownloader... module-manager.js:69:17
+✅ playlistDownloader initialized successfully module-manager.js:53:21
+🔧 Initializing webScraper... module-manager.js:42:21
+🧹 Cleaning up webScraper... module-manager.js:69:17
+Socket handler not loaded: stopStatusPolling webScraper.js:46:36
+Web Scraper module cleaned up webScraper.js:1810:12
+Initializing Web Scraper module... webScraper.js:117:15
+Event listeners registered for Web Scraper webScraper.js:377:15
+Web Scraper module initialized successfully webScraper.js:135:15
+✅ webScraper initialized successfully module-manager.js:53:21
+✅ All modules initialized module-manager.js:133:17
+✅ NeuroGen Server initialized in 4823ms index-simple.js:71:17
+Socket handler loaded successfully in webScraper webScraper.js:68:13
+Event 'module.error' registered successfully eventRegistry.js:205:15
+Event handler added for 'module.error', total handlers: 1 eventRegistry.js:330:17
+ErrorHandler registered with eventRegistry errorHandler.js:204:19
+Registering common UI elements... uiRegistry.js:138:13
+UI elements registered successfully uiRegistry.js:181:15
+✅ Application initialized in 5224ms localhost:5025:915:33
+Socket.IO connected with ID: G_CzRQxys1W8k9D3AAAB socketHandler.js:443:13
+Event emitted: socket.connected null eventRegistry.js:535:17
+
+💡 Run window.SimpleDebug.healthCheck() for full system status simple-debug.js:102:17
+[Bridge] Updated ui bridge (update #2) module-bridge.js:228:13
+UI module initialized and bridge updated ui.js:848:9
+UI module loaded in errorHandler errorHandler.js:126:17
+
+​
+

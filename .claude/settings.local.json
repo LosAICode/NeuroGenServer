@@ -15,7 +15,9 @@
       "Bash(rg:*)",
       "Bash(chmod:*)",
       "Bash(rm:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(python test:*)"
     ],
     "deny": []
   }
