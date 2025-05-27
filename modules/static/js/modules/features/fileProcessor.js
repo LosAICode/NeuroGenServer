@@ -215,7 +215,7 @@ const VALID_FILE_EXTENSIONS = [
   // Other
   'log', 'yaml', 'yml'
 ];
-const DEFAULT_OUTPUT_FORMAT = 'json'; // Default output format
+// const DEFAULT_OUTPUT_FORMAT = 'json'; // Removed - unused variable
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB max file size
 
 // Module state (private)
@@ -223,6 +223,7 @@ const state = {
   initialized: false,
   processing: false,
   currentTaskId: null,
+  currentTaskInfo: null, // Store task information from API response
   processingStartTime: null,
   isProcessingCancelled: false,
   progressUpdateCount: 0,
@@ -1782,39 +1783,55 @@ const fileProcessor = {
   handleFileSelection(event) {
     try {
       const fileInput = event.target;
-      const file = fileInput.files[0];
+      const files = fileInput.files;
       
-      if (!file) return;
+      if (!files || files.length === 0) return;
       
-      console.log(`File selected: ${file.name} (${utils.formatBytes(file.size)})`);
-      
-      // Update file info elements
-      this.updateFileInfo(file);
-      
-      // Enable submit button
-      const submitBtn = getElement('submit-btn');
-      if (submitBtn) {
-        submitBtn.disabled = false;
+      // For directory selection, we need to extract the directory path
+      // The webkitRelativePath gives us the relative path including directory
+      if (files.length > 0 && files[0].webkitRelativePath) {
+        const firstFilePath = files[0].webkitRelativePath;
+        const directoryName = firstFilePath.split('/')[0];
+        
+        console.log(`Directory selected: ${directoryName} (${files.length} files)`);
+        
+        // Update the input-dir field with the directory name
+        const inputDirField = getElement('input-dir');
+        if (inputDirField) {
+          // Note: We only get the directory name, not the full path in web browsers
+          inputDirField.value = directoryName;
+          inputDirField.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        
+        // Update file info to show directory info
+        const selectedFilesInfo = getElement('selected-files-info');
+        if (selectedFilesInfo) {
+          selectedFilesInfo.innerHTML = `
+            <div class="alert alert-info mt-2">
+              <i class="fas fa-folder me-2"></i>
+              Selected directory: <strong>${directoryName}</strong>
+              <br>
+              <small class="text-muted">Contains ${files.length} files</small>
+            </div>
+          `;
+        }
+        
+        // Enable submit button
+        const submitBtn = getElement('submit-btn');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+        }
+        
+        // Store directory info in state
+        state.selectedDirectory = {
+          name: directoryName,
+          fileCount: files.length,
+          files: Array.from(files)
+        };
+        
+        // Log to terminal
+        this.logToTerminal('info', `Directory selected: ${directoryName} with ${files.length} files`);
       }
-      
-      // Store selected file
-      state.selectedFiles = [file];
-      
-      // Update state manager if available
-      if (stateManager && typeof stateManager.setState === 'function') {
-        stateManager.setState({
-          fileProcessing: {
-            selectedFile: {
-              name: file.name,
-              size: file.size,
-              type: file.type
-            }
-          }
-        });
-      }
-      
-      // Log to terminal
-      this.logToTerminal('info', `File selected: ${file.name} (${utils.formatBytes(file.size)})`);
     } catch (error) {
       this.handleError(error, "Error handling file selection");
     }
@@ -1866,36 +1883,35 @@ const fileProcessor = {
         return;
       }
       
-      // Get form and files
+      // Get form data
       const form = event.target;
-      const fileInput = getElement('folder-input');
+      const formData = new FormData(form);
       
-      if (!fileInput || !fileInput.files.length) {
-        ui.showToast('Error', 'No file selected', 'error');
+      // Get the input directory path
+      const inputDir = formData.get('input_dir');
+      const outputFile = formData.get('output_file');
+      
+      // Validate input directory
+      if (!inputDir || inputDir.trim() === '') {
+        console.error("No input directory specified");
+        ui.showToast('Error', 'Please select or enter an input directory', 'error');
         return;
       }
       
-      const file = fileInput.files[0];
-      
-      // Validate file
-      if (!this.validateFile(file)) {
+      // Validate output filename
+      if (!outputFile || outputFile.trim() === '') {
+        console.error("No output filename specified");
+        ui.showToast('Error', 'Please enter an output filename', 'error');
         return;
       }
       
-      // Get output format
-      const outputFormat = getElement('output-format');
-      const format = outputFormat ? outputFormat.value : DEFAULT_OUTPUT_FORMAT;
+      console.log("Processing directory:", inputDir);
+      console.log("Output file:", outputFile);
       
-      // Get output file name
-      const outputFileInput = getElement('output-file');
-      const outputFileName = outputFileInput && outputFileInput.value ? 
-                          outputFileInput.value : 
-                          file.name.substring(0, file.name.lastIndexOf('.'));
-      
-      // Prepare file for upload and processing
-      await this.processFile(file, {
-        outputFormat: format,
-        outputFileName: outputFileName
+      // Start processing the directory
+      await this.processDirectory({
+        input_dir: inputDir,
+        output_file: outputFile
       });
     } catch (error) {
       this.handleError(error, "Error submitting file");
@@ -1968,6 +1984,92 @@ const fileProcessor = {
       return typeMap[extension] || `${extension.toUpperCase()} File`;
     } catch (error) {
       return 'Unknown Type';
+    }
+  },
+
+  /**
+   * Process a directory with server-side processing
+   * @param {Object} options - Processing options with input_dir and output_file
+   * @returns {Promise<Object>} - Processing result
+   */
+  async processDirectory(options = {}) {
+    try {
+      console.log(`Processing directory: ${options.input_dir}`);
+      this.logToTerminal('info', `Starting directory processing for ${options.input_dir}`);
+      
+      // Set processing state
+      state.processing = true;
+      state.processingStartTime = Date.now();
+      state.progressUpdateCount = 0;
+      state.progressRates = [];
+      
+      // Show progress UI
+      this.showProgress();
+      
+      // Prepare the request data
+      const requestData = {
+        input_dir: options.input_dir,
+        output_file: options.output_file
+      };
+      
+      // Log start of processing
+      this.logToTerminal('info', `Processing all files in directory: ${options.input_dir}`);
+      this.logToTerminal('info', `Output will be saved to: ${options.output_file}.json`);
+      
+      // Start the processing task
+      const response = await this.fetchWithRetry('/api/process', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData),
+        // Use long timeout for directory processing
+        timeout: 0 // No timeout for large directories
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `HTTP error ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log("Processing started:", result);
+      
+      if (!result.task_id) {
+        throw new Error("No task ID received from server");
+      }
+      
+      // Store task ID and info
+      state.currentTaskId = result.task_id;
+      state.currentTaskInfo = result;
+      
+      // Save to session storage for recovery
+      sessionStorage.setItem('ongoingTaskId', result.task_id);
+      sessionStorage.setItem('ongoingTaskType', 'file');
+      sessionStorage.setItem('taskStartTime', Date.now().toString());
+      
+      // Initialize progress tracking
+      await this.initializeTaskProgress(result.task_id);
+      
+      // Update progress status
+      this.updateProgressUI(0, 'Initializing directory processing...');
+      
+      // Log task started
+      this.logToTerminal('success', `Processing task started with ID: ${result.task_id}`);
+      
+      return result;
+    } catch (error) {
+      // Reset state on error
+      state.processing = false;
+      
+      // Clear session storage
+      this.clearTaskSessionData();
+      
+      // Show error UI
+      this.showError(error.message);
+      
+      // Re-throw for caller to handle
+      throw error;
     }
   },
 
@@ -2186,7 +2288,7 @@ const fileProcessor = {
       }
       
       // Add to history if history manager is available
-      if (historyManager && typeof historyManager.addToHistory === 'function' && state.historyInitialized) {
+      if (historyManager && typeof historyManager.addTaskToHistory === 'function' && state.historyInitialized) {
         const historyItem = {
           id: data.task_id || state.currentTaskId,
           type: 'file',
@@ -2202,7 +2304,7 @@ const fileProcessor = {
           status: 'completed'
         };
         
-        historyManager.addToHistory(historyItem);
+        historyManager.addTaskToHistory(historyItem);
       }
       
       // Set a small delay before showing completion to ensure UI updates
@@ -2272,7 +2374,7 @@ const fileProcessor = {
       state.completionMonitoring.timeoutIds.clear();
       
       // Add to history if history manager is available
-      if (historyManager && typeof historyManager.addToHistory === 'function' && state.historyInitialized) {
+      if (historyManager && typeof historyManager.addTaskToHistory === 'function' && state.historyInitialized) {
         const historyItem = {
           id: data.task_id || state.currentTaskId,
           type: 'file',
@@ -2286,7 +2388,7 @@ const fileProcessor = {
           status: 'error'
         };
         
-        historyManager.addToHistory(historyItem);
+        historyManager.addTaskToHistory(historyItem);
       }
       
       // End processing state
@@ -2340,7 +2442,7 @@ const fileProcessor = {
       state.completionMonitoring.timeoutIds.clear();
       
       // Add to history if history manager is available
-      if (historyManager && typeof historyManager.addToHistory === 'function' && state.historyInitialized) {
+      if (historyManager && typeof historyManager.addTaskToHistory === 'function' && state.historyInitialized) {
         const historyItem = {
           id: data.task_id || state.currentTaskId,
           type: 'file',
@@ -2353,7 +2455,7 @@ const fileProcessor = {
           status: 'cancelled'
         };
         
-        historyManager.addToHistory(historyItem);
+        historyManager.addTaskToHistory(historyItem);
       }
       
       // End processing state
@@ -2383,7 +2485,7 @@ const fileProcessor = {
    * Handle cancel button click
    * @param {Event} event - Click event
    */
-  async handleCancelClick(event) {
+  async handleCancelClick(_event) {
     try {
       console.log("Cancel button clicked");
       
@@ -2577,7 +2679,7 @@ const fileProcessor = {
    * Handle new task button click
    * @param {Event} event - Click event
    */
-  handleNewTaskClick(event) {
+  handleNewTaskClick(_event) {
     try {
       // Reset processing state
       this.forceResetProcessingState();
@@ -3149,6 +3251,7 @@ export default fileProcessor;
 // Export named functions for external use
 export const initialize = fileProcessor.initialize.bind(fileProcessor);
 export const handleError = fileProcessor.handleError.bind(fileProcessor);
+export const processDirectory = fileProcessor.processDirectory.bind(fileProcessor);
 export const processFile = fileProcessor.processFile.bind(fileProcessor);
 export const validateFile = fileProcessor.validateFile.bind(fileProcessor);
 export const isValidFileType = fileProcessor.isValidFileType.bind(fileProcessor);

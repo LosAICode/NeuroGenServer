@@ -25,6 +25,15 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <!-- Critical Performance Fixes - Must load first -->
+    <script src="{{ url_for('static', filename='js/ses-deprecation-fix.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/duplicate-load-fix.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/url-param-fix.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/performance-fix.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/performance-critical-fix.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sw-fix.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/module-init-fix.js') }}"></script>
     <script src="{{ url_for('static', filename='js/fixThemePersistence.js') }}"></script>
     
 </head>
@@ -839,6 +848,9 @@
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     
+    <!-- Console Diagnostics Tool -->
+    <script src="{{ url_for('static', filename='js/console-diagnostics.js') }}"></script>
+    
     <!-- PDF.js (for PDF viewing) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script>
@@ -1321,5 +1333,9 @@ ${error.stack || 'No stack trace available'}
 
 <!-- Add a hidden error container that we can use to show problems -->
 <div id="app-loading-error" class="alert alert-danger m-3" style="display: none;"></div>
+
+<!-- Performance Diagnostic Tool -->
+<script src="{{ url_for('static', filename='js/performance-diagnostic.js') }}"></script>
+
 </body>
 </html>

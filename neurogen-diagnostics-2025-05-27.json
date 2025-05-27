@@ -1,0 +1,806 @@
+{
+  "endpoints": {
+    "academicSearch": {
+      "analyze": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/analyze/<path:id>"
+      },
+      "bulk_download": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/academic/bulk/download"
+      },
+      "citations": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/citations/<path:id>"
+      },
+      "details": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/details/<path:id>"
+      },
+      "download": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/download/<path:id>"
+      },
+      "extract": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/extract"
+      },
+      "health": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/health"
+      },
+      "multi_source": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/multi-source"
+      },
+      "recommendations": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/recommendations/<path:id>"
+      },
+      "search": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/academic/search"
+      }
+    },
+    "apiKeys": {
+      "create": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/keys/create"
+      },
+      "list": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/keys"
+      },
+      "revoke": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/keys/revoke"
+      }
+    },
+    "core": {
+      "diagnostics": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/diagnostics"
+      },
+      "endpoint_dashboard": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/endpoint-dashboard"
+      },
+      "home": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/"
+      },
+      "key_manager": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/key-manager"
+      },
+      "module_diagnostics_complete": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/module-diagnostics-complete"
+      },
+      "shutdown": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/shutdown"
+      },
+      "test_modules": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/test-modules"
+      }
+    },
+    "fileProcessor": {
+      "detect_path": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/detect-path"
+      },
+      "download": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/download/<task_id>"
+      },
+      "download_direct": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/download/<path:filename>"
+      },
+      "open": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/open/<task_id>"
+      },
+      "open_file": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/open-file"
+      },
+      "open_folder": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/open-folder"
+      },
+      "process": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/process"
+      },
+      "status": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/status/<task_id>"
+      },
+      "upload_path_detection": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/upload-for-path-detection"
+      }
+    },
+    "fileSystem": {
+      "check_file_exists": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/check-file-exists"
+      },
+      "create_directory": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/create-directory"
+      },
+      "get_default_output_folder": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/get-default-output-folder"
+      },
+      "get_output_filepath": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/get-output-filepath"
+      },
+      "verify_path": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/verify-path"
+      }
+    },
+    "pdfProcessor": {
+      "analyze": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/pdf/analyze"
+      },
+      "batch_process": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/pdf/batch-process"
+      },
+      "cancel": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/pdf/cancel/<task_id>"
+      },
+      "capabilities": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/pdf-capabilities"
+      },
+      "detect_type": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/pdf/detect-type"
+      },
+      "download_file_path": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/download-file/<path:file_path>"
+      },
+      "download_pdf": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/download-pdf"
+      },
+      "download_pdf_path": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/download-pdf/<path:pdf_path>"
+      },
+      "extract_tables": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/pdf/extract-tables"
+      },
+      "process": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/pdf/process"
+      },
+      "status": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/pdf/status/<task_id>"
+      }
+    },
+    "playlistDownloader": {
+      "cancel": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/cancel/<task_id>"
+      },
+      "start": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/start-playlists"
+      }
+    },
+    "taskManagement": {
+      "analytics": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/tasks/analytics"
+      },
+      "cancel": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/cancel/<task_id>"
+      },
+      "emergency_stop": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/emergency-stop"
+      },
+      "export_stats": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/task/<task_id>/stats/export"
+      },
+      "history": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/tasks/history"
+      },
+      "stats": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/task/<task_id>/stats"
+      }
+    },
+    "webScraper": {
+      "cancel": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/scrape2/cancel/<task_id>"
+      },
+      "scrape": {
+        "exists": true,
+        "methods": [
+          "POST"
+        ],
+        "url": "/api/scrape2"
+      },
+      "status": {
+        "exists": true,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/scrape2/status/<task_id>"
+      }
+    }
+  },
+  "issues": [],
+  "moduleLoadingInfo": {
+    "entryPoint": "/static/js/index.js",
+    "loadOrder": [
+      "core/errorHandler",
+      "core/uiRegistry",
+      "core/stateManager",
+      "core/eventRegistry",
+      "core/eventManager",
+      "core/themeManager",
+      "utils/socketHandler",
+      "utils/progressHandler",
+      "utils/ui",
+      "utils/utils",
+      "utils/fileHandler",
+      "features/fileProcessor",
+      "features/webScraper",
+      "features/playlistDownloader",
+      "features/academicSearch",
+      "features/historyManager"
+    ],
+    "moduleSystem": "ES6 modules with dynamic imports",
+    "timeout": "15000ms per module"
+  },
+  "modules": {
+    "core": {
+      "app": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-14T21:33:30.415089",
+        "name": "app.js",
+        "path": "/static/js/modules/core/app.js",
+        "size": 13968,
+        "syntaxValid": true
+      },
+      "domUtils": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": false,
+        "modified": "2025-05-14T02:52:44.260243",
+        "name": "domUtils.js",
+        "path": "/static/js/modules/core/domUtils.js",
+        "size": 5387,
+        "syntaxValid": true
+      },
+      "errorHandler": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-10T22:19:04.616583",
+        "name": "errorHandler.js",
+        "path": "/static/js/modules/core/errorHandler.js",
+        "size": 23584,
+        "syntaxValid": true
+      },
+      "eventManager": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": false,
+        "modified": "2025-04-10T19:25:51.518483",
+        "name": "eventManager.js",
+        "path": "/static/js/modules/core/eventManager.js",
+        "size": 23291,
+        "syntaxValid": true
+      },
+      "eventRegistry": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": false,
+        "modified": "2025-04-14T21:23:39.377002",
+        "name": "eventRegistry.js",
+        "path": "/static/js/modules/core/eventRegistry.js",
+        "size": 25809,
+        "syntaxValid": true
+      },
+      "index": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T18:38:26.294785",
+        "name": "index.js",
+        "path": "/static/js/modules/core/index.js",
+        "size": 1019,
+        "syntaxValid": true
+      },
+      "module-bridge": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": false,
+        "modified": "2025-05-15T11:50:31.691245",
+        "name": "module-bridge.js",
+        "path": "/static/js/modules/core/module-bridge.js",
+        "size": 9971,
+        "syntaxValid": true
+      },
+      "moduleLoader": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T20:29:10.041391",
+        "name": "moduleLoader.js",
+        "path": "/static/js/modules/core/moduleLoader.js",
+        "size": 123596,
+        "syntaxValid": true
+      },
+      "stateManager": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-14T21:15:28.736559",
+        "name": "stateManager.js",
+        "path": "/static/js/modules/core/stateManager.js",
+        "size": 49285,
+        "syntaxValid": true
+      },
+      "themeManager": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-21T22:32:33.409238",
+        "name": "themeManager.js",
+        "path": "/static/js/modules/core/themeManager.js",
+        "size": 36779,
+        "syntaxValid": true
+      },
+      "ui": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-27T01:27:53.412724",
+        "name": "ui.js",
+        "path": "/static/js/modules/core/ui.js",
+        "size": 43963,
+        "syntaxValid": true
+      },
+      "uiRegistry": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-10T19:54:30.767081",
+        "name": "uiRegistry.js",
+        "path": "/static/js/modules/core/uiRegistry.js",
+        "size": 16064,
+        "syntaxValid": true
+      }
+    },
+    "features": {
+      "academicApiClient": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-09T21:57:54.269664",
+        "name": "academicApiClient.js",
+        "path": "/static/js/modules/features/academicApiClient.js",
+        "size": 11799,
+        "syntaxValid": true
+      },
+      "academicScraper": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-11T00:23:03.937108",
+        "name": "academicScraper.js",
+        "path": "/static/js/modules/features/academicScraper.js",
+        "size": 16563,
+        "syntaxValid": true
+      },
+      "academicSearch": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T19:14:44.187374",
+        "name": "academicSearch.js",
+        "path": "/static/js/modules/features/academicSearch.js",
+        "size": 48220,
+        "syntaxValid": true
+      },
+      "dragDropHandler": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T20:41:07.051727",
+        "name": "dragDropHandler.js",
+        "path": "/static/js/modules/features/dragDropHandler.js",
+        "size": 12361,
+        "syntaxValid": true
+      },
+      "fileProcessor": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-27T09:59:54.887348",
+        "name": "fileProcessor.js",
+        "path": "/static/js/modules/features/fileProcessor.js",
+        "size": 110309,
+        "syntaxValid": true
+      },
+      "helpMode": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-09T21:57:54.101662",
+        "name": "helpMode.js",
+        "path": "/static/js/modules/features/helpMode.js",
+        "size": 18695,
+        "syntaxValid": true
+      },
+      "historyManager": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-14T13:57:40.669776",
+        "name": "historyManager.js",
+        "path": "/static/js/modules/features/historyManager.js",
+        "size": 72521,
+        "syntaxValid": true
+      },
+      "keyboardShortcuts": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T20:38:56.807231",
+        "name": "keyboardShortcuts.js",
+        "path": "/static/js/modules/features/keyboardShortcuts.js",
+        "size": 6659,
+        "syntaxValid": true
+      },
+      "pdfProcessor": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-14T16:38:39.639627",
+        "name": "pdfProcessor.js",
+        "path": "/static/js/modules/features/pdfProcessor.js",
+        "size": 57950,
+        "syntaxValid": true
+      },
+      "performanceOptimizer": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-09T21:57:54.184663",
+        "name": "performanceOptimizer.js",
+        "path": "/static/js/modules/features/performanceOptimizer.js",
+        "size": 18590,
+        "syntaxValid": true
+      },
+      "playlistDownloader": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-12T16:50:53.764014",
+        "name": "playlistDownloader.js",
+        "path": "/static/js/modules/features/playlistDownloader.js",
+        "size": 111459,
+        "syntaxValid": true
+      },
+      "webScraper": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-23T14:06:08.130969",
+        "name": "webScraper.js",
+        "path": "/static/js/modules/features/webScraper.js",
+        "size": 59274,
+        "syntaxValid": true
+      }
+    },
+    "utils": {
+      "debugTools": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-08T18:09:25.320036",
+        "name": "debugTools.js",
+        "path": "/static/js/modules/utils/debugTools.js",
+        "size": 46509,
+        "syntaxValid": true
+      },
+      "domUtils": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": false,
+        "modified": "2025-05-15T11:50:59.360844",
+        "name": "domUtils.js",
+        "path": "/static/js/modules/utils/domUtils.js",
+        "size": 5417,
+        "syntaxValid": true
+      },
+      "fileHandler": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": false,
+        "modified": "2025-04-10T16:39:21.219353",
+        "name": "fileHandler.js",
+        "path": "/static/js/modules/utils/fileHandler.js",
+        "size": 19952,
+        "syntaxValid": true
+      },
+      "moduleDiagnostics": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T20:43:47.400544",
+        "name": "moduleDiagnostics.js",
+        "path": "/static/js/modules/utils/moduleDiagnostics.js",
+        "size": 26610,
+        "syntaxValid": true
+      },
+      "progressHandler": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T17:46:12.605741",
+        "name": "progressHandler.js",
+        "path": "/static/js/modules/utils/progressHandler.js",
+        "size": 82318,
+        "syntaxValid": true
+      },
+      "safeFileProcessor": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T22:23:28.429462",
+        "name": "safeFileProcessor.js",
+        "path": "/static/js/modules/utils/safeFileProcessor.js",
+        "size": 5263,
+        "syntaxValid": true
+      },
+      "socketHandler": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-14T18:58:32.847262",
+        "name": "socketHandler.js",
+        "path": "/static/js/modules/utils/socketHandler.js",
+        "size": 59312,
+        "syntaxValid": true
+      },
+      "systemHealth": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T20:39:52.540478",
+        "name": "systemHealth.js",
+        "path": "/static/js/modules/utils/systemHealth.js",
+        "size": 8756,
+        "syntaxValid": true
+      },
+      "ui": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-05-26T18:52:46.615334",
+        "name": "ui.js",
+        "path": "/static/js/modules/utils/ui.js",
+        "size": 53976,
+        "syntaxValid": true
+      },
+      "utils": {
+        "exists": true,
+        "hasExports": true,
+        "hasImports": true,
+        "modified": "2025-04-05T19:21:35.262655",
+        "name": "utils.js",
+        "path": "/static/js/modules/utils/utils.js",
+        "size": 15784,
+        "syntaxValid": true
+      }
+    }
+  },
+  "recommendations": [],
+  "server": {
+    "port": 5025,
+    "pythonVersion": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "running": true,
+    "version": "1.2.3"
+  },
+  "summary": {
+    "checkedEndpoints": 56,
+    "foundModules": 34,
+    "health": "HEALTHY",
+    "issueCount": 0,
+    "missingEndpoints": 0,
+    "missingModules": 0,
+    "totalEndpoints": 56,
+    "totalExpectedModules": 34
+  },
+  "timestamp": "2025-05-27T10:12:49.550388",
+  "generatedAt": "2025-05-27T14:13:02.904Z",
+  "reportType": "NeuroGen Module Diagnostics Report"
+}

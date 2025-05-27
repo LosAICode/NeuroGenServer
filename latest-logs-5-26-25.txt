@@ -1,48 +1,158 @@
+
 SES The 'dateTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
-🔗 importModule called: /static/js/modules/features/fileProcessor.js index.js:437:15
-🔄 Loading /static/js/modules/features/fileProcessor.js (attempt 1/3) index.js:255:19
-✅ Successfully loaded /static/js/modules/features/fileProcessor.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/features/fileProcessor.js: ✅ (1ms) index.js:52:15
-Initializing file processing module... fileProcessor.js:282:15
-Initializing history manager... historyManager.js:40:21
-No valid history found in storage, using defaults historyManager.js:174:21
-History manager initialized successfully historyManager.js:47:21
-History manager initialized successfully fileProcessor.js:298:19
-Form element not found in uiRegistry, will use fallback fileProcessor.js:714:19
-Event handlers registered through event registry fileProcessor.js:722:17
-Setting up direct event handlers as fallback fileProcessor.js:411:15
-Adding direct submit handler to form fileProcessor.js:416:17
-File processing module initialized successfully fileProcessor.js:350:15
-Feature module loaded: fileProcessor app.js:193:19
-🔗 importModule called: /static/js/modules/features/webScraper.js index.js:437:15
-🔄 Loading /static/js/modules/features/webScraper.js (attempt 1/3) index.js:255:19
-✅ Successfully loaded /static/js/modules/features/webScraper.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/features/webScraper.js: ✅ (1ms) index.js:52:15
-Initializing Web Scraper module... webScraper.js:117:15
-Event listeners registered for Web Scraper webScraper.js:377:15
-Web Scraper module initialized successfully webScraper.js:135:15
-Feature module loaded: webScraper app.js:193:19
-🔗 importModule called: /static/js/modules/features/playlistDownloader.js index.js:437:15
-📦 Module /static/js/modules/features/playlistDownloader.js: ✅ (0ms) index.js:52:15
-Feature module loaded: playlistDownloader app.js:193:19
-🔗 importModule called: /static/js/modules/features/academicSearch.js index.js:437:15
-🔄 Loading /static/js/modules/features/academicSearch.js (attempt 1/3) index.js:255:19
-✅ Successfully loaded /static/js/modules/features/academicSearch.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/features/academicSearch.js: ✅ (0ms) index.js:52:15
-Initializing Academic Search module academicSearch.js:89:17
-Academic search event listeners set up academicSearch.js:198:21
-Feature module loaded: academicSearch app.js:193:19
-🔗 importModule called: /static/js/modules/features/historyManager.js index.js:437:15
-🔄 Loading /static/js/modules/features/historyManager.js (attempt 1/3) index.js:255:19
-✅ Successfully loaded /static/js/modules/features/historyManager.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/features/historyManager.js: ✅ (0ms) index.js:52:15
-History manager already initialized historyManager.js:36:25
-Feature module loaded: historyManager app.js:193:19
-Feature modules loaded successfully app.js:209:15
-Loading utility modules in background... app.js:224:15
-🔗 importModule called: /static/js/modules/utils/utils.js index.js:437:15
-🔄 Loading /static/js/modules/utils/utils.js (attempt 1/3) index.js:255:19
-🔗 importModule called: /static/js/modules/utils/ui.js index.js:437:15
+SES The 'mathTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
+🔧 Applying NeuroGen performance fixes... performance-fix.js:9:13
+Theme applied before page load: light fixThemePersistence.js:34:15
+🔧 NeuroGen Diagnostics loaded. Run: NeuroGenDiagnostics.runFullDiagnostics() console-diagnostics.js:310:9
+🚀 Initializing NeuroGen module system... localhost:5025:899:21
+🚀 Applying performance optimizations... performance-fix.js:191:17
+⚡ Loading critical modules in parallel... performance-fix.js:141:21
+✅ Performance fixes applied successfully performance-fix.js:211:17
+Theme persistence mechanisms initialized fixThemePersistence.js:63:15
+🚀 Enhanced NeuroGen Server index.js loaded successfully index.js:2339:9
+📋 Ready to initialize 22 modules index.js:2340:9
+✅ Modules imported successfully localhost:5025:906:21
+✅ Application initialized in 156ms localhost:5025:917:33
+🔄 Phase started: initialization (118ms) index.js:40:15
+🚀 Starting NeuroGen Server initialization... index.js:514:11
+🔧 Debug mode: ENABLED index.js:515:11
+🔄 Phase started: early-setup (118ms) index.js:40:15
+🎨 Applied theme: light index.js:846:13
+✅ Phase completed: early-setup in 0ms index.js:44:17
+🔄 Phase started: core-modules (118ms) index.js:40:15
+📦 Loading core modules... index.js:545:13
+🔄 Loading ./modules/core/errorHandler.js (attempt 1/3) index.js:255:19
+⚡ Initializing deferred UI components performance-fix.js:109:21
+
+╔═══════════════════════════════════════════════════════════════╗
+║                    🧠 NeuroGen Server v3.0.0                  ║
+║                Enhanced Frontend Module System               ║
+╠═══════════════════════════════════════════════════════════════╣
+║ 🔧 Debug Mode: ENABLED                                       ║
+║ 📊 Performance Tracking: ACTIVE                              ║
+║ 🛠️ Diagnostics: window.NeuroGenDebug                         ║
+║ 🎯 API: window.NeuroGenServer                                ║
+╚═══════════════════════════════════════════════════════════════╝
+    index.js:1825:13
+📦 Module Status: 0/1 loaded successfully index.js:1838:13
+🔍 Run window.NeuroGenDebug.showModal() for detailed diagnostics index.js:1844:13
+🔧 Service Worker registration failed: TypeError: ServiceWorker script at http://localhost:5025/static/js/sw.js for scope http://localhost:5025/static/js/ encountered an error during installation. index.js:2273:15
+✅ Successfully loaded ./modules/core/errorHandler.js on attempt 1 index.js:269:19
+📦 Module ./modules/core/errorHandler.js: ✅ (4566ms) index.js:52:15
+📦 Registered module: errorHandler index.js:308:19
+🔄 Loading ./modules/core/uiRegistry.js (attempt 1/3) index.js:255:19
+✅ Critical modules loaded in 4732.00ms performance-fix.js:153:25
+Setting up error handler for uiRegistry uiRegistry.js:20:11
+✅ Successfully loaded ./modules/core/uiRegistry.js on attempt 1 index.js:269:19
+📦 Module ./modules/core/uiRegistry.js: ✅ (22ms) index.js:52:15
+📦 Registered module: uiRegistry index.js:308:19
+🔄 Loading ./modules/core/stateManager.js (attempt 1/3) index.js:255:19
+✅ Successfully loaded ./modules/core/stateManager.js on attempt 1 index.js:269:19
+📦 Module ./modules/core/stateManager.js: ✅ (18ms) index.js:52:15
+📦 Registered module: stateManager index.js:308:19
+🔄 Loading ./modules/core/eventRegistry.js (attempt 1/3) index.js:255:19
+✅ Successfully loaded ./modules/core/eventRegistry.js on attempt 1 index.js:269:19
+📦 Module ./modules/core/eventRegistry.js: ✅ (18ms) index.js:52:15
+📦 Registered module: eventRegistry index.js:308:19
+🔄 Loading ./modules/core/eventManager.js (attempt 1/3) index.js:255:19
+Event Registry initialized eventRegistry.js:143:13
+✅ Successfully loaded ./modules/core/eventManager.js on attempt 1 index.js:269:19
+📦 Module ./modules/core/eventManager.js: ✅ (25ms) index.js:52:15
+📦 Registered module: eventManager index.js:308:19
+🔄 Loading ./modules/core/themeManager.js (attempt 1/3) index.js:255:19
+✅ Successfully loaded ./modules/core/themeManager.js on attempt 1 index.js:269:19
+📦 Module ./modules/core/themeManager.js: ✅ (18ms) index.js:52:15
+📦 Registered module: themeManager index.js:308:19
+✅ Phase completed: core-modules in 4669ms index.js:44:17
+🔄 Phase started: utility-modules (4787ms) index.js:40:15
+🔧 Loading utility modules... index.js:562:13
+🔄 Loading ./modules/utils/socketHandler.js (attempt 1/3) index.js:255:19
+✅ Successfully loaded ./modules/utils/socketHandler.js on attempt 1 index.js:269:19
+📦 Module ./modules/utils/socketHandler.js: ✅ (0ms) index.js:52:15
+📦 Registered module: socketHandler index.js:308:19
+🔄 Loading ./modules/utils/progressHandler.js (attempt 1/3) index.js:255:19
+✅ Successfully loaded ./modules/utils/progressHandler.js on attempt 1 index.js:269:19
+📦 Module ./modules/utils/progressHandler.js: ✅ (1ms) index.js:52:15
+📦 Registered module: progressHandler index.js:308:19
+🔄 Loading ./modules/utils/ui.js (attempt 1/3) index.js:255:19
+Module Bridge v2.1.0 initializing... module-bridge.js:15:9
+Module Bridge v2.1.0 initialized successfully module-bridge.js:325:9
+[Bridge] Updated ui bridge (update #1) module-bridge.js:228:13
+UI module initialized and bridge updated ui.js:1648:9
+✅ Successfully loaded ./modules/utils/ui.js on attempt 1 index.js:269:19
+📦 Module ./modules/utils/ui.js: ✅ (51ms) index.js:52:15
+📦 Registered module: ui index.js:308:19
+🔄 Loading ./modules/utils/utils.js (attempt 1/3) index.js:255:19
+✅ Successfully loaded ./modules/utils/utils.js on attempt 1 index.js:269:19
+📦 Module ./modules/utils/utils.js: ✅ (33ms) index.js:52:15
+📦 Registered module: utils index.js:308:19
+🔄 Loading ./modules/utils/fileHandler.js (attempt 1/3) index.js:255:19
+Found themeManager, adding persistence overrides fixThemePersistence.js:143:17
+Loaded theme from localStorage: light fixThemePersistence.js:190:23
+Applied theme: light themeManager.js:510:15
+✅ Successfully loaded ./modules/utils/fileHandler.js on attempt 1 index.js:269:19
+📦 Module ./modules/utils/fileHandler.js: ✅ (20ms) index.js:52:15
+📦 Registered module: fileHandler index.js:308:19
+✅ Phase completed: utility-modules in 106ms index.js:44:17
+🔄 Phase started: feature-modules (4893ms) index.js:40:15
+🎯 Loading feature modules... index.js:579:13
+🔄 Loading ./modules/core/app.js (attempt 1/2) index.js:255:19
+✅ Successfully loaded ./modules/core/app.js on attempt 1 index.js:269:19
+📦 Module ./modules/core/app.js: ✅ (46ms) index.js:52:15
+📦 Registered module: app index.js:308:19
+🔄 Loading ./modules/features/fileProcessor.js (attempt 1/2) index.js:255:19
+✅ Successfully loaded ./modules/features/fileProcessor.js on attempt 1 index.js:269:19
+📦 Module ./modules/features/fileProcessor.js: ✅ (68ms) index.js:52:15
+📦 Registered module: fileProcessor index.js:308:19
+🔄 Loading /static/js/modules/features/playlistDownloader.js (attempt 1/2) index.js:255:19
+✅ Successfully loaded /static/js/modules/features/playlistDownloader.js on attempt 1 index.js:269:19
+📦 Module /static/js/modules/features/playlistDownloader.js: ✅ (35ms) index.js:52:15
+📦 Registered module: playlistDownloader index.js:308:19
+🔄 Loading ./modules/features/webScraper.js (attempt 1/2) index.js:255:19
+📊 Performance: 
+Object { totalTime: "6309ms", appInitialized: true, debugMode: true }
+​
+appInitialized: true
+​
+debugMode: true
+​
+totalTime: "6309ms"
+​
+<prototype>: Object { … }
+index.js:1500:11
+📦 Module Statistics: 
+Object { total: 38, loaded: 38, failed: 0, fallbacks: 0 }
+​
+failed: 0
+​
+fallbacks: 0
+​
+loaded: 38
+​
+total: 38
+​
+<prototype>: Object { … }
+index.js:1506:11
+❌ Failed Modules: 
+Array []
+​
+length: 0
+​
+<prototype>: Array []
+index.js:1508:11
+🔄 Fallback Modules: 
+Array []
+​
+length: 0
+​
+<prototype>: Array []
+index.js:1509:11
+⚠️ Slow initialization detected: 35032ms index.js:2214:15
+
+​
+
+
+SES The 'dateTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
 🔄 Loading /static/js/modules/utils/ui.js (attempt 1/3) index.js:255:19
 🔗 importModule called: /static/js/modules/utils/fileHandler.js index.js:437:15
 🔄 Loading /static/js/modules/utils/fileHandler.js (attempt 1/3) index.js:255:19
@@ -52,14 +162,15 @@ Loading utility modules in background... app.js:224:15
 🔄 Loading /static/js/modules/utils/socketHandler.js (attempt 1/3) index.js:255:19
 🔗 importModule called: /static/js/modules/utils/moduleDiagnostics.js index.js:437:15
 🔄 Loading /static/js/modules/utils/moduleDiagnostics.js (attempt 1/3) index.js:255:19
+Theme set via themeManager to: light fixThemePersistence.js:154:19
 Setting theme to: light themeManager.js:408:15
 Saved theme preference: light themeManager.js:313:15
 Applied theme: light themeManager.js:510:15
 Application initialized successfully app.js:61:15
-✅ app initialized (36ms) index.js:716:17
+✅ app initialized (26ms) index.js:716:17
 Initializing file processing module... fileProcessor.js:282:15
 File processing module already initialized fileProcessor.js:286:17
-✅ fileProcessor initialized (1ms) index.js:716:17
+✅ fileProcessor initialized (0ms) index.js:716:17
 Initializing Web Scraper module... webScraper.js:117:15
 Web Scraper module already initialized webScraper.js:120:17
 ✅ webScraper initialized (0ms) index.js:716:17
@@ -75,79 +186,12 @@ Drag and drop handler already initialized dragDropHandler.js:24:15
 ✅ dragDropHandler initialized (0ms) index.js:716:17
 System health monitor already initialized systemHealth.js:24:15
 ✅ systemHealth initialized (0ms) index.js:716:17
-✅ debugTools initialized (1ms) index.js:716:17
+✅ debugTools initialized (0ms) index.js:716:17
 ⏭️ moduleDiagnostics has no initialize method index.js:730:17
 📊 Module initialization complete: index.js:736:11
    ✅ Success: 18 index.js:737:11
    ❌ Failed: 0 index.js:738:11
    ⏭️ Skipped: 4 index.js:739:11
-✅ Phase completed: module-initialization in 87ms index.js:44:17
-🔄 Phase started: final-setup (13598ms) index.js:40:15
-✅ NeuroGen Server initialized successfully in 13598ms index.js:627:13
-✅ Phase completed: final-setup in 0ms index.js:44:17
-✅ Phase completed: initialization in 13496ms index.js:44:17
-✅ Successfully loaded /static/js/modules/utils/utils.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/utils/utils.js: ✅ (15ms) index.js:52:15
-Utility module loaded: utils app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/ui.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/utils/ui.js: ✅ (16ms) index.js:52:15
-UI module already initialized ui.js:57:15
-Utility module loaded: ui app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/fileHandler.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/utils/fileHandler.js: ✅ (16ms) index.js:52:15
-File handler already initialized fileHandler.js:56:15
-Utility module loaded: fileHandler app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/progressHandler.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/utils/progressHandler.js: ✅ (33ms) index.js:52:15
-Utility module loaded: progressHandler app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/socketHandler.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/utils/socketHandler.js: ✅ (37ms) index.js:52:15
-Socket handler already initialized socketHandler.js:297:13
-Utility module loaded: socketHandler app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/moduleDiagnostics.js on attempt 1 index.js:269:19
-📦 Module /static/js/modules/utils/moduleDiagnostics.js: ✅ (37ms) index.js:52:15
-Utility module loaded: moduleDiagnostics app.js:263:19
-Utility modules loaded successfully app.js:276:15
-ErrorHandler registered with eventRegistry errorHandler.js:204:19
-Registering common UI elements... uiRegistry.js:138:13
-UI elements registered successfully uiRegistry.js:181:15
-Registering common UI elements... uiRegistry.js:138:13
-UI elements registered successfully uiRegistry.js:181:15
-[Bridge] Updated ui bridge (update #2) module-bridge.js:228:13
-UI module initialized and bridge updated ui.js:848:9
-UI module loaded in errorHandler errorHandler.js:126:17
-Socket.IO connected with ID: _YkcmCnIFoeA9M3WAAAC socketHandler.js:443:13
-⚠️ Warning in enhanceSocketIOIntegration: Socket.IO not available for enhancement index.js:63:13
-✅ Global error handlers registered index.js:1314:11
-🔧 Ensuring form handlers are properly set up... index.js:1143:13
-✅ File Processor form handler ensured index.js:1155:17
-✅ Playlist Downloader form handler ensured index.js:1231:15
-✅ Web Scraper form handler ensured index.js:1249:17
-✅ Enabled button: submit-btn index.js:1258:17
-✅ Enabled button: scrape-btn index.js:1258:17
-🔍 Detailed Application Status index.js:1499:11
-📊 Performance: 
-Object { totalTime: "14600ms", appInitialized: true, debugMode: true }
-index.js:1500:11
-📦 Module Statistics: 
-Object { total: 38, loaded: 38, failed: 0, fallbacks: 0 }
-index.js:1506:11
-✅ Loaded Modules: 
-Array(38) [ "./modules/core/errorHandler.js", "./modules/core/uiRegistry.js", "./modules/core/stateManager.js", "./modules/core/eventRegistry.js", "./modules/core/eventManager.js", "./modules/core/themeManager.js", "./modules/utils/socketHandler.js", "./modules/utils/progressHandler.js", "./modules/utils/ui.js", "./modules/utils/utils.js", … ]
-index.js:1507:11
-❌ Failed Modules: 
-Array []
-index.js:1508:11
-🔄 Fallback Modules: 
-Array []
-index.js:1509:11
-🎯 Available Instances: 
-Array(22) [ "errorHandler", "uiRegistry", "stateManager", "eventRegistry", "eventManager", "themeManager", "socketHandler", "progressHandler", "ui", "utils", … ]
-index.js:1510:11
-⚠️ Warnings: 
-Array [ {…} ]
-index.js:1517:13
-🔧 Debug API exposed as window.NeuroGenDebug index.js:1542:11
 
 ​
 

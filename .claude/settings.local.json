@@ -14,7 +14,8 @@
       "Bash(awk:*)",
       "Bash(rg:*)",
       "Bash(chmod:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(ls:*)"
     ],
     "deny": []
   }

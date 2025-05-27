@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroGen Complete Module Diagnostics</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header-section {
+            background: rgba(30, 30, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(74, 158, 255, 0.3);
+        }
+        
+        .diagnostic-card {
+            background: rgba(45, 45, 68, 0.95);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .diagnostic-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(74, 158, 255, 0.4);
+        }
+        
+        .metric-box {
+            background: rgba(30, 30, 46, 0.8);
+            border: 1px solid rgba(74, 158, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .metric-box:hover {
+            background: rgba(74, 158, 255, 0.1);
+            border-color: #4a9eff;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #4a9eff;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            margin-top: 5px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-healthy { background: #4ade80; }
+        .status-warning { background: #fbbf24; }
+        .status-critical { background: #f87171; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .console-output {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+        }
+        
+        .log-info { color: #4a9eff; }
+        .log-success { color: #4ade80; }
+        .log-warning { color: #fbbf24; }
+        .log-error { color: #f87171; }
+        .log-debug { color: #a78bfa; }
+        
+        .btn-diagnostic {
+            background: rgba(74, 158, 255, 0.2);
+            border: 1px solid #4a9eff;
+            color: #4a9eff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .btn-diagnostic:hover {
+            background: rgba(74, 158, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 158, 255, 0.4);
+            color: #fff;
+        }
+        
+        .module-tree {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(74, 158, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 13px;
+        }
+        
+        .module-item {
+            padding: 4px 0;
+            margin-left: 20px;
+            border-left: 2px solid rgba(74, 158, 255, 0.2);
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .module-item::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            width: 15px;
+            height: 2px;
+            background: rgba(74, 158, 255, 0.2);
+        }
+        
+        .tab-content {
+            background: rgba(30, 30, 46, 0.5);
+            border: 1px solid rgba(74, 158, 255, 0.2);
+            border-radius: 0 0 8px 8px;
+            padding: 20px;
+        }
+        
+        .nav-tabs {
+            border-bottom: 1px solid rgba(74, 158, 255, 0.3);
+        }
+        
+        .nav-tabs .nav-link {
+            color: #a0a0a0;
+            border: none;
+            background: transparent;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: #4a9eff;
+            border: none;
+            background: rgba(74, 158, 255, 0.1);
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #4a9eff;
+            background: rgba(74, 158, 255, 0.2);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-bottom: none;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .spinner-large {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .quick-fix-btn {
+            background: rgba(255, 165, 0, 0.2);
+            border: 1px solid #ffa500;
+            color: #ffa500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .quick-fix-btn:hover {
+            background: rgba(255, 165, 0, 0.3);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-3">
+                        <i class="fas fa-stethoscope text-info me-3"></i>
+                        Complete Module Diagnostics
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Comprehensive analysis and troubleshooting for NeuroGen module system
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div id="system-status" class="d-inline-block">
+                        <span class="status-indicator status-warning"></span>
+                        <span id="status-text">Initializing...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Metrics -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value" id="metric-modules">-</div>
+                    <div class="metric-label">Modules Loaded</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value" id="metric-health">-</div>
+                    <div class="metric-label">Health Score</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value" id="metric-loadtime">-</div>
+                    <div class="metric-label">Load Time</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value" id="metric-memory">-</div>
+                    <div class="metric-label">Memory Usage</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="diagnostic-card">
+            <h4 class="mb-3">
+                <i class="fas fa-tools text-warning me-2"></i>
+                Diagnostic Actions
+            </h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-diagnostic w-100 mb-2" onclick="runEnhancedDiagnostics()">
+                        <i class="fas fa-microscope me-2"></i>Run Enhanced Diagnostics
+                    </button>
+                    <button class="btn btn-diagnostic w-100 mb-2" onclick="runBackendDiagnostics()">
+                        <i class="fas fa-server me-2"></i>Check Backend Status
+                    </button>
+                    <button class="btn btn-diagnostic w-100 mb-2" onclick="testModuleLoading()">
+                        <i class="fas fa-vial me-2"></i>Test Module Loading
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-diagnostic w-100 mb-2" onclick="performanceAnalysis()">
+                        <i class="fas fa-tachometer-alt me-2"></i>Performance Analysis
+                    </button>
+                    <button class="btn btn-diagnostic w-100 mb-2" onclick="clearAndReload()">
+                        <i class="fas fa-sync me-2"></i>Clear Cache & Reload
+                    </button>
+                    <button class="btn btn-diagnostic w-100 mb-2" onclick="exportDiagnostics()">
+                        <i class="fas fa-download me-2"></i>Export Full Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabbed Interface -->
+        <div class="diagnostic-card">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#console-tab">
+                        <i class="fas fa-terminal me-2"></i>Console Output
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#modules-tab">
+                        <i class="fas fa-cubes me-2"></i>Module Status
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#issues-tab">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Issues & Fixes
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#performance-tab">
+                        <i class="fas fa-chart-line me-2"></i>Performance
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <!-- Console Tab -->
+                <div class="tab-pane fade show active" id="console-tab">
+                    <div class="console-output" id="console-output">
+                        <div class="log-entry log-info">🚀 NeuroGen Diagnostics Console Ready</div>
+                        <div class="log-entry log-info">Click any diagnostic action to begin analysis...</div>
+                    </div>
+                </div>
+                
+                <!-- Modules Tab -->
+                <div class="tab-pane fade" id="modules-tab">
+                    <div class="module-tree" id="module-tree">
+                        <div class="text-muted">Run diagnostics to view module hierarchy...</div>
+                    </div>
+                </div>
+                
+                <!-- Issues Tab -->
+                <div class="tab-pane fade" id="issues-tab">
+                    <div id="issues-container">
+                        <div class="text-muted">No issues detected yet. Run diagnostics to check...</div>
+                    </div>
+                </div>
+                
+                <!-- Performance Tab -->
+                <div class="tab-pane fade" id="performance-tab">
+                    <div id="performance-container">
+                        <canvas id="performance-chart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="diagnostic-card" id="quick-actions" style="display: none;">
+            <h4 class="mb-3">
+                <i class="fas fa-magic text-info me-2"></i>
+                Quick Fixes Available
+            </h4>
+            <div id="quick-fixes-container"></div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner-large"></div>
+            <h4 id="loading-text">Running diagnostics...</h4>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js for performance graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="module">
+        import { EnhancedModuleDiagnostics, runDiagnosticsWithUI } from '/static/js/module-diagnostics-enhanced.js';
+        
+        // Global state
+        window.diagnosticResults = null;
+        window.performanceChart = null;
+        
+        // Logging helper
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const output = document.getElementById('console-output');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            
+            const icons = {
+                info: '📘',
+                success: '✅',
+                warning: '⚠️',
+                error: '❌',
+                debug: '🔍'
+            };
+            
+            entry.textContent = `[${timestamp}] ${icons[type]} ${message}`;
+            output.appendChild(entry);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // Update metrics display
+        function updateMetrics(data) {
+            if (data.modules) {
+                const loaded = Array.from(data.modules.values()).filter(m => m.status === 'success').length;
+                const total = data.modules.size;
+                document.getElementById('metric-modules').textContent = `${loaded}/${total}`;
+            }
+            
+            if (data.summary) {
+                document.getElementById('metric-health').textContent = `${data.summary.healthScore}%`;
+                
+                // Update status indicator
+                const indicator = document.querySelector('.status-indicator');
+                indicator.className = `status-indicator status-${data.summary.status.toLowerCase()}`;
+                document.getElementById('status-text').textContent = data.summary.status;
+            }
+            
+            if (data.duration) {
+                document.getElementById('metric-loadtime').textContent = `${(data.duration / 1000).toFixed(1)}s`;
+            }
+            
+            if (data.performance?.memory) {
+                document.getElementById('metric-memory').textContent = `${data.performance.memory.used}MB`;
+            }
+        }
+        
+        // Run enhanced diagnostics
+        window.runEnhancedDiagnostics = async function() {
+            showLoading('Running enhanced diagnostics...');
+            log('Starting enhanced module diagnostics...', 'info');
+            
+            try {
+                const diagnostics = new EnhancedModuleDiagnostics();
+                const report = await diagnostics.runFullDiagnostics();
+                window.diagnosticResults = report;
+                
+                // Update UI
+                updateMetrics(report);
+                displayModuleTree(report);
+                displayIssues(report);
+                displayPerformance(report);
+                
+                diagnostics.displayReport(report);
+                log('Enhanced diagnostics complete!', 'success');
+                
+                // Show quick fixes if available
+                if (report.autoFixes && report.autoFixes.length > 0) {
+                    displayQuickFixes(report.autoFixes);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                log(`Diagnostics failed: ${error.message}`, 'error');
+                hideLoading();
+            }
+        };
+        
+        // Backend diagnostics
+        window.runBackendDiagnostics = async function() {
+            showLoading('Checking backend status...');
+            log('Fetching backend diagnostics...', 'info');
+            
+            try {
+                const response = await fetch('/test-modules?format=json');
+                const data = await response.json();
+                
+                log(`Backend Status: ${data.summary.health}`, data.summary.health === 'HEALTHY' ? 'success' : 'warning');
+                log(`Found ${data.summary.foundModules}/${data.summary.totalExpectedModules} modules`, 'info');
+                log(`${data.summary.issueCount} issues detected`, data.summary.issueCount > 0 ? 'warning' : 'info');
+                
+                // Display issues
+                if (data.issues && data.issues.length > 0) {
+                    data.issues.forEach(issue => {
+                        log(`${issue.type}: ${issue.message}`, 'warning');
+                    });
+                }
+                
+                hideLoading();
+            } catch (error) {
+                log(`Backend check failed: ${error.message}`, 'error');
+                hideLoading();
+            }
+        };
+        
+        // Test module loading
+        window.testModuleLoading = async function() {
+            showLoading('Testing module loading...');
+            log('Testing critical module imports...', 'info');
+            
+            const modules = [
+                '/static/js/modules/core/errorHandler.js',
+                '/static/js/modules/core/moduleLoader.js',
+                '/static/js/modules/utils/socketHandler.js',
+                '/static/js/modules/utils/progressHandler.js',
+                '/static/js/modules/features/fileProcessor.js',
+                '/static/js/modules/features/webScraper.js',
+                '/static/js/modules/features/playlistDownloader.js'
+            ];
+            
+            for (const modulePath of modules) {
+                try {
+                    const startTime = performance.now();
+                    const module = await import(modulePath);
+                    const loadTime = performance.now() - startTime;
+                    
+                    log(`✅ ${modulePath.split('/').pop()} loaded in ${loadTime.toFixed(0)}ms`, 'success');
+                } catch (error) {
+                    log(`❌ ${modulePath.split('/').pop()}: ${error.message}`, 'error');
+                }
+            }
+            
+            hideLoading();
+        };
+        
+        // Performance analysis
+        window.performanceAnalysis = async function() {
+            showLoading('Analyzing performance...');
+            log('Running performance analysis...', 'info');
+            
+            if (window.diagnostics) {
+                const report = window.diagnostics.getReport();
+                log(`Total initialization time: ${report.totalTime}ms`, 'info');
+                
+                // Log phase timings
+                Object.entries(report.phases).forEach(([phase, data]) => {
+                    if (data.duration) {
+                        log(`${phase}: ${data.duration}ms`, 'debug');
+                    }
+                });
+            }
+            
+            // Check memory
+            if (performance.memory) {
+                const memInfo = {
+                    used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024),
+                    total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024),
+                    limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024)
+                };
+                
+                log(`Memory: ${memInfo.used}MB used of ${memInfo.total}MB (limit: ${memInfo.limit}MB)`, 'info');
+            }
+            
+            hideLoading();
+        };
+        
+        // Clear cache and reload
+        window.clearAndReload = async function() {
+            if (confirm('This will clear all caches and reload the page. Continue?')) {
+                showLoading('Clearing caches...');
+                
+                // Clear localStorage
+                localStorage.clear();
+                log('LocalStorage cleared', 'success');
+                
+                // Clear sessionStorage
+                sessionStorage.clear();
+                log('SessionStorage cleared', 'success');
+                
+                // Clear service worker caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    log('Service worker caches cleared', 'success');
+                }
+                
+                // Reload with cache bypass
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 1000);
+            }
+        };
+        
+        // Export diagnostics
+        window.exportDiagnostics = function() {
+            if (!window.diagnosticResults) {
+                log('No diagnostic data to export. Run diagnostics first.', 'warning');
+                return;
+            }
+            
+            const report = {
+                ...window.diagnosticResults,
+                exportDate: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `neurogen-diagnostics-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            log('Diagnostic report exported', 'success');
+        };
+        
+        // Display functions
+        function displayModuleTree(report) {
+            const tree = document.getElementById('module-tree');
+            tree.innerHTML = '<h5>Module Hierarchy</h5>';
+            
+            if (report.modules) {
+                const categories = {
+                    core: [],
+                    utils: [],
+                    features: []
+                };
+                
+                report.modules.forEach((data, path) => {
+                    const category = path.includes('/core/') ? 'core' :
+                                   path.includes('/utils/') ? 'utils' : 'features';
+                    categories[category].push({ path, data });
+                });
+                
+                Object.entries(categories).forEach(([cat, modules]) => {
+                    if (modules.length > 0) {
+                        const catDiv = document.createElement('div');
+                        catDiv.innerHTML = `<strong>${cat.toUpperCase()}</strong>`;
+                        tree.appendChild(catDiv);
+                        
+                        modules.forEach(({ path, data }) => {
+                            const name = path.split('/').pop();
+                            const status = data.status === 'success' ? '✅' : '❌';
+                            const time = data.loadTime ? ` (${data.loadTime.toFixed(0)}ms)` : '';
+                            
+                            const item = document.createElement('div');
+                            item.className = 'module-item';
+                            item.textContent = `${status} ${name}${time}`;
+                            tree.appendChild(item);
+                        });
+                    }
+                });
+            }
+        }
+        
+        function displayIssues(report) {
+            const container = document.getElementById('issues-container');
+            container.innerHTML = '';
+            
+            if (report.errors.length === 0 && report.warnings.length === 0) {
+                container.innerHTML = '<div class="text-success">✅ No issues detected!</div>';
+                return;
+            }
+            
+            if (report.errors.length > 0) {
+                const errorSection = document.createElement('div');
+                errorSection.innerHTML = '<h5 class="text-danger">Errors</h5>';
+                report.errors.forEach(err => {
+                    const item = document.createElement('div');
+                    item.className = 'alert alert-danger';
+                    item.innerHTML = `<strong>${err.message}</strong><br>${err.details}`;
+                    errorSection.appendChild(item);
+                });
+                container.appendChild(errorSection);
+            }
+            
+            if (report.warnings.length > 0) {
+                const warnSection = document.createElement('div');
+                warnSection.innerHTML = '<h5 class="text-warning">Warnings</h5>';
+                report.warnings.forEach(warn => {
+                    const item = document.createElement('div');
+                    item.className = 'alert alert-warning';
+                    item.innerHTML = `<strong>${warn.message}</strong><br>${warn.details}`;
+                    warnSection.appendChild(item);
+                });
+                container.appendChild(warnSection);
+            }
+        }
+        
+        function displayPerformance(report) {
+            const container = document.getElementById('performance-container');
+            
+            if (!report.performance) {
+                container.innerHTML = '<div class="text-muted">No performance data available</div>';
+                return;
+            }
+            
+            // Create or update chart
+            const ctx = document.getElementById('performance-chart').getContext('2d');
+            
+            if (window.performanceChart) {
+                window.performanceChart.destroy();
+            }
+            
+            window.performanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Page Load', 'DOM Ready', 'Resources', 'Memory (MB)'],
+                    datasets: [{
+                        label: 'Performance Metrics',
+                        data: [
+                            report.performance.pageLoadTime || 0,
+                            report.performance.domReadyTime || 0,
+                            report.performance.resourceCount || 0,
+                            report.performance.memory?.used || 0
+                        ],
+                        backgroundColor: [
+                            'rgba(74, 158, 255, 0.5)',
+                            'rgba(74, 158, 255, 0.5)',
+                            'rgba(74, 158, 255, 0.5)',
+                            'rgba(74, 158, 255, 0.5)'
+                        ],
+                        borderColor: '#4a9eff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#a0a0a0' }
+                        },
+                        x: {
+                            ticks: { color: '#a0a0a0' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e0e0e0' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function displayQuickFixes(fixes) {
+            const quickActions = document.getElementById('quick-actions');
+            const container = document.getElementById('quick-fixes-container');
+            
+            quickActions.style.display = 'block';
+            container.innerHTML = '';
+            
+            fixes.forEach((fix, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quick-fix-btn me-2 mb-2';
+                btn.innerHTML = `<i class="fas fa-wrench me-2"></i>${fix.type}`;
+                btn.onclick = () => applyQuickFix(fix, index);
+                container.appendChild(btn);
+            });
+        }
+        
+        async function applyQuickFix(fix, index) {
+            log(`Applying fix: ${fix.type}...`, 'info');
+            
+            try {
+                // Implementation would depend on fix type
+                switch (fix.type) {
+                    case 'reinitialize':
+                        await window.initializeApp();
+                        break;
+                    case 'reload-module':
+                        await import(fix.target + '?t=' + Date.now());
+                        break;
+                    case 'clear-cache':
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        break;
+                }
+                
+                log(`Fix applied successfully: ${fix.type}`, 'success');
+            } catch (error) {
+                log(`Failed to apply fix: ${error.message}`, 'error');
+            }
+        }
+        
+        function showLoading(text) {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            document.getElementById('loading-text').textContent = text;
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+        
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            log('Diagnostic console initialized', 'success');
+            
+            // Auto-run diagnostics if requested
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('autorun') === 'true') {
+                setTimeout(runEnhancedDiagnostics, 500);
+            }
+        });
+    </script>
+</body>
+</html>
