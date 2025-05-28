@@ -6,6 +6,7 @@ General-purpose utilities used across the application
 import os
 import re
 import logging
+import time
 from typing import List, Tuple, Optional, Any
 from pathlib import Path
 
@@ -298,6 +299,48 @@ def structured_error_response(code: str, message: str, status_code: int = 400) -
     return response
 
 
+def cleanup_temp_files():
+    """Clean up any remaining temporary files in the OCR temp directory."""
+    import glob
+    
+    # Get temp directory
+    temp_dir = ensure_temp_directory()
+    
+    # Get all temp files older than 30 minutes
+    current_time = time.time()
+    for file_path in glob.glob(os.path.join(temp_dir, "ocr_temp_*")):
+        try:
+            file_age = current_time - os.path.getmtime(file_path)
+            if file_age > 1800:  # 30 minutes
+                try:
+                    os.remove(file_path)
+                    logger.debug(f"Removed temp file {file_path}")
+                except PermissionError:
+                    # On Windows, files may be locked temporarily
+                    logger.debug(f"Could not remove temp file {file_path} - may be in use")
+                except OSError as e:
+                    logger.debug(f"OS error removing temp file {file_path}: {e}")
+        except Exception as e:
+            logger.debug(f"Error cleaning up temp file {file_path}: {e}")
+
+
+def start_periodic_cleanup():
+    """Start periodic cleanup of temporary files."""
+    import threading
+    import time
+    
+    def cleanup_worker():
+        while True:
+            try:
+                cleanup_temp_files()
+            except Exception as e:
+                logger.error(f"Error in periodic cleanup: {e}")
+            time.sleep(3600)  # Run every hour
+    
+    cleanup_thread = threading.Thread(target=cleanup_worker, daemon=True)
+    cleanup_thread.start()
+
+
 # Export public interface
 __all__ = [
     'setup_logging',
@@ -309,5 +352,7 @@ __all__ = [
     'resolve_output_path',
     'detect_common_path_from_files',
     'format_time_duration',
-    'structured_error_response'
+    'structured_error_response',
+    'cleanup_temp_files',
+    'start_periodic_cleanup'
 ]

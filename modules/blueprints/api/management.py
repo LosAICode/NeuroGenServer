@@ -26,6 +26,34 @@ api_management_bp = Blueprint('api_management', __name__, url_prefix='/api')
 api_task_registry = {}
 api_task_registry_lock = threading.Lock()
 
+# Legacy task registry for backward compatibility
+# TODO: Consolidate with api_task_registry and services.py task management
+task_registry = {}
+
+def get_task(task_id):
+    """
+    Legacy get_task function for backward compatibility.
+    First checks legacy task_registry, then api_task_registry.
+    
+    Args:
+        task_id: The task identifier
+        
+    Returns:
+        Task object or None if not found
+    """
+    # Check legacy registry first
+    if task_id in task_registry:
+        return task_registry[task_id]
+    
+    # Check API registry
+    with api_task_registry_lock:
+        if task_id in api_task_registry:
+            return api_task_registry[task_id]
+    
+    # Check core services registry
+    from blueprints.core.services import get_task as services_get_task
+    return services_get_task(task_id)
+
 # Task history storage and lock for thread safety
 task_history = []
 task_history_lock = threading.Lock()
@@ -50,34 +78,52 @@ def structured_error_response(error_code, message, status_code):
     }), status_code
 
 @api_management_bp.route('/cancel/<task_id>', methods=['POST'])
-def cancel_task(task_id):
+def cancel_task_api(task_id):
     """
-    Generic task cancellation endpoint
+    Enhanced REST cancellation endpoint with comprehensive error handling.
     Works for all task types (file processing, web scraping, playlist downloading)
     """
+    from blueprints.core.cancellation import mark_task_cancelled, emit_cancellation_event
+    from blueprints.core.services import emit_task_cancelled
+    
+    if not task_id:
+        return structured_error_response("MISSING_TASK_ID", "Task ID is required", 400)
+    
+    logger.info(f"[CANCEL] REST API cancellation request for task: {task_id}")
+    
     try:
-        if not task_id:
-            return jsonify({"error": "task_id is required"}), 400
+        # Use unified cancellation logic
+        success, task_info = mark_task_cancelled(task_id, "Task cancelled via REST API")
         
-        # TODO: Implement actual task cancellation logic
-        # For now, just mark as cancelled
-        with api_task_registry_lock:
-            if task_id in api_task_registry:
-                api_task_registry[task_id]['status'] = 'cancelled'
-                api_task_registry[task_id]['cancelled_at'] = time.time()
-        
-        response = {
-            "task_id": task_id,
-            "status": "cancelled",
-            "message": "Task cancelled successfully"
-        }
-        
-        logger.info(f"Cancelled task {task_id}")
-        return jsonify(response), 200
-        
+        if success:
+            # Emit appropriate events
+            task_type = task_info.get('task_type', 'unknown')
+            reason = task_info.get('message', 'Task cancelled')
+            emit_cancellation_event(task_id, task_type, reason)
+            
+            # Return success response
+            return jsonify({
+                "status": "success",
+                "message": task_info['message'],
+                "task_id": task_id,
+                "task_type": task_type
+            }), 200
+        else:
+            # Idempotent behavior for non-existent tasks
+            emit_task_cancelled(task_id, reason="Task not found or already completed")
+            return jsonify({
+                "status": "success",
+                "message": "Task not found or already completed",
+                "task_id": task_id
+            }), 200
+            
     except Exception as e:
-        logger.error(f"Error cancelling task {task_id}: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"[CANCEL] REST API error for task {task_id}: {e}")
+        return structured_error_response(
+            "CANCELLATION_ERROR", 
+            f"Error cancelling task: {str(e)}", 
+            500
+        )
 
 
 @api_management_bp.route('/emergency-stop', methods=['POST'])

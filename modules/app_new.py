@@ -108,7 +108,9 @@ def register_blueprints(app):
     
     # API management
     from blueprints.api.management import api_management_bp
+    from blueprints.api.analytics import analytics_bp
     app.register_blueprint(api_management_bp)
+    app.register_blueprint(analytics_bp)
     
     logger.info("All blueprints registered successfully")
 

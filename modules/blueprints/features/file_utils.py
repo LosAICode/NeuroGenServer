@@ -167,6 +167,7 @@ def format_timestamp(timestamp):
         return "Unknown"
 
 @file_utils_bp.route('/get-default-output-folder', methods=['GET'])
+@require_api_key
 def get_default_output_folder():
     """
     Get the default output folder path.
@@ -182,48 +183,58 @@ def get_default_output_folder():
         return structured_error_response("SERVER_ERROR", f"Could not retrieve default output folder: {str(e)}", 500)
 
 # Note: open-file route is already in file_processor.py
-
+@file_utils_bp.route("/api/open-file", methods=["POST"])
+@require_api_key
+def open_arbitrary_file():
+    """Open any file by path (for recent tasks history)."""
+    data = request.json or {}
+    file_path = data.get("path")
+    
+    if not file_path:
+        return structured_error_response("PATH_REQUIRED", "File path is required.", 400)
+    
+    if not os.path.exists(file_path):
+        return structured_error_response("FILE_NOT_FOUND", "File not found on server.", 404)
+    
+    try:
+        if os.name == "nt":  # Windows
+            os.startfile(file_path)
+        else:
+            try:
+                subprocess.run(["xdg-open", file_path], check=False)
+            except Exception:
+                subprocess.run(["open", file_path], check=False)
+                
+        return jsonify({"success": True, "message": "File opened locally."})
+    except Exception as e:
+        logger.exception(f"Error opening file {file_path}: {e}")
+        return structured_error_response("OPEN_FAILED", f"Could not open file: {e}", 400)
 @file_utils_bp.route('/open-folder', methods=['POST'])
 @require_api_key
 def open_folder():
-    """
-    Open a folder in the default file manager
-    """
+    """Open a folder in the operating system's file explorer."""
+    data = request.json or {}
+    folder_path = data.get("path")
+    
+    if not folder_path:
+        return structured_error_response("PATH_REQUIRED", "Folder path is required.", 400)
+    
+    if not os.path.exists(folder_path):
+        return structured_error_response("FOLDER_NOT_FOUND", "Folder not found on server.", 404)
+    
     try:
-        data = request.get_json()
-        if not data:
-            return structured_error_response("NO_DATA", "No JSON data provided", 400)
-        
-        folder_path = data.get('folder_path')
-        if not folder_path:
-            return structured_error_response("PATH_REQUIRED", "Folder path is required", 400)
-        
-        # Normalize and verify path
-        normalized_path = normalize_path(folder_path)
-        
-        if not os.path.exists(normalized_path):
-            return structured_error_response("FOLDER_NOT_FOUND", f"Folder not found: {normalized_path}", 404)
-        
-        if not os.path.isdir(normalized_path):
-            return structured_error_response("NOT_A_FOLDER", f"Path is not a directory: {normalized_path}", 400)
-        
-        # Open folder with system file manager
-        if platform.system() == "Windows":
-            subprocess.call(["explorer", normalized_path])
-        elif platform.system() == "Darwin":  # macOS
-            subprocess.call(["open", normalized_path])
-        else:  # Linux
-            subprocess.call(["xdg-open", normalized_path])
-        
-        return jsonify({
-            "status": "success",
-            "message": "Folder opened successfully",
-            "folder_path": normalized_path
-        })
-        
+        if os.name == "nt":  # Windows
+            os.startfile(folder_path)
+        else:
+            try:
+                subprocess.run(["xdg-open", folder_path], check=False)
+            except Exception:
+                subprocess.run(["open", folder_path], check=False)
+                
+        return jsonify({"success": True, "message": "Folder opened locally."})
     except Exception as e:
-        logger.error(f"Error opening folder: {e}")
-        return structured_error_response("FOLDER_OPEN_ERROR", f"Failed to open folder: {str(e)}", 500)
+        logger.exception(f"Error opening folder {folder_path}: {e}")
+        return structured_error_response("OPEN_FAILED", f"Could not open folder: {e}", 400)
 
 def find_directory_in_standard_locations(folder_name: str) -> str:
     """

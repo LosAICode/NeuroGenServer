@@ -21,9 +21,9 @@ from .cancellation import check_task_cancellation
 
 logger = logging.getLogger(__name__)
 
-# =============================================================================
-# TASK EXECUTION WITH CANCELLATION
-# =============================================================================
+# ----------------------------------------------------------------------------
+# Task Execution Wrapper with Cancellation Support
+# ----------------------------------------------------------------------------
 
 def execute_task_with_cancellation(task_func, task_id: str, *args, **kwargs):
     """
@@ -38,8 +38,51 @@ def execute_task_with_cancellation(task_func, task_id: str, *args, **kwargs):
     Returns:
         Task execution result or None if cancelled
     """
-    # Implementation will be moved here
-    pass
+    try:
+        # Pre-execution cancellation check
+        if check_task_cancellation(task_id):
+            logger.info(f"[TASK] {task_id} cancelled before execution")
+            return None
+        
+        logger.info(f"[TASK] Starting execution of {task_id}")
+        
+        # Execute the task with cancellation support
+        result = task_func(task_id, *args, **kwargs)
+        
+        # Post-execution state management
+        if not check_task_cancellation(task_id):
+            with tasks_lock:
+                task = active_tasks.get(task_id)
+                if task and task.get('status') not in ['cancelled', 'failed']:
+                    task.update({
+                        'status': 'completed',
+                        'end_time': time.time()
+                    })
+            
+            emit_task_completion(task_id, task.get('type', 'unknown'))
+            logger.info(f"[TASK] {task_id} completed successfully")
+        
+        return result
+        
+    except Exception as e:
+        logger.exception(f"[TASK] {task_id} execution failed: {str(e)}")
+        
+        # Update task state on failure
+        with tasks_lock:
+            task = active_tasks.get(task_id)
+            if task:
+                task.update({
+                    'status': 'failed',
+                    'error': str(e),
+                    'end_time': time.time()
+                })
+        
+        emit_task_error(task_id, str(e))
+        raise
+    
+    finally:
+        # Schedule cleanup with delay for status queries
+        schedule_task_cleanup(task_id, delay=30)
 
 
 def schedule_task_cleanup(task_id: str, delay: int = 30) -> None:
@@ -51,13 +94,21 @@ def schedule_task_cleanup(task_id: str, delay: int = 30) -> None:
         task_id: The task ID to clean up
         delay: Delay in seconds before cleanup
     """
-    # Implementation will be moved here
-    pass
+    def cleanup_worker():
+        try:
+            time.sleep(delay)
+            remove_task(task_id)
+            logger.debug(f"[CLEANUP] Removed task {task_id} from active_tasks")
+        except Exception as e:
+            logger.error(f"[CLEANUP] Error removing task {task_id}: {e}")
+    
+    cleanup_thread = threading.Thread(target=cleanup_worker, daemon=True)
+    cleanup_thread.start()
 
 
-# =============================================================================
-# ENHANCED TASK LOOP PATTERNS
-# =============================================================================
+# ----------------------------------------------------------------------------
+# Enhanced Task Loop Patterns
+# ----------------------------------------------------------------------------
 
 def cancellable_task_loop(task_id: str, work_items, progress_callback=None):
     """
@@ -72,9 +123,39 @@ def cancellable_task_loop(task_id: str, work_items, progress_callback=None):
     Yields:
         Processed items or raises StopIteration if cancelled
     """
-    # Implementation will be moved here
-    pass
-
+    total_items = len(work_items) if hasattr(work_items, '__len__') else None
+    processed_count = 0
+    
+    for item in work_items:
+        # Check cancellation before processing each item
+        if check_task_cancellation(task_id):
+            logger.info(f"[TASK] {task_id} loop cancelled at item {processed_count}")
+            return
+        
+        try:
+            # Process the item
+            if progress_callback:
+                result = progress_callback(item)
+            else:
+                result = item
+            
+            processed_count += 1
+            
+            # Emit progress update
+            if total_items:
+                progress_percent = (processed_count / total_items) * 100
+                emit_progress_update(
+                    task_id, 
+                    progress_percent, 
+                    message=f"Processed {processed_count}/{total_items} items"
+                )
+            
+            yield result
+            
+        except Exception as e:
+            logger.error(f"[TASK] {task_id} error processing item {processed_count}: {e}")
+            # Continue processing other items unless critically failed
+            continue
 
 # =============================================================================
 # TASK MONITORING UTILITIES
