@@ -8,13 +8,14 @@ import logging
 import os
 import subprocess
 import platform
+from typing import List, Tuple
 from werkzeug.utils import secure_filename
 
 # Import necessary modules and functions
 from blueprints.core.services import require_api_key
 from blueprints.core.utils import (
     sanitize_filename, ensure_temp_directory, get_output_filepath,
-    structured_error_response, normalize_path
+    structured_error_response, normalize_path, detect_common_path_from_files
 )
 
 logger = logging.getLogger(__name__)
@@ -223,3 +224,147 @@ def open_folder():
     except Exception as e:
         logger.error(f"Error opening folder: {e}")
         return structured_error_response("FOLDER_OPEN_ERROR", f"Failed to open folder: {str(e)}", 500)
+
+def find_directory_in_standard_locations(folder_name: str) -> str:
+    """
+    Look for a folder name in standard locations.
+    
+    Args:
+        folder_name: The name of the folder to find
+        
+    Returns:
+        Full path if found, empty string otherwise
+    """
+    # Define standard locations based on OS
+    if platform.system() == 'Windows':
+        # Windows standard locations
+        standard_locs = [
+            os.getcwd(),
+            os.path.join(os.path.expanduser('~'), 'Documents'),
+            os.path.join(os.path.expanduser('~'), 'Desktop'),
+            os.path.join(os.path.expanduser('~'), 'Downloads'),
+            os.path.join(os.path.expanduser('~'), 'OneDrive', 'Documents')
+        ]
+    else:
+        # Unix/Mac standard locations
+        standard_locs = [
+            os.getcwd(),
+            os.path.join(os.path.expanduser('~'), 'Documents'),
+            os.path.join(os.path.expanduser('~'), 'Desktop'),
+            os.path.join(os.path.expanduser('~'), 'Downloads')
+        ]
+    
+    # Look for folder in standard locations
+    for base in standard_locs:
+        try:
+            potential = os.path.join(base, folder_name)
+            if os.path.isdir(potential):
+                logger.info(f"Found directory under {base}: {potential}")
+                return potential
+        except Exception as e:
+            logger.debug(f"Error checking {base}: {e}")
+    
+    return ""
+
+def get_parent_directory(path: str) -> str:
+    """
+    Get the nearest existing parent directory.
+    
+    Args:
+        path: The path to check
+        
+    Returns:
+        The closest existing parent directory or empty string
+    """
+    try:
+        path = normalize_path(path)
+        parent = path
+        
+        # Find the nearest existing parent
+        while parent and not os.path.isdir(parent):
+            parent = os.path.dirname(parent)
+            
+            # Break if we've reached the root
+            if parent == os.path.dirname(parent):
+                return ""
+        
+        return parent if parent and parent != path else ""
+    except Exception as e:
+        logger.error(f"Error finding parent directory: {e}")
+        return ""
+
+def verify_and_create_directory(path: str) -> Tuple[bool, str, str]:
+    """
+    Verify if a directory exists, and create it if requested.
+    
+    Args:
+        path: The directory path to verify/create
+        
+    Returns:
+        Tuple of (success, message, path)
+    """
+    try:
+        path = normalize_path(path)
+        
+        # Check if directory exists
+        if os.path.isdir(path):
+            return True, "Directory exists", path
+            
+        # Get parent directory
+        parent = get_parent_directory(path)
+        
+        # If parent doesn't exist, fail
+        if not parent:
+            return False, "No valid parent directory found", ""
+            
+        # Try to create the directory
+        try:
+            os.makedirs(path, exist_ok=True)
+            logger.info(f"Created directory: {path}")
+            return True, "Directory created successfully", path
+        except Exception as e:
+            logger.error(f"Failed to create directory {path}: {e}")
+            return False, f"Failed to create directory: {e}", parent
+            
+    except Exception as e:
+        logger.error(f"Error verifying directory {path}: {e}")
+        return False, f"Error verifying directory: {e}", ""
+
+def check_file_exists(file_path: str) -> bool:
+    """
+    Check if a file exists.
+    
+    Args:
+        file_path: The file path to check
+        
+    Returns:
+        True if file exists
+    """
+    try:
+        file_path = normalize_path(file_path)
+        return os.path.isfile(file_path)
+    except Exception as e:
+        logger.error(f"Error checking if file exists {file_path}: {e}")
+        return False
+
+def is_extension_allowed(filename: str) -> bool:
+    """Check if file extension is allowed."""
+    ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif", "py", "js", "html", "css", "md", "doc", "docx", "xls", "xlsx"}
+    ext = os.path.splitext(filename)[1].lower().lstrip(".")
+    return ext in ALLOWED_EXTENSIONS
+
+def is_mime_allowed(file_stream) -> bool:
+    """Check if MIME type is allowed (if 'magic' is installed)."""
+    if not magic_available:
+        return True
+    ALLOWED_MIME_TYPES = {
+        "text/plain", "text/html", "application/pdf",
+        "image/png", "image/jpeg", "text/css",
+        "application/javascript", "application/json",
+        "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    }
+    chunk = file_stream.read(1024)
+    file_stream.seek(0)
+    mime_type = magic.from_buffer(chunk, mime=True)
+    return mime_type in ALLOWED_MIME_TYPES

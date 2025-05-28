@@ -141,6 +141,20 @@ def run_server(host='127.0.0.1', port=5025, debug=True):
         logger.error(f"Failed to start server: {str(e)}")
         raise
 
+# ----------------------------------------------------------------------------
+# Error Handlers
+# ----------------------------------------------------------------------------
+@app.errorhandler(404)
+def not_found(error):
+    return structured_error_response("NOT_FOUND", "The requested resource was not found.", 404)
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return structured_error_response("REQUEST_TOO_LARGE", f"File exceeds maximum allowed size of {MAX_UPLOAD_SIZE/(1024*1024)}MB.", 413)
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    return structured_error_response("SERVER_ERROR", "An internal server error occurred.", 500)
 
 if __name__ == '__main__':
     # Default configuration

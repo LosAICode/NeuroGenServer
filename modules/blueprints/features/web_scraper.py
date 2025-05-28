@@ -17,6 +17,7 @@ web_scraper_bp = Blueprint('web_scraper', __name__, url_prefix='/api')
 # Export the blueprint and utility functions
 __all__ = ['web_scraper_bp', 'emit_scraping_progress', 'emit_scraping_completed', 'emit_scraping_error']
 
+    
 @web_scraper_bp.route('/scrape2', methods=['POST'])
 def scrape2():
     """
@@ -394,7 +395,444 @@ def cancel_scrape2(task_id):
         "message": "ScraperTask cancelled successfully."
     })
 
+##########################
+# Helper Functions
+##########################
+def scrape_and_download_pdfs(url: str, output_folder: str = DEFAULT_OUTPUT_FOLDER) -> Dict[str, Any]:
+    """
+    Scrape a webpage for PDF links and download them.
+    
+    Args:
+        url (str): URL of the webpage to scrape
+        output_folder (str): Folder to save PDFs
+        
+    Returns:
+        Dict[str, Any]: Results of the scraping and downloading
+    """
+    logger.info(f"Scraping for PDFs from: {url}")
+    
+    try:
+        # Ensure output folder exists
+        os.makedirs(output_folder, exist_ok=True)
+        
+        # Get PDF links from the page
+        pdf_links = fetch_pdf_links(url)
+        
+        if not pdf_links:
+            logger.info(f"No PDF links found on {url}")
+            return {
+                "status": "completed",
+                "url": url,
+                "message": "No PDF links found",
+                "pdfs_found": 0,
+                "pdfs_downloaded": 0
+            }
+        
+        # Download each PDF
+        downloaded_pdfs = []
+        failed_pdfs = []
+        
+        for pdf_info in pdf_links:
+            pdf_url = pdf_info["url"]
+            try:
+                # Download the PDF
+                pdf_path = download_pdf(pdf_url, output_folder)
+                
+                # Process the PDF if download was successful
+                if pdf_path and os.path.exists(pdf_path):
+                    # Generate JSON output filename
+                    pdf_filename = os.path.basename(pdf_path)
+                    json_filename = f"{os.path.splitext(pdf_filename)[0]}_processed.json"
+                    json_path = os.path.join(output_folder, json_filename)
+                    
+                    # Process PDF to JSON if module is available
+                    if structify_module:
+                        try:
+                            structify_module.process_all_files(
+                                root_directory=output_folder,
+                                output_file=json_path,
+                                file_filter=lambda f: f == pdf_path
+                            )
+                            downloaded_pdfs.append({
+                                "url": pdf_url,
+                                "file_path": pdf_path,
+                                "json_path": json_path,
+                                "title": pdf_info.get("title", "")
+                            })
+                        except Exception as e:
+                            logger.error(f"Error processing PDF to JSON: {e}")
+                            downloaded_pdfs.append({
+                                "url": pdf_url,
+                                "file_path": pdf_path,
+                                "title": pdf_info.get("title", "")
+                            })
+                    else:
+                        downloaded_pdfs.append({
+                            "url": pdf_url,
+                            "file_path": pdf_path,
+                            "title": pdf_info.get("title", "")
+                        })
+            except Exception as e:
+                logger.error(f"Error downloading PDF from {pdf_url}: {e}")
+                failed_pdfs.append({
+                    "url": pdf_url,
+                    "error": str(e),
+                    "title": pdf_info.get("title", "")
+                })
+        
+        return {
+            "status": "completed",
+            "url": url,
+            "pdfs_found": len(pdf_links),
+            "pdfs_downloaded": len(downloaded_pdfs),
+            "pdfs_failed": len(failed_pdfs),
+            "downloaded_pdfs": downloaded_pdfs,
+            "failed_pdfs": failed_pdfs,
+            "output_folder": output_folder
+        }
+    
+    except Exception as e:
+        logger.error(f"Error scraping PDFs from {url}: {e}")
+        return {
+            "status": "error",
+            "url": url,
+            "error": str(e)
+        }
+# Add this function before process_url_with_settings
+def process_url(url: str, setting: str, keyword: str = "", output_folder: str = DEFAULT_OUTPUT_FOLDER) -> Dict[str, Any]:
+    """
+    Process a URL based on the specified setting.
+    
+    Args:
+        url (str): The URL to process
+        setting (str): One of 'full', 'metadata', 'title', 'keyword'
+        keyword (str): Optional keyword for keyword search mode
+        output_folder (str): Directory where outputs should be saved
+        
+    Returns:
+        Dict[str, Any]: Results of the processing
+    """
+    # Ensure output folder exists
+    os.makedirs(output_folder, exist_ok=True)
+    
+    try:
+        # Import the function from web_scraper module
+        return web_scraper.process_url(url, setting, keyword, output_folder)
+    except Exception as e:
+        logger.error(f"Error processing URL {url}: {e}")
+        return {"error": str(e), "url": url}        
+def process_url_with_settings(url, setting, keyword, output_folder):
+    """
+    Process a URL based on the specified setting, using the imported web_scraper functions.
+    
+    Args:
+        url: URL to process
+        setting: Processing setting ('full', 'metadata', 'title', 'keyword', 'pdf')
+        keyword: Optional keyword for keyword search
+        output_folder: Output directory for results
+        
+    Returns:
+        Processing result dictionary
+    """
+    # Ensure output folder exists
+    os.makedirs(output_folder, exist_ok=True)
+    
+    if web_scraper_available:
+        # If web_scraper is available, use its process_url function
+        return web_scraper.process_url(url, setting, keyword, output_folder)
+    else:
+        # Fallback implementation if web_scraper is not available
+        if setting.lower() == "pdf":
+            try:
+                # Download the PDF file
+                pdf_file = download_pdf(url, save_path=output_folder)
+                
+                # Get just the filename without the path
+                pdf_filename = os.path.basename(pdf_file)
+                output_json_name = os.path.splitext(pdf_filename)[0] + "_processed"
+                
+                # Create a unique JSON output filename
+                json_output = get_output_filepath(output_json_name, folder_override=output_folder)
+                
+                # Process the downloaded PDF using Structify (claude.py)
+                if structify_module:
+                    single_result = structify_module.process_all_files(
+                        root_directory=os.path.dirname(pdf_file),
+                        output_file=json_output,
+                        file_filter=lambda f: f == pdf_file  # Only process our specific PDF file
+                    )
+                
+                return {
+                    "status": "PDF downloaded and processed",
+                    "url": url,
+                    "pdf_file": pdf_file,
+                    "json_file": json_output,
+                    "output_folder": output_folder
+                }
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "url": url,
+                    "error": str(e)
+                }
+        else:
+            # For all other settings, use the process_url function (placeholder if web_scraper not available)
+            return process_url(url, setting, keyword, output_folder)
 
+def process_url_with_tracking(self, url, setting, keyword, output_folder):
+    """Process a single URL with enhanced tracking and error recovery."""
+    try:
+        # Special handling for PDF setting
+        if setting == "pdf":
+            # Thread-safe update of PDF downloads list
+            with self.lock:
+                pdf_info = {
+                    "url": url,
+                    "status": "downloading",
+                    "message": "Starting download...",
+                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                }
+                self.pdf_downloads.append(pdf_info)
+                pdf_index = len(self.pdf_downloads) - 1
+            
+            # Emit progress update with PDF download info
+            self.emit_progress(
+                progress=self.progress,
+                message=f"Downloading PDF from {url}",
+                stats=self.stats,
+                pdf_downloads=self.pdf_downloads
+            )
+            
+            # Set up retry mechanism for PDF downloads
+            max_retries = 2
+            result = None
+            
+            for attempt in range(max_retries + 1):
+                if self.is_cancelled:
+                    return {"status": "cancelled", "url": url}
+                    
+                try:
+                    # Use appropriate download function with timeout
+                    if web_scraper_available:
+                        pdf_file = web_scraper.download_pdf(url, save_path=output_folder)
+                    else:
+                        pdf_file = download_pdf(url, save_path=output_folder)
+                        
+                    if pdf_file and os.path.exists(pdf_file):
+                        # Update status to "processing"
+                        with self.lock:
+                            if pdf_index < len(self.pdf_downloads):
+                                self.pdf_downloads[pdf_index].update({
+                                    "status": "processing",
+                                    "message": "PDF downloaded, processing...",
+                                    "filePath": pdf_file
+                                })
+                        
+                        # Get filename and create JSON output path
+                        pdf_filename = os.path.basename(pdf_file)
+                        output_json_name = os.path.splitext(pdf_filename)[0] + "_processed"
+                        json_output = get_output_filepath(output_json_name, folder_override=output_folder)
+                        
+                        # Check if task cancelled before processing
+                        if self.is_cancelled:
+                            return {"status": "cancelled", "url": url, "pdf_file": pdf_file}
+                            
+                        # First try using enhanced PDF processing if available
+                        if hasattr(structify_module, 'process_pdf'):
+                            try:
+                                # Detect document type to determine if OCR is needed
+                                doc_type = None
+                                if hasattr(structify_module, 'detect_document_type'):
+                                    try:
+                                        doc_type = structify_module.detect_document_type(pdf_file)
+                                        logger.info(f"Detected document type for {pdf_filename}: {doc_type}")
+                                    except Exception as type_err:
+                                        logger.warning(f"Error detecting document type: {type_err}")
+                                
+                                # Process PDF with enhanced capabilities
+                                pdf_result = structify_module.process_pdf(
+                                    pdf_path=pdf_file,
+                                    output_path=json_output,
+                                    max_chunk_size=4096,
+                                    extract_tables=True,
+                                    use_ocr=(doc_type == "scan"),  # Only use OCR for scanned documents
+                                    return_data=True
+                                )
+                                
+                                # Create successful result with enhanced metadata
+                                tables_count = 0
+                                references_count = 0
+                                
+                                if pdf_result:
+                                    if "tables" in pdf_result:
+                                        tables_count = len(pdf_result["tables"])
+                                    if "references" in pdf_result:
+                                        references_count = len(pdf_result["references"])
+                                
+                                result = {
+                                    "status": "PDF downloaded and processed with enhanced features",
+                                    "url": url,
+                                    "pdf_file": pdf_file,
+                                    "json_file": json_output,
+                                    "output_folder": output_folder,
+                                    "pdf_size": os.path.getsize(pdf_file) if os.path.exists(pdf_file) else 0,
+                                    "document_type": doc_type,
+                                    "tables_extracted": tables_count,
+                                    "references_extracted": references_count
+                                }
+                                
+                                logger.info(f"PDF processed with enhanced features. JSON at: {json_output}")
+                                break  # Success, exit retry loop
+                                
+                            except Exception as direct_err:
+                                logger.warning(f"Enhanced PDF processing failed, falling back: {direct_err}")
+                        
+                        # Fallback to standard processing using process_all_files
+                        structify_module.process_all_files(
+                            root_directory=os.path.dirname(pdf_file),
+                            output_file=json_output,
+                            max_chunk_size=4096,
+                            executor_type="thread",
+                            max_workers=None,
+                            stop_words=structify_module.DEFAULT_STOP_WORDS,
+                            use_cache=False,
+                            valid_extensions=[".pdf"],  # Only process PDFs
+                            ignore_dirs="venv,node_modules,.git,__pycache__,dist,build",
+                            stats_only=False,
+                            include_binary_detection=False,  # PDFs should not be detected as binary
+                            file_filter=lambda f: f == pdf_file  # Only process our specific PDF file
+                        )
+                        
+                        # Create standard result if we don't have an enhanced one yet
+                        if not result:
+                            result = {
+                                "status": "PDF downloaded and processed",
+                                "url": url,
+                                "pdf_file": pdf_file,
+                                "json_file": json_output,
+                                "output_folder": output_folder,
+                                "pdf_size": os.path.getsize(pdf_file) if os.path.exists(pdf_file) else 0
+                            }
+                        
+                        logger.info(f"PDF processing complete. JSON output at: {json_output}")
+                        break  # Success, exit retry loop
+                        
+                    else:
+                        # PDF download failed
+                        if attempt < max_retries:
+                            logger.warning(f"PDF download attempt {attempt+1} failed for {url}, retrying...")
+                            time.sleep(2)  # Small delay between retries
+                        else:
+                            result = {
+                                "status": "error",
+                                "url": url,
+                                "error": "Failed to download PDF after multiple attempts"
+                            }
+                            
+                except Exception as pdf_err:
+                    # Handle errors with retry logic
+                    if attempt < max_retries:
+                        logger.warning(f"PDF processing attempt {attempt+1} failed for {url}: {pdf_err}, retrying...")
+                        time.sleep(2)  # Small delay between retries
+                    else:
+                        logger.error(f"Error processing PDF from {url}: {pdf_err}")
+                        result = {
+                            "status": "error",
+                            "url": url,
+                            "error": str(pdf_err)
+                        }
+            
+            # If we still don't have a result after all retries
+            if result is None:
+                result = {
+                    "status": "error",
+                    "url": url,
+                    "error": "Failed to download or process PDF"
+                }
+            
+            # Thread-safe update of PDF status
+            with self.lock:
+                if pdf_index < len(self.pdf_downloads):
+                    if "error" in result:
+                        self.pdf_downloads[pdf_index].update({
+                            "status": "error",
+                            "message": result["error"],
+                            "error": result["error"],
+                            "completed_at": time.strftime("%Y-%m-%d %H:%M:%S")
+                        })
+                    else:
+                        self.pdf_downloads[pdf_index].update({
+                            "status": "success",
+                            "message": "Download and processing complete",
+                            "filePath": result.get("pdf_file", ""),
+                            "jsonFile": result.get("json_file", ""),
+                            "fileSize": result.get("pdf_size", 0),
+                            "documentType": result.get("document_type", ""),
+                            "tablesExtracted": result.get("tables_extracted", 0),
+                            "referencesExtracted": result.get("references_extracted", 0),
+                            "completed_at": time.strftime("%Y-%m-%d %H:%M:%S")
+                        })
+            
+            # Emit progress update with updated PDF download info
+            self.emit_progress(
+                progress=self.progress,
+                message=f"Processed {url}",
+                stats=self.stats,
+                pdf_downloads=self.pdf_downloads
+            )
+            
+            return result
+                
+        else:
+            # For non-PDF settings with improved error handling
+            max_retries = 1
+            for attempt in range(max_retries + 1):
+                if self.is_cancelled:
+                    return {"status": "cancelled", "url": url}
+                    
+                try:
+                    # Use appropriate processing function
+                    if web_scraper_available:
+                        result = web_scraper.process_url(url, setting, keyword, output_folder)
+                    else:
+                        result = process_url(url, setting, keyword, output_folder)
+                    
+                    return result
+                except Exception as e:
+                    if attempt < max_retries:
+                        logger.warning(f"URL processing attempt {attempt+1} failed: {e}, retrying...")
+                        time.sleep(1)
+                    else:
+                        logger.error(f"Error processing URL {url} (setting: {setting}): {e}")
+                        return {"error": str(e), "url": url, "setting": setting}
+            
+            # Should never reach here, but just in case
+            return {"error": "Processing failed after retries", "url": url}
+            
+    except Exception as e:
+        logger.error(f"Error processing URL {url}: {e}")
+        
+        # Thread-safe update of PDF status if this was a PDF
+        if setting == "pdf":
+            with self.lock:
+                pdf_index = next((i for i, pdf in enumerate(self.pdf_downloads) if pdf["url"] == url), None)
+                if pdf_index is not None:
+                    self.pdf_downloads[pdf_index].update({
+                        "status": "error",
+                        "message": str(e),
+                        "error": str(e),
+                        "completed_at": time.strftime("%Y-%m-%d %H:%M:%S")
+                    })
+            
+            # Emit progress update with updated PDF download info
+            self.emit_progress(
+                progress=self.progress,
+                message=f"Error processing {url}",
+                stats=self.stats,
+                pdf_downloads=self.pdf_downloads
+            )
+        
+        return {"error": str(e), "url": url}
 
 # Socket.IO events for web scraper
 def emit_scraping_progress(task_id, progress, current_url=None, pages_scraped=0, total_pages=0):

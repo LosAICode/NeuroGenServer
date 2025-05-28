@@ -272,6 +272,7 @@ def format_time_duration(seconds: float) -> str:
         return f"{hours} hour{'s' if hours != 1 else ''} {minutes} minute{'s' if minutes != 1 else ''}"
 
 
+
 def structured_error_response(code: str, message: str, status_code: int = 400) -> dict:
     """
     Create a structured error response for API endpoints.

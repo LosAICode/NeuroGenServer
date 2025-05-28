@@ -844,6 +844,245 @@ def get_pdf_capabilities():
 # =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
+# ----------------------------------------------------------------------------
+# Enhanced download_pdf Function
+# ----------------------------------------------------------------------------
+def enhanced_download_pdf(url: str, save_path: str = DEFAULT_OUTPUT_FOLDER) -> str:
+    """
+    Download a PDF from the given URL using streaming to save memory.
+    Returns the local file path on success.
+    
+    Args:
+        url (str): The URL to download from
+        save_path (str): Directory where the PDF will be saved
+        
+    Returns:
+        str: The path to the downloaded PDF file
+        
+    Raises:
+        ValueError: If the download fails
+    """
+    # First try web_scraper's version if available
+    if 'download_pdf' in globals():
+        try:
+            return download_pdf(url, save_path)
+        except Exception as e:
+            logger.warning(f"Web scraper download_pdf failed: {e}. Trying fallback method.")
+    
+    # Fallback implementation if web_scraper is not available
+    if not requests_available:
+        raise ValueError("Requests library not available. Cannot download PDF.")
+    
+    logger.info(f"Downloading PDF: {url}")
+    
+    # Convert arXiv abstract links to PDF links if needed
+    if "arxiv.org/abs/" in url:
+        pdf_url = url.replace("arxiv.org/abs/", "arxiv.org/pdf/")
+        if not pdf_url.lower().endswith(".pdf"):
+            pdf_url += ".pdf"
+        logger.info(f"Converted arXiv abstract URL to PDF URL: {pdf_url}")
+    else:
+        pdf_url = url
+    
+    # Ensure the save directory exists
+    try:
+        os.makedirs(save_path, exist_ok=True)
+        logger.info(f"Ensured download directory exists: {save_path}")
+    except Exception as e:
+        logger.error(f"Failed to create download directory {save_path}: {e}")
+        raise ValueError(f"Cannot create download directory: {e}")
+    
+    # Generate a unique filename based on URL
+    url_hash = hashlib.md5(pdf_url.encode()).hexdigest()[:10]
+    filename = pdf_url.split("/")[-1] or "document.pdf"
+    if not filename.lower().endswith(".pdf"):
+        filename += ".pdf"
+    # Sanitize the filename and add hash to make it unique
+    filename = sanitize_filename(f"{os.path.splitext(filename)[0]}_{url_hash}.pdf")
+    file_path = os.path.join(save_path, filename)
+    
+    # If file already exists, return the path without downloading
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 1000:  # Ensure it's not an empty file
+        logger.info(f"PDF already exists: {file_path}")
+        return file_path
+    
+    # Download with retries
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            # Use streaming to handle large files efficiently
+            response = session.get(pdf_url, stream=True, timeout=30, 
+                                  headers={
+                                      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                                      "Accept": "application/pdf,*/*",
+                                      "Connection": "keep-alive"
+                                  })
+            response.raise_for_status()
+            
+            # Check if content type indicates it's a PDF (if available)
+            content_type = response.headers.get('Content-Type', '').lower()
+            if content_type and 'application/pdf' not in content_type and not pdf_url.lower().endswith('.pdf'):
+                logger.warning(f"Content type not PDF: {content_type}. Checking content...")
+                # Check first few bytes to see if it starts with %PDF
+                first_chunk = next(response.iter_content(256), None)
+                if not first_chunk or not first_chunk.startswith(b'%PDF-'):
+                    raise ValueError(f"Content at {pdf_url} is not a PDF")
+            
+            # Stream content to file
+            with open(file_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=16384):
+                    if chunk:
+                        f.write(chunk)
+            
+            # Verify the file is a valid PDF and has content
+            if not os.path.exists(file_path) or os.path.getsize(file_path) < 1000:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                raise ValueError("Downloaded file is not a valid PDF (too small)")
+                
+            logger.info(f"PDF successfully downloaded to: {file_path}")
+            return file_path
+            
+        except Exception as e:
+            logger.warning(f"Attempt {attempt+1}/{max_retries} failed: {e}")
+            if attempt < max_retries - 1:
+                # Exponential backoff
+                delay = (2 ** attempt) * 1.5
+                logger.info(f"Retrying in {delay:.1f} seconds...")
+                time.sleep(delay)
+            else:
+                logger.error(f"Failed to download PDF after {max_retries} attempts: {e}")
+                raise ValueError(f"Failed to download PDF from {pdf_url}: {e}")
+
+def analyze_pdf_structure(pdf_file: str) -> Dict[str, Any]:
+    """
+    Analyze a PDF file's structure and return a summary of its content.
+    
+    Args:
+        pdf_file: Path to the PDF file
+        
+    Returns:
+        Dict with PDF structure information
+    """
+    if not structify_module:
+        return {"error": "Claude module not available for PDF analysis"}
+    
+    try:
+        summary = {}
+        
+        # Detect document type
+        if hasattr(structify_module, 'detect_document_type'):
+            try:
+                summary["document_type"] = structify_module.detect_document_type(pdf_file)
+            except Exception as e:
+                logger.warning(f"Error detecting document type: {e}")
+                summary["document_type"] = "unknown"
+        
+        # Extract metadata using PyMuPDF if available
+        if hasattr(structify_module, 'extract_text_from_pdf'):
+            try:
+                pdf_data = structify_module.extract_text_from_pdf(pdf_file)
+                if pdf_data:
+                    summary["metadata"] = pdf_data.get("metadata", {})
+                    summary["page_count"] = pdf_data.get("page_count", 0)
+                    summary["has_scanned_content"] = pdf_data.get("has_scanned_content", False)
+            except Exception as e:
+                logger.warning(f"Error extracting PDF metadata: {e}")
+        
+        # Extract tables if document type suggests it might have tables
+        tables = []
+        if hasattr(structify_module, 'extract_tables_from_pdf') and summary.get("document_type") in ["academic_paper", "report", "book"]:
+            try:
+                tables = structify_module.extract_tables_from_pdf(pdf_file)
+                summary["tables_count"] = len(tables)
+                if tables:
+                    # Just include count and page location of tables, not full content
+                    summary["tables_info"] = [
+                        {"table_id": t.get("table_id"), "page": t.get("page"), "rows": t.get("rows"), "columns": len(t.get("columns", []))}
+                        for t in tables[:10]  # Limit to first 10 tables
+                    ]
+            except Exception as e:
+                logger.warning(f"Error extracting tables: {e}")
+                summary["tables_count"] = 0
+        
+        # Extract structure if available
+        if hasattr(structify_module, 'identify_document_structure') and pdf_data.get("full_text"):
+            try:
+                structure = structify_module.identify_document_structure(
+                    pdf_data["full_text"],
+                    pdf_data.get("structure", {}).get("headings", [])
+                )
+                if structure:
+                    summary["sections_count"] = len(structure.get("sections", []))
+                    # Include section titles for the first few sections
+                    summary["section_titles"] = [
+                        s.get("clean_title", s.get("title", "Untitled Section"))
+                        for s in structure.get("sections", [])[:5]  # Limit to first 5 sections
+                    ]
+            except Exception as e:
+                logger.warning(f"Error identifying document structure: {e}")
+        
+        # File stats
+        try:
+            file_size = os.path.getsize(pdf_file)
+            summary["file_size_bytes"] = file_size
+            summary["file_size_mb"] = round(file_size / (1024 * 1024), 2)
+        except Exception as e:
+            logger.warning(f"Error getting file stats: {e}")
+        
+        return summary
+        
+    except Exception as e:
+        logger.error(f"Error analyzing PDF structure: {e}")
+        return {"error": str(e)}
+
+def extract_pdf_preview(pdf_file: str, max_preview_length: int = 2000) -> Dict[str, Any]:
+    """
+    Extract a preview of PDF content for display in the UI.
+    
+    Args:
+        pdf_file: Path to the PDF file
+        max_preview_length: Maximum length of text preview
+        
+    Returns:
+        Dict with PDF preview information
+    """
+    if not structify_module:
+        return {"error": "Claude module not available for PDF preview"}
+    
+    try:
+        preview = {}
+        
+        # Extract basic text using PyMuPDF if available
+        if hasattr(structify_module, 'extract_text_from_pdf'):
+            pdf_data = structify_module.extract_text_from_pdf(pdf_file)
+            if pdf_data and pdf_data.get("full_text"):
+                text = pdf_data["full_text"]
+                preview["title"] = pdf_data.get("metadata", {}).get("title", os.path.basename(pdf_file))
+                preview["author"] = pdf_data.get("metadata", {}).get("author", "Unknown")
+                preview["page_count"] = pdf_data.get("page_count", 0)
+                
+                # Create a short text preview
+                if len(text) > max_preview_length:
+                    preview["text_preview"] = text[:max_preview_length] + "..."
+                else:
+                    preview["text_preview"] = text
+                
+                # Extract first few headings if available
+                if "structure" in pdf_data and "headings" in pdf_data["structure"]:
+                    preview["headings"] = pdf_data["structure"]["headings"][:10]  # First 10 headings
+                
+                return preview
+        
+        # Fallback to simple metadata only if text extraction failed
+        preview["title"] = os.path.basename(pdf_file)
+        preview["text_preview"] = "PDF preview not available"
+        
+        return preview
+        
+    except Exception as e:
+        logger.error(f"Error extracting PDF preview: {e}")
+        return {"error": str(e), "text_preview": "Error generating preview"}
 
 def validate_pdf_file(file):
     """Validate uploaded PDF file"""
@@ -891,6 +1130,418 @@ def save_processing_result(result, original_filename, task_type='processed'):
         logger.error(f"Error saving result: {e}")
         return None
 
+def process_file(file_path, output_path=None, max_chunk_size=4096, extract_tables=True, use_ocr=True):
+    """
+    Process a file using claude.py's enhanced capabilities
+    
+    Args:
+        file_path: Path to the file
+        output_path: Output JSON path (if None, derives from input filename)
+        max_chunk_size: Maximum chunk size for text processing
+        extract_tables: Whether to extract tables (for PDFs)
+        use_ocr: Whether to use OCR for scanned content
+        
+    Returns:
+        Dictionary with success status and processing details
+    """
+    if not structify_module:
+        return {"status": "error", "error": "Claude module not available"}
+    
+    try:
+        # Check if file exists
+        if not os.path.isfile(file_path):
+            return {"status": "error", "error": f"File not found: {file_path}"}
+            
+        # For PDF files, use the specialized PDF handling
+        if file_path.lower().endswith('.pdf'):
+            logger.info(f"Processing PDF file: {file_path}")
+            
+            # If output_path is not specified, create a default one
+            if not output_path:
+                base_name = os.path.splitext(os.path.basename(file_path))[0]
+                output_path = os.path.join(os.path.dirname(file_path), f"{base_name}_processed.json")
+            
+            # First try direct PDF processing with enhanced features
+            if hasattr(structify_module, 'process_pdf'):
+                try:
+                    # Detect document type to apply proper processing
+                    doc_type = None
+                    if hasattr(structify_module, 'detect_document_type'):
+                        try:
+                            doc_type = structify_module.detect_document_type(file_path)
+                            logger.info(f"Detected document type: {doc_type}")
+                        except Exception as type_err:
+                            logger.warning(f"Error detecting document type: {type_err}")
+                    
+                    # Apply OCR only if document type is scan or use_ocr is explicitly True
+                    apply_ocr = use_ocr or (doc_type == "scan")
+                    
+                    result = structify_module.process_pdf(
+                        pdf_path=file_path, 
+                        output_path=output_path,
+                        max_chunk_size=max_chunk_size,
+                        extract_tables=extract_tables,
+                        use_ocr=apply_ocr,
+                        return_data=True
+                    )
+                    
+                    if result:
+                        return {
+                            "status": "success",
+                            "file_path": file_path,
+                            "output_path": output_path,
+                            "data": result,
+                            "document_type": doc_type
+                        }
+                except Exception as pdf_err:
+                    logger.warning(f"Direct PDF processing failed, falling back: {pdf_err}")
+            
+            # Fallback to general processing
+            result = structify_module.process_all_files(
+                root_directory=os.path.dirname(file_path),
+                output_file=output_path,
+                max_chunk_size=max_chunk_size,
+                file_filter=lambda f: f == file_path,
+                include_binary_detection=False  # PDFs should not be treated as binary
+            )
+            
+            if result:
+                return {
+                    "status": "success",
+                    "file_path": file_path,
+                    "output_path": output_path,
+                    "data": result
+                }
+            else:
+                return {"status": "error", "error": "PDF processing failed"}
+                
+        else:
+            # For non-PDF files, use the general processing capability
+            logger.info(f"Processing file: {file_path}")
+            
+            # If output_path is not specified, create a default one
+            if not output_path:
+                base_name = os.path.splitext(os.path.basename(file_path))[0]
+                output_path = os.path.join(os.path.dirname(file_path), f"{base_name}_processed.json")
+            
+            # Use claude.py's general document processing if available
+            if hasattr(structify_module, 'process_document'):
+                result = structify_module.process_document(
+                    file_path=file_path,
+                    output_path=output_path,
+                    max_chunk_size=max_chunk_size,
+                    return_data=True
+                )
+            else:
+                # Fallback to general processing
+                result = structify_module.process_all_files(
+                    root_directory=os.path.dirname(file_path),
+                    output_file=output_path,
+                    max_chunk_size=max_chunk_size,
+                    file_filter=lambda f: f == file_path
+                )
+            
+            if result:
+                return {
+                    "status": "success",
+                    "file_path": file_path,
+                    "output_path": output_path,
+                    "data": result
+                }
+            else:
+                return {"status": "error", "error": "File processing failed"}
+    
+    except Exception as e:
+        logger.error(f"Error processing file {file_path}: {e}", exc_info=True)
+        return {"status": "error", "error": str(e)}
+           
 
+
+def download_pdf(url: str, save_path: str = DEFAULT_OUTPUT_FOLDER) -> str:
+    """
+    Download a PDF from the given URL using streaming to save memory.
+    Returns the local file path on success.
+    
+    Args:
+        url (str): The URL to download from
+        save_path (str): Directory where the PDF will be saved
+        
+    Returns:
+        str: The path to the downloaded PDF file
+        
+    Raises:
+        ValueError: If the download fails
+    """
+    logger.info(f"Downloading PDF: {url}")
+    
+    # Convert arXiv abstract links to PDF links if needed
+    if "arxiv.org/abs/" in url:
+        pdf_url = url.replace("arxiv.org/abs/", "arxiv.org/pdf/")
+        if not pdf_url.lower().endswith(".pdf"):
+            pdf_url += ".pdf"
+        logger.info(f"Converted arXiv abstract URL to PDF URL: {pdf_url}")
+    else:
+        pdf_url = url
+    
+    # Ensure the save directory exists
+    try:
+        os.makedirs(save_path, exist_ok=True)
+        logger.info(f"Ensured download directory exists: {save_path}")
+    except Exception as e:
+        logger.error(f"Failed to create download directory {save_path}: {e}")
+        raise ValueError(f"Cannot create download directory: {e}")
+    
+    # Generate a unique filename based on URL
+    url_hash = hashlib.md5(pdf_url.encode()).hexdigest()[:10]
+    filename = pdf_url.split("/")[-1] or "document.pdf"
+    if not filename.lower().endswith(".pdf"):
+        filename += ".pdf"
+    # Sanitize the filename and add hash to make it unique
+    filename = sanitize_filename(f"{os.path.splitext(filename)[0]}_{url_hash}.pdf")
+    file_path = os.path.join(save_path, filename)
+    
+    # If file already exists, return the path without downloading
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 1000:  # Ensure it's not an empty file
+        logger.info(f"PDF already exists: {file_path}")
+        return file_path
+    
+    # Create a requests session with retries
+    session = requests.Session()
+    retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[500, 502, 503, 504])
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    
+    # Download with retries
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            # Use streaming to handle large files efficiently
+            response = session.get(pdf_url, stream=True, timeout=30, 
+                                  headers={
+                                      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                                      "Accept": "application/pdf,*/*",
+                                      "Connection": "keep-alive"
+                                  })
+            response.raise_for_status()
+            
+            # Check if content type indicates it's a PDF (if available)
+            content_type = response.headers.get('Content-Type', '').lower()
+            if content_type and 'application/pdf' not in content_type and not pdf_url.lower().endswith('.pdf'):
+                logger.warning(f"Content type not PDF: {content_type}. Checking content...")
+                # Check first few bytes to see if it starts with %PDF
+                first_chunk = next(response.iter_content(256), None)
+                if not first_chunk or not first_chunk.startswith(b'%PDF-'):
+                    raise ValueError(f"Content at {pdf_url} is not a PDF")
+            
+            # Stream content to file
+            with open(file_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=16384):
+                    if chunk:
+                        f.write(chunk)
+            
+            # Verify the file is a valid PDF and has content
+            if not os.path.exists(file_path) or os.path.getsize(file_path) < 1000:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                raise ValueError("Downloaded file is not a valid PDF (too small)")
+                
+            logger.info(f"PDF successfully downloaded to: {file_path}")
+            
+            # Emit Socket.IO event for PDF download progress if using Socket.IO
+            try:
+                socketio.emit("pdf_download_progress", {
+                    "url": url,
+                    "progress": 100,
+                    "status": "success",
+                    "file_path": file_path
+                })
+            except Exception as socket_err:
+                logger.debug(f"Socket.IO event emission failed: {socket_err}")
+            
+            return file_path
+            
+        except Exception as e:
+            logger.warning(f"Attempt {attempt+1}/{max_retries} failed: {e}")
+            if attempt < max_retries - 1:
+                # Exponential backoff
+                delay = (2 ** attempt) * 1.5
+                logger.info(f"Retrying in {delay:.1f} seconds...")
+                time.sleep(delay)
+            else:
+                logger.error(f"Failed to download PDF after {max_retries} attempts: {e}")
+                raise ValueError(f"Failed to download PDF from {pdf_url}: {e}")
+
+def handle_pdf_processing_error(pdf_file, error, output_folder=None):
+    """
+    Handle PDF processing errors with recovery options
+    
+    Args:
+        pdf_file: Path to the problematic PDF
+        error: The exception or error message
+        output_folder: Optional output folder to save error report
+        
+    Returns:
+        Dict with error information and recovery status
+    """
+    error_type = type(error).__name__
+    error_msg = str(error)
+    
+    logger.error(f"PDF processing error ({error_type}): {error_msg}")
+    
+    # Attempt to classify the error
+    if "memory" in error_msg.lower() or "allocation" in error_msg.lower():
+        error_category = "memory"
+    elif "timeout" in error_msg.lower() or "timed out" in error_msg.lower():
+        error_category = "timeout" 
+    elif "permission" in error_msg.lower() or "access" in error_msg.lower():
+        error_category = "permissions"
+    elif "corrupt" in error_msg.lower() or "invalid" in error_msg.lower():
+        error_category = "corrupt_file"
+    else:
+        error_category = "general"
+    
+    # Try recovery based on error type
+    recovery_successful = False
+    recovery_method = None
+    
+    try:
+        if error_category == "memory":
+            # Try processing with reduced memory usage
+            logger.info("Attempting memory-optimized processing...")
+            recovery_successful = process_pdf_with_reduced_memory(pdf_file, output_folder)
+            recovery_method = "reduced_memory"
+            
+        elif error_category == "corrupt_file":
+            # Try PDF repair methods
+            logger.info("Attempting PDF repair...")
+            recovery_successful = attempt_pdf_repair(pdf_file, output_folder)
+            recovery_method = "file_repair"
+            
+        elif error_category == "timeout":
+            # Try processing with extended timeout
+            logger.info("Attempting processing with extended timeout...")
+            recovery_successful = process_pdf_with_extended_timeout(pdf_file, output_folder)
+            recovery_method = "extended_timeout"
+    except Exception as recovery_error:
+        logger.error(f"Recovery attempt failed: {recovery_error}")
+    
+    # Create error report
+    result = {
+        "status": "error",
+        "error_type": error_type,
+        "error_message": error_msg,
+        "error_category": error_category,
+        "recovery_attempted": True,
+        "recovery_successful": recovery_successful,
+        "recovery_method": recovery_method
+    }
+    
+    # Save error report if output folder provided
+    if output_folder:
+        try:
+            report_path = os.path.join(
+                output_folder,
+                f"error_report_{os.path.basename(pdf_file)}.json"
+            )
+            
+            with open(report_path, 'w', encoding='utf-8') as f:
+                json.dump(result, f, indent=2)
+                
+            result["error_report"] = report_path
+        except Exception as e:
+            logger.warning(f"Failed to save error report: {e}")
+    
+    return result
+
+def process_pdf_with_reduced_memory(pdf_file, output_folder):
+    """Process PDF with reduced memory usage"""
+    try:
+        # Generate output path
+        file_name = os.path.basename(pdf_file)
+        json_filename = os.path.splitext(file_name)[0] + "_processed.json"
+        json_path = os.path.join(output_folder, json_filename)
+        
+        # Process in chunks to reduce memory usage
+        if hasattr(structify_module, 'process_pdf'):
+            structify_module.process_pdf(
+                pdf_path=pdf_file,
+                output_path=json_path,
+                max_chunk_size=2048,  # Smaller chunks
+                extract_tables=False,  # Skip tables to save memory
+                use_ocr=False,  # Skip OCR to save memory
+                return_data=False  # Don't keep data in memory
+            )
+            return True
+        return False
+    except Exception as e:
+        logger.error(f"Reduced memory processing failed: {e}")
+        return False
+
+def attempt_pdf_repair(pdf_file, output_folder):
+    """Attempt to repair corrupted PDF file"""
+    if not pikepdf_available:
+        logger.warning("pikepdf not available for PDF repair")
+        return False
+        
+    try:
+        # Now use pikepdf knowing it's available
+        import pikepdf
+        # Rest of your function...
+    except Exception as e:
+        logger.error(f"PDF repair failed: {e}")
+        return False
+
+def validate_pdf(pdf_path):
+    """
+    Validate a PDF file and detect its features.
+    
+    Args:
+        pdf_path: Path to the PDF file
+        
+    Returns:
+        dict: Validation results and detected features
+    """
+    if not os.path.exists(pdf_path):
+        return {"valid": False, "error": "File not found"}
+        
+    if not pdf_path.lower().endswith('.pdf'):
+        return {"valid": False, "error": "Not a PDF file"}
+    
+    # Check if file is readable
+    try:
+        with open(pdf_path, 'rb') as f:
+            header = f.read(5)
+            if header != b'%PDF-':
+                return {"valid": False, "error": "Invalid PDF format"}
+    except Exception as e:
+        return {"valid": False, "error": f"Error reading file: {str(e)}"}
+    
+    # Try to extract basic features
+    features = {"valid": True, "encrypted": False, "page_count": 0, "scanned": False}
+    
+    try:
+        if pdf_extractor_available:
+            # Use pdf_extractor for feature detection
+            doc_type = pdf_extractor.detect_document_type(pdf_path)
+            features["document_type"] = doc_type
+            features["scanned"] = doc_type == "scan"
+            
+            # Get more metadata
+            metadata = pdf_extractor.extract_text_from_pdf(pdf_path)
+            if metadata:
+                features["page_count"] = metadata.get("page_count", 0)
+                features["has_text"] = bool(metadata.get("full_text"))
+                features["metadata"] = metadata.get("metadata", {})
+        elif pikepdf_available:
+            # Use pikepdf as fallback
+            with pikepdf.Pdf.open(pdf_path) as pdf:
+                features["page_count"] = len(pdf.pages)
+                features["encrypted"] = pdf.is_encrypted
+                features["version"] = f"{pdf.pdf_version.major}.{pdf.pdf_version.minor}"
+    except Exception as e:
+        # Don't fail validation if feature detection fails
+        features["feature_error"] = str(e)
+    
+    return features
 # Export the blueprint
 __all__ = ['pdf_processor_bp']

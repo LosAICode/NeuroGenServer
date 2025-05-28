@@ -21,7 +21,552 @@ logger = logging.getLogger(__name__)
 # Create the blueprint
 file_processor_bp = Blueprint('file_processor', __name__, url_prefix='/api')
 
+def process_all_files(
+    root_directory: str,
+    output_file: str,
+    max_chunk_size: int = DEFAULT_MAX_CHUNK_SIZE,
+    executor_type: str = "thread",
+    max_workers: Optional[int] = None,
+    stop_words: Set[str] = DEFAULT_STOP_WORDS,
+    use_cache: bool = False,
+    valid_extensions: List[str] = DEFAULT_VALID_EXTENSIONS,
+    ignore_dirs: str = "venv,node_modules,.git,__pycache__,dist,build",
+    stats_only: bool = False,
+    include_binary_detection: bool = True,
+    overlap: int = DEFAULT_CHUNK_OVERLAP,
+    max_file_size: int = MAX_FILE_SIZE,
+    timeout: int = DEFAULT_PROCESS_TIMEOUT,
+    memory_limit: int = DEFAULT_MEMORY_LIMIT,
+    progress_callback: Optional[Callable[[int, int, str], None]] = None,
+    stats_obj: Optional[FileStats] = None,
+    file_filter: Optional[Callable[[str], bool]] = None,
+    log_level: int = logging.INFO,
+    log_file: Optional[str] = None,
+    error_on_empty: bool = False,
+    include_failed_files: bool = False
+) -> Dict[str, Any]:
+    """
+    Process all files in the root_directory with enhanced PDF handling and error recovery.
+    
+    Args:
+        root_directory: Base directory to process
+        output_file: Path to output JSON file
+        max_chunk_size: Maximum size of text chunks
+        executor_type: Type of executor ("thread", "process", or "none")
+        max_workers: Maximum number of worker threads/processes
+        stop_words: Set of words to ignore in tag generation
+        use_cache: Whether to use file caching
+        valid_extensions: List of file extensions to process
+        ignore_dirs: Comma-separated list of directories to ignore
+        stats_only: Whether to only generate statistics
+        include_binary_detection: Whether to detect and skip binary files
+        overlap: Number of characters to overlap between chunks
+        max_file_size: Maximum file size to process
+        timeout: Maximum processing time per file in seconds
+        memory_limit: Maximum memory usage before forcing garbage collection
+        progress_callback: Optional callback for progress reporting
+        stats_obj: Optional statistics object to use
+        file_filter: Optional function to filter files
+        log_level: Logging level
+        log_file: Optional log file path
+        error_on_empty: Whether to error if no files are found
+        include_failed_files: Whether to include details of failed files in output
+        
+    Returns:
+        Dictionary with statistics and processed data
+    """
+    # Setup logging with specified options
+    global logger
+    logger = setup_logging(log_level, log_file)
+    
+    start_time = time.time()
+    stats = stats_obj if stats_obj else FileStats()
+    
+    # Create list of directories to ignore
+    ig_list = [d.strip() for d in ignore_dirs.split(",") if d.strip()]
+    rroot = Path(root_directory)
+    
+    # Track performance metrics
+    discovery_start = time.time()
+    
+    # Find all files matching extensions
+    all_files = []
+    skipped_during_discovery = []
+    try:
+        for p in rroot.rglob("*"):
+            # Skip ignored directories
+            if any(ig in p.parts for ig in ig_list):
+                continue
+                
+            # Only process files that match extensions
+            if p.is_file() and any(p.suffix.lower() == ext.lower() for ext in valid_extensions):
+                # Apply custom filter if provided
+                if file_filter and not file_filter(str(p)):
+                    continue
+                
+                # Skip files that are too large (except PDFs)
+                try:
+                    size = p.stat().st_size
+                    if size > max_file_size and not p.suffix.lower() == '.pdf':
+                        logger.info(f"Skipping large file during discovery: {p} ({size} bytes)")
+                        skipped_during_discovery.append({
+                            "file_path": str(p),
+                            "size": size,
+                            "reason": "file_too_large"
+                        })
+                        continue
+                except OSError as e:
+                    # Log error but continue processing other files
+                    logger.warning(f"Error accessing file {p}: {e}")
+                    skipped_during_discovery.append({
+                        "file_path": str(p),
+                        "reason": f"access_error: {str(e)}"
+                    })
+                    continue
+                
+                all_files.append(p)
+    except Exception as e:
+        logger.error(f"Error during file discovery: {e}", exc_info=True)
+        return {
+            "stats": stats.to_dict(),
+            "data": {},
+            "error": str(e),
+            "skipped_files": skipped_during_discovery,
+            "status": "failed"
+        }
 
+    discovery_time = time.time() - discovery_start
+    logger.info(f"Found {len(all_files)} valid files in {root_directory} ({discovery_time:.2f}s)")
+    
+    # Check if any files were found
+    if not all_files:
+        message = f"No files found in {root_directory} matching the provided criteria"
+        if error_on_empty:
+            logger.error(message)
+            return {
+                "stats": stats.to_dict(),
+                "data": {},
+                "error": message,
+                "skipped_files": skipped_during_discovery,
+                "status": "failed"
+            }
+        else:
+            logger.warning(message)
+            return {
+                "stats": stats.to_dict(),
+                "data": {},
+                "message": message,
+                "skipped_files": skipped_during_discovery,
+                "status": "completed"
+            }
+    
+    if progress_callback:
+        progress_callback(0, len(all_files), "discovery")
+
+    # Load cache if enabled
+    processed_cache = {}
+    
+    # FIX: Properly extract the directory part of the output_file
+    # Use os.path.dirname to get just the directory part without any file components
+    output_dir = os.path.dirname(output_file)
+    # If output_dir is empty (meaning output_file is just a filename with no directory part),
+    # use the current directory
+    if not output_dir:
+        output_dir = "."
+    
+    cache_path = os.path.join(output_dir, CACHE_FILE)
+    
+    if use_cache:
+        if os.path.isfile(cache_path):
+            try:
+                with open(cache_path, "r", encoding="utf-8") as c:
+                    processed_cache = json.load(c)
+                logger.info(f"Loaded cache with {len(processed_cache)} entries")
+            except Exception as e:
+                logger.warning(f"Cache load error: {e}")
+
+    # Filter files that need processing
+    to_process = []
+    for fpath in all_files:
+        sp = str(fpath)
+        
+        # Skip unchanged files if they're in cache
+        if use_cache and sp in processed_cache:
+            try:
+                mtime = fpath.stat().st_mtime
+                old = processed_cache[sp].get("mod_time", 0)
+                if old >= mtime:
+                    stats.skipped_files += 1
+                    logger.debug(f"Skipping unchanged file: {sp}")
+                    continue
+            except OSError:
+                # If stat fails, process the file anyway
+                pass
+                
+        to_process.append(fpath)
+
+    if not to_process:
+        logger.info("No new or modified files to process.")
+        return {
+            "stats": stats.to_dict(),
+            "data": {},
+            "message": "No new or modified files to process",
+            "skipped_files": skipped_during_discovery,
+            "status": "completed"
+        }
+
+    # Determine optimal number of workers
+    if max_workers is None:
+        import multiprocessing
+        cpunum = multiprocessing.cpu_count()
+        if executor_type == "process":
+            max_workers = max(1, cpunum - 1)
+        else:
+            max_workers = min(32, cpunum * 2)
+
+    logger.info(f"Using {executor_type} executor with max_workers={max_workers}")
+
+    # Track errors and processing failures
+    processing_failures = []
+
+    # Process files in batches
+    processing_start = time.time()
+    
+    # Determine batch size based on file count
+    batch_size = 100
+    if len(to_process) <= 100:
+        batch_size = 20
+    elif len(to_process) <= 500:
+        batch_size = 50
+    elif len(to_process) <= 2000:
+        batch_size = 100
+    else:
+        batch_size = 200
+    
+    # Enhanced data structure with additional metadata
+    all_data = {}
+    
+    # Process in batches to manage memory usage
+    for i in range(0, len(to_process), batch_size):
+        batch = to_process[i:i+batch_size]
+        batch_num = i // batch_size + 1
+        total_batches = (len(to_process) + batch_size - 1) // batch_size
+        logger.info(f"Processing batch {batch_num}/{total_batches} ({len(batch)} files)")
+        
+        results = []
+        
+        # Different processing strategies based on executor type
+        if executor_type == "none":
+            # Sequential processing
+            for p in batch:
+                # Special handling for PDFs
+                if str(p).lower().endswith('.pdf'):
+                    result = process_pdf_safely(str(p), root_directory, stats, max_chunk_size)
+                    if result:
+                        results.append((p, result))
+                    else:
+                        # Track processing failure
+                        processing_failures.append({
+                            "file_path": str(p),
+                            "reason": "pdf_processing_failed"
+                        })
+                else:
+                    # Standard processing for non-PDF files
+                    r = safe_process(
+                        p, root_directory, max_chunk_size, stop_words, 
+                        include_binary_detection, stats, overlap, max_file_size, 
+                        timeout, progress_callback
+                    )
+                    if r:
+                        results.append((p, r))
+                    else:
+                        # Track processing failure
+                        processing_failures.append({
+                            "file_path": str(p),
+                            "reason": "processing_failed"
+                        })
+                
+                # Check memory usage and trigger garbage collection if needed
+                try:
+                    import psutil
+                    process = psutil.Process()
+                    memory_info = process.memory_info()
+                    if memory_info.rss > memory_limit:
+                        logger.warning(f"Memory usage ({memory_info.rss / 1024 / 1024:.1f} MB) exceeded limit. Triggering GC.")
+                        import gc
+                        gc.collect()
+                except ImportError:
+                    pass  # psutil not available
+        else:
+            # Parallel processing
+            Exec = ThreadPoolExecutor if executor_type == "thread" else ProcessPoolExecutor
+            with Exec(max_workers=max_workers) as ex:
+                # Submit all tasks with special handling for PDFs
+                fut_map = {}
+                for p in batch:
+                    if str(p).lower().endswith('.pdf'):
+                        # Submit PDF processing task
+                        fut = ex.submit(
+                            process_pdf_safely,
+                            str(p),
+                            root_directory,
+                            stats,
+                            max_chunk_size
+                        )
+                    else:
+                        # Submit standard file processing task
+                        fut = ex.submit(
+                            safe_process, 
+                            p, 
+                            root_directory, 
+                            max_chunk_size, 
+                            stop_words, 
+                            include_binary_detection, 
+                            stats,
+                            overlap,
+                            max_file_size,
+                            timeout,
+                            progress_callback
+                        )
+                    fut_map[fut] = p
+                
+                # Process results as they complete
+                for fut in as_completed(fut_map):
+                    pth = fut_map[fut]
+                    out = fut.result()
+                    if out:
+                        results.append((pth, out))
+                    else:
+                        # Track processing failure
+                        processing_failures.append({
+                            "file_path": str(pth),
+                            "reason": "processing_failed"
+                        })
+
+        # Aggregate results into the output data structure
+        for pth, (lib, docs) in results:
+            if lib not in all_data:
+                all_data[lib] = {
+                    "docs_data": [],
+                    "metadata": {
+                        "library_name": lib,
+                        "processed_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "source": "Derived from file structure",
+                        "processor_version": "claude.beta.py 3.0" 
+                    }
+                }
+            
+            # Add document data
+            all_data[lib]["docs_data"].extend(d.to_dict() for d in docs)
+            
+            # Update cache if enabled
+            if use_cache:
+                try:
+                    processed_cache[str(pth)] = {
+                        "mod_time": pth.stat().st_mtime,
+                        "size": pth.stat().st_size,
+                        "chunks": len(docs),
+                        "last_processed": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    }
+                except OSError:
+                    # If stat fails, skip caching this file
+                    pass
+
+        # Periodically save cache for large batches
+        if use_cache and (i + batch_size) % (batch_size * 5) == 0:
+            try:
+                with open(cache_path, "w", encoding="utf-8") as c:
+                    json.dump(processed_cache, c, indent=2)
+                logger.info(f"Saved cache after processing {i+batch_size} files.")
+            except Exception as e:
+                logger.warning(f"Cache save error: {e}")
+                
+        # Check memory usage and trigger garbage collection if needed
+        try:
+            import psutil
+            process = psutil.Process()
+            memory_info = process.memory_info()
+            if memory_info.rss > memory_limit:
+                logger.warning(f"Memory usage ({memory_info.rss / 1024 / 1024:.1f} MB) exceeded limit. Triggering GC.")
+                import gc
+                gc.collect()
+        except ImportError:
+            pass  # psutil not available
+
+    # Add overall processing metadata
+    processing_time = time.time() - processing_start
+    total_time = time.time() - start_time
+    
+    # Add processing information to the output
+    metakey = "metadata"
+    for lib in all_data:
+        if metakey in all_data[lib]:
+            all_data[lib][metakey].update({
+                "processing_timestamp": datetime.now().isoformat(),
+                "processing_time_seconds": processing_time,
+                "total_time_seconds": total_time,
+                "discovery_time_seconds": discovery_time,
+                "total_files_processed": stats.processed_files,
+                "total_files_skipped": stats.skipped_files,
+                "total_files_error": stats.error_files,
+                "total_chunks": stats.total_chunks,
+                "max_chunk_size": max_chunk_size,
+                "chunk_overlap": overlap,
+                "valid_extensions": valid_extensions,
+                "binary_detection": include_binary_detection
+            })
+            
+            # Add PDF-specific stats if available
+            if stats.pdf_files > 0:
+                all_data[lib][metakey].update({
+                    "pdf_files_processed": stats.pdf_files,
+                    "tables_extracted": stats.tables_extracted,
+                    "references_extracted": stats.references_extracted,
+                    "scanned_pages_processed": stats.scanned_pages_processed,
+                    "ocr_processed_files": stats.ocr_processed_files
+                })
+
+    # Add processing failures if requested
+    if include_failed_files and (processing_failures or skipped_during_discovery):
+        for lib in all_data:
+            if metakey in all_data[lib]:
+                all_data[lib][metakey]["processing_failures"] = processing_failures
+                all_data[lib][metakey]["skipped_during_discovery"] = skipped_during_discovery
+
+    # Write output JSON unless stats_only mode
+    if not stats_only:
+        try:
+            # FIX: Make sure output directory exists, but properly handle drive letters
+            # Get just the directory part of the output_file path
+            outdir = os.path.dirname(output_file)
+            
+            # Only create the directory if it's not an empty string
+            if outdir:
+                # Fix for handling paths with multiple drive letters (e.g., "C:\path\C:\file.json")
+                # Check if outdir contains multiple drive letters
+                drive_pattern = re.compile(r'([A-Za-z]:)')
+                drive_matches = drive_pattern.findall(outdir)
+                
+                if len(drive_matches) > 1:
+                    # Path contains multiple drive letters, use only the first one
+                    logger.warning(f"Path contains multiple drive letters: {outdir}")
+                    first_drive_end = outdir.find(drive_matches[0]) + len(drive_matches[0])
+                    second_drive_start = outdir.find(drive_matches[1])
+                    
+                    # Use just the first drive and its path
+                    clean_outdir = outdir[:second_drive_start]
+                    logger.info(f"Using cleaned directory path: {clean_outdir}")
+                    
+                    # Update the output_file path to use the correct directory
+                    output_filename = os.path.basename(output_file)
+                    output_file = os.path.join(clean_outdir, output_filename)
+                    logger.info(f"Updated output file path: {output_file}")
+                    
+                    outdir = clean_outdir
+                
+                # Create the directory
+                try:
+                    os.makedirs(outdir, exist_ok=True)
+                    logger.info(f"Ensured output directory exists: {outdir}")
+                except Exception as dir_err:
+                    logger.error(f"Error creating output directory: {dir_err}")
+                    
+                    # Fallback: Try to use the user's Documents folder
+                    try:
+                        import pathlib
+                        docs_dir = os.path.join(str(pathlib.Path.home()), "Documents")
+                        os.makedirs(docs_dir, exist_ok=True)
+                        
+                        # Update output file path to use Documents folder
+                        output_filename = os.path.basename(output_file)
+                        output_file = os.path.join(docs_dir, output_filename)
+                        logger.warning(f"Using fallback output location: {output_file}")
+                    except Exception as fallback_err:
+                        logger.error(f"Error creating fallback output directory: {fallback_err}")
+                        # Last resort: Try to use current directory
+                        output_filename = os.path.basename(output_file)
+                        output_file = output_filename
+                        logger.warning(f"Using current directory for output: {output_file}")
+                
+            # Use the enhanced safe JSON writer instead of direct write
+            success = write_json_safely(all_data, output_file)
+            
+            if success:
+                logger.info(f"Created JSON output at {output_file}")
+            else:
+                logger.error(f"Failed to write JSON output to {output_file}")
+                # Try alternative approach with simpler JSON structure
+                try:
+                    logger.info("Attempting alternative JSON writing approach...")
+                    # Create a simplified version of the data with just the essential information
+                    simplified_data = {}
+                    for lib in all_data:
+                        simplified_data[lib] = {
+                            "metadata": all_data[lib]["metadata"],
+                            "doc_count": len(all_data[lib].get("docs_data", [])),
+                            "summary": f"Processed {len(all_data[lib].get('docs_data', []))} documents"
+                        }
+                    
+                    temp_output = f"{output_file}.simple.json"
+                    with open(temp_output, "w", encoding="utf-8") as f:
+                        json.dump(simplified_data, f, ensure_ascii=False, indent=2)
+                    
+                    logger.info(f"Created simplified JSON output at {temp_output}")
+                except Exception as alt_err:
+                    logger.error(f"Alternative JSON writing also failed: {alt_err}")
+            
+            if progress_callback:
+                progress_callback(100, 100, "completed")
+        except Exception as e:
+            logger.error(f"Error writing final output: {e}", exc_info=True)
+            if progress_callback:
+                progress_callback(0, 0, "error")
+
+    # Save final cache state
+    if use_cache:
+        try:
+            with open(cache_path, "w", encoding="utf-8") as c:
+                json.dump(processed_cache, c, indent=2)
+            logger.info(f"Saved final cache to {cache_path}")
+        except Exception as e:
+            logger.warning(f"Final cache save error: {e}")
+
+    # Log final statistics and return results
+    final_stats = stats.to_dict()
+    final_stats["total_duration_seconds"] = total_time
+    final_stats["processing_duration_seconds"] = processing_time
+    final_stats["discovery_duration_seconds"] = discovery_time
+    
+    if stats.processed_files > 0:
+        final_stats["seconds_per_file"] = processing_time / stats.processed_files
+        
+    if stats.total_files > 0:
+        final_stats["success_rate"] = stats.processed_files / stats.total_files * 100
+    
+    logger.info(f"Processing complete in {total_time:.2f}s")
+    logger.info(f"Stats: {len(all_files)} files found, {stats.processed_files} processed, " +
+                f"{stats.skipped_files} skipped, {stats.error_files} errors, " +
+                f"{stats.total_chunks} chunks created")
+    
+    # PDF-specific statistics
+    if stats.pdf_files > 0:
+        logger.info(f"PDF Stats: {stats.pdf_files} PDFs processed, {stats.tables_extracted} tables extracted, " +
+                    f"{stats.references_extracted} references extracted, {stats.ocr_processed_files} OCR processed")
+    
+    result = {
+        "stats": final_stats,
+        "data": all_data,
+        "status": "completed",
+        "message": f"Successfully processed {stats.processed_files} files",
+        "output_file": output_file  # Return the potentially updated output file path
+    }
+    
+    # Include failure information if requested
+    if include_failed_files:
+        result["processing_failures"] = processing_failures
+        result["skipped_during_discovery"] = skipped_during_discovery
+        
+    return result    
 # Helper functions for emitting Socket.IO events
 def emit_task_error(task_id, error_message, error_details=None, stats=None):
     """
