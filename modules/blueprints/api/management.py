@@ -447,5 +447,230 @@ def complete_task(task_id, success=True, **kwargs):
             logger.info(f"Task {task_id} completed with success={success}")
 
 
-# Export utility functions for use by other blueprints
-__all__ = ['register_task', 'update_task_progress', 'complete_task', 'api_task_registry']
+# =============================================================================
+# API KEY MANAGEMENT ROUTES
+# =============================================================================
+
+@api_management_bp.route('/keys', methods=['GET'])
+def list_api_keys():
+    """List all API keys"""
+    try:
+        # Get the API key manager from current app
+        key_manager = getattr(current_app, 'api_key_manager', None)
+        if not key_manager:
+            return jsonify({"error": "API key manager not available"}), 500
+            
+        keys = key_manager.get_all_keys()
+        # Create a safe version without exposing the actual keys
+        safe_keys = {}
+        for key, data in keys.items():
+            key_preview = f"{key[:8]}...{key[-4:]}"
+            safe_keys[key_preview] = data
+        return jsonify({"keys": safe_keys})
+    except Exception as e:
+        logger.error(f"Error listing API keys: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@api_management_bp.route('/keys/create', methods=['POST'])
+def create_api_key():
+    """Create a new API key"""
+    try:
+        data = request.get_json() or {}
+        name = data.get("name", f"Key-{datetime.now().strftime('%Y%m%d')}")
+        description = data.get("description", "Generated from API")
+        
+        # Get the API key manager from current app
+        key_manager = getattr(current_app, 'api_key_manager', None)
+        if not key_manager:
+            return jsonify({"error": "API key manager not available"}), 500
+            
+        key = key_manager.create_key(name, description)
+        return jsonify({
+            "key": key,
+            "name": name,
+            "message": "API key created successfully. Save this key as it won't be shown again."
+        })
+    except Exception as e:
+        logger.error(f"Error creating API key: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@api_management_bp.route('/keys/revoke', methods=['POST'])
+def revoke_api_key():
+    """Revoke an API key"""
+    try:
+        data = request.get_json() or {}
+        key = data.get("key")
+        
+        if not key:
+            return jsonify({"error": "Key is required"}), 400
+            
+        # Get the API key manager from current app
+        key_manager = getattr(current_app, 'api_key_manager', None)
+        if not key_manager:
+            return jsonify({"error": "API key manager not available"}), 500
+            
+        if key_manager.revoke_key(key):
+            return jsonify({"message": "API key revoked successfully"})
+        else:
+            return jsonify({"error": "Invalid key"}), 404
+    except Exception as e:
+        logger.error(f"Error revoking API key: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# =============================================================================
+# TASK HISTORY MANAGEMENT
+# =============================================================================
+
+def process_completion_stats(stats, task_type):
+    """
+    Process CustomFileStats or dict stats into a comprehensive format.
+    
+    Args:
+        stats: CustomFileStats object or dictionary
+        task_type: Type of task (file_processing, web_scraping, etc.)
+        
+    Returns:
+        Processed stats dictionary
+    """
+    try:
+        # Convert CustomFileStats to dict if needed
+        if hasattr(stats, '__dict__'):
+            stats_dict = vars(stats).copy()
+        else:
+            stats_dict = stats.copy() if isinstance(stats, dict) else {}
+        
+        # Basic metrics
+        processed_stats = {
+            'files_processed': stats_dict.get('files_processed', 0),
+            'total_chunks': stats_dict.get('total_chunks', 0),
+            'total_time': stats_dict.get('total_time', 0),
+            'error_files': stats_dict.get('error_files', 0),
+            'task_type': task_type
+        }
+        
+        # Add task-specific metrics
+        if task_type == 'file_processing':
+            processed_stats.update({
+                'json_files': stats_dict.get('json_files', 0),
+                'pdf_files': stats_dict.get('pdf_files', 0),
+                'image_files': stats_dict.get('image_files', 0),
+                'tables_extracted': stats_dict.get('tables_extracted', 0)
+            })
+        elif task_type == 'web_scraping':
+            processed_stats.update({
+                'pages_scraped': stats_dict.get('pages_scraped', 0),
+                'pdfs_downloaded': stats_dict.get('pdfs_downloaded', 0),
+                'failed_urls': stats_dict.get('failed_urls', 0)
+            })
+        elif task_type == 'playlist_download':
+            processed_stats.update({
+                'videos_downloaded': stats_dict.get('videos_downloaded', 0),
+                'playlists_processed': stats_dict.get('playlists_processed', 0),
+                'total_size_mb': stats_dict.get('total_size_mb', 0)
+            })
+        
+        return processed_stats
+        
+    except Exception as e:
+        logger.error(f"Error processing completion stats: {e}")
+        return {}
+
+
+def generate_stats_summary(stats, task_type):
+    """Generate a human-readable summary of the stats."""
+    try:
+        if not stats:
+            return "No statistics available"
+        
+        summary_parts = []
+        
+        # Basic summary
+        files = stats.get('files_processed', 0)
+        errors = stats.get('error_files', 0)
+        time_taken = stats.get('total_time', 0)
+        
+        if files > 0:
+            success_rate = ((files - errors) / files * 100) if files > 0 else 0
+            summary_parts.append(f"Processed {files} files ({success_rate:.1f}% success)")
+        
+        if time_taken > 0:
+            summary_parts.append(f"in {format_duration(time_taken)}")
+        
+        # Task-specific summaries
+        if task_type == 'file_processing':
+            pdfs = stats.get('pdf_files', 0)
+            tables = stats.get('tables_extracted', 0)
+            if pdfs > 0:
+                summary_parts.append(f"including {pdfs} PDFs")
+            if tables > 0:
+                summary_parts.append(f"extracted {tables} tables")
+                
+        elif task_type == 'web_scraping':
+            pages = stats.get('pages_scraped', 0)
+            pdfs = stats.get('pdfs_downloaded', 0)
+            if pages > 0:
+                summary_parts.append(f"scraped {pages} pages")
+            if pdfs > 0:
+                summary_parts.append(f"downloaded {pdfs} PDFs")
+                
+        elif task_type == 'playlist_download':
+            videos = stats.get('videos_downloaded', 0)
+            size_mb = stats.get('total_size_mb', 0)
+            if videos > 0:
+                summary_parts.append(f"downloaded {videos} videos")
+            if size_mb > 0:
+                summary_parts.append(f"total size {size_mb:.1f}MB")
+        
+        return ", ".join(summary_parts) if summary_parts else "Task completed"
+        
+    except Exception as e:
+        logger.error(f"Error generating stats summary: {e}")
+        return "Task completed"
+
+
+def add_task_to_history(task_id, task_type, stats, output_file=None):
+    """
+    Add completed task to history for analytics.
+    
+    Args:
+        task_id: Task identifier
+        task_type: Type of task
+        stats: Task statistics
+        output_file: Output file path if applicable
+    """
+    try:
+        with task_history_lock:
+            # Process stats for storage
+            processed_stats = process_completion_stats(stats, task_type) if stats else {}
+            
+            history_entry = {
+                'task_id': task_id,
+                'task_type': task_type,
+                'completed_at': datetime.now().isoformat(),
+                'output_file': output_file,
+                'stats': processed_stats,
+                'summary': generate_stats_summary(processed_stats, task_type)
+            }
+            
+            task_history.append(history_entry)
+            
+            # Keep only last 100 entries (in memory)
+            if len(task_history) > 100:
+                task_history.pop(0)
+                
+            logger.info(f"Added task {task_id} to history")
+            
+    except Exception as e:
+        logger.error(f"Error adding task to history: {e}")
+
+
+# Export utility functions and blueprint for use by other modules
+__all__ = [
+    'api_management_bp', 
+    'register_task', 'update_task_progress', 'complete_task', 
+    'api_task_registry',
+    'add_task_to_history', 'process_completion_stats', 'generate_stats_summary',
+    'task_history', 'task_history_lock'
+]

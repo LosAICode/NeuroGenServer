@@ -304,6 +304,9 @@ except ImportError:
 # Create the blueprint
 academic_search_bp = Blueprint('academic_search', __name__, url_prefix='/api/academic')
 
+# Export the blueprint and utility functions
+__all__ = ['academic_search_bp']
+
 # Initialize the blueprint when it's registered
 def init_blueprint(app):
     """Initialize blueprint with app context services"""

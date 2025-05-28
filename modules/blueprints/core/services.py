@@ -17,6 +17,13 @@ from abc import ABC, abstractmethod
 
 logger = logging.getLogger(__name__)
 
+# Export main classes and functions for use by other modules
+__all__ = [
+    'ApiKeyManager', 'Limiter', 'ProcessingTask', 'ScraperTask', 'PlaylistTask',
+    'get_task', 'add_task', 'remove_task', 'active_tasks', 'tasks_lock',
+    'require_api_key'
+]
+
 # ----------------------------------------------------------------------------
 # Import all constants from centralized config module
 # ----------------------------------------------------------------------------

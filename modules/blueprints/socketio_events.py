@@ -21,6 +21,9 @@ from blueprints.core.structify_integration import structify_module, structify_av
 
 logger = logging.getLogger(__name__)
 
+# Export main registration function and utilities
+__all__ = ['register_socketio_events', 'safe_emit', 'get_socketio']
+
 # Helper to get socketio instance
 def get_socketio():
     """Get socketio instance from current app or return None"""

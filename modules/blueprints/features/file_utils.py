@@ -22,139 +22,163 @@ logger = logging.getLogger(__name__)
 # Create the blueprint
 file_utils_bp = Blueprint('file_utils', __name__, url_prefix='/api')
 
+# Export the blueprint
+__all__ = ['file_utils_bp']
+
 @file_utils_bp.route('/upload-for-path-detection', methods=['POST'])
 def upload_for_path_detection():
-    """
-    Upload a file for path detection analysis
-    """
-    try:
-        if 'file' not in request.files:
-            return structured_error_response("NO_FILE", "No file provided", 400)
-        
-        file = request.files['file']
-        if file.filename == '':
-            return structured_error_response("NO_FILENAME", "No file selected", 400)
-        
-        # Secure the filename
-        filename = secure_filename(file.filename)
-        
-        # Create temporary directory for uploaded file
-        temp_dir = ensure_temp_directory()
-        file_path = os.path.join(temp_dir, filename)
-        
-        # Save the uploaded file
-        file.save(file_path)
-        
-        return jsonify({
-            "status": "success",
-            "message": "File uploaded successfully",
-            "file_path": file_path,
-            "filename": filename
-        })
-        
-    except Exception as e:
-        logger.error(f"Error uploading file for path detection: {e}")
-        return structured_error_response("UPLOAD_ERROR", f"Failed to upload file: {str(e)}", 500)
+    if "files" not in request.files:
+        return structured_error_response("NO_FILES_IN_REQUEST", "No files part in request.", 400)
+    folder_name = request.form.get("folderName")
+    if not folder_name:
+        return structured_error_response("FOLDER_NAME_REQUIRED", "Folder name is required.", 400)
+    logger.info(f"Processing uploads for folder: {folder_name}")
+    safe_folder = secure_filename(folder_name)
+    upload_dir = os.path.join(app.config["UPLOAD_FOLDER"], safe_folder)
+    os.makedirs(upload_dir, exist_ok=True)
+    files = request.files.getlist("files")
+    for f in files:
+        if f.filename:
+            if not is_extension_allowed(f.filename):
+                return structured_error_response("UNSUPPORTED_EXTENSION", f"File extension not allowed: {f.filename}", 400)
+            if not is_mime_allowed(f):
+                return structured_error_response("UNSUPPORTED_MIME_TYPE", f"Detected MIME not allowed for: {f.filename}", 400)
+            filename = secure_filename(f.filename)
+            file_path = os.path.join(upload_dir, filename)
+            f.save(file_path)
+            logger.debug(f"Saved uploaded file to {file_path}")
+    return jsonify({
+        "success": True,
+        "message": "Files uploaded successfully",
+        "fullPath": safe_folder
+    })
 
 # Note: detect-path, verify-path, and create-directory routes are already in file_processor.py
 
 @file_utils_bp.route('/get-output-filepath', methods=['POST'])
-def get_output_filepath_endpoint():
+def api_get_output_filepath():
     """
-    Generate an appropriate output file path based on input parameters
+    API endpoint to get a properly formatted output filepath.
     """
+    data = request.get_json()
+    filename = data.get('filename', '')
+    directory = data.get('directory', '')
+    
+    # Use the get_output_filepath function for consistent handling
     try:
-        data = request.get_json()
-        if not data:
-            return structured_error_response("NO_DATA", "No JSON data provided", 400)
-        
-        # Get parameters
-        root_dir = data.get('root_directory')
-        filename = data.get('filename')
-        extension = data.get('extension', '.json')
-        
-        if not root_dir:
-            return structured_error_response("ROOT_DIR_REQUIRED", "Root directory is required", 400)
-        
-        if not filename:
-            return structured_error_response("FILENAME_REQUIRED", "Filename is required", 400)
-        
-        # Generate output file path
-        output_path = get_output_filepath(root_dir, filename, extension)
-        
+        # Make sure the filename has a .json extension
+        if not filename.lower().endswith('.json'):
+            filename += '.json'
+            
+        # If a directory is provided, use it as the base
+        if directory:
+            full_path = os.path.join(os.path.abspath(directory), filename)
+        else:
+            # Otherwise, use the default output folder
+            full_path = os.path.join(DEFAULT_OUTPUT_FOLDER, filename)
+            
+        # Ensure the parent directory exists
+        parent_dir = os.path.dirname(full_path)
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir, exist_ok=True)
+            
         return jsonify({
-            "status": "success",
-            "output_path": output_path,
-            "directory": os.path.dirname(output_path),
-            "filename": os.path.basename(output_path)
+            "fullPath": full_path,
+            "directory": os.path.dirname(full_path),
+            "filename": os.path.basename(full_path)
         })
-        
     except Exception as e:
         logger.error(f"Error generating output filepath: {e}")
-        return structured_error_response("FILEPATH_ERROR", f"Failed to generate output filepath: {str(e)}", 500)
+        return structured_error_response("PATH_ERROR", f"Error generating output path: {str(e)}", 500)
 
 @file_utils_bp.route('/check-file-exists', methods=['POST'])
-def check_file_exists():
+def api_check_file_exists():
     """
-    Check if a file exists at the specified path
+    API endpoint to check if a file exists.
     """
+    data = request.get_json()
+    if not data or "path" not in data:
+        return jsonify({
+            "status": "error",
+            "message": "Path is required"
+        }), 400
+    
+    path_str = data.get("path")
+    if not path_str:
+        return jsonify({
+            "status": "error", 
+            "message": "Empty path provided"
+        }), 400
+    
     try:
-        data = request.get_json()
-        if not data:
-            return structured_error_response("NO_DATA", "No JSON data provided", 400)
+        # Normalize path
+        norm_path = os.path.abspath(os.path.expanduser(path_str))
         
-        file_path = data.get('file_path')
-        if not file_path:
-            return structured_error_response("PATH_REQUIRED", "File path is required", 400)
+        # Check if file exists
+        exists = os.path.isfile(norm_path)
         
-        # Normalize the path
-        normalized_path = normalize_path(file_path)
-        
-        # Check file existence and properties
-        exists = os.path.exists(normalized_path)
-        is_file = os.path.isfile(normalized_path) if exists else False
-        
-        result = {
-            "status": "success",
-            "file_path": normalized_path,
-            "exists": exists,
-            "is_file": is_file
-        }
-        
-        if exists and is_file:
+        # Get additional info if it exists
+        if exists:
             try:
-                result["size"] = os.path.getsize(normalized_path)
-                result["modified_time"] = os.path.getmtime(normalized_path)
-            except Exception as e:
-                logger.warning(f"Could not get file stats: {e}")
-        
-        return jsonify(result)
-        
+                file_size = os.path.getsize(norm_path)
+                modified_time = os.path.getmtime(norm_path)
+                return jsonify({
+                    "exists": True,
+                    "path": norm_path,
+                    "size": file_size,
+                    "size_formatted": format_file_size(file_size),
+                    "modified": modified_time,
+                    "modified_formatted": format_timestamp(modified_time)
+                })
+            except Exception as detail_err:
+                logger.warning(f"Error getting file details: {detail_err}")
+                return jsonify({
+                    "exists": True,
+                    "path": norm_path
+                })
+        else:
+            return jsonify({
+                "exists": False,
+                "path": norm_path
+            })
     except Exception as e:
-        logger.error(f"Error checking file existence: {e}")
-        return structured_error_response("FILE_CHECK_ERROR", f"Failed to check file existence: {str(e)}", 500)
+        logger.error(f"Error checking if file exists: {e}")
+        return structured_error_response("CHECK_ERROR", f"Error checking file: {str(e)}", 500)
+
+def format_file_size(size_bytes):
+    """Format file size to human-readable string."""
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+    elif size_bytes < 1024 * 1024:
+        return f"{size_bytes / 1024:.1f} KB"
+    elif size_bytes < 1024 * 1024 * 1024:
+        return f"{size_bytes / (1024 * 1024):.1f} MB"
+    else:
+        return f"{size_bytes / (1024 * 1024 * 1024):.1f} GB"
+
+
+def format_timestamp(timestamp):
+    """Format timestamp to human-readable string."""
+    try:
+        dt = datetime.fromtimestamp(timestamp)
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+    except:
+        return "Unknown"
 
 @file_utils_bp.route('/get-default-output-folder', methods=['GET'])
 def get_default_output_folder():
     """
-    Get the default output folder for the application
+    Get the default output folder path.
     """
     try:
-        # Default output folder logic
-        default_folder = os.path.join(os.path.expanduser("~"), "Documents", "NeuroGenServer")
-        
-        # Ensure the directory exists
-        os.makedirs(default_folder, exist_ok=True)
-        
         return jsonify({
-            "status": "success",
-            "default_folder": default_folder,
-            "exists": os.path.exists(default_folder)
+            "path": DEFAULT_OUTPUT_FOLDER,
+            "exists": os.path.isdir(DEFAULT_OUTPUT_FOLDER),
+            "writable": os.access(DEFAULT_OUTPUT_FOLDER, os.W_OK)
         })
-        
     except Exception as e:
         logger.error(f"Error getting default output folder: {e}")
-        return structured_error_response("DEFAULT_FOLDER_ERROR", f"Failed to get default output folder: {str(e)}", 500)
+        return structured_error_response("SERVER_ERROR", f"Could not retrieve default output folder: {str(e)}", 500)
 
 # Note: open-file route is already in file_processor.py
 

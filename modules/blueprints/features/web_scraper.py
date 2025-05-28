@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 # Create the blueprint
 web_scraper_bp = Blueprint('web_scraper', __name__, url_prefix='/api')
 
+# Export the blueprint and utility functions
+__all__ = ['web_scraper_bp', 'emit_scraping_progress', 'emit_scraping_completed', 'emit_scraping_error']
+
 @web_scraper_bp.route('/scrape2', methods=['POST'])
 def scrape2():
     """

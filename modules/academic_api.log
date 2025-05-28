@@ -2726,3 +2726,13 @@ InterruptedError: Task cancelled by user
 2025-05-27 10:10:37,547 - __main__ - INFO - Loaded 1 API keys
 2025-05-27 10:10:37,583 - werkzeug - WARNING -  * Debugger is active!
 2025-05-27 10:10:37,593 - werkzeug - INFO -  * Debugger PIN: 328-316-705
+2025-05-28 14:10:36,783 - engineio.server - INFO - Server initialized for eventlet.
+2025-05-28 14:10:36,788 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-05-28 14:10:36,826 - app_new - INFO - All blueprints registered successfully
+2025-05-28 14:10:36,827 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-05-28 14:10:36,827 - app_new - INFO - NeuroGen Server application created successfully
+2025-05-28 14:10:59,416 - engineio.server - INFO - Server initialized for eventlet.
+2025-05-28 14:10:59,427 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-05-28 14:10:59,475 - app_new - INFO - All blueprints registered successfully
+2025-05-28 14:10:59,477 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-05-28 14:10:59,478 - app_new - INFO - NeuroGen Server application created successfully

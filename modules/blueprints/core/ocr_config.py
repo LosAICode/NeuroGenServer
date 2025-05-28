@@ -16,6 +16,20 @@ logger = logging.getLogger(__name__)
 pdf_extractor_available = False
 pdf_extractor = None
 pytesseract_available = False
+pikepdf_available = False
+
+# Global paths
+TEMP_DIR = None
+TESSDATA_PREFIX = None
+
+# Handle pikepdf import
+try:
+    import pikepdf
+    pikepdf_available = True
+    logger.info("pikepdf available for PDF repair functions")
+except ImportError:
+    logger.warning("pikepdf not available. Some PDF repair functions will be limited.")
+    pikepdf_available = False
 
 
 def setup_ocr_environment() -> Dict[str, str]:
@@ -25,14 +39,22 @@ def setup_ocr_environment() -> Dict[str, str]:
     Returns:
         Dictionary containing configuration paths
     """
+    global TEMP_DIR, TESSDATA_PREFIX
+    
     # Determine temp directory path (relative to this module)
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     custom_temp_dir = os.path.join(base_dir, 'temp')
+    
+    # Set globals
+    TEMP_DIR = custom_temp_dir
     
     # Create directories
     os.makedirs(custom_temp_dir, exist_ok=True)
     tessdata_dir = os.path.join(custom_temp_dir, "tessdata")
     os.makedirs(tessdata_dir, exist_ok=True)
+    
+    # Set tessdata prefix
+    TESSDATA_PREFIX = tessdata_dir
     
     # Set permissions
     try:
@@ -53,7 +75,7 @@ def setup_ocr_environment() -> Dict[str, str]:
     configure_pytesseract()
     
     # Ensure tessdata files exist
-    ensure_tessdata_files(tessdata_dir)
+    ensure_tessdata_exists(tessdata_dir)
     
     return {
         'base_temp_dir': custom_temp_dir,
@@ -96,7 +118,7 @@ def configure_pytesseract():
         pytesseract_available = False
 
 
-def ensure_tessdata_files(tessdata_dir: str):
+def ensure_tessdata_exists(tessdata_dir: str):
     """
     Ensure tesseract language data files exist.
     
@@ -235,10 +257,64 @@ def initialize_safe_ocr_handler():
         return False
 
 
+def download_tessdata():
+    """Download Tesseract language data if it doesn't exist"""
+    tessdata_dir = os.path.join(TEMP_DIR, "tessdata")
+    os.makedirs(tessdata_dir, exist_ok=True)
+    eng_traineddata = os.path.join(tessdata_dir, "eng.traineddata")
+    
+    if not os.path.exists(eng_traineddata):
+        try:
+            import requests
+            logger.info("Downloading eng.traineddata...")
+            url = "https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata"
+            r = requests.get(url, stream=True)
+            r.raise_for_status()
+            
+            with open(eng_traineddata, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+                    
+            logger.info(f"Successfully downloaded eng.traineddata to {eng_traineddata}")
+        except Exception as e:
+            logger.error(f"Failed to download tessdata: {e}")
+
+
+def ensure_tessdata_files():
+    """Ensure tesseract language data files exist"""
+    tessdata_dir = os.path.join(TEMP_DIR, "tessdata")
+    os.makedirs(tessdata_dir, exist_ok=True)
+    
+    eng_traineddata = os.path.join(tessdata_dir, "eng.traineddata")
+    
+    if not os.path.exists(eng_traineddata):
+        source_path = r'C:\Program Files\Tesseract-OCR\tessdata\eng.traineddata'
+        if os.path.exists(source_path):
+            try:
+                import shutil
+                shutil.copy2(source_path, eng_traineddata)
+                logger.info(f"Copied eng.traineddata from {source_path} to {eng_traineddata}")
+            except Exception as e:
+                logger.warning(f"Failed to copy eng.traineddata: {e}")
+                # Try to download if copy fails
+                download_tessdata()
+        else:
+            # Try to download if source file doesn't exist
+            download_tessdata()
+    
+    if os.path.exists(eng_traineddata):
+        logger.info(f"Confirmed eng.traineddata exists at: {eng_traineddata}")
+    else:
+        logger.warning(f"eng.traineddata not found at {eng_traineddata}")
+
+
 # Initialize modules on import
 ocr_config = setup_ocr_environment()
 initialize_pdf_extractor()
 initialize_safe_ocr_handler()
+
+# Ensure tessdata is available
+ensure_tessdata_files()
 
 
 # Export public interface
@@ -247,5 +323,10 @@ __all__ = [
     'configure_pytesseract',
     'pdf_extractor',
     'pdf_extractor_available',
-    'pytesseract_available'
+    'pytesseract_available',
+    'pikepdf_available',
+    'download_tessdata',
+    'ensure_tessdata_files',
+    'TEMP_DIR',
+    'TESSDATA_PREFIX'
 ]

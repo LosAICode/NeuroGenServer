@@ -11,6 +11,16 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+# Optional magic library for MIME detection
+magic_available = False
+try:
+    import magic
+    magic_available = True
+    logger.info("python-magic available for MIME detection")
+except ImportError:
+    logger.warning("python-magic not available. Try installing python-magic-bin on Windows")
+    magic_available = False
+
 
 def setup_logging(log_level=logging.INFO, log_file=None):
     """

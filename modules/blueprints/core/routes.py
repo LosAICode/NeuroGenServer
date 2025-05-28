@@ -16,6 +16,39 @@ logger = logging.getLogger(__name__)
 # Create the blueprint
 core_bp = Blueprint('core', __name__)
 
+# Export the blueprint for app registration
+__all__ = ['core_bp']
+
+
+# =============================================================================
+# ERROR HANDLERS
+# =============================================================================
+
+@core_bp.app_errorhandler(404)
+def not_found(error):
+    """Handle 404 Not Found errors"""
+    from blueprints.core.utils import structured_error_response
+    return structured_error_response("NOT_FOUND", "The requested resource was not found.", 404)
+
+
+@core_bp.app_errorhandler(413)
+def request_entity_too_large(error):
+    """Handle 413 Request Entity Too Large errors"""
+    from blueprints.core.utils import structured_error_response
+    # Get max size from app config
+    max_size = current_app.config.get('MAX_CONTENT_LENGTH', 32 * 1024 * 1024)
+    max_size_mb = max_size / (1024 * 1024)
+    return structured_error_response("REQUEST_TOO_LARGE", 
+                                   f"File exceeds maximum allowed size of {max_size_mb}MB.", 413)
+
+
+@core_bp.app_errorhandler(500)
+def internal_server_error(error):
+    """Handle 500 Internal Server errors"""
+    from blueprints.core.utils import structured_error_response
+    logger.error(f"Internal server error: {error}")
+    return structured_error_response("SERVER_ERROR", "An internal server error occurred.", 500)
+
 @core_bp.route('/')
 def home():
     """Main application page"""

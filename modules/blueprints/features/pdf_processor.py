@@ -819,35 +819,26 @@ def cancel_pdf_task(task_id):
 
 @pdf_processor_bp.route('/capabilities', methods=['GET'])
 def get_pdf_capabilities():
-    """Get information about available PDF processing capabilities"""
-    try:
-        capabilities = {
-            'pdf_extractor_available': pdf_extractor_available,
-            'structify_available': structify_available,
-            'features': {
-                'text_extraction': True,
-                'table_extraction': False,
-                'ocr': False,
-                'metadata_extraction': False,
-                'structure_analysis': False
-            }
-        }
-        
-        # Check specific capabilities
-        if pdf_extractor_available:
-            capabilities['features']['table_extraction'] = hasattr(pdf_extractor, 'extract_tables')
-            capabilities['features']['ocr'] = hasattr(pdf_extractor, 'ocr_available') and pdf_extractor.ocr_available
-            capabilities['features']['metadata_extraction'] = hasattr(pdf_extractor, 'extract_metadata')
-            capabilities['features']['structure_analysis'] = hasattr(pdf_extractor, 'analyze_structure')
-            
-        if structify_available:
-            capabilities['features']['ocr'] = True  # Structify usually includes OCR
-            
-        return jsonify(capabilities)
-        
-    except Exception as e:
-        logger.error(f"Error getting capabilities: {e}")
-        return structured_error_response('CAPABILITY_ERROR', str(e)), 500
+    """
+    Get PDF processing capabilities of the server.
+    
+    Returns:
+        JSON response with PDF processing capabilities
+    """
+    capabilities = {
+        "pdf_extraction": pdf_extractor_available,
+        "ocr": 'pytesseract' in sys.modules,
+        "structify": structify_available,
+        "pikepdf": pikepdf_available,
+        "table_extraction": pdf_extractor_available and hasattr(pdf_extractor, 'extract_tables_from_pdf'),
+        "document_detection": pdf_extractor_available and hasattr(pdf_extractor, 'detect_document_type'),
+        "max_file_size": MAX_FILE_SIZE // (1024 * 1024)  # Convert to MB
+    }
+    
+    return jsonify({
+        "status": "success",
+        "capabilities": capabilities
+    })
 
 
 # =============================================================================

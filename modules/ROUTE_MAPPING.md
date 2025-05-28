@@ -77,7 +77,7 @@ Completed.  Please verify imports, logic, etc.
 8. `/api/academic/bulk/download` - Bulk download papers
 9. `/api/academic/analyze/<path:id>` - Analyze paper
 10. `/api/academic/extract` - Extract academic content
-Status:  Validation Needed. 
+Status:  Validation Complete. 
 
 ## Routes Still in app.refactor.py (Line Numbers)
 
@@ -87,6 +87,7 @@ Status:  Validation Needed.
 - `/diagnostics` (line 2933)
 - `/module-diagnostics-complete` (line 2937)
 - `/endpoint-dashboard` (line 2942)
+Status:  Validation Complete. 
 
 ### File Processor Routes → `blueprints/features/file_processor.py`
 - `/api/upload-for-path-detection` (line 2948)

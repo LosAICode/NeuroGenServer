@@ -10,6 +10,15 @@ import sys
 import logging
 from flask import Flask
 from flask_socketio import SocketIO
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Validate critical environment variables
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+if not YOUTUBE_API_KEY:
+    logger.warning("YOUTUBE_API_KEY not set in .env - YouTube functionality will be limited")
 
 # Configure logging
 logging.basicConfig(

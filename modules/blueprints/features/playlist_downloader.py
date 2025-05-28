@@ -28,6 +28,9 @@ logger = logging.getLogger(__name__)
 # Create the blueprint
 playlist_downloader_bp = Blueprint('playlist_downloader', __name__, url_prefix='/api')
 
+# Export the blueprint and utility functions
+__all__ = ['playlist_downloader_bp', 'emit_download_progress', 'emit_download_completed', 'emit_download_error']
+
 @playlist_downloader_bp.route('/start-playlists', methods=['POST'])
 def start_playlists():
     """
