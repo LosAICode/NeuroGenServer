@@ -3,12 +3,17 @@ API Management Blueprint
 Handles API key management, task management, and general API utilities
 """
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 import logging
 import uuid
 import time
 import threading
 from datetime import datetime
+
+# Import necessary modules and functions
+from blueprints.core.services import (
+    get_task, add_task, remove_task, active_tasks, tasks_lock
+)
 
 logger = logging.getLogger(__name__)
 

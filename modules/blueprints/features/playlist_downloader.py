@@ -211,6 +211,94 @@ def start_playlists():
             500
         )
 
+@playlist_downloader_bp.route('/cancel-playlists/<task_id>', methods=['POST'])
+def cancel_playlists(task_id):
+    """
+    Cancel a running playlist download task.
+    
+    Args:
+        task_id: The ID of the playlist task to cancel
+        
+    Returns:
+        JSON response indicating cancellation status
+    """
+    try:
+        # Get the task from active tasks
+        task = get_task(task_id)
+        
+        if not task:
+            return structured_error_response(
+                "TASK_NOT_FOUND", 
+                f"Playlist task with ID {task_id} not found", 
+                404
+            )
+        
+        # Check if it's a playlist task
+        if not isinstance(task, PlaylistTask):
+            return structured_error_response(
+                "INVALID_TASK_TYPE", 
+                f"Task {task_id} is not a playlist download task", 
+                400
+            )
+        
+        # Check if task is already in a terminal state
+        if hasattr(task, 'status') and task.status in ['completed', 'failed', 'cancelled']:
+            return jsonify({
+                "status": "already_finished",
+                "message": f"Task {task_id} already {task.status}",
+                "task_id": task_id,
+                "task_status": task.status
+            })
+        
+        # Cancel the task
+        try:
+            # Set cancellation flag if available
+            if hasattr(task, 'cancel'):
+                task.cancel()
+            elif hasattr(task, 'is_cancelled_flag'):
+                task.is_cancelled_flag = True
+            
+            # Update task status
+            if hasattr(task, 'status'):
+                task.status = 'cancelled'
+            
+            # Remove from active tasks
+            remove_task(task_id)
+            
+            # Emit cancellation event
+            try:
+                emit_download_error(
+                    task_id=task_id,
+                    error_message="Task cancelled by user request"
+                )
+            except Exception as e:
+                logger.warning(f"Failed to emit cancellation event: {e}")
+            
+            logger.info(f"Successfully cancelled playlist task {task_id}")
+            
+            return jsonify({
+                "status": "success",
+                "message": f"Playlist task {task_id} cancelled successfully",
+                "task_id": task_id,
+                "cancelled_at": time.time()
+            })
+            
+        except Exception as cancel_error:
+            logger.error(f"Error during task cancellation: {cancel_error}")
+            return structured_error_response(
+                "CANCELLATION_ERROR", 
+                f"Failed to cancel task: {str(cancel_error)}", 
+                500
+            )
+        
+    except Exception as e:
+        logger.error(f"Error cancelling playlist task {task_id}: {e}")
+        return structured_error_response(
+            "CANCEL_REQUEST_ERROR", 
+            f"Error processing cancellation request: {str(e)}", 
+            500
+        )
+
 def structured_error_response(error_code, error_message, status_code=400, details=None):
     """
     Create a structured error response with consistent format.

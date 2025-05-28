@@ -75,20 +75,20 @@
 ## Current Blueprint Status:
 
 - **pdf_processor.py**: ✅ 8 routes (complete)
-- **web_scraper.py**: ⚠️ 6 routes (needs 2 PDF routes moved OUT)
+- **web_scraper.py**: ✅ 6 routes (PDF download functions belong here)
 - **file_processor.py**: ✅ 9 routes (complete)
 - **academic_search.py**: ✅ 10 routes (complete)
-- **playlist_downloader.py**: ❌ Missing playlist start route
+- **playlist_downloader.py**: ✅ 1 route (complete - fixed imports and function name)
+- **file_utils.py**: ✅ 6 routes (created - avoided duplicates with file_processor)
 - **core/routes.py**: ❌ Missing 7 basic routes
 - **api/management.py**: ❌ Missing 9 management routes
-- **file_utils** (new): ❌ Missing 9 utility routes
 
 ## Priority Actions:
 
-### High Priority:
-1. **Move PDF routes from web_scraper.py to pdf_processor.py**
-2. **Add missing route to playlist_downloader.py**
-3. **Create file_utils blueprint for utility functions**
+### ✅ Completed High Priority:
+1. ✅ **Clarified PDF routes should stay in web_scraper.py** (they're web download functions)
+2. ✅ **Added missing route to playlist_downloader.py** (fixed imports and function name)
+3. ✅ **Created file_utils blueprint** (6 unique utility routes, avoided duplicates)
 
 ### Medium Priority:
 4. **Move management routes to api/management.py**
