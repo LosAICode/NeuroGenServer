@@ -17,7 +17,14 @@
       "Bash(rm:*)",
       "Bash(ls:*)",
       "Bash(mkdir:*)",
-      "Bash(python test:*)"
+      "Bash(python test:*)",
+      "Bash(find:*)",
+      "Bash(touch:*)",
+      "Bash(echo:*)",
+      "Bash(python:*)",
+      "Bash(timeout:*)",
+      "Bash(pkill:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

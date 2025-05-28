@@ -2,16 +2,14 @@
 NeuroGen Server - Refactored with Flask Blueprints
 Clean, maintainable Flask application using Blueprint architecture
 """
+import eventlet
+eventlet.monkey_patch()
 
 import os
 import sys
 import logging
 from flask import Flask
 from flask_socketio import SocketIO
-import eventlet
-
-# Monkey patch for async support
-eventlet.monkey_patch()
 
 # Configure logging
 logging.basicConfig(
@@ -22,8 +20,15 @@ logger = logging.getLogger(__name__)
 
 # Add current directory to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
+structify_dir = os.path.join(current_dir, 'Structify')
+modules_dir = current_dir  
+
+for path in [parent_dir, current_dir, structify_dir]:
+    if os.path.exists(path) and path not in sys.path:
+        sys.path.insert(0, path)
 
 def create_app():
     """Application factory"""
@@ -82,11 +87,15 @@ def register_blueprints(app):
     from blueprints.features.web_scraper import web_scraper_bp
     from blueprints.features.playlist_downloader import playlist_downloader_bp
     from blueprints.features.academic_search import academic_search_bp
+    from blueprints.features.pdf_processor import pdf_processor_bp
+    from blueprints.features.file_utils import file_utils_bp
     
     app.register_blueprint(file_processor_bp)
     app.register_blueprint(web_scraper_bp)
     app.register_blueprint(playlist_downloader_bp)
     app.register_blueprint(academic_search_bp)
+    app.register_blueprint(pdf_processor_bp)
+    app.register_blueprint(file_utils_bp)
     
     # API management
     from blueprints.api.management import api_management_bp
@@ -97,31 +106,9 @@ def register_blueprints(app):
 
 def register_socketio_events(socketio):
     """Register SocketIO event handlers"""
-    
-    @socketio.on('connect')
-    def handle_connect():
-        logger.info('Client connected to SocketIO')
-    
-    @socketio.on('disconnect')
-    def handle_disconnect():
-        logger.info('Client disconnected from SocketIO')
-    
-    @socketio.on('join_room')
-    def handle_join_room(data):
-        room = data.get('room')
-        if room:
-            from flask_socketio import join_room
-            join_room(room)
-            logger.info(f'Client joined room: {room}')
-    
-    @socketio.on('request_status')
-    def handle_status_request(data):
-        task_id = data.get('task_id')
-        if task_id:
-            # TODO: Implement status lookup and emit response
-            logger.info(f'Status requested for task: {task_id}')
-    
-    logger.info("SocketIO events registered successfully")
+    # Import and register all SocketIO events from the centralized module
+    from blueprints.socketio_events import register_socketio_events as register_events
+    register_events(socketio)
 
 
 def run_server(host='127.0.0.1', port=5025, debug=True):
