@@ -26,9 +26,6 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     
-    <!-- Preload critical resources for faster startup -->
-    <link rel="preload" href="{{ url_for('static', filename='js/index.js') }}" as="script" type="module">
-    
     <!-- Essential fixes only -->
     <script src="{{ url_for('static', filename='js/fixThemePersistence.js') }}"></script>
     
@@ -61,18 +58,6 @@
             </div>
         </div>
     </header>
-    
-    <!-- Module Status Display (hidden by default, shown in debug mode) -->
-    <div id="module-status-display" class="container my-2 d-none">
-        <div class="alert alert-info py-2">
-            <div class="d-flex align-items-center justify-content-between">
-                <span><i class="fas fa-info-circle me-2"></i>Module Status: <span id="module-status-text">Loading...</span></span>
-                <button class="btn btn-sm btn-outline-info" onclick="window.NeuroGenDebug?.moduleInstances && console.table(window.NeuroGenDebug.moduleInstances())">
-                    <i class="fas fa-terminal me-1"></i>Console Debug
-                </button>
-            </div>
-        </div>
-    </div>
     
     <!-- Main Content -->
     <main class="container my-4" id="main-content">
@@ -870,33 +855,6 @@
     
     <!-- Keyboard shortcuts are now handled by keyboardShortcuts.js module -->
     
-    <!-- 
-    NeuroGen Modular Frontend Architecture
-    =======================================
-    This application uses a simplified modular loading system:
-    
-    1. index-simple.js (90 lines) - Lightweight entry point that:
-       - Loads the module-manager.js
-       - Defines essential module loading order
-       - Initializes all modules in sequence
-    
-    2. module-manager.js - Centralized lifecycle management:
-       - Handles module registration
-       - Manages initialization and cleanup
-       - Tracks event listeners for proper cleanup
-    
-    3. Module Structure:
-       - Core modules: errorHandler, uiRegistry, stateManager, eventManager
-       - Utils: socketHandler, progressHandler, ui utilities
-       - Features: fileProcessor, playlistDownloader, webScraper
-    
-    Benefits:
-       - Sub-5 second startup (vs 35+ seconds with old system)
-       - Clean module isolation and dependency management
-       - Easy debugging with window.moduleInstances and window.moduleManager
-       - No browser refresh required for module loading
-    -->
-    
     <!-- Enhanced Module Loader -->
     <script type="module">
         // Track initialization stages
@@ -907,23 +865,6 @@
             appInitialized: false,
             errors: []
         };
-        
-        // Module system status tracking
-        window.__moduleStatus = {
-            manager: false,
-            core: [],
-            utils: [],
-            features: [],
-            failedModules: []
-        };
-        
-        // Listen for module events
-        window.addEventListener('neurogenInitialized', (event) => {
-            console.log('✅ NeuroGen initialized:', event.detail);
-            window.__moduleStatus.initialized = true;
-            window.__moduleStatus.initTime = event.detail.initTime;
-            window.__moduleStatus.modules = event.detail.modules;
-        });
         
         // Create loading indicator
         const loadingIndicator = document.createElement('div');
@@ -964,7 +905,7 @@
             
             // Wait for app initialization with progressive timeout
             const checkInitialization = async () => {
-                const maxAttempts = 15; // 15 seconds total (optimized for faster loading)
+                const maxAttempts = 30; // 30 seconds total
                 let attempts = 0;
                 
                 while (attempts < maxAttempts) {
@@ -977,20 +918,6 @@
                         loadingIndicator.style.transition = 'opacity 0.3s';
                         loadingIndicator.style.opacity = '0';
                         setTimeout(() => loadingIndicator.remove(), 300);
-                        
-                        // Update module status display
-                        const statusText = document.getElementById('module-status-text');
-                        if (statusText) {
-                            statusText.textContent = `Loaded (${loadTime.toFixed(0)}ms)`;
-                        }
-                        
-                        // Show module status in debug mode
-                        if (window.debugMode || window._debugMode) {
-                            const statusDisplay = document.getElementById('module-status-display');
-                            if (statusDisplay) {
-                                statusDisplay.classList.remove('d-none');
-                            }
-                        }
                         
                         // Dispatch custom event
                         window.dispatchEvent(new CustomEvent('appReady', {

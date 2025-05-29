@@ -1,0 +1,1701 @@
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="NeuroGen Processor: File Processor, Playlist Downloader, and Web Scraper with real-time progress tracking." />
+    <title>NeuroGen Processor</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    <!-- Google Fonts - preconnect for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <style>
+      /* Animation and Transitions */
+      .fade-in {
+        animation: fadeIn 0.3s ease-in;
+      }
+      
+      .fade-out {
+        animation: fadeOut 0.3s ease-out;
+      }
+      
+      @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+      
+      @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      
+      .transition-container {
+        transition: all 0.3s ease;
+      }
+      
+      /* Progress bar completion animation */
+      .completed-animation {
+        transition: all 0.5s ease-in-out;
+        animation: pulse 1.5s ease-in-out;
+      }
+      
+      @keyframes pulse {
+        0% { opacity: 0.7; }
+        50% { opacity: 1; }
+        100% { opacity: 0.7; }
+      }
+      
+      /* PDF Download Item Styling */
+      .pdf-download-item {
+        padding: 10px;
+        border-left: 3px solid transparent;
+        transition: all 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .pdf-download-item:hover {
+        background-color: var(--bs-gray-100);
+      }
+      
+      [data-theme="dark"] .pdf-download-item:hover {
+        background-color: var(--bs-gray-700);
+      }
+      
+      /* Status-specific styling */
+      .pdf-download-item[data-status="downloading"] {
+        border-left-color: var(--bs-info);
+      }
+      
+      .pdf-download-item[data-status="success"] {
+        border-left-color: var(--bs-success);
+      }
+      
+      .pdf-download-item[data-status="error"] {
+        border-left-color: var(--bs-danger);
+      }
+      
+      /* PDF download progress bar */
+      .pdf-download-item .progress {
+        height: 6px;
+        transition: all 0.5s ease;
+        margin-top: 4px;
+      }
+      
+      /* PDF item title with truncation */
+      .pdf-item-title {
+        max-width: 70%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        position: relative;
+        padding-left: 20px;
+      }
+      
+      .pdf-item-title:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 2px;
+        width: 16px;
+        height: 16px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23ff4136' d='M320 464C328.8 464 336 456.8 336 448V416H384V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V416H48V448C48 456.8 55.16 464 64 464H320zM256 160C238.3 160 224 145.7 224 128V48H64C55.16 48 48 55.16 48 64V192H0V64C0 28.65 28.65 0 64 0H229.5C246.5 0 262.7 6.743 274.7 18.75L365.3 109.3C377.3 121.3 384 137.5 384 154.5V192H336V160H256zM88 224C88 202.3 105.5 184 128 184H256C277.7 184 296 202.3 296 224V336C296 357.7 277.7 376 256 376H128C106.3 376 88 357.7 88 336V224zM144 208V240H240V208H144zM240 336V272H144V336H240z'/%3E%3C/svg%3E") no-repeat center center / contain;
+      }
+      
+      /* Action buttons styling */
+      .pdf-actions {
+        display: flex;
+        gap: 5px;
+      }
+      
+      .pdf-actions .btn {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+      }
+      
+      /* PDF Viewer container */
+      .pdf-viewer-container {
+        background-color: var(--bs-gray-200);
+        border-radius: 0.25rem;
+        height: 75vh;
+        overflow: auto;
+      }
+      
+      [data-theme="dark"] .pdf-viewer-container {
+        background-color: var(--bs-gray-700);
+      }
+      
+      /* PDF Page rendering */
+      .pdf-page {
+        display: block;
+        margin: 1rem auto;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      [data-theme="dark"] .pdf-page {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      
+      /* Navigation controls */
+      .pdf-nav-controls {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: white;
+        border-bottom: 1px solid #ddd;
+        padding: 8px 16px;
+      }
+      
+      [data-theme="dark"] .pdf-nav-controls {
+        background-color: var(--bs-gray-700);
+        border-bottom-color: var(--bs-gray-600);
+      }
+      
+      /* PDF info section styling */
+      #pdf-info-section {
+        border-left: 4px solid var(--bs-info);
+      }
+      
+      /* PDF downloads progress section */
+      #pdf-download-progress {
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--bs-info);
+      }
+      
+      /* Help mode styling */
+      .help-mode .help-target {
+        position: relative;
+        outline: 2px dashed var(--bs-primary);
+      }
+      
+      .help-tooltip {
+        position: absolute;
+        z-index: 1050;
+        background-color: var(--bs-dark);
+        color: var(--bs-white);
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        max-width: 350px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      .help-tooltip.active {
+        opacity: 1;
+      }
+      
+      .help-close-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: transparent;
+        color: var(--bs-white);
+        border: none;
+        font-size: 14px;
+      }
+      
+      /* Dark mode styling */
+      [data-theme="dark"] {
+        background-color: #121212;
+        color: #f8f9fa;
+      }
+      
+      [data-theme="dark"] .card {
+        background-color: #2d3238;
+        border-color: #495057;
+      }
+      
+      [data-theme="dark"] .form-control,
+      [data-theme="dark"] .form-select {
+        background-color: #343a40;
+        border-color: #495057;
+        color: #f8f9fa;
+      }
+      
+      [data-theme="dark"] .form-text {
+        color: #adb5bd;
+      }
+      
+      [data-theme="dark"] .modal-content {
+        background-color: #2d3238;
+        border-color: #495057;
+      }
+      
+      /* Fixed dark mode for alerts in notifications */
+      [data-theme="dark"] .toast-header {
+        background-color: #2d3238 !important;
+        color: #f8f9fa !important;
+        border-bottom-color: #495057 !important;
+      }
+      
+      [data-theme="dark"] .toast-body {
+        background-color: #343a40 !important;
+        color: #f8f9fa !important;
+      }
+      
+      [data-theme="dark"] .toast {
+        background-color: transparent !important;
+        border-color: #495057 !important;
+      }
+      
+      [data-theme="dark"] .btn-close-white {
+        filter: invert(1);
+      }
+      
+      /* Fixed alerts for dark mode */
+      [data-theme="dark"] .alert-info {
+        background-color: #1f4f6e;
+        border-color: #216d93;
+        color: #f8f9fa;
+      }
+      
+      [data-theme="dark"] .alert-success {
+        background-color: #1e5631;
+        border-color: #2a7342;
+        color: #f8f9fa;
+      }
+      
+      [data-theme="dark"] .alert-danger {
+        background-color: #742029;
+        border-color: #972b35;
+        color: #f8f9fa;
+      }
+      
+      [data-theme="dark"] .alert-warning {
+        background-color: #7a5a10;
+        border-color: #9d7213;
+        color: #f8f9fa;
+      }
+      
+      [data-theme="dark"] .table {
+        color: #f8f9fa;
+      }
+      
+      [data-theme="dark"] .table-hover tbody tr:hover {
+        background-color: #343a40;
+      }
+      
+      [data-theme="dark"] .modal-header,
+      [data-theme="dark"] .modal-footer {
+        border-color: #495057;
+      }
+      
+      /* Header styling for dark mode */
+      .header-container {
+        background-color: #0d6efd;
+        color: white;
+        transition: background-color 0.3s ease;
+      }
+      
+      [data-theme="dark"] .header-container {
+        background-color: #1c3156;
+        color: white;
+      }
+      
+      /* Shortcut indicator */
+      .shortcut-indicator {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+      
+      /* Path info styling */
+      #path-info.success .alert {
+        background-color: var(--bs-success-bg-subtle);
+        border-color: var(--bs-success);
+      }
+      
+      #path-info.warning .alert {
+        background-color: var(--bs-warning-bg-subtle);
+        border-color: var(--bs-warning);
+      }
+      
+      #path-info.error .alert {
+        background-color: var(--bs-danger-bg-subtle);
+        border-color: var(--bs-danger);
+      }
+      
+      /* Form validation styling */
+      .was-validated .form-control:invalid,
+      .form-control.is-invalid {
+        background-image: none;
+        padding-right: 0.75rem;
+      }
+      
+      .input-group.has-validation .invalid-feedback {
+        position: absolute;
+        width: auto;
+        margin-top: calc(1.5em + 0.75rem);
+      }
+      
+      /* Directory status icons */
+      .dir-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+      }
+      
+      .dir-status.exists {
+        background-color: var(--bs-success-bg-subtle);
+        color: var(--bs-success);
+      }
+      
+      .dir-status.not-exists {
+        background-color: var(--bs-warning-bg-subtle);
+        color: var(--bs-warning);
+      }
+      
+      .dir-status.error {
+        background-color: var(--bs-danger-bg-subtle);
+        color: var(--bs-danger);
+      }
+      
+      [data-theme="dark"] .dir-status.exists {
+        background-color: rgba(25, 135, 84, 0.2);
+      }
+      
+      [data-theme="dark"] .dir-status.not-exists {
+        background-color: rgba(255, 193, 7, 0.2);
+      }
+      
+      [data-theme="dark"] .dir-status.error {
+        background-color: rgba(220, 53, 69, 0.2);
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .pdf-download-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .pdf-item-title {
+          max-width: 100%;
+          margin-bottom: 8px;
+        }
+        
+        .pdf-actions {
+          margin-top: 8px;
+          width: 100%;
+          justify-content: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // Initialize theme on page load before DOM is fully loaded
+      (function() {
+        const storedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', storedTheme);
+      })();
+    </script>
+    
+    <header>
+      <div class="header-container d-flex align-items-center justify-content-between p-3">
+        <h1 class="m-0">NeuroGen</h1>
+        <div class="d-flex align-items-center">
+          <button id="helpToggle" class="toggle-btn me-2 bg-transparent border-0 text-white" aria-label="Toggle Help Mode">
+            <i class="fas fa-question-circle fa-lg"></i>
+          </button>
+          <button id="darkModeToggle" class="toggle-btn bg-transparent border-0 text-white" aria-label="Toggle Dark Mode">
+            <i class="fas fa-moon fa-lg"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <main class="container my-4">
+      <div class="card custom-card shadow-lg">
+        <div class="card-body">
+          <!-- Nav Tabs -->
+          <ul class="nav nav-tabs mb-4" id="processorTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="file-tab" data-bs-toggle="tab" data-bs-target="#file" type="button" role="tab" aria-controls="file" aria-selected="true">
+                <i class="fas fa-file-alt me-1"></i> File Processor
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="playlist-tab" data-bs-toggle="tab" data-bs-target="#playlist" type="button" role="tab" aria-controls="playlist" aria-selected="false">
+                <i class="fas fa-play-circle me-1"></i> Playlist Downloader
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="scraper-tab" data-bs-toggle="tab" data-bs-target="#scraper" type="button" role="tab" aria-controls="scraper" aria-selected="false">
+                <i class="fas fa-globe me-1"></i> Web Scraper
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+                <i class="fas fa-history me-1"></i> History
+              </button>
+            </li>
+          </ul>
+          
+          <div class="tab-content" id="processorTabsContent">
+            <!-- File Processing Tab -->
+            <div class="tab-pane fade show active" id="file" role="tabpanel" aria-labelledby="file-tab">
+              <!-- Form Container -->
+              <div id="form-container" class="transition-container">
+                <form id="process-form">
+                  <!-- Enhanced Input Directory Selection with validation feedback -->
+                  <div class="mb-4" id="directory-section">
+                    <label for="input-dir" class="form-label">Input Directory</label>
+                    <div class="input-group has-validation">
+                      <input type="text" class="form-control" id="input-dir" name="input_dir" 
+                             placeholder="Enter or select folder path" aria-describedby="directoryHelp" />
+                      <button class="btn btn-outline-primary" type="button" id="browse-btn" 
+                            title="Browse for a folder on your computer">
+                        <i class="fas fa-folder-open me-1"></i> Browse
+                      </button>
+                      <div class="invalid-feedback">
+                        Please provide a valid input directory.
+                      </div>
+                    </div>
+                    <div id="directoryHelp" class="form-text">
+                      Select the folder containing files to process. Files will be converted to structured JSON.
+                    </div>
+                    <div id="path-info" class="mt-2 d-none">
+                      <div class="alert alert-info py-2 px-3 mb-0 small">
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-info-circle me-2"></i>
+                          <div class="path-info-text">Path information will appear here</div>
+                        </div>
+                      </div>
+                    </div>
+                    <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;" accept="*/*" />
+                    <div id="selected-files-info"></div>
+                  </div>
+                  
+                  <!-- Enhanced Output Filename Selection with validation feedback -->
+                  <div class="mb-4">
+                    <label for="output-file" class="form-label">Output JSON Filename</label>
+                    <div class="input-group has-validation">
+                      <input type="text" class="form-control" id="output-file" name="output_file" 
+                            placeholder="Your output file name (without extension)" required />
+                      <span class="input-group-text">.json</span>
+                      <div class="invalid-feedback">
+                        Please provide an output filename.
+                      </div>
+                    </div>
+                    <div class="form-text">
+                      Enter just the filename to save in the input directory, or a full path to save elsewhere. 
+                    </div>
+                  </div>
+                  
+                  <button type="submit" class="btn btn-primary" id="submit-btn">
+                    <i class="fas fa-play me-2"></i> Start Processing
+                  </button>
+                </form>
+              </div>
+              
+              <!-- Progress Container -->
+              <div id="progress-container" class="transition-container d-none">
+                <h4 class="mb-3">Processing Files...</h4>
+                <div class="progress mb-3" style="height: 25px;">
+                  <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+                </div>
+                <div id="progress-status" class="mb-3 text-muted">Initializing...</div>
+                <div id="progress-stats" class="small text-muted mb-3"></div>
+                <button id="cancel-btn" class="btn btn-outline-danger">
+                  <i class="fas fa-times me-2"></i> Cancel
+                </button>
+              </div>
+              
+              <!-- Result Container -->
+              <div id="result-container" class="transition-container d-none">
+                <div class="alert alert-success mb-3">
+                  <i class="fas fa-check-circle me-2"></i>
+                  <span>Processing Completed Successfully!</span>
+                </div>
+                <div id="result-stats" class="mb-3 small"></div>
+                <div class="d-flex gap-2 mb-3">
+                  <button id="open-btn" class="btn btn-success open-json-btn">
+                    <i class="fas fa-folder-open me-2"></i> Open JSON
+                  </button>
+                  <button id="new-task-btn" class="btn btn-outline-primary">
+                    <i class="fas fa-plus me-2"></i> New Task
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Error Container -->
+              <div id="error-container" class="transition-container d-none">
+                <div class="alert alert-danger mb-3">
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                  <span id="error-message">An error occurred during processing.</span>
+                </div>
+                <div id="error-details" class="small text-danger mb-3"></div>
+                <button id="retry-btn" class="btn btn-outline-primary">
+                  <i class="fas fa-redo me-2"></i> Try Again
+                </button>
+              </div>
+            </div>
+            
+            <!-- Playlist Processing Tab -->
+            <div class="tab-pane fade" id="playlist" role="tabpanel" aria-labelledby="playlist-tab">
+              <div id="playlist-form-container" class="transition-container">
+                <form id="playlist-form">
+                  <div class="mb-4">
+                    <label class="form-label">YouTube Playlist URLs</label>
+                    <div id="playlist-urls-container">
+                      <div class="input-group mb-2">
+                        <input type="url" class="form-control playlist-url" placeholder="Enter YouTube Playlist URL" required />
+                        <button type="button" class="btn btn-outline-danger remove-url">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="add-playlist-btn">
+                      <i class="fas fa-plus me-1"></i> Add Another Playlist
+                    </button>
+                  </div>
+                  
+                  <!-- Enhanced Playlist Root Directory -->
+                  <div class="mb-4">
+                    <label for="playlist-root" class="form-label">Download Root Directory</label>
+                    <div class="input-group has-validation">
+                      <input type="text" class="form-control" id="playlist-root" 
+                            placeholder="Enter full path to root directory" required />
+                      <button class="btn btn-outline-primary" type="button" id="playlist-browse-btn" 
+                            title="Browse for a folder on your computer">
+                        <i class="fas fa-folder-open me-1"></i> Browse
+                      </button>
+                      <div class="invalid-feedback">
+                        Please provide a valid directory.
+                      </div>
+                    </div>
+                    <div class="form-text">All playlists will be downloaded into sub-folders under this directory.</div>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="playlist-output" class="form-label">Output JSON Filename</label>
+                    <div class="input-group has-validation">
+                      <input type="text" class="form-control" id="playlist-output" placeholder="Output file name (without extension)" required />
+                      <span class="input-group-text">.json</span>
+                      <div class="invalid-feedback">
+                        Please provide an output filename.
+                      </div>
+                    </div>
+                    <div class="form-text">Specify the name for the consolidated JSON output.</div>
+                  </div>
+                  
+                  <button type="submit" class="btn btn-primary" id="playlist-submit-btn">
+                    <i class="fas fa-play me-2"></i> Download Playlists
+                  </button>
+                </form>
+              </div>
+              
+              <!-- Playlist Progress Container -->
+              <div id="playlist-progress-container" class="transition-container d-none">
+                <h4 class="mb-3">Downloading Playlists...</h4>
+                <div class="progress mb-3" style="height: 25px;">
+                  <div id="playlist-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                       aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+                </div>
+                <div id="playlist-progress-status" class="mb-3 text-muted">Initializing...</div>
+                <div id="playlist-progress-stats" class="small text-muted mb-3"></div>
+                <button id="playlist-cancel-btn" class="btn btn-outline-danger">
+                  <i class="fas fa-times me-2"></i> Cancel
+                </button>
+              </div>
+              
+              <!-- Playlist Result Container -->
+              <div id="playlist-results-container" class="transition-container d-none">
+                <div class="alert alert-success mb-3">
+                  <i class="fas fa-check-circle me-2"></i>
+                  <span>Playlists Downloaded Successfully!</span>
+                </div>
+                <div id="playlist-stats" class="mb-3 small"></div>
+                <div class="d-flex gap-2">
+                  <button id="open-playlist-json" class="btn btn-success open-json-btn">
+                    <i class="fas fa-folder-open me-2"></i> Open JSON
+                  </button>
+                  <button id="playlist-new-task-btn" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i> Download More Playlists
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="tab-pane fade" id="scraper" role="tabpanel" aria-labelledby="scraper-tab">
+              <div id="scraper-form-container" class="transition-container">
+                <!-- Academic Search Integration -->
+                <div class="card mb-4 border-primary">
+                  <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                      <i class="fas fa-graduation-cap me-2"></i>Academic Search
+                    </h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label for="academic-search-input" class="form-label">Research Topic/Query</label>
+                        <input type="text" class="form-control" id="academic-search-input" placeholder="Enter research topic (e.g., 'machine learning')">
+                      </div>
+                      <div class="col-md-4">
+                        <label for="academic-sources" class="form-label">Academic Source</label>
+                        <select class="form-select" id="academic-sources">
+                          <option value="all">All Sources</option>
+                          <option value="arxiv">arXiv</option>
+                          <option value="semantic">Semantic Scholar</option>
+                          <option value="openalex">OpenAlex</option>
+                        </select>
+                      </div>
+                      <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary w-100" id="academic-search-btn">
+                          <i class="fas fa-search me-1"></i> Search
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <!-- Results area (hidden by default) -->
+                    <div id="academic-results" class="mt-3 d-none">
+                      <h6 class="border-bottom pb-2">Search Results</h6>
+                      <div id="academic-results-container" class="list-group mb-3">
+                        <!-- Results will be populated here -->
+                      </div>
+                      <button id="add-selected-papers" class="btn btn-sm btn-success">
+                        <i class="fas fa-plus-circle me-1"></i> Add Selected Papers
+                      </button>
+                    </div>
+                    
+                    <div class="alert alert-info small mt-3 mb-0">
+                      <i class="fas fa-info-circle me-2"></i>
+                      Search for academic papers across multiple sources. Results can be added to the URL list below with PDF download settings.
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Main Scraper Form -->
+                <form id="scraper-form">
+                  <div class="mb-4">
+                    <label class="form-label">Web Scraper URLs</label>
+                    <div id="scraper-urls-container">
+                      <div class="input-group mb-2">
+                        <input type="url" class="form-control scraper-url" placeholder="Enter Website URL" required />
+                        <select class="form-select scraper-settings" style="max-width: 160px;">
+                          <option value="full">Full Text</option>
+                          <option value="metadata">Metadata Only</option>
+                          <option value="title">Title Only</option>
+                          <option value="keyword">Keyword Search</option>
+                          <option value="pdf">PDF Download</option>
+                        </select>
+                        <input type="text" class="form-control scraper-keyword" placeholder="Keyword (optional)" style="display:none;" />
+                        <button type="button" class="btn btn-outline-danger remove-url">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="add-scraper-url">
+                      <i class="fas fa-plus me-1"></i> Add Another URL
+                    </button>
+                    <div class="form-text mt-2">
+                      <strong>Options:</strong>
+                      <span class="badge bg-primary">Full Text</span> - Extract all page content
+                      <span class="badge bg-info">Metadata Only</span> - Extract title, description, etc.
+                      <span class="badge bg-success">Title Only</span> - Extract just the page title
+                      <span class="badge bg-warning">Keyword Search</span> - Search for specific keywords
+                      <span class="badge bg-secondary">PDF Download</span> - Download PDFs from academic sites
+                    </div>
+                  </div>
+                  
+                  <!-- Enhanced PDF Info Section -->
+                  <div id="pdf-info-section" class="alert alert-info d-none mb-4">
+                    <h5><i class="fas fa-info-circle me-2"></i>PDF Download Mode Selected</h5>
+                    <p>This mode will attempt to download PDFs from the provided URLs. For best results:</p>
+                    <ul>
+                      <li>Use direct links to PDF files when possible (ending with .pdf)</li>
+                      <li>For academic papers, use DOI links (e.g., https://doi.org/10.xxxx/xxxxx)</li>
+                      <li>For arXiv papers, use either abstract or PDF links</li>
+                      <li>The system will try to locate PDFs on pages that don't directly link to PDFs</li>
+                    </ul>
+                    <p><strong>Supported sources:</strong> arXiv, ScienceDirect, Springer, IEEE, ResearchGate, and more.</p>
+                    <div class="form-check form-switch mt-2">
+                      <input class="form-check-input" type="checkbox" id="process-pdf-switch" checked>
+                      <label class="form-check-label" for="process-pdf-switch">Process PDFs into JSON (may take longer)</label>
+                    </div>
+                  </div>
+                  
+                  <!-- Enhanced Download Directory field -->
+                  <div class="mb-4">
+                    <label for="download-directory" class="form-label">Download Directory</label>
+                    <div class="input-group has-validation">
+                      <input type="text" class="form-control" id="download-directory" 
+                            placeholder="Enter download directory for PDFs" required />
+                      <button class="btn btn-outline-primary" type="button" id="download-dir-browse-btn" 
+                            title="Browse for a folder on your computer">
+                        <i class="fas fa-folder-open me-1"></i> Browse
+                      </button>
+                      <div class="invalid-feedback">
+                        Please provide a valid directory.
+                      </div>
+                    </div>
+                    <div class="form-text">Specify the directory where PDFs will be downloaded.</div>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="scraper-output" class="form-label">Output JSON Filename</label>
+                    <div class="input-group has-validation">
+                      <input type="text" class="form-control" id="scraper-output" placeholder="Output file name" required />
+                      <span class="input-group-text">.json</span>
+                      <div class="invalid-feedback">
+                        Please provide an output filename.
+                      </div>
+                    </div>
+                    <div class="form-text">Structured JSON will be generated with information from all sources.</div>
+                  </div>
+                  
+                  <button type="submit" class="btn btn-primary" id="scrape-btn">
+                    <i class="fas fa-play me-2"></i> Start Scraping
+                  </button>
+                </form>
+              </div>
+              
+              <!-- Scraper Progress Container -->
+              <div id="scraper-progress-container" class="transition-container d-none">
+                <h4 class="mb-3">Processing Web Content...</h4>
+                <div class="progress mb-3" style="height: 25px;">
+                  <div id="scraper-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+                </div>
+                <div id="scraper-progress-status" class="mb-3 text-muted">Initializing...</div>
+                <div id="scraper-progress-stats" class="small text-muted mb-3"></div>
+                
+                <!-- PDF Download Progress Section -->
+                <div id="pdf-download-progress" class="card mb-3 d-none">
+                  <div class="card-header">
+                    <h5 class="mb-0">PDF Downloads</h5>
+                  </div>
+                  <div class="card-body p-0">
+                    <ul id="pdf-downloads-list" class="list-group list-group-flush">
+                      <!-- PDF download items will be added here dynamically -->
+                    </ul>
+                  </div>
+                </div>
+                
+                <button id="scraper-cancel-btn" class="btn btn-outline-danger">
+                  <i class="fas fa-times me-2"></i> Cancel
+                </button>
+              </div>
+              
+              <!-- Scraper Results Container -->
+              <div id="scraper-results-container" class="transition-container d-none">
+                <div class="alert alert-success mb-3">
+                  <i class="fas fa-check-circle me-2"></i>
+                  <span>Web Scraping Completed Successfully!</span>
+                </div>
+                <div id="scraper-stats" class="mb-3 small"></div>
+                <pre id="scraper-results" class="d-none"></pre>
+                <div class="d-flex gap-2 mb-3">
+                  <button id="open-scraper-json" class="btn btn-success open-json-btn">
+                    <i class="fas fa-folder-open me-2"></i> Open JSON
+                  </button>
+                  <button id="open-output-folder" class="btn btn-primary">
+                    <i class="fas fa-folder me-2"></i> Open Output Folder
+                  </button>
+                  <button id="scraper-new-task-btn" class="btn btn-outline-primary">
+                    <i class="fas fa-plus me-2"></i> New Scrape
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- CSS for Academic Search Integration -->
+            <style>
+              /* Academic Source Badges */
+              .academic-source-badge {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+                font-weight: 700;
+                border-radius: 0.25rem;
+              }
+              
+              .academic-source-arxiv {
+                background-color: #b31b1b;
+                color: white;
+              }
+              
+              .academic-source-semantic {
+                background-color: #1857b8;
+                color: white;
+              }
+              
+              .academic-source-openalex {
+                background-color: #00a396;
+                color: white;
+              }
+              
+              /* Paper result items */
+              .paper-result-item {
+                transition: all 0.2s ease;
+                border-left: 3px solid transparent;
+              }
+              
+              .paper-result-item:hover {
+                background-color: rgba(13, 110, 253, 0.05);
+              }
+              
+              .paper-result-item.selected {
+                border-left-color: #0d6efd;
+                background-color: rgba(13, 110, 253, 0.1);
+              }
+              
+              /* PDF download status indicators */
+              .pdf-download-status {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                display: inline-block;
+              }
+              
+              .pdf-download-status.queued {
+                background-color: #6c757d;
+              }
+              
+              .pdf-download-status.downloading {
+                background-color: #0dcaf0;
+                animation: pulse 1.5s infinite;
+              }
+              
+              .pdf-download-status.completed {
+                background-color: #198754;
+              }
+              
+              .pdf-download-status.error {
+                background-color: #dc3545;
+              }
+              
+              @keyframes pulse {
+                0% { opacity: 0.6; }
+                50% { opacity: 1; }
+                100% { opacity: 0.6; }
+              }
+              
+              /* Dark mode adjustments */
+              [data-theme="dark"] .academic-search-card {
+                background-color: #2d3238;
+              }
+              
+              [data-theme="dark"] .academic-search-card .card-header {
+                background-color: #1c3156;
+              }
+              
+              [data-theme="dark"] .paper-result-item:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+              }
+              
+              [data-theme="dark"] .paper-result-item.selected {
+                background-color: rgba(13, 110, 253, 0.2);
+              }
+            </style>
+            
+            <!-- JavaScript for Academic Search Functionality -->
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                // Academic search elements
+                const academicSearchInput = document.getElementById('academic-search-input');
+                const academicSources = document.getElementById('academic-sources');
+                const academicSearchBtn = document.getElementById('academic-search-btn');
+                const academicResults = document.getElementById('academic-results');
+                const academicResultsContainer = document.getElementById('academic-results-container');
+                const addSelectedPapersBtn = document.getElementById('add-selected-papers');
+                
+                // Scraper elements
+                const scraperUrlsContainer = document.getElementById('scraper-urls-container');
+                const addScraperUrlBtn = document.getElementById('add-scraper-url');
+                const pdfInfoSection = document.getElementById('pdf-info-section');
+                
+                // Ensure PDF info section visibility is updated on load
+                updatePdfInfoSection();
+                
+                // Set up event listeners for academic search
+                if (academicSearchBtn) {
+                  academicSearchBtn.addEventListener('click', performAcademicSearch);
+                }
+                
+                if (addSelectedPapersBtn) {
+                  addSelectedPapersBtn.addEventListener('click', addSelectedPapers);
+                }
+                
+                // Make sure scraper settings change handler is set up
+                document.querySelectorAll('.scraper-settings').forEach(select => {
+                  select.addEventListener('change', handleScraperSettingsChange);
+                });
+                
+                // Add scraper URL button handler
+                if (addScraperUrlBtn) {
+                  addScraperUrlBtn.addEventListener('click', addScraperUrlField);
+                }
+                
+                // Function to perform academic search
+                function performAcademicSearch() {
+                  const query = academicSearchInput.value.trim();
+                  const source = academicSources.value;
+                  
+                  if (!query) {
+                    showToast('Error', 'Please enter a search query', 'error');
+                    return;
+                  }
+                  
+                  // Show loading indicator in results area
+                  academicResults.classList.remove('d-none');
+                  academicResultsContainer.innerHTML = `
+                    <div class="text-center py-4">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <p class="mt-2">Searching academic sources...</p>
+                    </div>
+                  `;
+                  
+                  // In a real implementation, you would call the backend API
+                  // For this demo, we'll simulate a response after a short delay
+                  setTimeout(() => {
+                    const mockResults = getMockSearchResults(query, source);
+                    displayAcademicResults(mockResults);
+                  }, 1500);
+                }
+                
+                // Function to display academic search results
+                function displayAcademicResults(results) {
+                  if (results.length === 0) {
+                    academicResultsContainer.innerHTML = `
+                      <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        No results found. Try a different search term or source.
+                      </div>
+                    `;
+                    return;
+                  }
+                  
+                  // Clear previous results
+                  academicResultsContainer.innerHTML = '';
+                  
+                  // Add each result to the container
+                  results.forEach((paper, index) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'paper-result-item list-group-item list-group-item-action';
+                    resultItem.dataset.paperId = paper.id;
+                    resultItem.dataset.paperUrl = paper.pdf_url || paper.url;
+                    resultItem.dataset.paperTitle = paper.title;
+                    
+                    // Source badge
+                    let sourceBadge = '';
+                    if (paper.source === 'arxiv') {
+                      sourceBadge = '<span class="academic-source-badge academic-source-arxiv me-2">arXiv</span>';
+                    } else if (paper.source === 'semantic') {
+                      sourceBadge = '<span class="academic-source-badge academic-source-semantic me-2">Semantic Scholar</span>';
+                    } else if (paper.source === 'openalex') {
+                      sourceBadge = '<span class="academic-source-badge academic-source-openalex me-2">OpenAlex</span>';
+                    }
+                    
+                    resultItem.innerHTML = `
+                      <div class="d-flex align-items-start">
+                        <div class="form-check mt-1 me-2">
+                          <input class="form-check-input paper-select" type="checkbox" id="paper-${index}">
+                        </div>
+                        <div class="flex-grow-1">
+                          <div class="d-flex justify-content-between">
+                            <h6 class="mb-1">${paper.title}</h6>
+                          </div>
+                          <div class="mb-1">
+                            ${sourceBadge}
+                            <small class="text-muted">${paper.authors.join(', ')}</small>
+                          </div>
+                          <p class="mb-1 small">${paper.abstract || 'No abstract available'}</p>
+                          <div class="mt-2">
+                            <span class="badge bg-light text-dark me-2">
+                              <i class="fas fa-file-pdf me-1 text-danger"></i> PDF Available
+                            </span>
+                            <span class="badge bg-light text-dark">
+                              <i class="fas fa-calendar-alt me-1"></i> ${paper.date || 'N/A'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                    
+                    // Add click handler to toggle selection
+                    resultItem.addEventListener('click', function(e) {
+                      // Don't toggle if clicking on the checkbox
+                      if (e.target.type !== 'checkbox') {
+                        const checkbox = this.querySelector('.paper-select');
+                        checkbox.checked = !checkbox.checked;
+                      }
+                      
+                      // Toggle selected class
+                      this.classList.toggle('selected', this.querySelector('.paper-select').checked);
+                    });
+                    
+                    academicResultsContainer.appendChild(resultItem);
+                  });
+                }
+                
+                // Function to add selected papers to the URL list
+                function addSelectedPapers() {
+                  const selectedPapers = academicResultsContainer.querySelectorAll('.paper-select:checked');
+                  
+                  if (selectedPapers.length === 0) {
+                    showToast('Warning', 'Please select at least one paper', 'warning');
+                    return;
+                  }
+                  
+                  // Add each selected paper as a new URL entry
+                  selectedPapers.forEach(checkbox => {
+                    const paperItem = checkbox.closest('.paper-result-item');
+                    const paperUrl = paperItem.dataset.paperUrl;
+                    const paperTitle = paperItem.dataset.paperTitle;
+                    
+                    if (paperUrl) {
+                      // Add a new URL field with PDF download setting
+                      addScraperUrlWithData(paperUrl, 'pdf', paperTitle);
+                    }
+                  });
+                  
+                  // Show confirmation
+                  showToast('Success', `Added ${selectedPapers.length} papers to scraping list`, 'success');
+                  
+                  // Show PDF info section
+                  updatePdfInfoSection();
+                  
+                  // Optionally hide the search results
+                  //academicResults.classList.add('d-none');
+                }
+                
+                // Function to add a new URL field with data
+                function addScraperUrlWithData(url, setting, title = '') {
+                  const container = document.createElement("div");
+                  container.classList.add("input-group", "mb-2");
+                  container.innerHTML = `
+                    <input type="url" class="form-control scraper-url" placeholder="Enter Website URL" value="${url}" required />
+                    <select class="form-select scraper-settings" style="max-width: 160px;">
+                      <option value="full">Full Text</option>
+                      <option value="metadata">Metadata Only</option>
+                      <option value="title">Title Only</option>
+                      <option value="keyword">Keyword Search</option>
+                      <option value="pdf">PDF Download</option>
+                    </select>
+                    <input type="text" class="form-control scraper-keyword" placeholder="Keyword (optional)" style="display:none;" />
+                    <button type="button" class="btn btn-outline-danger remove-url">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  `;
+                  
+                  // Set the settings dropdown to the specified value
+                  const settingsSelect = container.querySelector('.scraper-settings');
+                  settingsSelect.value = setting;
+                  
+                  // Add tooltip with paper title if provided
+                  if (title) {
+                    const urlInput = container.querySelector('.scraper-url');
+                    urlInput.setAttribute('title', title);
+                  }
+                  
+                  // Add to container
+                  scraperUrlsContainer.appendChild(container);
+                  
+                  // Set up event listeners
+                  const removeBtn = container.querySelector('.remove-url');
+                  removeBtn.addEventListener('click', function() {
+                    scraperUrlsContainer.removeChild(container);
+                    updatePdfInfoSection();
+                  });
+                  
+                  settingsSelect.addEventListener('change', handleScraperSettingsChange);
+                }
+                
+                // Function to add a regular scraper URL field
+                function addScraperUrlField() {
+                  const container = document.createElement("div");
+                  container.classList.add("input-group", "mb-2");
+                  container.innerHTML = `
+                    <input type="url" class="form-control scraper-url" placeholder="Enter Website URL" required />
+                    <select class="form-select scraper-settings" style="max-width: 160px;">
+                      <option value="full">Full Text</option>
+                      <option value="metadata">Metadata Only</option>
+                      <option value="title">Title Only</option>
+                      <option value="keyword">Keyword Search</option>
+                      <option value="pdf">PDF Download</option>
+                    </select>
+                    <input type="text" class="form-control scraper-keyword" placeholder="Keyword (optional)" style="display:none;" />
+                    <button type="button" class="btn btn-outline-danger remove-url">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  `;
+                  
+                  scraperUrlsContainer.appendChild(container);
+                  
+                  // Set up event listeners
+                  const settingsSelect = container.querySelector('.scraper-settings');
+                  settingsSelect.addEventListener('change', handleScraperSettingsChange);
+                  
+                  const removeBtn = container.querySelector('.remove-url');
+                  removeBtn.addEventListener('click', function() {
+                    scraperUrlsContainer.removeChild(container);
+                    updatePdfInfoSection();
+                  });
+                  
+                  // Update PDF info section visibility
+                  updatePdfInfoSection();
+                }
+                
+                // Handle scraper settings change
+                function handleScraperSettingsChange(event) {
+                  if (!event.target.classList.contains("scraper-settings")) return;
+                  
+                  const parentGroup = event.target.closest(".input-group");
+                  const keywordInput = parentGroup.querySelector(".scraper-keyword");
+                  
+                  if (event.target.value === "keyword") {
+                    keywordInput.style.display = "";
+                  } else {
+                    keywordInput.style.display = "none";
+                    keywordInput.value = "";
+                  }
+                  
+                  // Update PDF info section visibility
+                  updatePdfInfoSection();
+                }
+                
+                // Update PDF info section visibility
+                function updatePdfInfoSection() {
+                  if (!pdfInfoSection) return;
+                  
+                  // Show PDF info section when PDF is selected in any row
+                  const scraperSettings = document.querySelectorAll('.scraper-settings');
+                  const hasPdfSelected = Array.from(scraperSettings).some(select => select.value === 'pdf');
+                  
+                  if (hasPdfSelected) {
+                    pdfInfoSection.classList.remove('d-none');
+                  } else {
+                    pdfInfoSection.classList.add('d-none');
+                  }
+                }
+                
+                // Mock function to generate search results
+                function getMockSearchResults(query, source) {
+                  const baseResults = [
+                    {
+                      id: 'arxiv:2103.14030',
+                      title: 'An Introduction to Transfer Learning',
+                      authors: ['Smith, John', 'Johnson, Maria'],
+                      abstract: 'This paper provides an overview of transfer learning techniques in deep neural networks, with applications in computer vision and natural language processing.',
+                      pdf_url: 'https://arxiv.org/pdf/2103.14030.pdf',
+                      url: 'https://arxiv.org/abs/2103.14030',
+                      source: 'arxiv',
+                      date: '2023-05-15'
+                    },
+                    {
+                      id: 'semantic:85f2fb3a',
+                      title: 'Deep Reinforcement Learning: A Comprehensive Survey',
+                      authors: ['Williams, Robert', 'Chen, Li'],
+                      abstract: 'This survey provides a comprehensive overview of deep reinforcement learning methods and their applications in various domains.',
+                      pdf_url: 'https://example.com/papers/deep_rl_survey.pdf',
+                      url: 'https://www.semanticscholar.org/paper/deep-reinforcement-learning-survey',
+                      source: 'semantic',
+                      date: '2022-11-03'
+                    },
+                    {
+                      id: 'openalex:W3212567289',
+                      title: 'Advances in Natural Language Processing: Transformer Architectures',
+                      authors: ['Garcia, Ana', 'Kumar, Raj'],
+                      abstract: 'This paper explores recent advances in transformer-based architectures for natural language processing tasks, with a focus on efficient fine-tuning methods.',
+                      pdf_url: 'https://example.com/papers/nlp_transformers.pdf',
+                      url: 'https://openalex.org/W3212567289',
+                      source: 'openalex',
+                      date: '2023-02-21'
+                    }
+                  ];
+                  
+                  // Filter by source if needed
+                  let filteredResults = baseResults;
+                  if (source !== 'all') {
+                    filteredResults = baseResults.filter(paper => paper.source === source);
+                  }
+                  
+                  // Add query relevance
+                  filteredResults.forEach(paper => {
+                    paper.title = paper.title.replace('Learning', query.charAt(0).toUpperCase() + query.slice(1));
+                    paper.abstract = paper.abstract.replace('learning', query.toLowerCase());
+                  });
+                  
+                  return filteredResults;
+                }
+                
+                // Toast notification function
+                function showToast(title, message, type = 'info') {
+                  // Check if toastContainer exists, create if not
+                  let toastContainer = document.getElementById('toast-container');
+                  if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'toast-container';
+                    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    document.body.appendChild(toastContainer);
+                  }
+                  
+                  // Generate a unique ID for this toast
+                  const toastId = 'toast-' + Date.now();
+                  
+                  // Set icon and color based on type
+                  let icon, bgClass;
+                  switch (type) {
+                    case 'success':
+                      icon = 'fa-check-circle';
+                      bgClass = 'bg-success';
+                      break;
+                    case 'error':
+                      icon = 'fa-exclamation-circle';
+                      bgClass = 'bg-danger';
+                      break;
+                    case 'warning':
+                      icon = 'fa-exclamation-triangle';
+                      bgClass = 'bg-warning';
+                      break;
+                    default:
+                      icon = 'fa-info-circle';
+                      bgClass = 'bg-info';
+                  }
+                  
+                  // Create toast HTML
+                  const toastHtml = `
+                    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                      <div class="toast-header ${bgClass} text-white">
+                        <i class="fas ${icon} me-2"></i>
+                        <strong class="me-auto">${title}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
+                      <div class="toast-body">
+                        ${message}
+                      </div>
+                    </div>
+                  `;
+                  
+                  // Add toast to container
+                  toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+                  
+                  // Initialize and show the toast using Bootstrap
+                  const toastElement = document.getElementById(toastId);
+                  const toast = new bootstrap.Toast(toastElement, {
+                    animation: true,
+                    autohide: true,
+                    delay: 5000
+                  });
+                  toast.show();
+                  
+                  // Remove toast from DOM after it's hidden
+                  toastElement.addEventListener('hidden.bs.toast', () => {
+                    toastElement.remove();
+                  });
+                }
+              });
+            </script>
+          
+          <!-- History Tab -->
+          <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+            <div class="mb-4">
+              <div class="d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Task History</h5>
+                <div class="d-flex">
+                  <button id="history-refresh-btn" class="btn btn-sm btn-outline-primary me-2">
+                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                  </button>
+                  <button id="history-clear-btn" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash me-1"></i> Clear History
+                  </button>
+                </div>
+              </div>
+              <div class="alert alert-info mt-3 small">
+                <i class="fas fa-info-circle me-2"></i>
+                Your task history is stored locally in your browser. It shows up to 50 recent processing tasks.
+              </div>
+            </div>
+            
+            <!-- History Filters and Search -->
+            <div class="row mb-3">
+              <div class="col-md-4 mb-2 mb-md-0">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  <input type="text" id="history-search" class="form-control" placeholder="Search history...">
+                </div>
+              </div>
+              <div class="col-md-4 mb-2 mb-md-0">
+                <select id="history-filter" class="form-select">
+                  <option value="all">All Types</option>
+                  <option value="file">File Processor</option>
+                  <option value="playlist">Playlist</option>
+                  <option value="scraper">Web Scraper</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select id="history-sort" class="form-select">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- History Table -->
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Type</th>
+                    <th>File</th>
+                    <th>Date</th>
+                    <th>Stats</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-body">
+                  <!-- Task history will be loaded here dynamically -->
+                  <tr class="history-empty-row">
+                    <td colspan="5" class="text-center py-4">
+                      <i class="fas fa-info-circle me-2"></i>No tasks in history
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- PDF Summary Cards -->
+            <div class="mt-4">
+              <h5 class="mb-3">Recent PDF Summaries</h5>
+              <div class="row" id="pdf-summaries-container">
+                <!-- PDF summary cards will be added here dynamically -->
+                <div class="col-12 text-center py-4 text-muted">
+                  <i class="fas fa-file-pdf me-2"></i>No PDF summaries available
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="container text-center my-4">
+    <p class="text-muted">&copy; 2025 NeuroGen. All rights reserved.</p>
+    <div>
+      <button type="button" class="btn btn-sm btn-link text-muted" data-bs-toggle="modal" data-bs-target="#keyboard-shortcuts-modal">
+        <i class="fas fa-keyboard me-1"></i> Keyboard Shortcuts
+      </button>
+    </div>
+  </footer>
+  
+  <!-- =========== MODALS =========== -->
+  
+  <!-- PDF Viewer Modal -->
+  <div class="modal fade" id="pdfViewerModal" tabindex="-1" aria-labelledby="pdfViewerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pdfViewerModalLabel">PDF Viewer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div id="pdf-viewer-container" style="height: 80vh; overflow: auto;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="download-pdf-btn">
+            <i class="fas fa-download me-1"></i> Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Task Details Modal -->
+  <div class="modal fade" id="task-details-modal" tabindex="-1" aria-labelledby="taskDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="taskDetailsModalLabel">Task Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="task-details-content">
+          <!-- Task details will be populated here dynamically -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="open-task-file-btn">
+            <i class="fas fa-folder-open me-1"></i> Open File
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Enhanced Path Information Modal -->
+  <div class="modal fade" id="path-info-modal" tabindex="-1" aria-labelledby="pathInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pathInfoModalLabel">Directory Information</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="path-info-details">
+          <!-- Path details will be populated here -->
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="create-missing-dir-btn">Create Directory</button>
+          <button type="button" class="btn btn-success" id="use-dir-btn">Use This Directory</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Keyboard shortcuts help modal -->
+  <div class="modal fade" id="keyboard-shortcuts-modal" tabindex="-1" aria-labelledby="keyboardShortcutsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="keyboardShortcutsModalLabel">Keyboard Shortcuts</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Shortcut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><kbd>Ctrl</kbd> + <kbd>1</kbd></td>
+                <td>Switch to File Processor tab</td>
+              </tr>
+              <tr>
+                <td><kbd>Ctrl</kbd> + <kbd>2</kbd></td>
+                <td>Switch to Playlist Downloader tab</td>
+              </tr>
+              <tr>
+                <td><kbd>Ctrl</kbd> + <kbd>3</kbd></td>
+                <td>Switch to Web Scraper tab</td>
+              </tr>
+              <tr>
+                <td><kbd>Ctrl</kbd> + <kbd>4</kbd></td>
+                <td>Switch to History tab</td>
+              </tr>
+              <tr>
+                <td><kbd>Ctrl</kbd> + <kbd>O</kbd></td>
+                <td>Open JSON file (when available)</td>
+              </tr>
+              <tr>
+                <td><kbd>Ctrl</kbd> + <kbd>N</kbd></td>
+                <td>Start new task (when available)</td>
+              </tr>
+              <tr>
+                <td><kbd>Ctrl</kbd> + <kbd>H</kbd></td>
+                <td>Show this help dialog</td>
+              </tr>
+              <tr>
+                <td><kbd>Esc</kbd></td>
+                <td>Close dialogs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast container for notifications -->
+  <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+  
+  <!-- PDF Summary Card Template -->
+  <template id="pdf-summary-card-template">
+    <div class="col-md-6 col-lg-4 mb-3 pdf-summary-card">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 text-truncate pdf-title">PDF Title</h6>
+          <span class="badge pdf-type-badge">Type</span>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div class="text-center">
+              <div class="fs-5 pages-count">0</div>
+              <div class="small text-muted">Pages</div>
+            </div>
+            <div class="text-center">
+              <div class="fs-5 tables-count">0</div>
+              <div class="small text-muted">Tables</div>
+            </div>
+            <div class="text-center">
+              <div class="fs-5 file-size">0</div>
+              <div class="small text-muted">MB</div>
+            </div>
+          </div>
+          <p class="pdf-summary small text-muted mb-0">PDF summary will appear here...</p>
+        </div>
+        <div class="card-footer d-flex gap-2">
+          <button class="btn btn-sm btn-outline-primary flex-grow-1 view-pdf-btn">
+            <i class="fas fa-eye me-1"></i> View
+          </button>
+          <button class="btn btn-sm btn-outline-info flex-grow-1 structure-pdf-btn">
+            <i class="fas fa-sitemap me-1"></i> Structure
+          </button>
+          <button class="btn btn-sm btn-outline-secondary view-json-btn">
+            <i class="fas fa-code"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+<!-- Replace the current script loading lines at the bottom of app.index.html with this -->
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Socket.IO -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<!-- PDF.js (for PDF viewing) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script>
+  // Set PDF.js worker path
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+  }
+</script>
+
+<!-- Load the CSS file -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+<!-- Improved module loader with fallback -->
+<script type="module">
+  // Log the module loading attempt
+  console.log("Attempting to load module system...");
+  
+  // Import the main module
+  import { default as app } from "{{ url_for('static', filename='js/index.js') }}";
+  
+  // Log successful module loading
+  console.log("Module system loaded successfully!");
+  
+  // Add a hidden error container that we can use to show problems
+  const errorContainer = document.getElementById('app-loading-error') || 
+    document.createElement('div');
+  
+  if (!document.getElementById('app-loading-error')) {
+    errorContainer.id = 'app-loading-error';
+    errorContainer.className = 'alert alert-danger m-3';
+    errorContainer.style.display = 'none';
+    document.body.appendChild(errorContainer);
+  }
+  
+  window.addEventListener('load', () => {
+    // Set a timeout to check if app was initialized
+    setTimeout(() => {
+      if (!window.appInitialized && !document.body.classList.contains('app-initialized')) {
+        console.warn("App not initialized after 2 seconds, showing error");
+        errorContainer.textContent = "Application initialization failed. Please check your browser console for errors.";
+        errorContainer.style.display = 'block';
+      }
+    }, 2000);
+  });
+</script>
+
+<!-- Fallback for older browsers that don't support ES modules -->
+<script nomodule>
+  console.warn("Browser doesn't support ES modules, loading fallback script...");
+  
+  // Create a script element for the fallback script
+  const script = document.createElement('script');
+  script.src = "{{ url_for('static', filename='js/main.js') }}";
+  script.onerror = (error) => {
+    console.error("Error loading fallback script:", error);
+    const errorContainer = document.getElementById('app-loading-error') || 
+      document.createElement('div');
+    
+    if (!document.getElementById('app-loading-error')) {
+      errorContainer.id = 'app-loading-error';
+      errorContainer.className = 'alert alert-danger m-3';
+      document.body.appendChild(errorContainer);
+    }
+    
+    errorContainer.textContent = "Failed to load application script. Please try refreshing the page.";
+    errorContainer.style.display = 'block';
+  };
+  
+  // Add the script to the document
+  document.head.appendChild(script);
+</script>
+
+<!-- Direct Theme Management -->
+<script>
+  // Apply stored theme on page load
+  (function() {
+    const storedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', storedTheme);
+    document.body.setAttribute('data-theme', storedTheme);
+    
+    // Also set up a backup theme toggle in case module system fails
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+      const isDark = storedTheme === 'dark';
+      const iconElement = darkModeToggle.querySelector('i');
+      
+      if (iconElement) {
+        iconElement.className = isDark ? 'fas fa-sun fa-lg' : 'fas fa-moon fa-lg';
+      } else {
+        darkModeToggle.innerHTML = isDark ? 
+          '<i class="fas fa-sun fa-lg"></i>' : 
+          '<i class="fas fa-moon fa-lg"></i>';
+      }
+      
+      // Add direct event listener as fallback
+      darkModeToggle.addEventListener('click', function() {
+        const currentTheme = document.body.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        // Apply the new theme
+        document.body.setAttribute('data-theme', newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update the icon
+        const iconElement = this.querySelector('i');
+        if (iconElement) {
+          iconElement.className = newTheme === 'dark' ? 'fas fa-sun fa-lg' : 'fas fa-moon fa-lg';
+        } else {
+          this.innerHTML = newTheme === 'dark' ? 
+            '<i class="fas fa-sun fa-lg"></i>' : 
+            '<i class="fas fa-moon fa-lg"></i>';
+        }
+      });
+    }
+  })();
+</script>
+
+<!-- Add a hidden error container that we can use to show problems -->
+<div id="app-loading-error" class="alert alert-danger m-3" style="display: none;"></div>
+
+</body>
+</html>
+

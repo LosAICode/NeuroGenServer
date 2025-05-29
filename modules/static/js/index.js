@@ -515,6 +515,19 @@ async function initializeApp() {
   console.log(`🔧 Debug mode: ${window._debugMode ? 'ENABLED' : 'DISABLED'}`);
   
   try {
+    // Import module-manager first for modular system integration
+    let moduleManager = null;
+    try {
+      const managerModule = await import('./module-manager.js');
+      moduleManager = managerModule.default || window.moduleManager;
+      console.log('✅ Module manager loaded for modular system');
+      
+      // Store reference for other modules
+      window.moduleManager = moduleManager;
+    } catch (error) {
+      console.warn('⚠️ Module manager not available, using built-in loader', error);
+    }
+    
     // Early setup
     diagnostics.logPhase('early-setup', true);
     applyStoredTheme();

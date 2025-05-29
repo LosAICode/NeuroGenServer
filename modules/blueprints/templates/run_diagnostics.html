@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroGen Frontend Diagnostics</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        .diagnostic-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .diagnostic-header {
+            background: rgba(30, 30, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(74, 158, 255, 0.3);
+        }
+        
+        .console-output {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .console-line {
+            margin: 2px 0;
+            padding: 2px 0;
+        }
+        
+        .console-info { color: #4a9eff; }
+        .console-success { color: #4ade80; }
+        .console-error { color: #f87171; }
+        .console-warn { color: #fbbf24; }
+        .console-debug { color: #a78bfa; }
+        
+        .status-card {
+            background: rgba(45, 45, 68, 0.95);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(74, 158, 255, 0.4);
+        }
+        
+        .module-status {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 6px;
+            background: rgba(30, 30, 46, 0.5);
+            transition: all 0.2s ease;
+        }
+        
+        .module-status:hover {
+            background: rgba(74, 158, 255, 0.1);
+        }
+        
+        .module-loading { border-left: 3px solid #fbbf24; }
+        .module-success { border-left: 3px solid #4ade80; }
+        .module-error { border-left: 3px solid #f87171; }
+        
+        .spinner-small {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .progress-bar-custom {
+            height: 30px;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a9eff 0%, #00d4ff 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-custom {
+            background: rgba(74, 158, 255, 0.2);
+            border: 1px solid #4a9eff;
+            color: #4a9eff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            background: rgba(74, 158, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 158, 255, 0.4);
+        }
+        
+        .report-section {
+            background: rgba(30, 30, 46, 0.5);
+            border: 1px solid rgba(74, 158, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        pre {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(74, 158, 255, 0.2);
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <!-- Header -->
+        <div class="diagnostic-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-3">
+                        <i class="fas fa-terminal text-info me-3"></i>
+                        Frontend Diagnostics Console
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Real-time module loading diagnostics and system health monitoring
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="action-buttons justify-content-end">
+                        <button class="btn btn-custom" onclick="runFullDiagnostics()">
+                            <i class="fas fa-sync me-2"></i>Run Diagnostics
+                        </button>
+                        <button class="btn btn-custom" onclick="clearConsole()">
+                            <i class="fas fa-eraser me-2"></i>Clear
+                        </button>
+                        <a href="/" class="btn btn-custom">
+                            <i class="fas fa-home me-2"></i>Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-custom" id="progress-container" style="display: none;">
+            <div class="progress-fill" id="progress-bar" style="width: 0%">
+                <span id="progress-text">0%</span>
+            </div>
+        </div>
+
+        <!-- Console Output -->
+        <div class="console-output" id="console-output">
+            <div class="console-line console-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Frontend Diagnostics Console initialized. Click "Run Diagnostics" to begin.
+            </div>
+        </div>
+
+        <!-- Status Cards -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="status-card">
+                    <h4 class="mb-3">
+                        <i class="fas fa-cubes text-primary me-2"></i>
+                        Module Loading Status
+                    </h4>
+                    <div id="module-status">
+                        <div class="text-muted">Waiting for diagnostics to run...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="status-card">
+                    <h4 class="mb-3">
+                        <i class="fas fa-chart-line text-success me-2"></i>
+                        System Health
+                    </h4>
+                    <div id="system-health">
+                        <div class="text-muted">Waiting for diagnostics to run...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Report -->
+        <div class="status-card" id="detailed-report" style="display: none;">
+            <h4 class="mb-3">
+                <i class="fas fa-file-alt text-warning me-2"></i>
+                Detailed Diagnostic Report
+            </h4>
+            <div id="report-content"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        // Console output management
+        const consoleOutput = document.getElementById('console-output');
+        const moduleStatus = document.getElementById('module-status');
+        const systemHealth = document.getElementById('system-health');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const progressContainer = document.getElementById('progress-container');
+        
+        let diagnosticModule = null;
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = `console-line console-${type}`;
+            
+            const icon = {
+                info: 'info-circle',
+                success: 'check-circle',
+                error: 'times-circle',
+                warn: 'exclamation-triangle',
+                debug: 'bug'
+            }[type] || 'info-circle';
+            
+            line.innerHTML = `
+                <span class="text-muted">[${timestamp}]</span>
+                <i class="fas fa-${icon} me-2"></i>
+                ${message}
+            `;
+            
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        function updateProgress(percent, label) {
+            progressContainer.style.display = 'block';
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = label || `${percent}%`;
+        }
+        
+        window.clearConsole = function() {
+            consoleOutput.innerHTML = '';
+            log('Console cleared', 'info');
+        };
+        
+        window.runFullDiagnostics = async function() {
+            log('Starting comprehensive frontend diagnostics...', 'info');
+            updateProgress(10, 'Initializing...');
+            
+            try {
+                // Load diagnostic module
+                log('Loading diagnostic module...', 'debug');
+                updateProgress(20, 'Loading modules...');
+                
+                const { default: moduleDiagnostics, logDiagnosticReport, generateDiagnosticReport, fixModuleIssues } = 
+                    await import('/static/js/modules/utils/moduleDiagnostics.js');
+                
+                diagnosticModule = moduleDiagnostics();
+                log('✅ Diagnostic module loaded successfully', 'success');
+                updateProgress(40, 'Running diagnostics...');
+                
+                // Run diagnostics
+                log('Running diagnostic report...', 'info');
+                const report = generateDiagnosticReport();
+                
+                // Display module status
+                displayModuleStatus(report);
+                updateProgress(60, 'Analyzing results...');
+                
+                // Display system health
+                displaySystemHealth(report);
+                updateProgress(80, 'Testing index.js...');
+                
+                // Test index.js loading
+                log('Attempting to load index.js...', 'info');
+                try {
+                    const indexModule = await import('/static/js/index.js');
+                    log('✅ index.js loaded successfully!', 'success');
+                    log(`Exported functions: ${Object.keys(indexModule).join(', ')}`, 'debug');
+                } catch (error) {
+                    log(`❌ Failed to load index.js: ${error.message}`, 'error');
+                    log(`Stack trace: ${error.stack}`, 'debug');
+                }
+                
+                updateProgress(100, 'Complete!');
+                
+                // Display detailed report
+                displayDetailedReport(report);
+                
+                // Log to console as well
+                logDiagnosticReport();
+                
+                log('Diagnostics complete! Check the console for detailed output.', 'success');
+                
+            } catch (error) {
+                log(`Fatal error during diagnostics: ${error.message}`, 'error');
+                console.error('Full error:', error);
+                updateProgress(0, 'Error');
+            }
+        };
+        
+        function displayModuleStatus(report) {
+            const modules = report.modules || {};
+            const html = Object.entries(modules).map(([name, status]) => {
+                const statusClass = status.loaded ? 'success' : (status.loading ? 'loading' : 'error');
+                const icon = status.loaded ? 'check-circle' : (status.loading ? 'spinner-small' : 'times-circle');
+                const iconHtml = status.loading ? '<div class="spinner-small"></div>' : `<i class="fas fa-${icon}"></i>`;
+                
+                return `
+                    <div class="module-status module-${statusClass}">
+                        ${iconHtml}
+                        <span class="ms-2 flex-grow-1">${name}</span>
+                        ${status.error ? `<small class="text-danger">${status.error}</small>` : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            moduleStatus.innerHTML = html || '<div class="text-muted">No modules found</div>';
+        }
+        
+        function displaySystemHealth(report) {
+            const health = report.health || {};
+            const totalModules = Object.keys(report.modules || {}).length;
+            const loadedModules = Object.values(report.modules || {}).filter(m => m.loaded).length;
+            const healthPercent = totalModules > 0 ? Math.round((loadedModules / totalModules) * 100) : 0;
+            
+            const healthStatus = healthPercent >= 80 ? 'success' : (healthPercent >= 50 ? 'warning' : 'danger');
+            const healthIcon = healthPercent >= 80 ? 'check-circle' : (healthPercent >= 50 ? 'exclamation-triangle' : 'times-circle');
+            
+            systemHealth.innerHTML = `
+                <div class="report-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span>Overall Health</span>
+                        <span class="badge bg-${healthStatus}">
+                            <i class="fas fa-${healthIcon} me-1"></i>
+                            ${healthPercent}%
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Modules:</strong> ${loadedModules} / ${totalModules} loaded
+                    </div>
+                    <div class="mb-2">
+                        <strong>Load Time:</strong> ${health.loadTime || 'N/A'}
+                    </div>
+                    <div class="mb-2">
+                        <strong>Memory Usage:</strong> ${health.memoryUsage || 'N/A'}
+                    </div>
+                    ${health.errors ? `<div class="text-danger"><strong>Errors:</strong> ${health.errors}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        function displayDetailedReport(report) {
+            const reportSection = document.getElementById('detailed-report');
+            const reportContent = document.getElementById('report-content');
+            
+            reportSection.style.display = 'block';
+            reportContent.innerHTML = `
+                <div class="report-section">
+                    <h5>Full Diagnostic Report</h5>
+                    <pre>${JSON.stringify(report, null, 2)}</pre>
+                </div>
+                <div class="action-buttons mt-3">
+                    <button class="btn btn-custom" onclick="downloadReport(${JSON.stringify(report).replace(/"/g, '&quot;')})">
+                        <i class="fas fa-download me-2"></i>Download Report
+                    </button>
+                    <button class="btn btn-custom" onclick="copyReport(${JSON.stringify(report).replace(/"/g, '&quot;')})">
+                        <i class="fas fa-copy me-2"></i>Copy to Clipboard
+                    </button>
+                </div>
+            `;
+        }
+        
+        window.downloadReport = function(report) {
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `frontend-diagnostics-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            log('Report downloaded', 'success');
+        };
+        
+        window.copyReport = async function(report) {
+            try {
+                await navigator.clipboard.writeText(JSON.stringify(report, null, 2));
+                log('Report copied to clipboard', 'success');
+            } catch (error) {
+                log('Failed to copy report: ' + error.message, 'error');
+            }
+        };
+        
+        // Auto-run diagnostics if requested
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('autorun') === 'true') {
+            setTimeout(() => runFullDiagnostics(), 500);
+        }
+    </script>
+</body>
+</html>

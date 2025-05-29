@@ -41,11 +41,38 @@ for path in [parent_dir, current_dir, structify_dir]:
 
 def create_app():
     """Application factory"""
-    app = Flask(__name__)
+    # Configure Flask to serve static files and templates
+    blueprints_dir = os.path.join(current_dir, 'blueprints')
+    
+    # Use original static folder for backward compatibility (temporary fix)
+    static_folder = os.path.join(current_dir, 'static')
+    # But keep templates in blueprints directory
+    template_folder = os.path.join(blueprints_dir, 'templates')
+    
+    # Verify the directories exist
+    if not os.path.exists(static_folder):
+        logger.error(f"Static folder not found: {static_folder}")
+        raise FileNotFoundError(f"Static folder not found: {static_folder}")
+    if not os.path.exists(template_folder):
+        logger.error(f"Template folder not found: {template_folder}")
+        raise FileNotFoundError(f"Template folder not found: {template_folder}")
+    
+    logger.info(f"Using static folder: {static_folder}")
+    logger.info(f"Using template folder: {template_folder}")
+    
+    app = Flask(__name__, 
+                static_folder=static_folder,
+                static_url_path='/static',
+                template_folder=template_folder)
     
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
     app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32MB max file size
+    
+    # Configure MIME types for ES6 modules
+    import mimetypes
+    mimetypes.add_type('application/javascript', '.js')
+    mimetypes.add_type('application/javascript', '.mjs')
     
     # Initialize SocketIO
     socketio = SocketIO(
@@ -83,8 +110,59 @@ def create_app():
     # Register SocketIO events
     register_socketio_events(socketio)
     
+    # Add legacy endpoints for backward compatibility
+    register_legacy_endpoints(app)
+    
     logger.info("NeuroGen Server application created successfully")
     return app, socketio
+
+
+def register_legacy_endpoints(app):
+    """Register legacy endpoints for backward compatibility"""
+    
+    @app.route('/api/pdf-capabilities', methods=['GET'])
+    def pdf_capabilities_legacy():
+        """
+        Get PDF processing capabilities of the server.
+        
+        Returns:
+            JSON response with PDF processing capabilities
+        """
+        from flask import jsonify
+        import sys
+        
+        # Import availability checks from core blueprints
+        try:
+            from blueprints.core.ocr_config import pdf_extractor_available
+            from blueprints.core.structify_integration import structify_available
+        except ImportError:
+            pdf_extractor_available = True
+            structify_available = True
+        
+        try:
+            pikepdf_available = 'pikepdf' in sys.modules
+        except:
+            pikepdf_available = False
+            
+        try:
+            from blueprints.core.config import MAX_FILE_SIZE
+        except ImportError:
+            MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB default
+        
+        capabilities = {
+            "pdf_extraction": pdf_extractor_available,
+            "ocr": 'pytesseract' in sys.modules,
+            "structify": structify_available,
+            "pikepdf": pikepdf_available,
+            "table_extraction": pdf_extractor_available,
+            "document_detection": pdf_extractor_available,
+            "max_file_size": MAX_FILE_SIZE // (1024 * 1024)  # Convert to MB
+        }
+        
+        return jsonify({
+            "status": "success",
+            "capabilities": capabilities
+        })
 
 
 def register_blueprints(app):

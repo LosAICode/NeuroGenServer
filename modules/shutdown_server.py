@@ -42,5 +42,5 @@ if __name__ == "__main__":
     host = sys.argv[1] if len(sys.argv) > 1 else 'localhost'
     port = int(sys.argv[2]) if len(sys.argv) > 2 else 5025
     
-    print(f"🛑 Attempting to shutdown NeuroGen Server at {host}:{port}")
+    print(f"[SHUTDOWN] Attempting to shutdown NeuroGen Server at {host}:{port}")
     shutdown_server(host, port)

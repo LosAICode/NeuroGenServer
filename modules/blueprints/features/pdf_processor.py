@@ -715,6 +715,28 @@ def batch_process_pdfs_endpoint():
         logger.error(f"Error initiating batch processing: {e}", exc_info=True)
         return structured_error_response("SERVER_ERROR", f"Batch processing error: {str(e)}", 500)
 
+@pdf_processor_bp.route("/pdf-capabilities", methods=["GET"])
+def get_pdf_capabilities():
+    """
+    Get PDF processing capabilities of the server.
+    
+    Returns:
+        JSON response with PDF processing capabilities
+    """
+    capabilities = {
+        "pdf_extraction": pdf_extractor_available,
+        "ocr": 'pytesseract' in sys.modules,
+        "structify": structify_available,
+        "pikepdf": pikepdf_available,
+        "table_extraction": pdf_extractor_available and hasattr(pdf_extractor, 'extract_tables_from_pdf'),
+        "document_detection": pdf_extractor_available and hasattr(pdf_extractor, 'detect_document_type'),
+        "max_file_size": MAX_FILE_SIZE // (1024 * 1024)  # Convert to MB
+    }
+    
+    return jsonify({
+        "status": "success",
+        "capabilities": capabilities
+    })
 
 @pdf_processor_bp.route('/status/<task_id>', methods=['GET'])
 @require_api_key
@@ -821,7 +843,7 @@ def cancel_pdf_task(task_id):
 
 
 @pdf_processor_bp.route('/capabilities', methods=['GET'])
-def get_pdf_capabilities():
+def get_capabilities():
     """
     Get PDF processing capabilities of the server.
     

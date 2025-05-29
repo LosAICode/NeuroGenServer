@@ -24,11 +24,7 @@ __all__ = ['core_bp']
 # ERROR HANDLERS
 # =============================================================================
 
-@core_bp.app_errorhandler(404)
-def not_found(error):
-    """Handle 404 Not Found errors"""
-    from blueprints.core.utils import structured_error_response
-    return structured_error_response("NOT_FOUND", "The requested resource was not found.", 404)
+# Removed 404 handler - it was interfering with static file serving
 
 
 @core_bp.app_errorhandler(413)
@@ -57,6 +53,36 @@ def home():
     except Exception as e:
         logger.error(f"Error rendering home page: {str(e)}")
         return f"Error loading application: {str(e)}", 500
+
+
+@core_bp.route('/debug/static-info')
+def debug_static_info():
+    """Debug endpoint to check static file configuration"""
+    from flask import current_app
+    import json
+    
+    debug_info = {
+        "static_folder": current_app.static_folder,
+        "static_url_path": current_app.static_url_path,
+        "template_folder": current_app.template_folder,
+        "root_path": current_app.root_path,
+        "blueprints": list(current_app.blueprints.keys()),
+        "url_map_rules": []
+    }
+    
+    # Add URL rules
+    for rule in current_app.url_map.iter_rules():
+        if 'static' in str(rule):
+            debug_info["url_map_rules"].append({
+                "rule": str(rule),
+                "endpoint": rule.endpoint,
+                "methods": list(rule.methods)
+            })
+    
+    return f"<pre>{json.dumps(debug_info, indent=2)}</pre>"
+
+
+# Removed custom static route - Flask handles this automatically
 
 
 @core_bp.route('/diagnostics')
@@ -97,8 +123,8 @@ def test_modules():
         }
         
         # Check module files exist
-        current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        static_js_path = os.path.join(current_dir, 'static', 'js')
+        blueprints_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        static_js_path = os.path.join(blueprints_dir, 'static', 'js')
         modules_path = os.path.join(static_js_path, 'modules')
         
         # Define expected modules based on your system
@@ -180,7 +206,7 @@ def test_modules():
         # Check critical files
         critical_files = {
             'index.js': os.path.join(static_js_path, 'index.js'),
-            'index.html': os.path.join(current_dir, 'templates', 'index.html')
+            'index.html': os.path.join(blueprints_dir, 'templates', 'index.html')
         }
         
         for name, path in critical_files.items():

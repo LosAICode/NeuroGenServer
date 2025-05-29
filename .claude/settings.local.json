@@ -25,7 +25,9 @@
       "Bash(timeout:*)",
       "Bash(pkill:*)",
       "Bash(sed:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(curl:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   },

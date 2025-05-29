@@ -22,7 +22,7 @@ from blueprints.core.utils import format_time_duration, structured_error_respons
 logger = logging.getLogger(__name__)
 
 # Create the blueprint
-analytics_bp = Blueprint('analytics', __name__, url_prefix='/api')
+analytics_bp = Blueprint('analytics', __name__, url_prefix='/api/analytics')
 
 # Global task history storage (in production, use a database)
 task_history = []

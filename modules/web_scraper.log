@@ -1797,3 +1797,27 @@ TypeError: argument must be an int, or have a fileno() method.
 2025-05-28 21:21:24,841 - INFO - PDF extractor module is available
 2025-05-28 21:23:46,986 - INFO - Claude module is available for processing
 2025-05-28 21:23:46,987 - INFO - PDF extractor module is available
+2025-05-28 21:30:25,156 - INFO - Claude module is available for processing
+2025-05-28 21:30:25,161 - INFO - PDF extractor module is available
+2025-05-28 22:03:30,821 - INFO - Claude module is available for processing
+2025-05-28 22:03:30,822 - INFO - PDF extractor module is available
+2025-05-28 22:09:13,525 - INFO - Claude module is available for processing
+2025-05-28 22:09:13,526 - INFO - PDF extractor module is available
+2025-05-28 22:10:42,927 - INFO - Claude module is available for processing
+2025-05-28 22:10:42,928 - INFO - PDF extractor module is available
+2025-05-28 22:11:39,628 - INFO - Claude module is available for processing
+2025-05-28 22:11:39,628 - INFO - PDF extractor module is available
+2025-05-28 22:12:43,944 - INFO - Claude module is available for processing
+2025-05-28 22:12:43,945 - INFO - PDF extractor module is available
+2025-05-29 00:09:19,270 - INFO - Claude module is available for processing
+2025-05-29 00:09:19,271 - INFO - PDF extractor module is available
+2025-05-29 00:12:59,140 - INFO - Claude module is available for processing
+2025-05-29 00:12:59,141 - INFO - PDF extractor module is available
+2025-05-29 00:15:00,604 - INFO - Claude module is available for processing
+2025-05-29 00:15:00,605 - INFO - PDF extractor module is available
+2025-05-29 00:17:18,317 - INFO - Claude module is available for processing
+2025-05-29 00:17:18,319 - INFO - PDF extractor module is available
+2025-05-29 00:24:13,075 - INFO - Claude module is available for processing
+2025-05-29 00:24:13,076 - INFO - PDF extractor module is available
+2025-05-29 00:32:26,298 - INFO - Claude module is available for processing
+2025-05-29 00:32:26,299 - INFO - PDF extractor module is available
