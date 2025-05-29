@@ -3,15 +3,20 @@ Web Scraper Blueprint
 Handles all web scraping related routes and functionality
 """
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory, abort
 from flask_socketio import emit
 import logging
 import uuid
 import time
 import os
 import threading
+import tempfile
+import hashlib
+import requests
 from typing import Dict, Any, List, Optional
 from pathlib import Path
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 # Import necessary modules and utilities
 from blueprints.core.services import (
@@ -19,8 +24,9 @@ from blueprints.core.services import (
     structured_error_response, emit_task_error,
     ScraperTask
 )
-from blueprints.core.utils import get_output_filepath
+from blueprints.core.utils import get_output_filepath, sanitize_filename
 from blueprints.core.structify_integration import structify_module
+from blueprints.features.pdf_processor import download_pdf, analyze_pdf_structure
 
 # Try to import web_scraper module
 try:
@@ -28,12 +34,25 @@ try:
     web_scraper_available = True
 except ImportError:
     web_scraper_available = False
-    logger.warning("web_scraper module not available")
+
+# Try to import python-magic for file type detection
+try:
+    import magic
+    magic_available = True
+except ImportError:
+    magic_available = False
 
 # Default settings
 DEFAULT_OUTPUT_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'downloads')
 
 logger = logging.getLogger(__name__)
+
+# Initialize logger if needed
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
 
 # Create the blueprint
 web_scraper_bp = Blueprint('web_scraper', __name__, url_prefix='/api')
@@ -522,6 +541,44 @@ def scrape_and_download_pdfs(url: str, output_folder: str = DEFAULT_OUTPUT_FOLDE
             "url": url,
             "error": str(e)
         }
+def fetch_pdf_links(url: str) -> List[Dict[str, str]]:
+    """
+    Extract PDF links from a webpage.
+    
+    Args:
+        url: URL of the webpage to scrape
+        
+    Returns:
+        List of dictionaries containing PDF URLs and titles
+    """
+    try:
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        pdf_links = []
+        
+        # Find all links that point to PDFs
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            if href.lower().endswith('.pdf') or 'pdf' in href.lower():
+                # Make absolute URL
+                pdf_url = urljoin(url, href)
+                
+                # Get link text or title
+                title = link.get_text(strip=True) or link.get('title', '') or os.path.basename(href)
+                
+                pdf_links.append({
+                    'url': pdf_url,
+                    'title': title
+                })
+        
+        return pdf_links
+        
+    except Exception as e:
+        logger.error(f"Error fetching PDF links from {url}: {e}")
+        return []
+
 # Add this function before process_url_with_settings
 def process_url(url: str, setting: str, keyword: str = "", output_folder: str = DEFAULT_OUTPUT_FOLDER) -> Dict[str, Any]:
     """
@@ -673,8 +730,8 @@ def process_url_with_settings(url, setting, keyword, output_folder):
             # For all other settings, use the process_url function (placeholder if web_scraper not available)
             return process_url(url, setting, keyword, output_folder)
 
-def process_url_with_tracking(self, url, setting, keyword, output_folder):
-    """Process a single URL with enhanced tracking and error recovery."""
+# This method is now part of the ScraperTask class in services.py
+# The standalone function below is kept for backward compatibility
     try:
         # Special handling for PDF setting
         if setting == "pdf":
@@ -927,6 +984,26 @@ def process_url_with_tracking(self, url, setting, keyword, output_folder):
             )
         
         return {"error": str(e), "url": url}
+
+def emit_pdf_download_progress(task_id, url, progress, status, file_path=None, error=None, details=None):
+    """Emit PDF download progress update"""
+    try:
+        payload = {
+            'task_id': task_id,
+            'url': url,
+            'progress': progress,
+            'status': status,
+            'file_path': file_path,
+            'error': error,
+            'details': details or {},
+            'timestamp': time.time()
+        }
+        
+        emit('pdf_download_progress', payload, broadcast=True)
+        logger.debug(f"Emitted PDF download progress for task {task_id}: {status}")
+        
+    except Exception as e:
+        logger.error(f"Error emitting PDF download progress: {str(e)}")
 
 # Socket.IO events for web scraper
 def emit_scraping_progress(task_id, progress, current_url=None, pages_scraped=0, total_pages=0):

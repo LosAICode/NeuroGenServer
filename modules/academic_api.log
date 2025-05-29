@@ -2736,3 +2736,4 @@ InterruptedError: Task cancelled by user
 2025-05-28 14:10:59,475 - app_new - INFO - All blueprints registered successfully
 2025-05-28 14:10:59,477 - blueprints.socketio_events - INFO - SocketIO events registered successfully
 2025-05-28 14:10:59,478 - app_new - INFO - NeuroGen Server application created successfully
+2025-05-29 14:30:07,735 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows

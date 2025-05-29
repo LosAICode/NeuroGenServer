@@ -1,0 +1,538 @@
+<!-- Enhanced Web Scraper Module - Complete Tabbed Interface -->
+<!-- This is the complete HTML structure for the unified Web Scraper with tabs -->
+
+<div id="scraper" class="tab-pane fade" role="tabpanel" aria-labelledby="scraper-tab">
+    <!-- Enhanced Web Scraper Interface with Tabs -->
+    <div class="scraper-container">
+        <!-- Module Header -->
+        <div class="module-header mb-4">
+            <h3 class="mb-2">
+                <i class="fas fa-globe text-primary"></i> Advanced Web Scraper
+            </h3>
+            <p class="text-muted">
+                Powerful web scraping with recursive crawling, academic search integration, 
+                and advanced PDF processing capabilities.
+            </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs mb-4" id="scraper-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="web-tab-btn" data-bs-toggle="tab" 
+                        data-bs-target="#web-tab-content" type="button" role="tab" 
+                        aria-controls="web-tab-content" aria-selected="true">
+                    <i class="fas fa-spider"></i> Web Crawling
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="academic-tab-btn" data-bs-toggle="tab" 
+                        data-bs-target="#academic-tab-content" type="button" role="tab" 
+                        aria-controls="academic-tab-content" aria-selected="false">
+                    <i class="fas fa-graduation-cap"></i> Academic Search
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="downloads-tab-btn" data-bs-toggle="tab" 
+                        data-bs-target="#downloads-tab-content" type="button" role="tab" 
+                        aria-controls="downloads-tab-content" aria-selected="false">
+                    <i class="fas fa-download"></i> Downloads
+                    <span class="badge bg-primary ms-1" id="downloads-count" style="display:none;">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="history-tab-btn" data-bs-toggle="tab" 
+                        data-bs-target="#history-tab-content" type="button" role="tab" 
+                        aria-controls="history-tab-content" aria-selected="false">
+                    <i class="fas fa-history"></i> History
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="scraperTabContent">
+            <!-- Web Crawling Tab -->
+            <div class="tab-pane fade show active" id="web-tab-content" role="tabpanel" 
+                 aria-labelledby="web-tab-btn">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-link text-primary"></i> Website Configuration
+                                </h5>
+                                
+                                <!-- URLs Input -->
+                                <div class="mb-4">
+                                    <label for="web-urls-input" class="form-label">
+                                        URLs to Scrape <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" id="web-urls-input" rows="4" 
+                                              placeholder="Enter URLs (one per line)&#10;https://example.com&#10;https://another-site.org" 
+                                              required></textarea>
+                                    <div class="form-text">
+                                        Enter one URL per line. Supports HTTP and HTTPS protocols.
+                                    </div>
+                                </div>
+
+                                <!-- Recursive Crawling Options -->
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="web-recursive-toggle">
+                                    <label class="form-check-label" for="web-recursive-toggle">
+                                        Enable Recursive Crawling
+                                    </label>
+                                </div>
+
+                                <div id="recursive-options" style="display:none;">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="web-max-depth" class="form-label">
+                                                Maximum Depth
+                                            </label>
+                                            <input type="number" class="form-control" id="web-max-depth" 
+                                                   min="1" max="10" value="3">
+                                            <div class="form-text">
+                                                How deep to crawl (1-10 levels)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="web-max-pages" class="form-label">
+                                                Maximum Pages
+                                            </label>
+                                            <input type="number" class="form-control" id="web-max-pages" 
+                                                   min="1" max="1000" value="100">
+                                            <div class="form-text">
+                                                Maximum pages to crawl per domain
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- PDF Processing Options -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-pdf text-danger"></i> PDF Processing Options
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           id="pdf-process-enable" checked>
+                                                    <label class="form-check-label" for="pdf-process-enable">
+                                                        Process PDFs with Structify
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           id="pdf-extract-tables" checked>
+                                                    <label class="form-check-label" for="pdf-extract-tables">
+                                                        Extract Tables
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           id="pdf-use-ocr" checked>
+                                                    <label class="form-check-label" for="pdf-use-ocr">
+                                                        Use OCR for Scanned PDFs
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           id="pdf-extract-structure" checked>
+                                                    <label class="form-check-label" for="pdf-extract-structure">
+                                                        Extract Document Structure
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="pdf-max-downloads" class="form-label">
+                                                Maximum Concurrent Downloads
+                                            </label>
+                                            <input type="number" class="form-control" id="pdf-max-downloads" 
+                                                   min="1" max="20" value="10">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Output Directory -->
+                                <div class="mb-3">
+                                    <label for="web-output-dir" class="form-label">
+                                        Output Directory
+                                    </label>
+                                    <input type="text" class="form-control" id="web-output-dir" 
+                                           placeholder="downloads/web-scraper" value="downloads/web-scraper">
+                                    <div class="form-text">
+                                        Where to save scraped content and PDFs
+                                    </div>
+                                </div>
+
+                                <!-- Start Button -->
+                                <button type="button" class="btn btn-primary btn-lg w-100" 
+                                        id="web-start-btn">
+                                    <i class="fas fa-play-circle"></i> Start Web Scraping
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <!-- Quick Stats Panel -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <i class="fas fa-chart-line"></i> Quick Stats
+                            </div>
+                            <div class="card-body" id="scraper-stats-container">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Pages Scraped:</span>
+                                    <strong id="pages-scraped-count">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>PDFs Found:</span>
+                                    <strong id="pdfs-found-count">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Downloaded:</span>
+                                    <strong id="pdfs-downloaded-count">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Errors:</span>
+                                    <strong id="scraping-errors-count" class="text-danger">0</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Help Panel -->
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-question-circle"></i> Quick Help
+                            </div>
+                            <div class="card-body">
+                                <h6>Recursive Crawling</h6>
+                                <p class="small">
+                                    When enabled, the scraper will follow links found on pages
+                                    up to the specified depth.
+                                </p>
+                                <h6>PDF Processing</h6>
+                                <p class="small">
+                                    PDFs found during scraping can be automatically processed
+                                    using Structify to extract text, tables, and structure.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div id="scraper-progress-container" class="mt-4" style="display:none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-spinner fa-spin"></i> Scraping Progress
+                            </h5>
+                            <div class="progress mb-3" style="height: 25px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     id="scraper-progress-bar" role="progressbar" 
+                                     style="width: 0%;" aria-valuenow="0" 
+                                     aria-valuemin="0" aria-valuemax="100">
+                                    <span id="scraper-progress-text">0%</span>
+                                </div>
+                            </div>
+                            <div id="scraper-current-status" class="text-muted mb-2">
+                                Initializing...
+                            </div>
+                            <button type="button" class="btn btn-danger" id="scraper-cancel-btn">
+                                <i class="fas fa-stop-circle"></i> Cancel Scraping
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="scraper-results-container" class="mt-4" style="display:none;">
+                    <!-- Results will be dynamically populated here -->
+                </div>
+            </div>
+
+            <!-- Academic Search Tab -->
+            <div class="tab-pane fade" id="academic-tab-content" role="tabpanel" 
+                 aria-labelledby="academic-tab-btn">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-graduation-cap text-primary"></i> Academic Paper Search
+                        </h5>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="academic-query-input" class="form-label">
+                                        Search Query <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="academic-query-input" 
+                                           placeholder="e.g., machine learning transformers" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="academic-sources-select" class="form-label">
+                                        Sources
+                                    </label>
+                                    <select class="form-select" id="academic-sources-select" multiple>
+                                        <option value="all" selected>All Sources</option>
+                                        <option value="arxiv">arXiv</option>
+                                        <option value="semantic_scholar">Semantic Scholar</option>
+                                        <option value="pubmed">PubMed</option>
+                                        <option value="ieee">IEEE Xplore</option>
+                                        <option value="acm">ACM Digital Library</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="academic-max-results" class="form-label">
+                                    Maximum Results per Source
+                                </label>
+                                <input type="number" class="form-control" id="academic-max-results" 
+                                       min="10" max="100" value="50">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="academic-year-filter" class="form-label">
+                                    Publication Year
+                                </label>
+                                <select class="form-select" id="academic-year-filter">
+                                    <option value="">All Years</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="last5">Last 5 Years</option>
+                                    <option value="last10">Last 10 Years</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-lg w-100" 
+                                id="academic-search-btn">
+                            <i class="fas fa-search"></i> Search Academic Papers
+                        </button>
+
+                        <!-- Academic Results -->
+                        <div id="academic-results-container" class="mt-4" style="display:none;">
+                            <!-- Results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Downloads Tab -->
+            <div class="tab-pane fade" id="downloads-tab-content" role="tabpanel" 
+                 aria-labelledby="downloads-tab-btn">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-download text-primary"></i> Download Manager
+                        </h5>
+
+                        <!-- Download Queue -->
+                        <div class="mb-4">
+                            <h6>
+                                <i class="fas fa-clock"></i> Download Queue
+                                <span class="badge bg-secondary ms-2" id="queue-count">0</span>
+                            </h6>
+                            <div id="downloads-queue-container" class="border rounded p-3">
+                                <p class="text-muted text-center mb-0">No items in queue</p>
+                            </div>
+                        </div>
+
+                        <!-- Active Downloads -->
+                        <div class="mb-4">
+                            <h6>
+                                <i class="fas fa-spinner fa-spin"></i> Active Downloads
+                                <span class="badge bg-primary ms-2" id="active-downloads-count">0</span>
+                            </h6>
+                            <div id="downloads-active-container" class="border rounded p-3">
+                                <p class="text-muted text-center mb-0">No active downloads</p>
+                            </div>
+                        </div>
+
+                        <!-- Completed Downloads -->
+                        <div>
+                            <h6>
+                                <i class="fas fa-check-circle text-success"></i> Completed Downloads
+                                <span class="badge bg-success ms-2" id="completed-downloads-count">0</span>
+                            </h6>
+                            <div id="downloads-completed-container" class="border rounded p-3">
+                                <p class="text-muted text-center mb-0">No completed downloads</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div class="tab-pane fade" id="history-tab-content" role="tabpanel" 
+                 aria-labelledby="history-tab-btn">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-history text-primary"></i> Scraping History
+                        </h5>
+                        <div id="scraping-history-container">
+                            <p class="text-muted text-center">No scraping history available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Selection Modal/Panel -->
+        <div id="pdf-selection-panel" class="mt-4" style="display:none;">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-pdf text-danger"></i> Found PDFs
+                    </h5>
+                    <div>
+                        <span class="badge bg-info me-2">
+                            <span id="selected-pdfs-count">0</span> Selected
+                        </span>
+                        <span class="badge bg-secondary">
+                            <span id="total-pdfs-count">0</span> Total
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Selection Controls -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                    id="pdf-select-all-btn">
+                                <i class="fas fa-check-square"></i> Select All
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                    id="pdf-select-none-btn">
+                                <i class="fas fa-square"></i> Select None
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="pdf-add-to-queue-btn" 
+                                disabled>
+                            <i class="fas fa-plus-circle"></i> Add Selected to Download Queue
+                        </button>
+                    </div>
+
+                    <!-- PDF Filter -->
+                    <div class="row mb-3" id="pdf-filter-container">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control form-control-sm" 
+                                   id="pdf-filter-title" placeholder="Filter by title...">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control form-control-sm" 
+                                   id="pdf-filter-author" placeholder="Filter by author...">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select form-select-sm" id="pdf-filter-source">
+                                <option value="">All Sources</option>
+                                <option value="arxiv">arXiv</option>
+                                <option value="semantic_scholar">Semantic Scholar</option>
+                                <option value="pubmed">PubMed</option>
+                                <option value="web">Web</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- PDF Results List -->
+                    <div id="pdf-results-container" class="pdf-results-list">
+                        <!-- PDF items will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS for Web Scraper -->
+<style>
+.scraper-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.pdf-results-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.pdf-item {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+.pdf-item:hover {
+    background-color: #f8f9fa;
+}
+
+.pdf-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.download-progress {
+    height: 20px;
+    border-radius: 10px;
+}
+
+.download-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.active-download {
+    border-color: #0d6efd;
+    background-color: #e7f1ff;
+}
+
+.completed-download {
+    border-color: #198754;
+    background-color: #d1e7dd;
+}
+
+.failed-download {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+#recursive-options {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.nav-tabs .nav-link {
+    color: #495057;
+    border: 1px solid #dee2e6;
+    margin-right: 5px;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #e9ecef;
+}
+</style>
