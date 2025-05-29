@@ -185,12 +185,6 @@ def mark_task_cancelled(task_id: str, reason: str = "Task cancelled by user") ->
 
 def _check_internal_cancellation(self) -> bool:
     """
-    try:
-        # CRITICAL: Check force cancellation first
-        if is_force_cancelled(self.task_id if hasattr(self, 'task_id') else None):
-            logger.warning(f"Task {getattr(self, 'task_id', 'unknown')} force cancelled")
-            return True
-        
     Internal method for ProcessingTask to check its own cancellation status.
     This avoids the need to go through the global check_task_cancellation function.
     
@@ -198,6 +192,11 @@ def _check_internal_cancellation(self) -> bool:
         bool: True if task should be cancelled
     """
     try:
+        # CRITICAL: Check force cancellation first
+        if is_force_cancelled(self.task_id if hasattr(self, 'task_id') else None):
+            logger.warning(f"Task {getattr(self, 'task_id', 'unknown')} force cancelled")
+            return True
+        
         # Check internal cancellation flag first
         if hasattr(self, 'is_cancelled_flag') and self.is_cancelled_flag:
             return True
@@ -377,8 +376,8 @@ def force_cancel_all_tasks():
                         task.is_cancelled_flag = True
                         task.status = 'cancelled'
                         task.cancelled = True
-                    except:
-                        pass
+                    except Exception as e:
+                        logger.debug(f"Could not set cancellation attributes on task {task_id}: {e}")
                 
                 # If it's a ProcessingTask, try to set its internal flag
                 if hasattr(task, '_cancelled'):
@@ -411,8 +410,8 @@ def force_cancel_all_tasks():
             'count': cancelled_count,
             'timestamp': time.time()
         })
-    except:
-        pass
+    except Exception as e:
+        logger.debug(f"Could not emit global cancellation event: {e}")
     
     return cancelled_count
 

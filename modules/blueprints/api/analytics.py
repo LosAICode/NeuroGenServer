@@ -14,12 +14,10 @@ from typing import Dict, Any, Optional, List
 # Import shared services and utilities
 from blueprints.core.services import (
     get_task, 
-    structured_error_response,
-    socketio,
     active_tasks,
     tasks_lock
 )
-from blueprints.core.utils import format_time_duration
+from blueprints.core.utils import format_time_duration, structured_error_response
 
 logger = logging.getLogger(__name__)
 
@@ -80,18 +78,21 @@ def emit_enhanced_task_completion(task_id, task_type="generic", output_file=None
         # Generate insights and recommendations
         payload['insights'] = generate_task_insights(payload)
         
-        # Emit the enhanced completion event
-        socketio.emit('task_completed', payload)
-        
-        # Also emit a specialized stats showcase event
-        socketio.emit('task_stats_showcase', {
-            'task_id': task_id,
-            'task_type': task_type,
-            'stats': payload.get('stats', {}),
-            'summary': payload.get('summary', {}),
-            'insights': payload.get('insights', {}),
-            'timestamp': time.time()
-        })
+        # Emit the enhanced completion event  
+        from flask import current_app
+        socketio = getattr(current_app, 'socketio', None)
+        if socketio:
+            socketio.emit('task_completed', payload)
+            
+            # Also emit a specialized stats showcase event
+            socketio.emit('task_stats_showcase', {
+                'task_id': task_id,
+                'task_type': task_type,
+                'stats': payload.get('stats', {}),
+                'summary': payload.get('summary', {}),
+                'insights': payload.get('insights', {}),
+                'timestamp': time.time()
+            })
         
         logger.info(f"Emitted enhanced task completion for {task_id} with full stats")
         
@@ -899,11 +900,61 @@ def get_task_history():
     """
     Get task processing history with analytics.
     
+    Query parameters:
+        - limit: Number of results (default: 20, max: 100)
+        - offset: Offset for pagination (default: 0)
+        - task_type: Filter by task type (optional)
+        
     Returns:
         JSON response with task history and analytics
     """
-    # Implementation will be moved here
-    pass
+    try:
+        # Get query parameters
+        limit = min(int(request.args.get('limit', 20)), 100)
+        offset = max(int(request.args.get('offset', 0)), 0)
+        task_type_filter = request.args.get('task_type')
+        
+        with task_history_lock:
+            # Filter by task type if specified
+            filtered_history = task_history
+            if task_type_filter:
+                filtered_history = [
+                    entry for entry in task_history 
+                    if entry.get('task_type') == task_type_filter
+                ]
+            
+            # Sort by completion time (most recent first)
+            sorted_history = sorted(
+                filtered_history, 
+                key=lambda x: x.get('completed_at', ''), 
+                reverse=True
+            )
+            
+            # Apply pagination
+            paginated_history = sorted_history[offset:offset + limit]
+            
+            response = {
+                'history': paginated_history,
+                'pagination': {
+                    'total': len(sorted_history),
+                    'limit': limit,
+                    'offset': offset,
+                    'has_more': offset + limit < len(sorted_history)
+                },
+                'filters': {
+                    'task_type': task_type_filter
+                }
+            }
+            
+            return jsonify(response)
+            
+    except Exception as e:
+        logger.error(f"Error retrieving task history: {e}")
+        return structured_error_response(
+            "HISTORY_RETRIEVAL_ERROR",
+            f"Error retrieving task history: {str(e)}",
+            500
+        )
 
 
 @analytics_bp.route("/tasks/analytics", methods=["GET"])
@@ -911,12 +962,317 @@ def get_task_analytics():
     """
     Get aggregated analytics across all tasks.
     
+    Query parameters:
+        - period: Time period filter (all, today, week, month)
+        - task_type: Filter by specific task type
+        
     Returns:
         JSON response with aggregated analytics
     """
-    # Implementation will be moved here
-    pass
+    try:
+        period = request.args.get('period', 'all')
+        task_type_filter = request.args.get('task_type')
+        
+        with task_history_lock:
+            # Filter by task type if specified
+            filtered_history = task_history
+            if task_type_filter:
+                filtered_history = [
+                    entry for entry in task_history 
+                    if entry.get('task_type') == task_type_filter
+                ]
+            
+            # Filter by time period
+            if period != 'all':
+                from datetime import datetime, timedelta
+                now = datetime.now()
+                
+                if period == 'today':
+                    cutoff = now - timedelta(days=1)
+                elif period == 'week':
+                    cutoff = now - timedelta(days=7)
+                elif period == 'month':
+                    cutoff = now - timedelta(days=30)
+                else:
+                    cutoff = None
+                
+                if cutoff:
+                    filtered_history = [
+                        entry for entry in filtered_history
+                        if datetime.fromisoformat(entry.get('completed_at', '1900-01-01')) > cutoff
+                    ]
+            
+            if not filtered_history:
+                return jsonify({
+                    'message': 'No task history available for the specified filters',
+                    'analytics': {},
+                    'filters': {
+                        'period': period,
+                        'task_type': task_type_filter
+                    }
+                })
+            
+            # Calculate aggregated analytics
+            analytics = {
+                'overview': calculate_overview_analytics(filtered_history),
+                'performance_trends': calculate_performance_trends(filtered_history),
+                'task_type_distribution': calculate_task_type_distribution(filtered_history),
+                'efficiency_analysis': calculate_efficiency_analysis(filtered_history),
+                'quality_metrics': calculate_quality_metrics(filtered_history),
+                'generated_at': datetime.now().isoformat(),
+                'filters': {
+                    'period': period,
+                    'task_type': task_type_filter
+                }
+            }
+            
+            return jsonify(analytics)
+            
+    except Exception as e:
+        logger.error(f"Error generating task analytics: {e}")
+        return structured_error_response(
+            "ANALYTICS_ERROR",
+            f"Error generating analytics: {str(e)}",
+            500
+        )
 
 
-# Export the blueprint
-__all__ = ['analytics_bp']
+def calculate_overview_analytics(history):
+    """Calculate overview analytics from task history."""
+    try:
+        total_tasks = len(history)
+        if total_tasks == 0:
+            return {'message': 'No tasks to analyze'}
+        
+        # Calculate totals from completed tasks
+        total_files = sum(
+            entry.get('stats', {}).get('processed_files', 0) 
+            for entry in history
+        )
+        
+        total_duration = sum(
+            entry.get('stats', {}).get('duration_seconds', 0) 
+            for entry in history
+        )
+        
+        total_errors = sum(
+            entry.get('stats', {}).get('error_files', 0) 
+            for entry in history
+        )
+        
+        # Calculate averages
+        avg_completion_rate = sum(
+            entry.get('stats', {}).get('completion_metrics', {}).get('completion_rate', 0)
+            for entry in history
+        ) / total_tasks if total_tasks > 0 else 0
+        
+        # Count task types
+        task_types = set(entry.get('task_type', 'unknown') for entry in history)
+        
+        return {
+            'total_tasks': total_tasks,
+            'unique_task_types': len(task_types),
+            'total_files_processed': total_files,
+            'total_errors': total_errors,
+            'total_processing_time': format_duration(total_duration),
+            'average_completion_rate': round(avg_completion_rate, 2),
+            'average_files_per_task': round(total_files / total_tasks, 2) if total_tasks > 0 else 0,
+            'error_rate': round((total_errors / total_files * 100) if total_files > 0 else 0, 2)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating overview analytics: {e}")
+        return {'error': str(e)}
+
+
+def calculate_performance_trends(history):
+    """Calculate performance trends over time."""
+    try:
+        if len(history) < 2:
+            return {'message': 'Insufficient data for trend analysis'}
+        
+        # Sort by completion time
+        sorted_history = sorted(
+            history, 
+            key=lambda x: x.get('completed_at', '')
+        )
+        
+        # Calculate trend data
+        recent_tasks = sorted_history[-5:]  # Last 5 tasks
+        older_tasks = sorted_history[:-5] if len(sorted_history) > 5 else []
+        
+        trend_data = {
+            'sample_size': len(recent_tasks),
+            'comparison_size': len(older_tasks)
+        }
+        
+        if recent_tasks:
+            recent_avg_rate = sum(
+                task.get('stats', {}).get('completion_metrics', {}).get('completion_rate', 0)
+                for task in recent_tasks
+            ) / len(recent_tasks)
+            
+            trend_data['recent_average_completion_rate'] = round(recent_avg_rate, 2)
+            
+            if older_tasks:
+                older_avg_rate = sum(
+                    task.get('stats', {}).get('completion_metrics', {}).get('completion_rate', 0)
+                    for task in older_tasks
+                ) / len(older_tasks)
+                
+                trend_data['historical_average_completion_rate'] = round(older_avg_rate, 2)
+                trend_data['trend_direction'] = 'improving' if recent_avg_rate > older_avg_rate else 'declining'
+                trend_data['trend_magnitude'] = round(abs(recent_avg_rate - older_avg_rate), 2)
+            else:
+                trend_data['trend_direction'] = 'stable'
+                trend_data['trend_magnitude'] = 0
+        
+        return trend_data
+        
+    except Exception as e:
+        logger.error(f"Error calculating performance trends: {e}")
+        return {'error': str(e)}
+
+
+def calculate_task_type_distribution(history):
+    """Calculate distribution of task types."""
+    try:
+        task_type_counts = {}
+        task_type_performance = {}
+        
+        for entry in history:
+            task_type = entry.get('task_type', 'unknown')
+            task_type_counts[task_type] = task_type_counts.get(task_type, 0) + 1
+            
+            # Track performance by type
+            completion_rate = entry.get('stats', {}).get('completion_metrics', {}).get('completion_rate', 0)
+            if task_type not in task_type_performance:
+                task_type_performance[task_type] = []
+            task_type_performance[task_type].append(completion_rate)
+        
+        # Calculate average performance by type
+        for task_type in task_type_performance:
+            rates = task_type_performance[task_type]
+            task_type_performance[task_type] = {
+                'average_completion_rate': round(sum(rates) / len(rates), 2),
+                'task_count': len(rates)
+            }
+        
+        return {
+            'distribution': task_type_counts,
+            'performance_by_type': task_type_performance
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating task type distribution: {e}")
+        return {'error': str(e)}
+
+
+def calculate_efficiency_analysis(history):
+    """Calculate efficiency analysis across tasks."""
+    try:
+        efficiency_grades = {}
+        efficiency_scores = []
+        
+        for entry in history:
+            grade = entry.get('stats', {}).get('efficiency_metrics', {}).get('efficiency_grade', 'Unknown')
+            score = entry.get('stats', {}).get('efficiency_metrics', {}).get('efficiency_score', 0)
+            
+            efficiency_grades[grade] = efficiency_grades.get(grade, 0) + 1
+            if score > 0:
+                efficiency_scores.append(score)
+        
+        avg_efficiency = sum(efficiency_scores) / len(efficiency_scores) if efficiency_scores else 0
+        
+        return {
+            'grade_distribution': efficiency_grades,
+            'average_efficiency_score': round(avg_efficiency, 2),
+            'total_analyzed': len(efficiency_scores)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating efficiency analysis: {e}")
+        return {'error': str(e)}
+
+
+def calculate_quality_metrics(history):
+    """Calculate quality metrics across tasks."""
+    try:
+        quality_scores = []
+        quality_flags_count = {}
+        data_integrity_levels = {}
+        
+        for entry in history:
+            quality_indicators = entry.get('stats', {}).get('quality_indicators', {})
+            
+            # Quality scores
+            score = quality_indicators.get('quality_score', 0)
+            if score > 0:
+                quality_scores.append(score)
+            
+            # Data integrity
+            integrity = quality_indicators.get('data_integrity', 'Unknown')
+            data_integrity_levels[integrity] = data_integrity_levels.get(integrity, 0) + 1
+            
+            # Quality flags
+            flags = quality_indicators.get('quality_flags', [])
+            for flag in flags:
+                quality_flags_count[flag] = quality_flags_count.get(flag, 0) + 1
+        
+        avg_quality = sum(quality_scores) / len(quality_scores) if quality_scores else 0
+        
+        return {
+            'average_quality_score': round(avg_quality, 2),
+            'data_integrity_distribution': data_integrity_levels,
+            'common_quality_issues': dict(sorted(
+                quality_flags_count.items(), 
+                key=lambda x: x[1], 
+                reverse=True
+            )[:5]),  # Top 5 issues
+            'total_quality_assessments': len(quality_scores)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating quality metrics: {e}")
+        return {'error': str(e)}
+
+
+# Fallback implementations for missing functions
+def emit_task_completion(task_id, task_type, output_file=None, stats=None, details=None):
+    """Fallback for standard task completion emission."""
+    try:
+        payload = {
+            'task_id': task_id,
+            'task_type': task_type,
+            'status': 'completed',
+            'progress': 100,
+            'message': f"{task_type.replace('_', ' ').title()} completed",
+            'timestamp': time.time()
+        }
+        
+        if output_file:
+            payload['output_file'] = output_file
+        if stats:
+            payload['stats'] = stats if isinstance(stats, dict) else {}
+        if details:
+            payload['details'] = details
+            
+        socketio.emit('task_completed', payload)
+        logger.info(f"Emitted task completion for {task_id}")
+        
+    except Exception as e:
+        logger.error(f"Error emitting task completion: {e}")
+
+
+# Export the blueprint and key functions
+__all__ = [
+    'analytics_bp',
+    'emit_enhanced_task_completion',
+    'process_completion_stats', 
+    'calculate_completion_metrics',
+    'generate_stats_summary',
+    'add_task_to_history',
+    'enhance_processing_task_completion',
+    'task_history',
+    'task_history_lock'
+]

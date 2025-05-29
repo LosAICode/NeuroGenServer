@@ -50,9 +50,10 @@ def get_task(task_id):
         if task_id in api_task_registry:
             return api_task_registry[task_id]
     
-    # Check core services registry
-    from blueprints.core.services import get_task as services_get_task
-    return services_get_task(task_id)
+    # Check core services registry using already imported get_task
+    from blueprints.core.services import active_tasks
+    with tasks_lock:
+        return active_tasks.get(task_id)
 
 # Task history storage and lock for thread safety
 task_history = []
@@ -438,8 +439,66 @@ def export_task_stats(task_id):
         if export_format not in ['json', 'csv']:
             return jsonify({"error": "Unsupported export format"}), 400
         
-        # TODO: Implement actual export functionality
-        return jsonify({"error": "Export functionality not implemented yet"}), 501
+        task_info = api_task_registry[task_id]
+        
+        # Calculate duration if possible
+        duration = None
+        if task_info.get('completed_at') and task_info.get('created_at'):
+            duration = task_info['completed_at'] - task_info['created_at']
+        
+        # Prepare export data
+        export_data = {
+            "task_id": task_id,
+            "type": task_info.get('type', 'unknown'),
+            "status": task_info.get('status', 'unknown'),
+            "progress": task_info.get('progress', 0),
+            "duration_seconds": duration,
+            "duration_formatted": format_duration(duration) if duration else None,
+            "created_at": datetime.fromtimestamp(task_info.get('created_at', 0)).isoformat() if task_info.get('created_at') else None,
+            "started_at": datetime.fromtimestamp(task_info.get('started_at', 0)).isoformat() if task_info.get('started_at') else None,
+            "completed_at": datetime.fromtimestamp(task_info.get('completed_at', 0)).isoformat() if task_info.get('completed_at') else None,
+            "error_count": task_info.get('error_count', 0),
+            "custom_stats": task_info.get('stats', {})
+        }
+        
+        if export_format == 'json':
+            return jsonify(export_data), 200
+        
+        elif export_format == 'csv':
+            # Convert to CSV format
+            import csv
+            import io
+            
+            # Flatten the data for CSV
+            flat_data = {
+                'Task ID': task_id,
+                'Type': export_data['type'],
+                'Status': export_data['status'],
+                'Progress': f"{export_data['progress']}%",
+                'Duration': export_data['duration_formatted'] or 'N/A',
+                'Created At': export_data['created_at'] or 'N/A',
+                'Started At': export_data['started_at'] or 'N/A',
+                'Completed At': export_data['completed_at'] or 'N/A',
+                'Error Count': export_data['error_count']
+            }
+            
+            # Add custom stats if any
+            custom_stats = export_data.get('custom_stats', {})
+            if custom_stats:
+                for key, value in custom_stats.items():
+                    flat_data[f'Stats - {key}'] = value
+            
+            # Create CSV
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=flat_data.keys())
+            writer.writeheader()
+            writer.writerow(flat_data)
+            
+            # Create response
+            response = current_app.make_response(output.getvalue())
+            response.headers["Content-Disposition"] = f"attachment; filename=task_{task_id}_stats.csv"
+            response.headers["Content-type"] = "text/csv"
+            return response
         
     except Exception as e:
         logger.error(f"Error exporting stats for task {task_id}: {str(e)}")
@@ -718,5 +777,6 @@ __all__ = [
     'register_task', 'update_task_progress', 'complete_task', 
     'api_task_registry',
     'add_task_to_history', 'process_completion_stats', 'generate_stats_summary',
-    'task_history', 'task_history_lock'
+    'task_history', 'task_history_lock',
+    'task_registry', 'get_task'
 ]

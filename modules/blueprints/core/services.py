@@ -11,7 +11,7 @@ import threading
 import time
 from datetime import datetime
 from functools import wraps
-from flask import request
+from flask import request, jsonify
 from typing import Optional, Dict, Any, Union, List, Set
 from abc import ABC, abstractmethod
 
@@ -19,9 +19,11 @@ logger = logging.getLogger(__name__)
 
 # Export main classes and functions for use by other modules
 __all__ = [
-    'ApiKeyManager', 'Limiter', 'ProcessingTask', 'ScraperTask', 'PlaylistTask',
-    'get_task', 'add_task', 'remove_task', 'active_tasks', 'tasks_lock',
-    'require_api_key'
+    'ApiKeyManager', 'Limiter', 'CustomFileStats', 'BaseTask', 'ProcessingTask', 
+    'ScraperTask', 'PlaylistTask', 'get_task', 'add_task', 'remove_task', 
+    'active_tasks', 'tasks_lock', 'require_api_key', 'emit_task_completion',
+    'emit_task_error', 'emit_task_cancelled', 'emit_progress_update',
+    'structured_error_response'
 ]
 
 # ----------------------------------------------------------------------------
@@ -3956,3 +3958,174 @@ def require_api_key(f):
         
         return f(*args, **kwargs)
     return decorated_function
+
+
+# ----------------------------------------------------------------------------
+# Standalone Socket.IO Emission Functions
+# ----------------------------------------------------------------------------
+
+def emit_task_completion(task_id, task_type="generic", output_file=None, stats=None, details=None):
+    """
+    Emit a task completion event via Socket.IO.
+    
+    Args:
+        task_id: Unique identifier for the task
+        task_type: Type of task 
+        output_file: Optional path to the output file
+        stats: Optional final statistics object or dict
+        details: Optional additional details
+    """
+    try:
+        from flask import current_app
+        socketio = getattr(current_app, 'socketio', None)
+        if not socketio:
+            logger.warning("SocketIO not available for task completion emission")
+            return
+            
+        payload = {
+            'task_id': task_id,
+            'task_type': task_type,
+            'status': 'completed',
+            'progress': 100,
+            'message': f"{task_type.replace('_', ' ').title()} completed successfully",
+            'timestamp': time.time()
+        }
+        
+        # Include output file if provided
+        if output_file:
+            payload['output_file'] = output_file
+            
+        # Process stats for serialization
+        if stats:
+            if hasattr(stats, 'to_dict') and callable(stats.to_dict):
+                payload['stats'] = stats.to_dict()
+            elif isinstance(stats, dict):
+                payload['stats'] = stats
+            else:
+                try:
+                    payload['stats'] = stats.__dict__ if hasattr(stats, '__dict__') else str(stats)
+                except (AttributeError, TypeError):
+                    payload['stats'] = {'raw_stats': str(stats)}
+                    
+        # Include additional details
+        if details:
+            payload['details'] = details
+            
+        socketio.emit('task_completed', payload)
+        logger.info(f"Emitted task_completed for task {task_id}")
+    except Exception as e:
+        logger.error(f"Error emitting task_completed: {e}")
+
+
+def emit_task_error(task_id, error_message, error_details=None, stats=None):
+    """
+    Emit a task error event via Socket.IO.
+    
+    Args:
+        task_id: Unique identifier for the task
+        error_message: Error message string
+        error_details: Optional additional error details
+        stats: Optional statistics at time of error
+    """
+    try:
+        from flask import current_app
+        socketio = getattr(current_app, 'socketio', None)
+        if not socketio:
+            logger.warning("SocketIO not available for task error emission")
+            return
+            
+        payload = {
+            'task_id': task_id,
+            'status': 'failed',
+            'error': error_message,
+            'timestamp': time.time()
+        }
+        
+        # Include error details if provided
+        if error_details:
+            payload['error_details'] = error_details
+            
+        # Process stats for serialization
+        if stats:
+            if hasattr(stats, 'to_dict') and callable(stats.to_dict):
+                payload['stats'] = stats.to_dict()
+            elif isinstance(stats, dict):
+                payload['stats'] = stats
+            else:
+                try:
+                    payload['stats'] = stats.__dict__ if hasattr(stats, '__dict__') else str(stats)
+                except (AttributeError, TypeError):
+                    payload['stats'] = {'raw_stats': str(stats)}
+                    
+        socketio.emit('task_failed', payload)
+        logger.info(f"Emitted task_failed for task {task_id}")
+    except Exception as e:
+        logger.error(f"Error emitting task_error: {e}")
+
+
+def emit_task_cancelled(task_id, reason=None):
+    """
+    Emit a task cancellation event via Socket.IO.
+    
+    Args:
+        task_id: Unique identifier for the task
+        reason: Optional reason for cancellation
+    """
+    try:
+        from flask import current_app
+        socketio = getattr(current_app, 'socketio', None)
+        if not socketio:
+            logger.warning("SocketIO not available for task cancellation emission")
+            return
+            
+        payload = {
+            'task_id': task_id,
+            'status': 'cancelled',
+            'message': 'Task cancelled by user' if not reason else f"Task cancelled: {reason}",
+            'timestamp': time.time()
+        }
+        
+        socketio.emit('task_cancelled', payload)
+        logger.info(f"Emitted task_cancelled for task {task_id}")
+    except Exception as e:
+        logger.error(f"Error emitting task_cancelled: {e}")
+
+
+def emit_progress_update(task_id, progress, message=None, details=None):
+    """
+    Emit a progress update event via Socket.IO.
+    
+    Args:
+        task_id: Unique identifier for the task
+        progress: Progress percentage (0-100)
+        message: Optional progress message
+        details: Optional additional details
+    """
+    try:
+        from flask import current_app
+        socketio = getattr(current_app, 'socketio', None)
+        if not socketio:
+            logger.warning("SocketIO not available for progress update emission")
+            return
+            
+        payload = {
+            'task_id': task_id,
+            'progress': progress,
+            'message': message or f"Progress: {progress}%",
+            'timestamp': time.time()
+        }
+        
+        if details:
+            payload['details'] = details
+            
+        socketio.emit('progress_update', payload)
+        logger.debug(f"Emitted progress_update for task {task_id}: {progress}%")
+    except Exception as e:
+        logger.error(f"Error emitting progress_update: {e}")
+
+
+def structured_error_response(code: str, message: str, status_code: int):
+    """Return a standardized error JSON response."""
+    resp = jsonify({"error": {"code": code, "message": message}})
+    resp.status_code = status_code
+    return resp

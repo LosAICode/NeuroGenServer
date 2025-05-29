@@ -8,6 +8,30 @@ from flask_socketio import emit
 import logging
 import uuid
 import time
+import os
+import threading
+from typing import Dict, Any, List, Optional
+from pathlib import Path
+
+# Import necessary modules and utilities
+from blueprints.core.services import (
+    add_task, get_task, remove_task,
+    structured_error_response, emit_task_error,
+    ScraperTask
+)
+from blueprints.core.utils import get_output_filepath
+from blueprints.core.structify_integration import structify_module
+
+# Try to import web_scraper module
+try:
+    import web_scraper
+    web_scraper_available = True
+except ImportError:
+    web_scraper_available = False
+    logger.warning("web_scraper module not available")
+
+# Default settings
+DEFAULT_OUTPUT_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'downloads')
 
 logger = logging.getLogger(__name__)
 
@@ -505,7 +529,7 @@ def process_url(url: str, setting: str, keyword: str = "", output_folder: str = 
     
     Args:
         url (str): The URL to process
-        setting (str): One of 'full', 'metadata', 'title', 'keyword'
+        setting (str): One of 'full', 'metadata', 'title', 'keyword', 'pdf'
         keyword (str): Optional keyword for keyword search mode
         output_folder (str): Directory where outputs should be saved
         
@@ -516,11 +540,81 @@ def process_url(url: str, setting: str, keyword: str = "", output_folder: str = 
     os.makedirs(output_folder, exist_ok=True)
     
     try:
-        # Import the function from web_scraper module
-        return web_scraper.process_url(url, setting, keyword, output_folder)
+        # If web_scraper module is available, use it
+        if web_scraper_available and hasattr(web_scraper, 'process_url'):
+            return web_scraper.process_url(url, setting, keyword, output_folder)
+        
+        # Otherwise, provide a basic implementation
+        import requests
+        from bs4 import BeautifulSoup
+        
+        result = {"url": url, "setting": setting}
+        
+        # Download the page
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        
+        if setting == 'title':
+            # Extract just the title
+            soup = BeautifulSoup(response.text, 'html.parser')
+            title = soup.find('title')
+            result['title'] = title.text.strip() if title else 'No title found'
+            
+        elif setting == 'metadata':
+            # Extract metadata
+            soup = BeautifulSoup(response.text, 'html.parser')
+            metadata = {}
+            
+            # Get title
+            title = soup.find('title')
+            metadata['title'] = title.text.strip() if title else ''
+            
+            # Get meta tags
+            for meta in soup.find_all('meta'):
+                name = meta.get('name') or meta.get('property', '')
+                content = meta.get('content', '')
+                if name and content:
+                    metadata[name] = content
+            
+            result['metadata'] = metadata
+            
+        elif setting == 'keyword' and keyword:
+            # Search for keyword
+            soup = BeautifulSoup(response.text, 'html.parser')
+            text = soup.get_text()
+            occurrences = text.lower().count(keyword.lower())
+            result['keyword'] = keyword
+            result['occurrences'] = occurrences
+            result['found'] = occurrences > 0
+            
+        elif setting == 'pdf':
+            # Find PDF links
+            soup = BeautifulSoup(response.text, 'html.parser')
+            pdf_links = []
+            for link in soup.find_all('a', href=True):
+                href = link['href']
+                if href.lower().endswith('.pdf'):
+                    # Make absolute URL
+                    from urllib.parse import urljoin
+                    pdf_url = urljoin(url, href)
+                    pdf_links.append(pdf_url)
+            result['pdf_links'] = pdf_links
+            result['pdf_count'] = len(pdf_links)
+            
+        else:  # 'full' or default
+            # Save full content
+            output_file = os.path.join(output_folder, f"scraped_{int(time.time())}.html")
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(response.text)
+            result['output_file'] = output_file
+            result['content_length'] = len(response.text)
+        
+        result['status'] = 'success'
+        return result
+        
     except Exception as e:
         logger.error(f"Error processing URL {url}: {e}")
-        return {"error": str(e), "url": url}        
+        return {"error": str(e), "url": url, "status": "error"}        
 def process_url_with_settings(url, setting, keyword, output_folder):
     """
     Process a URL based on the specified setting, using the imported web_scraper functions.

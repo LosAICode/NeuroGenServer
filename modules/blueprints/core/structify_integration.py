@@ -123,24 +123,100 @@ def process_file(file_path: str, output_path: Optional[str] = None,
     if not structify_module:
         return {"status": "error", "error": "Structify module not available"}
     
-    # TODO: Move the actual process_file implementation here from app.refactor.py
-    # This is just the template structure
-    
     try:
         # Check if file exists
         if not os.path.isfile(file_path):
             return {"status": "error", "error": f"File not found: {file_path}"}
         
+        # Generate output path if not provided
+        if not output_path:
+            base_name = os.path.splitext(os.path.basename(file_path))[0]
+            output_dir = os.path.dirname(file_path)
+            output_path = os.path.join(output_dir, f"{base_name}_processed.json")
+        
         # Process based on file type
         if file_path.lower().endswith('.pdf'):
             # PDF processing logic
-            pass
-        else:
-            # General file processing logic
-            pass
-            
-        return {"status": "success", "message": "File processed successfully"}
+            if hasattr(structify_module, 'process_pdf'):
+                # Detect document type if available
+                doc_type = None
+                if hasattr(structify_module, 'detect_document_type'):
+                    try:
+                        doc_type = structify_module.detect_document_type(file_path)
+                        logger.info(f"Detected document type: {doc_type}")
+                    except Exception as e:
+                        logger.warning(f"Could not detect document type: {e}")
+                
+                # Process PDF with enhanced capabilities
+                result = structify_module.process_pdf(
+                    pdf_path=file_path,
+                    output_path=output_path,
+                    max_chunk_size=max_chunk_size,
+                    extract_tables=extract_tables,
+                    use_ocr=use_ocr and (doc_type == "scan" if doc_type else True),
+                    return_data=True
+                )
+                
+                if result:
+                    # Extract metadata from result
+                    metadata = {
+                        "document_type": doc_type,
+                        "tables_extracted": len(result.get("tables", [])),
+                        "references_extracted": len(result.get("references", [])),
+                        "page_count": result.get("page_count", 0)
+                    }
+                    
+                    return {
+                        "status": "success",
+                        "message": "PDF processed successfully",
+                        "output_path": output_path,
+                        "metadata": metadata
+                    }
+                else:
+                    return {"status": "error", "error": "PDF processing returned no data"}
+            else:
+                # Fallback to general file processing
+                logger.warning("process_pdf not available, using general file processing")
         
+        # General file processing logic (for PDFs without process_pdf or other files)
+        if process_all_files:
+            # Get file directory and create temporary output if needed
+            file_dir = os.path.dirname(file_path)
+            temp_output = output_path or os.path.join(file_dir, "temp_output.json")
+            
+            # Process single file using process_all_files with filter
+            result = process_all_files(
+                root_directory=file_dir,
+                output_file=temp_output,
+                max_chunk_size=max_chunk_size,
+                executor_type="thread",
+                max_workers=1,
+                stop_words=structify_module.DEFAULT_STOP_WORDS if hasattr(structify_module, 'DEFAULT_STOP_WORDS') else set(),
+                use_cache=False,
+                valid_extensions=[os.path.splitext(file_path)[1]],
+                ignore_dirs="",
+                stats_only=False,
+                include_binary_detection=False,
+                file_filter=lambda f: f == file_path
+            )
+            
+            # Check if output was created
+            if os.path.exists(temp_output):
+                # If we used a different output path, rename it
+                if temp_output != output_path and output_path:
+                    os.rename(temp_output, output_path)
+                
+                return {
+                    "status": "success",
+                    "message": "File processed successfully",
+                    "output_path": output_path or temp_output,
+                    "stats": result if isinstance(result, dict) else None
+                }
+            else:
+                return {"status": "error", "error": "Processing did not create output file"}
+        else:
+            return {"status": "error", "error": "No processing function available"}
+            
     except Exception as e:
         logger.error(f"Error processing file {file_path}: {e}", exc_info=True)
         return {"status": "error", "error": str(e)}

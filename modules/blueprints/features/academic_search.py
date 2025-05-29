@@ -305,7 +305,14 @@ except ImportError:
 academic_search_bp = Blueprint('academic_search', __name__, url_prefix='/api/academic')
 
 # Export the blueprint and utility functions
-__all__ = ['academic_search_bp']
+__all__ = [
+    'academic_search_bp',
+    'format_search_results',
+    'search_academic_source', 
+    'get_paper_citations',
+    'recommend_related_papers',
+    'get_paper_details'
+]
 
 # Initialize the blueprint when it's registered
 def init_blueprint(app):

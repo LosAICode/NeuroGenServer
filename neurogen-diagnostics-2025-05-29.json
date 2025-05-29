@@ -271,7 +271,7 @@
         "url": "/api/pdf/cancel/<task_id>"
       },
       "capabilities": {
-        "exists": true,
+        "exists": false,
         "methods": [
           "GET"
         ],
@@ -411,7 +411,193 @@
       }
     }
   },
-  "issues": [],
+  "issues": [
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/errorHandler.js",
+      "module": "core/errorHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/uiRegistry.js",
+      "module": "core/uiRegistry.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/stateManager.js",
+      "module": "core/stateManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventRegistry.js",
+      "module": "core/eventRegistry.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventManager.js",
+      "module": "core/eventManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/themeManager.js",
+      "module": "core/themeManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/module-bridge.js",
+      "module": "core/module-bridge.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/ui.js",
+      "module": "core/ui.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/domUtils.js",
+      "module": "core/domUtils.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/app.js",
+      "module": "core/app.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/moduleLoader.js",
+      "module": "core/moduleLoader.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/index.js",
+      "module": "core/index.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/socketHandler.js",
+      "module": "utils/socketHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/progressHandler.js",
+      "module": "utils/progressHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/ui.js",
+      "module": "utils/ui.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/utils.js",
+      "module": "utils/utils.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/fileHandler.js",
+      "module": "utils/fileHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/domUtils.js",
+      "module": "utils/domUtils.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/moduleDiagnostics.js",
+      "module": "utils/moduleDiagnostics.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/systemHealth.js",
+      "module": "utils/systemHealth.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/debugTools.js",
+      "module": "utils/debugTools.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/safeFileProcessor.js",
+      "module": "utils/safeFileProcessor.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/fileProcessor.js",
+      "module": "features/fileProcessor.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/webScraper.js",
+      "module": "features/webScraper.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/playlistDownloader.js",
+      "module": "features/playlistDownloader.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicSearch.js",
+      "module": "features/academicSearch.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicScraper.js",
+      "module": "features/academicScraper.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicApiClient.js",
+      "module": "features/academicApiClient.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/historyManager.js",
+      "module": "features/historyManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/pdfProcessor.js",
+      "module": "features/pdfProcessor.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/helpMode.js",
+      "module": "features/helpMode.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/performanceOptimizer.js",
+      "module": "features/performanceOptimizer.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/keyboardShortcuts.js",
+      "module": "features/keyboardShortcuts.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/dragDropHandler.js",
+      "module": "features/dragDropHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "file": "index.js",
+      "message": "Critical file missing: /workspace/modules/blueprints/static/js/index.js",
+      "type": "CRITICAL_FILE_MISSING"
+    },
+    {
+      "file": "index.html",
+      "message": "Critical file missing: /workspace/modules/blueprints/templates/index.html",
+      "type": "CRITICAL_FILE_MISSING"
+    },
+    {
+      "endpoint": "pdfProcessor.capabilities",
+      "message": "API endpoint not found: /api/pdf-capabilities",
+      "type": "ENDPOINT_MISSING"
+    }
+  ],
   "moduleLoadingInfo": {
     "entryPoint": "/static/js/index.js",
     "loadOrder": [
@@ -438,369 +624,380 @@
   "modules": {
     "core": {
       "app": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-14T21:33:30.415089",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "app.js",
         "path": "/static/js/modules/core/app.js",
-        "size": 13968,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "domUtils": {
-        "exists": true,
-        "hasExports": true,
+        "exists": false,
+        "hasExports": false,
         "hasImports": false,
-        "modified": "2025-05-14T02:52:44.260243",
+        "modified": null,
         "name": "domUtils.js",
         "path": "/static/js/modules/core/domUtils.js",
-        "size": 5387,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "errorHandler": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-10T22:19:04.616583",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "errorHandler.js",
         "path": "/static/js/modules/core/errorHandler.js",
-        "size": 23584,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "eventManager": {
-        "exists": true,
-        "hasExports": true,
+        "exists": false,
+        "hasExports": false,
         "hasImports": false,
-        "modified": "2025-04-10T19:25:51.518483",
+        "modified": null,
         "name": "eventManager.js",
         "path": "/static/js/modules/core/eventManager.js",
-        "size": 23291,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "eventRegistry": {
-        "exists": true,
-        "hasExports": true,
+        "exists": false,
+        "hasExports": false,
         "hasImports": false,
-        "modified": "2025-04-14T21:23:39.377002",
+        "modified": null,
         "name": "eventRegistry.js",
         "path": "/static/js/modules/core/eventRegistry.js",
-        "size": 25809,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "index": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T18:38:26.294785",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "index.js",
         "path": "/static/js/modules/core/index.js",
-        "size": 1019,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "module-bridge": {
-        "exists": true,
-        "hasExports": true,
+        "exists": false,
+        "hasExports": false,
         "hasImports": false,
-        "modified": "2025-05-15T11:50:31.691245",
+        "modified": null,
         "name": "module-bridge.js",
         "path": "/static/js/modules/core/module-bridge.js",
-        "size": 9971,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "moduleLoader": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T20:29:10.041391",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "moduleLoader.js",
         "path": "/static/js/modules/core/moduleLoader.js",
-        "size": 123596,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "stateManager": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-14T21:15:28.736559",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "stateManager.js",
         "path": "/static/js/modules/core/stateManager.js",
-        "size": 49285,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "themeManager": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-21T22:32:33.409238",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "themeManager.js",
         "path": "/static/js/modules/core/themeManager.js",
-        "size": 36779,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "ui": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-27T01:27:53.412724",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "ui.js",
         "path": "/static/js/modules/core/ui.js",
-        "size": 43963,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "uiRegistry": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-10T19:54:30.767081",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "uiRegistry.js",
         "path": "/static/js/modules/core/uiRegistry.js",
-        "size": 16064,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       }
     },
     "features": {
       "academicApiClient": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-09T21:57:54.269664",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "academicApiClient.js",
         "path": "/static/js/modules/features/academicApiClient.js",
-        "size": 11799,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "academicScraper": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-11T00:23:03.937108",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "academicScraper.js",
         "path": "/static/js/modules/features/academicScraper.js",
-        "size": 16563,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "academicSearch": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T19:14:44.187374",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "academicSearch.js",
         "path": "/static/js/modules/features/academicSearch.js",
-        "size": 48220,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "dragDropHandler": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T20:41:07.051727",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "dragDropHandler.js",
         "path": "/static/js/modules/features/dragDropHandler.js",
-        "size": 12361,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "fileProcessor": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-27T09:59:54.887348",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "fileProcessor.js",
         "path": "/static/js/modules/features/fileProcessor.js",
-        "size": 110309,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "helpMode": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-09T21:57:54.101662",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "helpMode.js",
         "path": "/static/js/modules/features/helpMode.js",
-        "size": 18695,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "historyManager": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-14T13:57:40.669776",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "historyManager.js",
         "path": "/static/js/modules/features/historyManager.js",
-        "size": 72521,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "keyboardShortcuts": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T20:38:56.807231",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "keyboardShortcuts.js",
         "path": "/static/js/modules/features/keyboardShortcuts.js",
-        "size": 6659,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "pdfProcessor": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-14T16:38:39.639627",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "pdfProcessor.js",
         "path": "/static/js/modules/features/pdfProcessor.js",
-        "size": 57950,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "performanceOptimizer": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-09T21:57:54.184663",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "performanceOptimizer.js",
         "path": "/static/js/modules/features/performanceOptimizer.js",
-        "size": 18590,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "playlistDownloader": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-12T16:50:53.764014",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "playlistDownloader.js",
         "path": "/static/js/modules/features/playlistDownloader.js",
-        "size": 111459,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "webScraper": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-23T14:06:08.130969",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "webScraper.js",
         "path": "/static/js/modules/features/webScraper.js",
-        "size": 59274,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       }
     },
     "utils": {
       "debugTools": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-08T18:09:25.320036",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "debugTools.js",
         "path": "/static/js/modules/utils/debugTools.js",
-        "size": 46509,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "domUtils": {
-        "exists": true,
-        "hasExports": true,
+        "exists": false,
+        "hasExports": false,
         "hasImports": false,
-        "modified": "2025-05-15T11:50:59.360844",
+        "modified": null,
         "name": "domUtils.js",
         "path": "/static/js/modules/utils/domUtils.js",
-        "size": 5417,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "fileHandler": {
-        "exists": true,
-        "hasExports": true,
+        "exists": false,
+        "hasExports": false,
         "hasImports": false,
-        "modified": "2025-04-10T16:39:21.219353",
+        "modified": null,
         "name": "fileHandler.js",
         "path": "/static/js/modules/utils/fileHandler.js",
-        "size": 19952,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "moduleDiagnostics": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T20:43:47.400544",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "moduleDiagnostics.js",
         "path": "/static/js/modules/utils/moduleDiagnostics.js",
-        "size": 26610,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "progressHandler": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T17:46:12.605741",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "progressHandler.js",
         "path": "/static/js/modules/utils/progressHandler.js",
-        "size": 82318,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "safeFileProcessor": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T22:23:28.429462",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "safeFileProcessor.js",
         "path": "/static/js/modules/utils/safeFileProcessor.js",
-        "size": 5263,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "socketHandler": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-14T18:58:32.847262",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "socketHandler.js",
         "path": "/static/js/modules/utils/socketHandler.js",
-        "size": 59312,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "systemHealth": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T20:39:52.540478",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "systemHealth.js",
         "path": "/static/js/modules/utils/systemHealth.js",
-        "size": 8756,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "ui": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-05-26T18:52:46.615334",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "ui.js",
         "path": "/static/js/modules/utils/ui.js",
-        "size": 53976,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       },
       "utils": {
-        "exists": true,
-        "hasExports": true,
-        "hasImports": true,
-        "modified": "2025-04-05T19:21:35.262655",
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
         "name": "utils.js",
         "path": "/static/js/modules/utils/utils.js",
-        "size": 15784,
-        "syntaxValid": true
+        "size": 0,
+        "syntaxValid": false
       }
     }
   },
-  "recommendations": [],
+  "recommendations": [
+    {
+      "action": "Check module file paths and ensure all files are present",
+      "message": "Found 34 missing modules",
+      "priority": "HIGH"
+    },
+    {
+      "action": "Verify backend routes are properly defined",
+      "message": "Found 1 missing API endpoints",
+      "priority": "MEDIUM"
+    }
+  ],
   "server": {
     "port": 5025,
-    "pythonVersion": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "pythonVersion": "3.12.3 (main, Feb  4 2025, 14:48:35) [GCC 13.3.0]",
     "running": true,
     "version": "1.2.3"
   },
   "summary": {
-    "checkedEndpoints": 56,
-    "foundModules": 34,
-    "health": "HEALTHY",
-    "issueCount": 0,
-    "missingEndpoints": 0,
-    "missingModules": 0,
+    "checkedEndpoints": 55,
+    "foundModules": 0,
+    "health": "CRITICAL",
+    "issueCount": 37,
+    "missingEndpoints": 1,
+    "missingModules": 34,
     "totalEndpoints": 56,
     "totalExpectedModules": 34
   },
-  "timestamp": "2025-05-27T10:12:49.550388",
-  "generatedAt": "2025-05-27T14:13:02.904Z",
+  "timestamp": "2025-05-28T21:22:19.941654",
+  "generatedAt": "2025-05-29T01:22:33.298Z",
   "reportType": "NeuroGen Module Diagnostics Report"
 }

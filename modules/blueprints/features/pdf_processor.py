@@ -15,6 +15,9 @@ import threading
 
 logger = logging.getLogger(__name__)
 
+# Constants
+DEFAULT_OUTPUT_FOLDER = "downloads"
+
 # Create the blueprint
 pdf_processor_bp = Blueprint('pdf_processor', __name__, url_prefix='/api/pdf')
 
@@ -1544,4 +1547,8 @@ def validate_pdf(pdf_path):
     
     return features
 # Export the blueprint
-__all__ = ['pdf_processor_bp']
+__all__ = [
+    'pdf_processor_bp',
+    'init_blueprint',
+    'get_limiter'
+]

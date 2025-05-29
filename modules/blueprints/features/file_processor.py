@@ -11,12 +11,67 @@ import tempfile
 import uuid
 import threading
 import time
+import json
+import re
 from pathlib import Path
+from typing import Dict, List, Optional, Set, Any, Callable
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
 from blueprints.api.management import register_task, update_task_progress, complete_task
 from blueprints.core.utils import ensure_temp_directory
 from blueprints.core.services import ProcessingTask
 
 logger = logging.getLogger(__name__)
+
+# Constants - fallback values in case import from structify fails
+DEFAULT_MAX_CHUNK_SIZE = 4096
+DEFAULT_CHUNK_OVERLAP = 200
+DEFAULT_STOP_WORDS = set(["the", "and", "or", "for", "a", "an", "of", "in", "to", "from",
+    "on", "at", "by", "this", "is", "are", "were", "was", "be", "as",
+    "it", "that", "these", "those", "with", "can", "if", "not", "no",
+    "your", "you", "i", "am", "our", "we", "they", "their", "me",
+    "have", "has", "had", "also", "too", "very", "up", "out", "about",
+    "so", "some", "any", "my", "his", "her", "he", "she", "when", "where",
+    "what", "who", "why", "how", "which", "than", "then", "them", "but"])
+DEFAULT_VALID_EXTENSIONS = [".py", ".html", ".css", ".yaml", ".yml",
+    ".txt", ".md", ".js", ".gitignore", ".ts",
+    ".json", ".csv", ".rtf", ".pdf", ".docx",
+    ".pptx", ".xlsx", ".xml", ".sh", ".bat",
+    ".java", ".c", ".cpp", ".h", ".cs", ".php",
+    ".rb", ".go", ".rs", ".swift"]
+MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
+DEFAULT_PROCESS_TIMEOUT = 600  # seconds
+DEFAULT_MEMORY_LIMIT = 1024 * 1024 * 1024  # 1GB
+CACHE_FILE = "file_cache.json"
+DEFAULT_OUTPUT_FOLDER = "downloads"
+
+# Define FileStats class for compatibility
+class FileStats:
+    def __init__(self):
+        self.processed_files = 0
+        self.skipped_files = 0
+        self.error_files = 0
+        self.total_files = 0
+        self.total_chunks = 0
+        self.pdf_files = 0
+        self.tables_extracted = 0
+        self.references_extracted = 0
+        self.scanned_pages_processed = 0
+        self.ocr_processed_files = 0
+    
+    def to_dict(self):
+        return {
+            'processed_files': self.processed_files,
+            'skipped_files': self.skipped_files,
+            'error_files': self.error_files,
+            'total_files': self.total_files,
+            'total_chunks': self.total_chunks,
+            'pdf_files': self.pdf_files,
+            'tables_extracted': self.tables_extracted,
+            'references_extracted': self.references_extracted,
+            'scanned_pages_processed': self.scanned_pages_processed,
+            'ocr_processed_files': self.ocr_processed_files
+        }
 
 # Create the blueprint
 file_processor_bp = Blueprint('file_processor', __name__, url_prefix='/api')
@@ -199,9 +254,9 @@ def process_all_files(
                     stats.skipped_files += 1
                     logger.debug(f"Skipping unchanged file: {sp}")
                     continue
-            except OSError:
+            except OSError as e:
                 # If stat fails, process the file anyway
-                pass
+                logger.debug(f"Could not stat file {sp}, will process anyway: {e}")
                 
         to_process.append(fpath)
 
@@ -368,9 +423,9 @@ def process_all_files(
                         "chunks": len(docs),
                         "last_processed": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     }
-                except OSError:
+                except OSError as e:
                     # If stat fails, skip caching this file
-                    pass
+                    logger.debug(f"Could not stat file {fpath} for caching: {e}")
 
         # Periodically save cache for large batches
         if use_cache and (i + batch_size) % (batch_size * 5) == 0:
@@ -989,7 +1044,8 @@ def detect_path():
                 logger.info(f"Found common directory: {common_base}")
                 return jsonify({"fullPath": common_base})
         except ValueError:
-            pass
+            # commonpath can fail if paths are on different drives or invalid
+            logger.debug("Could not find common path from provided file paths")
     standard_locs = [Path.cwd(), Path.home() / "Documents", Path.home() / "Desktop",
                      Path.home() / "Downloads", Path.home() / "OneDrive"]
     for base in standard_locs:
@@ -1244,5 +1300,12 @@ def start_file_processing_task(task_id, input_dir, output_file, output_dir=None)
                        socketio_instance=current_app.socketio)
 
 
-# Export the task function for use by SocketIO events
-__all__ = ['start_file_processing_task']
+# Export the blueprint and key functions
+__all__ = [
+    'file_processor_bp',
+    'start_file_processing_task',
+    'process_all_files',
+    'get_output_filepath',
+    'resolve_output_path',
+    'format_time_duration'
+]

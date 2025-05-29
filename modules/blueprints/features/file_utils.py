@@ -3,22 +3,34 @@ File Utils Blueprint
 Handles file system operations, path detection, and utility functions
 """
 
-from flask import Blueprint, request, jsonify, send_from_directory
+from flask import Blueprint, request, jsonify, send_from_directory, current_app
 import logging
 import os
 import subprocess
 import platform
+from datetime import datetime
 from typing import List, Tuple
 from werkzeug.utils import secure_filename
 
 # Import necessary modules and functions
 from blueprints.core.services import require_api_key
+from blueprints.core.config import DEFAULT_OUTPUT_FOLDER
 from blueprints.core.utils import (
     sanitize_filename, ensure_temp_directory, get_output_filepath,
     structured_error_response, normalize_path, detect_common_path_from_files
 )
 
 logger = logging.getLogger(__name__)
+
+# Optional magic library for MIME detection
+magic_available = False
+try:
+    import magic
+    magic_available = True
+    logger.info("python-magic available for MIME detection")
+except ImportError:
+    logger.warning("python-magic not available. Try installing python-magic-bin on Windows")
+    magic_available = False
 
 # Create the blueprint
 file_utils_bp = Blueprint('file_utils', __name__, url_prefix='/api')
@@ -35,7 +47,7 @@ def upload_for_path_detection():
         return structured_error_response("FOLDER_NAME_REQUIRED", "Folder name is required.", 400)
     logger.info(f"Processing uploads for folder: {folder_name}")
     safe_folder = secure_filename(folder_name)
-    upload_dir = os.path.join(app.config["UPLOAD_FOLDER"], safe_folder)
+    upload_dir = os.path.join(current_app.config.get("UPLOAD_FOLDER", DEFAULT_OUTPUT_FOLDER), safe_folder)
     os.makedirs(upload_dir, exist_ok=True)
     files = request.files.getlist("files")
     for f in files:
