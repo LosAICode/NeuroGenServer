@@ -25,6 +25,11 @@
 // Import DOM utilities from domUtils.js to avoid redeclarations
 import { getElement, getElements, getUIElements, toggleElementVisibility } from '../utils/domUtils.js';
 
+// Import Blueprint API service and configuration
+import blueprintApi from '../services/blueprintApi.js';
+import { PLAYLIST_ENDPOINTS } from '../config/endpoints.js';
+import { SOCKET_EVENTS, BLUEPRINT_EVENTS } from '../config/socketEvents.js';
+
 // Import core modules - use dynamic imports with fallbacks for error resilience 
 let errorHandler, uiRegistry, eventRegistry, stateManager, historyManager;
 
@@ -579,7 +584,7 @@ const playlistDownloader = {
     // Request status update for ongoing task
     if (state.currentTaskId && state.processing) {
       if (window.socket && typeof window.socket.emit === 'function') {
-        window.socket.emit('request_status', { task_id: state.currentTaskId });
+        window.socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.REQUEST_TASK_STATUS, { task_id: state.currentTaskId });
       }
     }
     
@@ -900,7 +905,7 @@ const playlistDownloader = {
         
         // Request initial status update
         if (window.socket && typeof window.socket.emit === 'function') {
-          window.socket.emit('request_status', { task_id: taskId });
+          window.socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.REQUEST_TASK_STATUS, { task_id: taskId });
         }
       }
     } catch (error) {
@@ -943,7 +948,7 @@ const playlistDownloader = {
       
       // Request initial status update
       if (window.socket && typeof window.socket.emit === 'function') {
-        window.socket.emit('request_status', { task_id: taskId });
+        window.socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.REQUEST_TASK_STATUS, { task_id: taskId });
       }
     } catch (error) {
       console.error('Error resuming task processing:', error);
@@ -1339,23 +1344,12 @@ const playlistDownloader = {
       this.explicitlyInitializeProgressToZero();
       
       try {
-        // Send API request to start download
-        const response = await this.fetchWithRetry('/api/start-playlists', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            playlists: playlistURLs, 
-            root_directory: rootDir, 
-            output_file: resolvedOutput
-          })
-        });
-        
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(`Server error: ${response.status} - ${text}`);
-        }
-        
-        const result = await response.json();
+        // Send API request to start download using Blueprint API
+        const result = await blueprintApi.startPlaylistDownload(
+          playlistURLs,
+          rootDir,
+          resolvedOutput
+        );
         console.log('API response:', result);
         
         if (result.error) {
@@ -1571,7 +1565,7 @@ const playlistDownloader = {
       });
       
       // Request initial status
-      window.socket.emit('request_status', { task_id: taskId });
+      window.socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.REQUEST_TASK_STATUS, { task_id: taskId });
       
       console.log('Direct Socket.IO listeners setup complete');
     } catch (error) {
@@ -1631,22 +1625,12 @@ const playlistDownloader = {
     try {
       // Use socket if available
       if (window.socket && window.socket.connected) {
-        window.socket.emit('request_status', { task_id: taskId });
+        window.socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.REQUEST_TASK_STATUS, { task_id: taskId });
         return;
       }
       
-      // Otherwise, use API
-      const controller = new AbortController();
-      const signal = controller.signal;
-      
-      // Store the controller for potential cancellation
-      state.pendingRequests[taskId] = controller;
-      
-      fetch(`/api/status/${taskId}`, { 
-        method: 'GET',
-        signal: signal
-      })
-        .then(response => response.json())
+      // Otherwise, use Blueprint API
+      blueprintApi.getTaskStatus(taskId, 'playlist_downloader')
         .then(data => {
           // Process status update
           if (data) {
@@ -2931,23 +2915,17 @@ const playlistDownloader = {
       
       // Use socket for cancellation if available
       if (window.socket && typeof window.socket.emit === 'function') {
-        window.socket.emit('cancel_task', { task_id: targetTaskId });
+        window.socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.CANCEL_TASK, { task_id: targetTaskId });
         
         // As a fallback, also try API
         try {
-          await fetch(`/api/cancel-playlists/${targetTaskId}`, { method: 'POST' });
+          await blueprintApi.cancelPlaylistDownload(targetTaskId);
         } catch (apiError) {
           console.warn('API cancellation failed, socket cancellation may still succeed');
         }
       } else {
-        // Use API directly
-        const response = await fetch(`/api/cancel-playlists/${targetTaskId}`, { method: 'POST' });
-        
-        if (!response.ok) {
-          const text = await response.text();
-          console.error(`Error cancelling task: ${response.status} - ${text}`);
-          throw new Error(`Failed to cancel task: ${response.status}`);
-        }
+        // Use Blueprint API directly
+        await blueprintApi.cancelPlaylistDownload(targetTaskId);
       }
       
       // Cancel any pending requests
@@ -3019,17 +2997,8 @@ const playlistDownloader = {
         return;
       }
       
-      // Try using API as fallback
-      const response = await fetch('/api/open-file', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path })
-      });
-      
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Failed to open file: ${text}`);
-      }
+      // Use Blueprint API as fallback
+      await blueprintApi.openFile(path);
       
       console.log(`File opened: ${path}`);
     } catch (error) {

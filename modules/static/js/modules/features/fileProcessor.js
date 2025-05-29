@@ -44,6 +44,11 @@ import progressHandler, {
 // Import UI module
 import ui from '../utils/ui.js';
 
+// Import Blueprint API service and configuration
+import blueprintApi from '../services/blueprintApi.js';
+import { FILE_ENDPOINTS } from '../config/endpoints.js';
+import { SOCKET_EVENTS, BLUEPRINT_EVENTS } from '../config/socketEvents.js';
+
 // Create fallback UI if needed
 const fallbackUI = {
     showToast: (title, message, type = 'info') => {
@@ -830,12 +835,7 @@ const fileProcessor = {
     if (!taskId) return null;
     
     try {
-      const response = await this.fetchWithRetry(`/api/status/${taskId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to check task status: ${response.status}`);
-      }
-      
-      return await response.json();
+      return await blueprintApi.getTaskStatus(taskId, 'file_processor');
     } catch (error) {
       console.error(`Error checking task progress: ${error.message}`);
       return null;
@@ -853,12 +853,7 @@ const fileProcessor = {
       
       // Try to verify task exists on server
       try {
-        const response = await this.fetchWithRetry(`/api/status/${taskId}`);
-        if (!response.ok) {
-          throw new Error("Task not found on server");
-        }
-        
-        const data = await response.json();
+        const data = await blueprintApi.getTaskStatus(taskId, 'file_processor');
         // If task exists but status is not active, handle it appropriately
         if (data.status === "error" || data.status === "completed" || data.status === "cancelled") {
           console.warn(`Task exists but has inactive status: ${data.status}`);
@@ -1002,12 +997,7 @@ const fileProcessor = {
         }
         
         try {
-          const response = await this.fetchWithRetry(`/api/status/${taskId}`);
-          if (!response.ok) {
-            throw new Error(`Status check failed: ${response.status}`);
-          }
-          
-          const data = await response.json();
+          const data = await blueprintApi.getTaskStatus(taskId, 'file_processor');
           
           // Process the status update
           this.processStatusUpdate(data);
@@ -2016,23 +2006,16 @@ const fileProcessor = {
       this.logToTerminal('info', `Processing all files in directory: ${options.input_dir}`);
       this.logToTerminal('info', `Output will be saved to: ${options.output_file}.json`);
       
-      // Start the processing task
-      const response = await this.fetchWithRetry('/api/process', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData),
-        // Use long timeout for directory processing
-        timeout: 0 // No timeout for large directories
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errorData.error || `HTTP error ${response.status}`);
-      }
-      
-      const result = await response.json();
+      // Start the processing task using Blueprint API
+      const result = await blueprintApi.processFiles(
+        requestData.input_dir,
+        requestData.output_file,
+        {
+          ...requestData,
+          input_dir: undefined,
+          output_file: undefined
+        }
+      );
       console.log("Processing started:", result);
       
       if (!result.task_id) {
@@ -2121,22 +2104,9 @@ const fileProcessor = {
         await this.verifyOutputPath(options.outputPath);
       }
       
-      // Start the processing task
-      const response = await this.fetchWithRetry('/api/process', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          // Don't set Content-Type for FormData - browser will set it with boundary
-        },
-        // Use long timeout for large files
-        timeout: file.size > 10 * 1024 * 1024 ? API_TIMEOUT_MS * 2 : API_TIMEOUT_MS
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error starting processing task: ${response.status} ${response.statusText}`);
-      }
-      
-      const result = await response.json();
+      // Start the processing task using Blueprint API
+      const timeout = file.size > 10 * 1024 * 1024 ? 60000 : 30000; // 60s for large files, 30s for small
+      const result = await blueprintApi.processFileUpload(formData, timeout);
       
       // Check for task ID
       if (!result.task_id) {
@@ -2205,19 +2175,7 @@ const fileProcessor = {
    */
   async verifyOutputPath(path) {
     try {
-      const response = await this.fetchWithRetry('/api/verify-path', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ path })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Invalid output path: ${path}`);
-      }
-      
-      const result = await response.json();
+      const result = await blueprintApi.verifyPath(path);
       return result.valid;
     } catch (error) {
       this.handleError(error, "Error verifying output path");
@@ -2514,13 +2472,7 @@ const fileProcessor = {
       
       // Send cancel request to server
       try {
-        const response = await this.fetchWithRetry(`/api/cancel/${state.currentTaskId}`, {
-          method: 'POST'
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Cancel request failed: ${response.status}`);
-        }
+        await blueprintApi.cancelTask(state.currentTaskId);
         
         // The cancellation should be confirmed via socket event
         // but we'll set a timeout to force cancellation UI if needed
@@ -2726,20 +2678,10 @@ const fileProcessor = {
       
       // Try to open the file directly
       try {
-        const openResponse = await this.fetchWithRetry('/api/open-file', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ path })
-        });
-        
-        if (openResponse.ok) {
-          const result = await openResponse.json();
-          if (result.success) {
-            this.logToTerminal('info', `Opened file: ${path}`);
-            return true;
-          }
+        const result = await blueprintApi.openFile(path);
+        if (result.success) {
+          this.logToTerminal('info', `Opened file: ${path}`);
+          return true;
         }
       } catch (fileError) {
         console.warn("Error opening file directly:", fileError);
@@ -3078,19 +3020,7 @@ const fileProcessor = {
       }
       
       // If directory doesn't exist, create it
-      const createResponse = await this.fetchWithRetry('/api/create-directory', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ path: directory })
-      });
-      
-      if (!createResponse.ok) {
-        throw new Error(`Failed to create directory: ${directory}`);
-      }
-      
-      const createResult = await createResponse.json();
+      const createResult = await blueprintApi.createDirectory(directory);
       return createResult.success;
     } catch (error) {
       this.handleError(error, "Error verifying/creating output directory");
@@ -3159,23 +3089,8 @@ const fileProcessor = {
         throw new Error('No files provided');
       }
       
-      // Create FormData with multiple files
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
-      
       // Call the detect-path endpoint
-      const response = await this.fetchWithRetry('/api/detect-path', {
-        method: 'POST',
-        body: formData
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Failed to detect paths: ${response.status}`);
-      }
-      
-      return await response.json();
+      return await blueprintApi.detectPath(files);
     } catch (error) {
       this.handleError(error, "Error detecting paths from files");
       return { success: false, error: error.message };

@@ -38,6 +38,11 @@ import {
   cancelTracking
 } from '../utils/progressHandler.js';
 
+// Import Blueprint API service and configuration
+import blueprintApi from '../services/blueprintApi.js';
+import { SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, FILE_ENDPOINTS } from '../config/endpoints.js';
+import { SOCKET_EVENTS, BLUEPRINT_EVENTS } from '../config/socketEvents.js';
+
 // Socket handler for real-time communication
 let socketHandler = null;
 let socketHandlerFunctions = {
@@ -73,14 +78,13 @@ import('../utils/socketHandler.js')
 
 // Module API endpoints aligned with Blueprint structure
 const API_ENDPOINTS = {
-  SCRAPE: '/api/scrape',
-  SCRAPE_STATUS: '/api/scrape/status',
-  SCRAPE_CANCEL: '/api/scrape/cancel',
-  SCRAPE_RESULTS: '/api/scrape/results',
-  ACADEMIC_SEARCH: '/api/academic/search',
-  ACADEMIC_HEALTH: '/api/academic/health',
-  OPEN_FILE: '/api/open-file',
-  OPEN_FOLDER: '/api/open-folder',
+  SCRAPE: SCRAPER_ENDPOINTS.SCRAPE,
+  SCRAPE_STATUS: SCRAPER_ENDPOINTS.STATUS,
+  SCRAPE_CANCEL: SCRAPER_ENDPOINTS.CANCEL,
+  SCRAPE_RESULTS: SCRAPER_ENDPOINTS.RESULTS,
+  ACADEMIC_SEARCH: ACADEMIC_ENDPOINTS.SEARCH,
+  ACADEMIC_HEALTH: ACADEMIC_ENDPOINTS.HEALTH,
+  OPEN_FILE: FILE_ENDPOINTS.OPEN_FILE,  // Using Blueprint file endpoints
   DOWNLOAD: '/download'
 };
 
@@ -583,24 +587,20 @@ const webScraper = {
             this.handleError(error, "Error opening directory dialog");
           });
       } else {
-        // Fallback to server API
-        fetch('/api/open-directory-dialog', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(options)
-        })
-        .then(response => response.json())
-        .then(data => {
+        // Use Blueprint API for directory operations
+        try {
+          const data = await blueprintApi.request('/api/open-directory-dialog', {
+            method: 'POST',
+            body: JSON.stringify(options)
+          }, 'core');
+          
           if (data.success && data.path) {
             state.elements.downloadDir.value = data.path;
             this.updateStartButtonState();
           }
-        })
-        .catch(error => {
+        } catch (error) {
           this.handleError(error, "Error opening directory dialog");
-        });
+        }
       }
     } catch (error) {
       this.handleError(error, "Error browsing for directory");
@@ -633,14 +633,8 @@ const webScraper = {
       // Show results area
       academicResults.classList.remove('d-none');
       
-      // Perform search
-      fetch(`${API_ENDPOINTS.ACADEMIC_SEARCH}?query=${encodeURIComponent(query)}&source=${source}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-          }
-          return response.json();
-        })
+      // Perform search using Blueprint API
+      blueprintApi.searchAcademicPapers(query, [source], 50)
         .then(data => {
           loading.hide();
           
@@ -912,22 +906,17 @@ const webScraper = {
         pdf_options: state.pdfOptions
       };
       
-      // Call API
-      fetch(API_ENDPOINTS.SCRAPE, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      })
-      .then(response => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(`Server error (${response.status}): ${text}`);
-          });
+      // Call Blueprint API
+      blueprintApi.startWebScraping(
+        requestData.urls,
+        requestData.output_filename,
+        {
+          download_pdfs: requestData.pdf_options?.enabled || false,
+          max_pdfs: requestData.pdf_options?.max_pdfs || 10,
+          recursive: requestData.recursive || false,
+          max_depth: requestData.max_depth || 2
         }
-        return response.json();
-      })
+      )
       .then(data => {
         loading.hide();
 
@@ -986,26 +975,8 @@ const webScraper = {
    */
   async fetchTaskStatus(taskId) {
     try {
-      // Try multiple endpoints for better compatibility
-      const endpoints = [
-        `${API_ENDPOINTS.SCRAPE_STATUS}/${taskId}`,
-        `/api/task/status/${taskId}`,
-        `/api/status/${taskId}`
-      ];
-      
-      for (const endpoint of endpoints) {
-        try {
-          const response = await fetch(endpoint);
-          if (response.ok) {
-            return await response.json();
-          }
-        } catch (err) {
-          console.warn(`Error fetching from ${endpoint}:`, err);
-          // Continue to next endpoint
-        }
-      }
-      
-      throw new Error('Failed to fetch task status from any endpoint');
+      // Use Blueprint API for status checking
+      return await blueprintApi.getTaskStatus(taskId, 'web_scraper');
     } catch (error) {
       console.error(`Error fetching task status for ${taskId}:`, error);
       throw error;
@@ -1669,18 +1640,8 @@ const webScraper = {
    * @param {Object} loading - Loading spinner object
    */
   cancelTaskViaApi(taskId, loading) {
-    // Call the cancel API
-    fetch(`${API_ENDPOINTS.SCRAPE_CANCEL}/${taskId}`, {
-      method: 'POST'
-    })
-    .then(response => {
-      if (!response.ok) {
-        return response.text().then(text => {
-          throw new Error(`Server error (${response.status}): ${text}`);
-        });
-      }
-      return response.json();
-    })
+    // Call the Blueprint cancel API
+    blueprintApi.cancelTask(taskId)
     .then(data => {
       loading.hide();
 

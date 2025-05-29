@@ -436,6 +436,14 @@ class BlueprintApiService {
     }, 'file_processor');
   }
 
+  async processFileUpload(formData, timeout = null) {
+    return this.request(buildEndpoint(API_ENDPOINTS.FILE_PROCESSING.PROCESS), {
+      method: 'POST',
+      body: formData,
+      timeout: timeout
+    }, 'file_processor');
+  }
+
   async getTaskStatus(taskId, blueprint = null) {
     return this.request(buildEndpoint(API_ENDPOINTS.FILE_PROCESSING.STATUS, { taskId }), {
       method: 'GET'
@@ -445,6 +453,39 @@ class BlueprintApiService {
   async downloadTaskResult(taskId) {
     return this.request(buildEndpoint(API_ENDPOINTS.FILE_PROCESSING.DOWNLOAD, { taskId }), {
       method: 'GET'
+    }, 'file_processor');
+  }
+
+  async verifyPath(path) {
+    return this.request(buildEndpoint(API_ENDPOINTS.FILE_PROCESSING.VERIFY_PATH), {
+      method: 'POST',
+      body: JSON.stringify({ path })
+    }, 'file_processor');
+  }
+
+  async createDirectory(path) {
+    return this.request(buildEndpoint(API_ENDPOINTS.FILE_PROCESSING.CREATE_DIRECTORY), {
+      method: 'POST',
+      body: JSON.stringify({ path })
+    }, 'file_processor');
+  }
+
+  async openFile(path) {
+    return this.request(buildEndpoint(API_ENDPOINTS.FILE_PROCESSING.OPEN_FILE), {
+      method: 'POST',
+      body: JSON.stringify({ path })
+    }, 'file_processor');
+  }
+
+  async detectPath(files) {
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+    
+    return this.request(buildEndpoint(API_ENDPOINTS.FILE_PROCESSING.DETECT_PATH), {
+      method: 'POST',
+      body: formData
     }, 'file_processor');
   }
 
@@ -633,8 +674,13 @@ export { BlueprintApiService };
 // Export convenience methods for direct use
 export const {
   processFiles,
+  processFileUpload,
   getTaskStatus,
   downloadTaskResult,
+  verifyPath,
+  createDirectory,
+  openFile,
+  detectPath,
   startPlaylistDownload,
   cancelPlaylistDownload,
   startWebScraping,

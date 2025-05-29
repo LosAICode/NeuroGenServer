@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     
     <!-- Preload critical resources for faster startup -->
-    <link rel="preload" href="{{ url_for('static', filename='js/index.js') }}" as="script" type="module">
+    <link rel="preload" href="{{ url_for('static', filename='js/index-simple.js') }}" as="script" type="module">
     
     <!-- Essential fixes only -->
     <script src="{{ url_for('static', filename='js/fixThemePersistence.js') }}"></script>
@@ -956,7 +956,7 @@
             console.log("🚀 Initializing NeuroGen module system...");
             
             // Import with proper error handling
-            const moduleUrl = "{{ url_for('static', filename='js/index.js') }}";
+            const moduleUrl = "{{ url_for('static', filename='js/index-simple.js') }}";
             const module = await import(moduleUrl);
             
             window.__loadingStages.modulesImported = true;

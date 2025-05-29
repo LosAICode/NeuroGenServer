@@ -18,6 +18,9 @@
 
 import { getElement } from './domUtils.js';
 
+// Import Blueprint events configuration
+import { SOCKET_EVENTS, BLUEPRINT_EVENTS, SERVER_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
+
 // Module state
 let socket = null;
 let connected = false;
@@ -579,7 +582,7 @@ function startPingInterval(intervalMs = 25000) {
   // Create new interval
   pingInterval = setInterval(() => {
     if (socket && connected) {
-      socket.emit('ping', { timestamp: Date.now() });
+      socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.PING, { timestamp: Date.now() });
     }
   }, intervalMs);
   
@@ -592,38 +595,38 @@ function startPingInterval(intervalMs = 25000) {
 function setupCustomEventHandlers() {
   if (!socket) return;
   
-  // Task progress update
-  socket.on('progress_update', (data) => {
+  // Task progress update (Blueprint event)
+  socket.on(TASK_EVENTS.PROGRESS, (data) => {
     console.log("Progress update received:", data);
     handleProgressUpdate(data);
   });
   
-  // Also listen for task_progress event (used by some server implementations)
+  // Also listen for task_progress event (legacy compatibility)
   socket.on('task_progress', (data) => {
-    console.log("Task progress update received:", data);
+    console.log("Task progress update received (legacy):", data);
     handleProgressUpdate(data);
   });
   
-  // Task completed
-  socket.on('task_completed', (data) => {
+  // Task completed (Blueprint event)
+  socket.on(TASK_EVENTS.COMPLETED, (data) => {
     console.log("Task completed:", data);
     handleTaskCompleted(data);
   });
   
-  // Task error
-  socket.on('task_error', (data) => {
+  // Task error (Blueprint event)
+  socket.on(TASK_EVENTS.ERROR, (data) => {
     console.error("Task error:", data);
     handleTaskError(data);
   });
   
-  // Task cancelled
-  socket.on('task_cancelled', (data) => {
+  // Task cancelled (Blueprint event)
+  socket.on(TASK_EVENTS.CANCELLED, (data) => {
     console.log("Task cancelled:", data);
     handleTaskCancelled(data);
   });
   
-  // PDF Download events
-  socket.on('pdf_download_progress', (data) => {
+  // PDF Download events (Blueprint events)
+  socket.on(SERVER_EVENTS.PDF_DOWNLOAD_PROGRESS, (data) => {
     console.log("PDF download progress:", data);
     
     // Emit event through eventRegistry
@@ -644,8 +647,8 @@ function setupCustomEventHandlers() {
       });
   });
   
-  // PDF Processing events
-  socket.on('pdf_processing_start', (data) => {
+  // PDF Processing events (Blueprint events)
+  socket.on(SERVER_EVENTS.PDF_PROCESSING_STARTED, (data) => {
     console.log("PDF processing started:", data);
     
     // Emit event through eventRegistry
@@ -654,7 +657,7 @@ function setupCustomEventHandlers() {
     }
   });
   
-  socket.on('pdf_processing_update', (data) => {
+  socket.on(SERVER_EVENTS.PDF_PROCESSING_PROGRESS, (data) => {
     console.log("PDF processing update:", data);
     
     // Emit event through eventRegistry
@@ -1281,7 +1284,7 @@ function requestTaskStatus(taskId) {
   // Request via Socket.IO if available
   if (socket && connected) {
     try {
-      socket.emit('request_status', { task_id: taskId });
+      socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.REQUEST_TASK_STATUS, { task_id: taskId });
       console.log(`Requested status for task ${taskId} via Socket.IO`);
       return true;
     } catch (error) {
@@ -1436,7 +1439,7 @@ function cancelTask(taskId) {
     // Try Socket.IO if available
     if (socket && connected) {
       try {
-        socket.emit('cancel_task', { task_id: taskId });
+        socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.CANCEL_TASK, { task_id: taskId });
         console.log(`Sent cancel_task event via Socket.IO`);
         cancellationSent = true;
       } catch (error) {
@@ -1554,7 +1557,7 @@ function getTaskStatus(taskId) {
       
       // Send the request
       try {
-        socket.emit('request_status', { task_id: taskId });
+        socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.REQUEST_TASK_STATUS, { task_id: taskId });
         return;
       } catch (error) {
         console.warn(`Error requesting status via Socket.IO:`, error);
@@ -1916,7 +1919,7 @@ function cancelCurrentTask() {
 function sendPing() {
   if (!socket || !connected) return;
   
-  socket.emit('ping', { timestamp: Date.now() });
+  socket.emit(SOCKET_EVENTS.CLIENT_TO_SERVER.PING, { timestamp: Date.now() });
 }
 
 // Export module API using a consistent pattern
