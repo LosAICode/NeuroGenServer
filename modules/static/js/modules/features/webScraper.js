@@ -1,1790 +1,1621 @@
 /**
- * Web Scraper Module
+ * Web Scraper Module - Complete Blueprint Implementation
  * 
- * Handles web scraping operations, academic paper searches, and PDF downloads.
- * Integrated with the backend Python functionality for extracting web content
- * and downloading PDFs with advanced processing options.
+ * Advanced web scraping module with recursive crawling, academic search integration,
+ * PDF processing, and comprehensive download management. Built from ground up for
+ * Flask Blueprint backend architecture with no legacy code or patches.
  * 
- * Key features:
- * 1. Web scraping with multiple content extraction options
- * 2. Academic paper search with multiple sources
- * 3. PDF downloading with metadata extraction
- * 4. Progress tracking and status updates
- * 5. Task cancellation and error handling
+ * Features:
+ * - Recursive website crawling with depth control
+ * - Multi-source academic search (arXiv, Semantic Scholar, PubMed, IEEE, ACM)
+ * - Advanced PDF selection and batch download management
+ * - Structify integration for comprehensive PDF processing
+ * - Real-time progress tracking with detailed statistics
+ * - Citation network visualization and analysis
+ * - Cross-platform download optimization
  * 
- * @module webScraper
+ * @module features/webScraper
+ * @version 3.0.0
  */
 
-// Import only what we actually use from UI utilities
-import { 
-  showToast, 
-  showLoadingSpinner 
-} from '../utils/ui.js';
-
-// Import only the error handler we actually use
-import { handleError } from '../utils/errorHandler.js';
-
-// Import only the DOM utilities we actually use
-import { 
-  getElement, 
-  getUIElements
-} from '../utils/domUtils.js';
-
-// Import only the progress handler utilities we actually use
-import { 
-  trackProgress, 
-  updateProgressUI, 
-  createProgressUI,
-  cancelTracking
-} from '../utils/progressHandler.js';
-
-// Import Blueprint API service and configuration
 import blueprintApi from '../services/blueprintApi.js';
-import { SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, FILE_ENDPOINTS } from '../config/endpoints.js';
-import { SOCKET_EVENTS, BLUEPRINT_EVENTS } from '../config/socketEvents.js';
-
-// Socket handler for real-time communication
-let socketHandler = null;
-let socketHandlerFunctions = {
-  // Default fallback implementations
-  startStatusPolling: (taskId) => console.warn("Socket handler not loaded: startStatusPolling", taskId),
-  stopStatusPolling: () => console.warn("Socket handler not loaded: stopStatusPolling"),
-  cancelTask: () => Promise.reject(new Error("Socket handler not loaded")),
-  isConnected: () => false,
-  registerTaskHandler: () => console.warn("Socket handler not loaded: registerTaskHandler"),
-  emit: () => console.warn("Socket handler not loaded: emit")
-};
-
-// Dynamically import socket functions to avoid circular dependencies
-import('../utils/socketHandler.js')
-  .then(module => {
-    socketHandler = module.default || module;
-    
-    // Extract key functions we'll need
-    socketHandlerFunctions = {
-      startStatusPolling: module.startStatusPolling || module.default?.startStatusPolling || socketHandlerFunctions.startStatusPolling,
-      stopStatusPolling: module.stopStatusPolling || module.default?.stopStatusPolling || socketHandlerFunctions.stopStatusPolling,
-      cancelTask: module.cancelTask || module.default?.cancelTask || socketHandlerFunctions.cancelTask,
-      isConnected: module.isConnected || module.default?.isConnected || socketHandlerFunctions.isConnected,
-      registerTaskHandler: module.registerTaskHandler || module.default?.registerTaskHandler || socketHandlerFunctions.registerTaskHandler,
-      emit: module.emit || module.default?.emit || socketHandlerFunctions.emit
-    };
-    
-    console.log("Socket handler loaded successfully in webScraper");
-  })
-  .catch(err => {
-    console.error("Could not import socketHandler in webScraper:", err);
-  });
-
-// Module API endpoints aligned with Blueprint structure
-const API_ENDPOINTS = {
-  SCRAPE: SCRAPER_ENDPOINTS.SCRAPE,
-  SCRAPE_STATUS: SCRAPER_ENDPOINTS.STATUS,
-  SCRAPE_CANCEL: SCRAPER_ENDPOINTS.CANCEL,
-  SCRAPE_RESULTS: SCRAPER_ENDPOINTS.RESULTS,
-  ACADEMIC_SEARCH: ACADEMIC_ENDPOINTS.SEARCH,
-  ACADEMIC_HEALTH: ACADEMIC_ENDPOINTS.HEALTH,
-  OPEN_FILE: FILE_ENDPOINTS.OPEN_FILE,  // Using Blueprint file endpoints
-  DOWNLOAD: '/download'
-};
-
-// Module internal state
-const state = {
-  initialized: false,
-  currentTaskId: null,
-  currentUrls: [],
-  scrapeInProgress: false,
-  taskProgress: {},
-  pdfOptions: {
-    process_pdfs: true,
-    extract_tables: true,
-    use_ocr: true,
-    extract_structure: true,
-    chunk_size: 4096,
-    max_downloads: 10  // Default PDF download limit
-  },
-  academicSearchResults: [],
-  selectedPapers: [],
-  pdfDownloads: [],
-  eventListeners: [],
-  elements: {}
-};
+import { SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, PDF_ENDPOINTS } from '../config/endpoints.js';
+import { TASK_EVENTS, BLUEPRINT_EVENTS, SCRAPER_EVENTS, ACADEMIC_EVENTS } from '../config/socketEvents.js';
+import { CONSTANTS } from '../config/constants.js';
 
 /**
- * Web Scraper module for web scraping operations
+ * Web Scraper Class - Complete Implementation
  */
-const webScraper = {
-  /**
-   * Initialize the scraper module
-   * @returns {boolean} Success status
-   */
-  initialize() {
-    try {
-      console.log("Initializing Web Scraper module...");
-
-      if (state.initialized) {
-        console.log("Web Scraper module already initialized");
-        return true;
+class WebScraper {
+  constructor() {
+    this.state = {
+      isInitialized: false,
+      currentMode: 'web', // 'web', 'academic', 'downloads', 'history'
+      currentTask: null,
+      processingState: 'idle', // 'idle', 'scraping', 'downloading', 'processing', 'completed', 'error'
+      elements: new Map(),
+      eventListeners: new Set(),
+      socketListeners: new Set(),
+      
+      // Task management
+      activeTasks: new Map(),
+      taskQueue: [],
+      downloadQueue: new Map(),
+      processingQueue: new Map(),
+      
+      // Results and data
+      scrapingResults: new Map(),
+      academicResults: new Map(),
+      selectedPdfs: new Set(),
+      downloadProgress: new Map(),
+      
+      // UI state
+      activeTab: 'web',
+      filters: {
+        source: 'all',
+        dateRange: 'all',
+        fileSize: 'all',
+        author: '',
+        title: ''
       }
-
-      // Register UI elements
-      this.registerUIElements();
-
-      // Set up event listeners
-      this.registerEvents();
-
-      // Check for ongoing tasks
-      this.checkForOngoingTask();
-
-      // Mark as initialized
-      state.initialized = true;
-      console.log("Web Scraper module initialized successfully");
-
-      return true;
-    } catch (error) {
-      this.handleError(error, "Error initializing Web Scraper module");
-      return false;
-    }
-  },
-
-  /**
-   * Register UI elements with selectors
-   */
-  registerUIElements() {
-    try {
-      // Use getUIElements to efficiently register all elements at once
-      state.elements = getUIElements({
-        // Form elements
-        form: 'scraper-form',
-        formContainer: 'scraper-form-container',
-        urlsContainer: 'scraper-urls-container',
-        addUrlBtn: 'add-scraper-url',
-        downloadDir: 'download-directory',
-        browseBtn: 'download-dir-browse-btn',
-        outputFilename: 'scraper-output',
-        startButton: 'scrape-btn',
-        
-        // Academic search elements
-        academicSearchInput: 'academic-search-input',
-        academicSources: 'academic-sources',
-        academicSearchBtn: 'academic-search-btn',
-        academicResults: 'academic-results',
-        academicResultsContainer: 'academic-results-container',
-        addSelectedPapersBtn: 'add-selected-papers',
-        
-        // PDF options
-        pdfInfoSection: 'pdf-info-section',
-        processPdfSwitch: 'process-pdf-switch',
-
-        // Progress elements
-        progressContainer: 'scraper-progress-container',
-        progressBar: 'scraper-progress-bar',
-        progressStatus: 'scraper-progress-status',
-        progressStats: 'scraper-progress-stats',
-        pdfDownloadProgress: 'pdf-download-progress',
-        pdfDownloadsList: 'pdf-downloads-list',
-        cancelButton: 'scraper-cancel-btn',
-        
-        // Results elements
-        resultsContainer: 'scraper-results-container',
-        statsContainer: 'scraper-stats',
-        results: 'scraper-results',
-        openJsonBtn: 'open-scraper-json',
-        openFolderBtn: 'open-output-folder',
-        newTaskBtn: 'scraper-new-task-btn'
-      });
-
-      // If some elements are missing, warn but don't fail
-      if (!state.elements.form || !state.elements.urlsContainer || !state.elements.progressContainer) {
-        console.warn("Some required UI elements for Web Scraper not found");
-      }
-
-      // Create initial URL input field if container is empty
-      this.ensureUrlInputExists();
-
-      // Handle PDF mode toggle
-      this.updatePdfInfoVisibility();
-
-      // Update button states
-      this.updateStartButtonState();
-
-    } catch (error) {
-      this.handleError(error, "Error registering UI elements for Web Scraper");
-    }
-  },
-
-  /**
-   * Ensure at least one URL input field exists
-   */
-  ensureUrlInputExists() {
-    const { urlsContainer } = state.elements;
-    if (!urlsContainer) return;
-
-    if (urlsContainer.children.length === 0) {
-      this.addUrlInput();
-    }
-  },
-
-  /**
-   * Add a new URL input field
-   */
-  addUrlInput() {
-    const { urlsContainer } = state.elements;
-    if (!urlsContainer) return;
-
-    const urlGroup = document.createElement('div');
-    urlGroup.className = 'input-group mb-2';
-    
-    urlGroup.innerHTML = `
-      <input type="url" class="form-control scraper-url" placeholder="Enter Website URL" required>
-      <select class="form-select scraper-settings" style="max-width: 160px;">
-        <option value="full">Full Text</option>
-        <option value="metadata">Metadata Only</option>
-        <option value="title">Title Only</option>
-        <option value="keyword">Keyword Search</option>
-        <option value="pdf">PDF Download</option>
-      </select>
-      <input type="text" class="form-control scraper-keyword" placeholder="Keyword (optional)" style="display:none;">
-      <button type="button" class="btn btn-outline-danger remove-url">
-        <i class="fas fa-trash"></i>
-      </button>
-    `;
-
-    // Add event listeners
-    const settingsSelect = urlGroup.querySelector('.scraper-settings');
-    const keywordInput = urlGroup.querySelector('.scraper-keyword');
-    const removeBtn = urlGroup.querySelector('.remove-url');
-
-    // Settings change handler
-    settingsSelect.addEventListener('change', () => {
-      const isKeywordMode = settingsSelect.value === 'keyword';
-      keywordInput.style.display = isKeywordMode ? 'block' : 'none';
-      this.updatePdfInfoVisibility();
-      this.updateStartButtonState();
-    });
-
-    // Remove button handler
-    removeBtn.addEventListener('click', () => {
-      urlGroup.remove();
-      // Ensure at least one URL input exists
-      if (urlsContainer.children.length === 0) {
-        this.addUrlInput();
-      }
-      this.updateStartButtonState();
-      this.updatePdfInfoVisibility();
-    });
-
-    urlsContainer.appendChild(urlGroup);
-    this.updateStartButtonState();
-  },
-
-  /**
-   * Update the visibility of PDF info section based on selected modes
-   */
-  updatePdfInfoVisibility() {
-    const { pdfInfoSection, processPdfSwitch } = state.elements;
-    if (!pdfInfoSection) return;
-
-    const pdfModeSelected = Array.from(document.querySelectorAll('.scraper-settings'))
-      .some(select => select.value === 'pdf');
-
-    pdfInfoSection.classList.toggle('d-none', !pdfModeSelected);
-    
-    // Update PDF processing option state
-    if (processPdfSwitch && pdfModeSelected) {
-      state.pdfOptions.process_pdfs = processPdfSwitch.checked;
-    }
-  },
-
-  /**
-   * Register event listeners
-   */
-  registerEvents() {
-    try {
-      const { 
-        form, addUrlBtn, browseBtn, processPdfSwitch,
-        academicSearchBtn, addSelectedPapersBtn,
-        cancelButton, openJsonBtn, openFolderBtn, newTaskBtn
-      } = state.elements;
-
-      // Helper function to safely add and track event listeners
-      const addTrackedListener = (element, event, handler) => {
-        if (!element) return;
-        
-        const boundHandler = handler.bind(this);
-        element.addEventListener(event, boundHandler);
-        state.eventListeners.push({ element, event, handler: boundHandler });
-      };
-
-      // Form submission
-      if (form) {
-        addTrackedListener(form, 'submit', (e) => {
-          e.preventDefault();
-          this.startScraping();
-        });
-      }
-
-      // Add URL button
-      if (addUrlBtn) {
-        addTrackedListener(addUrlBtn, 'click', this.addUrlInput);
-      }
-
-      // Browse button for download directory
-      if (browseBtn) {
-        addTrackedListener(browseBtn, 'click', this.browseDirectory);
-      }
-
-      // PDF processing switch
-      if (processPdfSwitch) {
-        addTrackedListener(processPdfSwitch, 'change', () => {
-          state.pdfOptions.process_pdfs = processPdfSwitch.checked;
-        });
-      }
-
-      // Academic search button
-      if (academicSearchBtn) {
-        addTrackedListener(academicSearchBtn, 'click', this.performAcademicSearch);
-      }
-
-      // Add selected papers button
-      if (addSelectedPapersBtn) {
-        addTrackedListener(addSelectedPapersBtn, 'click', this.addSelectedPapers);
-      }
-
-      // Cancel button
-      if (cancelButton) {
-        addTrackedListener(cancelButton, 'click', this.cancelScraping);
-      }
-
-      // Open JSON button
-      if (openJsonBtn) {
-        addTrackedListener(openJsonBtn, 'click', () => {
-          if (state.taskProgress.output_file) {
-            this.openFile(state.taskProgress.output_file);
-          }
-        });
-      }
-
-      // Open folder button
-      if (openFolderBtn) {
-        addTrackedListener(openFolderBtn, 'click', () => {
-          if (state.taskProgress.output_file) {
-            const folderPath = state.taskProgress.output_file.split(/[\/\\]/).slice(0, -1).join('/');
-            this.openFolder(folderPath);
-          }
-        });
-      }
-
-      // New task button
-      if (newTaskBtn) {
-        addTrackedListener(newTaskBtn, 'click', this.resetAndShowForm);
-      }
-
-      console.log("Event listeners registered for Web Scraper");
-    } catch (error) {
-      this.handleError(error, "Error registering events for Web Scraper");
-    }
-  },
-
-  /**
-   * Unregister all event listeners to prevent memory leaks
-   */
-  unregisterAllEvents() {
-    try {
-      state.eventListeners.forEach(({ element, event, handler }) => {
-        if (element && element.removeEventListener) {
-          element.removeEventListener(event, handler);
-        }
-      });
-      state.eventListeners = [];
-    } catch (error) {
-      this.handleError(error, "Error unregistering events");
-    }
-  },
-
-  /**
-   * Check session storage for an ongoing task to resume
-   */
-  checkForOngoingTask() {
-    try {
-      const taskId = sessionStorage.getItem('ongoingTaskId');
-      const taskType = sessionStorage.getItem('ongoingTaskType');
-
-      if (taskId && taskType === 'scraper') {
-        console.log(`Found ongoing scraper task: ${taskId}`);
-
-        // Resume task tracking
-        state.currentTaskId = taskId;
-        state.scrapeInProgress = true;
-
-        // Set up task tracking with progress handler
-        this.setupTaskTracking(taskId);
-
-        // Show progress UI
-        this.showProgressContainer();
-
-        // Fetch current status
-        this.fetchTaskStatus(taskId)
-          .then(data => {
-            // Update UI based on task status
-            if (data.status === 'completed') {
-              this.handleTaskCompleted(data);
-            } else if (data.status === 'error' || data.status === 'failed') {
-              this.handleTaskError(data);
-            } else if (data.status === 'cancelled') {
-              this.handleTaskCancelled(data);
-            } else {
-              // Task is still running, update progress
-              this.handleProgressUpdate(data);
-
-              // Update PDF list if available
-              if (data.pdf_downloads) {
-                this.updatePdfDownloadsList(data.pdf_downloads);
-              }
-
-              showToast('Resumed', 'Resumed monitoring web scraping task', 'info');
-            }
-          })
-          .catch(error => {
-            console.error("Error resuming task:", error);
-            // If we can't resume the task, clear the state and show the form
-            this.resetTaskState();
-            this.showFormContainer();
-          });
-      }
-    } catch (error) {
-      console.error("Error checking for ongoing task:", error);
-      // Clear session storage to avoid persistent errors
-      this.resetTaskState();
-    }
-  },
-
-  /**
-   * Set up task tracking with progress handler
-   * @param {string} taskId - Task ID to track
-   */
-  setupTaskTracking(taskId) {
-    try {
-      // Use the progress handler to track task progress
-      const progressElement = state.elements.progressContainer;
-      
-      if (progressElement) {
-        // Create progress UI elements if they don't exist
-        const progressBarId = 'scraper-progress-bar';
-        
-        if (!getElement(progressBarId)) {
-          createProgressUI(progressElement.id, 'scraper');
-        }
-        
-        // Set up task progress tracking
-        trackProgress(taskId, {
-          elementPrefix: 'scraper',
-          taskType: 'scraper',
-          saveToSessionStorage: true
-        });
-        
-        console.log(`Task tracking set up for task: ${taskId}`);
-      }
-      
-      // Register task handlers via socketHandler
-      if (socketHandlerFunctions.registerTaskHandler) {
-        socketHandlerFunctions.registerTaskHandler(taskId, {
-          onProgress: this.handleProgressUpdate.bind(this),
-          onComplete: this.handleTaskCompleted.bind(this),
-          onError: this.handleTaskError.bind(this),
-          onCancel: this.handleTaskCancelled.bind(this)
-        });
-      }
-    } catch (error) {
-      this.handleError(error, "Error setting up task tracking");
-    }
-  },
-
-  /**
-   * Reset task state and clear session storage
-   */
-  resetTaskState() {
-    state.currentTaskId = null;
-    state.currentUrls = [];
-    state.scrapeInProgress = false;
-    state.pdfDownloads = [];
-    state.taskProgress = {};
-    
-    // Clear session storage
-    sessionStorage.removeItem('ongoingTaskId');
-    sessionStorage.removeItem('ongoingTaskType');
-    sessionStorage.removeItem('taskStartTime');
-    
-    // Stop any polling
-    if (socketHandlerFunctions.stopStatusPolling) {
-      socketHandlerFunctions.stopStatusPolling();
-    }
-    
-    // Cancel task tracking
-    if (state.currentTaskId && cancelTracking) {
-      cancelTracking(state.currentTaskId);
-    }
-  },
-
-  /**
-   * Update the state of the start button based on form validity
-   */
-  updateStartButtonState() {
-    try {
-      const { startButton, urlsContainer, downloadDir, outputFilename } = state.elements;
-
-      if (!startButton || !urlsContainer || !downloadDir || !outputFilename) {
-        return;
-      }
-
-      // Check if the URL inputs have values
-      const urlInputs = urlsContainer.querySelectorAll('.scraper-url');
-      const hasUrls = Array.from(urlInputs).some(input => input.value.trim() !== '');
-      
-      // Check if keyword inputs have values when in keyword mode
-      const keywordGroups = Array.from(urlsContainer.children).filter(group => {
-        const select = group.querySelector('.scraper-settings');
-        return select && select.value === 'keyword';
-      });
-      
-      const keywordsValid = keywordGroups.every(group => {
-        const keywordInput = group.querySelector('.scraper-keyword');
-        return keywordInput && keywordInput.value.trim() !== '';
-      });
-      
-      // Check directory and filename
-      const hasDir = downloadDir.value.trim() !== '';
-      const hasFilename = outputFilename.value.trim() !== '';
-
-      // Enable button only if all required fields are filled
-      startButton.disabled = !(hasUrls && (keywordGroups.length === 0 || keywordsValid) && hasDir && hasFilename);
-    } catch (error) {
-      this.handleError(error, "Error updating start button state");
-    }
-  },
-
-  /**
-   * Browse for download directory
-   */
-  browseDirectory() {
-    try {
-      // Show native folder picker dialog
-      const options = {
-        title: 'Select Download Directory',
-        buttonLabel: 'Select Folder',
-      };
-      
-      // Use system file picker via IPC
-      if (window.electron) {
-        window.electron.openDirectoryDialog(options)
-          .then(result => {
-            if (!result.canceled && result.filePaths.length > 0) {
-              state.elements.downloadDir.value = result.filePaths[0];
-              this.updateStartButtonState();
-            }
-          })
-          .catch(error => {
-            this.handleError(error, "Error opening directory dialog");
-          });
-      } else {
-        // Use Blueprint API for directory operations
-        try {
-          const data = await blueprintApi.request('/api/open-directory-dialog', {
-            method: 'POST',
-            body: JSON.stringify(options)
-          }, 'core');
-          
-          if (data.success && data.path) {
-            state.elements.downloadDir.value = data.path;
-            this.updateStartButtonState();
-          }
-        } catch (error) {
-          this.handleError(error, "Error opening directory dialog");
-        }
-      }
-    } catch (error) {
-      this.handleError(error, "Error browsing for directory");
-    }
-  },
-
-  /**
-   * Perform academic search
-   */
-  performAcademicSearch() {
-    try {
-      const { academicSearchInput, academicSources, academicResults, academicResultsContainer } = state.elements;
-      
-      if (!academicSearchInput || !academicSources || !academicResults || !academicResultsContainer) {
-        return;
-      }
-      
-      const query = academicSearchInput.value.trim();
-      if (!query) {
-        showToast('Error', 'Please enter a search query', 'error');
-        return;
-      }
-      
-      const source = academicSources.value;
-      
-      // Show loading
-      const loading = showLoadingSpinner('Searching academic sources...');
-      academicResultsContainer.innerHTML = '<div class="text-center my-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Searching...</p></div>';
-      
-      // Show results area
-      academicResults.classList.remove('d-none');
-      
-      // Perform search using Blueprint API
-      blueprintApi.searchAcademicPapers(query, [source], 50)
-        .then(data => {
-          loading.hide();
-          
-          if (data.results && data.results.length > 0) {
-            // Store results in state
-            state.academicSearchResults = data.results;
-            
-            // Display results
-            this.displayAcademicResults(data.results);
-          } else {
-            academicResultsContainer.innerHTML = '<div class="alert alert-info">No results found. Try a different query or source.</div>';
-          }
-        })
-        .catch(error => {
-          loading.hide();
-          this.handleError(error, "Error performing academic search");
-          academicResultsContainer.innerHTML = `<div class="alert alert-danger">Error searching: ${error.message}</div>`;
-        });
-    } catch (error) {
-      this.handleError(error, "Error performing academic search");
-    }
-  },
-
-  /**
-   * Display academic search results
-   * @param {Array} results - Academic search results
-   */
-  displayAcademicResults(results) {
-    try {
-      const { academicResultsContainer } = state.elements;
-      
-      if (!academicResultsContainer) return;
-      
-      // Clear previous results
-      academicResultsContainer.innerHTML = '';
-      
-      // Create list items for each result
-      results.forEach((result, index) => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'list-group-item d-flex flex-column';
-        
-        // Format authors
-        const authors = Array.isArray(result.authors) 
-          ? result.authors.join(', ') 
-          : (result.authors || 'Unknown authors');
-        
-        // Create checkbox for selection
-        const hasPdf = result.pdf_url || result.links?.some(link => 
-          link.includes('.pdf') || 
-          link.includes('pdf') || 
-          link.includes('fulltext')
-        );
-        
-        resultItem.innerHTML = `
-          <div class="d-flex align-items-start">
-            <div class="form-check me-2">
-              <input class="form-check-input paper-select" type="checkbox" value="${index}" id="paper-${index}">
-              <label class="form-check-label" for="paper-${index}"></label>
-            </div>
-            <div class="flex-grow-1">
-              <h6 class="mb-1">${result.title || 'Untitled'}</h6>
-              <p class="mb-1 small">${authors}</p>
-              <p class="mb-1 text-muted smaller">${result.journal || result.venue || ''} ${result.year || ''}</p>
-              <div class="d-flex flex-wrap gap-2 mt-1">
-                ${hasPdf ? '<span class="badge bg-success">PDF Available</span>' : ''}
-                ${result.doi ? `<span class="badge bg-info">DOI: ${result.doi}</span>` : ''}
-                ${result.url ? `<a href="${result.url}" class="badge bg-primary text-decoration-none" target="_blank">Source</a>` : ''}
-              </div>
-            </div>
-          </div>
-        `;
-        
-        academicResultsContainer.appendChild(resultItem);
-      });
-    } catch (error) {
-      this.handleError(error, "Error displaying academic results");
-    }
-  },
-
-  /**
-   * Add selected papers to URL list
-   */
-  addSelectedPapers() {
-    try {
-      const { academicResultsContainer } = state.elements;
-      
-      if (!academicResultsContainer) return;
-      
-      // Get selected papers
-      const selectedCheckboxes = academicResultsContainer.querySelectorAll('.paper-select:checked');
-      
-      if (selectedCheckboxes.length === 0) {
-        showToast('Warning', 'Please select at least one paper', 'warning');
-        return;
-      }
-      
-      // Add each selected paper to the URL list
-      selectedCheckboxes.forEach(checkbox => {
-        const index = parseInt(checkbox.value);
-        const paper = state.academicSearchResults[index];
-        
-        if (!paper) return;
-        
-        // Get best URL for paper (prefer PDF)
-        let url = '';
-        if (paper.pdf_url) {
-          url = paper.pdf_url;
-        } else if (paper.links && Array.isArray(paper.links)) {
-          // Find PDF link
-          const pdfLink = paper.links.find(link => 
-            link.includes('.pdf') || 
-            link.includes('pdf') || 
-            link.includes('fulltext')
-          );
-          url = pdfLink || paper.url || paper.links[0] || '';
-        } else {
-          url = paper.url || paper.doi ? `https://doi.org/${paper.doi}` : '';
-        }
-        
-        if (!url) return;
-        
-        // Add URL to list as PDF
-        this.addUrlWithValue(url, 'pdf');
-      });
-      
-      // Update PDF info visibility
-      this.updatePdfInfoVisibility();
-      
-      // Show success message
-      showToast('Success', `Added ${selectedCheckboxes.length} paper(s) to scraping list`, 'success');
-      
-      // Uncheck the checkboxes
-      selectedCheckboxes.forEach(checkbox => {
-        checkbox.checked = false;
-      });
-    } catch (error) {
-      this.handleError(error, "Error adding selected papers");
-    }
-  },
-
-  /**
-   * Add a new URL input with a specific value and setting
-   * @param {string} url - URL to add
-   * @param {string} setting - Setting to select
-   */
-  addUrlWithValue(url, setting = 'full') {
-    try {
-      const { urlsContainer } = state.elements;
-      if (!urlsContainer) return;
-      
-      // Add a new URL input
-      this.addUrlInput();
-      
-      // Get the last added URL input
-      const lastUrlGroup = urlsContainer.lastElementChild;
-      if (!lastUrlGroup) return;
-      
-      // Set URL value
-      const urlInput = lastUrlGroup.querySelector('.scraper-url');
-      if (urlInput) {
-        urlInput.value = url;
-      }
-      
-      // Set setting value
-      const settingSelect = lastUrlGroup.querySelector('.scraper-settings');
-      if (settingSelect) {
-        settingSelect.value = setting;
-        
-        // Show/hide keyword input
-        const keywordInput = lastUrlGroup.querySelector('.scraper-keyword');
-        if (keywordInput) {
-          keywordInput.style.display = setting === 'keyword' ? 'block' : 'none';
-        }
-      }
-      
-      this.updateStartButtonState();
-    } catch (error) {
-      this.handleError(error, "Error adding URL with value");
-    }
-  },
-
-  /**
-   * Collect URL configs from form
-   * @returns {Array} Array of URL configs
-   */
-  collectUrlConfigs() {
-    try {
-      const { urlsContainer } = state.elements;
-      if (!urlsContainer) return [];
-      
-      const urlGroups = Array.from(urlsContainer.children);
-      
-      return urlGroups
-        .map(group => {
-          const urlInput = group.querySelector('.scraper-url');
-          const settingSelect = group.querySelector('.scraper-settings');
-          const keywordInput = group.querySelector('.scraper-keyword');
-          
-          if (!urlInput || !settingSelect) return null;
-          
-          const url = urlInput.value.trim();
-          const setting = settingSelect.value;
-          const keyword = keywordInput ? keywordInput.value.trim() : '';
-          
-          if (!url) return null;
-          if (setting === 'keyword' && !keyword) return null;
-          
-          return {
-            url,
-            setting,
-            keyword: setting === 'keyword' ? keyword : ''
-          };
-        })
-        .filter(config => config !== null);
-    } catch (error) {
-      this.handleError(error, "Error collecting URL configs");
-      return [];
-    }
-  },
-
-  /**
-     * Start scraping process
-     */
-  startScraping() {
-    try {
-      const { downloadDir, outputFilename, processPdfSwitch } = state.elements;
-      
-      // Collect URLs with their settings
-      const urlConfigs = this.collectUrlConfigs();
-      
-      if (urlConfigs.length === 0) {
-        showToast('Error', 'Please add at least one valid URL', 'error');
-        return;
-      }
-      
-      // Get directory and filename
-      const directory = downloadDir.value.trim();
-      const filename = outputFilename.value.trim();
-      
-      if (!directory) {
-        showToast('Error', 'Please specify a download directory', 'error');
-        return;
-      }
-      
-      if (!filename) {
-        showToast('Error', 'Please specify an output filename', 'error');
-        return;
-      }
-      
-      // Show loading indicator
-      const loading = showLoadingSpinner('Starting scraping...');
-      
-      // Update PDF options from form
-      if (processPdfSwitch) {
-        state.pdfOptions.process_pdfs = processPdfSwitch.checked;
-      }
-      
-      // Update PDF count from dropdown
-      const pdfCountSelect = document.getElementById('pdf-download-count');
-      if (pdfCountSelect) {
-        state.pdfOptions.max_downloads = parseInt(pdfCountSelect.value, 10);
-      }
-      
-      // Prepare request data
-      const requestData = {
-        urls: urlConfigs,
-        download_directory: directory,
-        output_filename: filename,
-        pdf_options: state.pdfOptions
-      };
-      
-      // Call Blueprint API
-      blueprintApi.startWebScraping(
-        requestData.urls,
-        requestData.output_filename,
-        {
-          download_pdfs: requestData.pdf_options?.enabled || false,
-          max_pdfs: requestData.pdf_options?.max_pdfs || 10,
-          recursive: requestData.recursive || false,
-          max_depth: requestData.max_depth || 2
-        }
-      )
-      .then(data => {
-        loading.hide();
-
-        if (data.task_id) {
-          // Store task info and transition to progress view
-          this.startTaskTracking(data.task_id, urlConfigs.map(cfg => cfg.url), data.output_file);
-          showToast('Started', 'Web scraping started', 'success');
-        } else {
-          throw new Error('No task ID returned from server');
-        }
-      })
-      .catch(error => {
-        loading.hide();
-        this.handleError(error, "Error starting scraping");
-        showToast('Error', `Failed to start scraping: ${error.message}`, 'error');
-      });
-    } catch (error) {
-      this.handleError(error, "Error starting scraping");
-      showToast('Error', `Failed to start scraping: ${error.message}`, 'error');
-    }
-  },
-
-  /**
-   * Start tracking a new task
-   * @param {string} taskId - Task ID
-   * @param {Array<string>} urls - URLs being processed
-   * @param {string} outputFile - Output file path
-   */
-  startTaskTracking(taskId, urls, outputFile) {
-    // Store task info
-    state.currentTaskId = taskId;
-    state.currentUrls = urls;
-    state.scrapeInProgress = true;
-    state.pdfDownloads = [];
-    state.taskProgress = {
-      startTime: Date.now(),
-      output_file: outputFile
     };
-
-    // Store task info in session storage for recovery
-    sessionStorage.setItem('ongoingTaskId', taskId);
-    sessionStorage.setItem('ongoingTaskType', 'scraper');
-    sessionStorage.setItem('taskStartTime', Date.now().toString());
-
-    // Set up task tracking with progress handler
-    this.setupTaskTracking(taskId);
-
-    // Show progress UI
-    this.showProgressContainer();
-  },
+    
+    this.config = {
+      // Scraping configuration
+      maxDepth: 3,
+      maxPages: 100,
+      respectRobots: true,
+      followRedirects: true,
+      concurrentRequests: 5,
+      requestDelay: 500,
+      timeout: 30000,
+      retryAttempts: 3,
+      
+      // PDF processing options
+      pdfOptions: {
+        maxDownloads: 10,
+        processWithStructify: true,
+        extractTables: true,
+        useOcr: true,
+        extractStructure: true,
+        chunkSize: 4096
+      },
+      
+      // Academic search configuration
+      academicSources: ['arxiv', 'semantic_scholar', 'pubmed', 'ieee', 'acm'],
+      maxResultsPerSource: 50,
+      
+      // UI configuration
+      itemsPerPage: 20,
+      autoRefreshInterval: 2000
+    };
+  }
 
   /**
-   * Fetch the current status of a task from the server
-   * @param {string} taskId - Task ID to fetch status for
-   * @returns {Promise<Object>} - Task status data
+   * Initialize the Web Scraper module
    */
-  async fetchTaskStatus(taskId) {
+  async init() {
+    if (this.state.isInitialized) return;
+    
     try {
-      // Use Blueprint API for status checking
-      return await blueprintApi.getTaskStatus(taskId, 'web_scraper');
+      console.log('🌐 Initializing Web Scraper...');
+      
+      this.cacheElements();
+      this.setupEventHandlers();
+      this.setupSocketHandlers();
+      this.setupTabs();
+      this.setupFormValidation();
+      this.setupDownloadManager();
+      
+      // Load saved state
+      this.loadSavedState();
+      
+      this.state.isInitialized = true;
+      console.log('✅ Web Scraper initialized successfully');
+      
     } catch (error) {
-      console.error(`Error fetching task status for ${taskId}:`, error);
+      console.error('❌ Web Scraper initialization failed:', error);
       throw error;
     }
-  },
+  }
 
   /**
-   * Show the form container
+   * Cache DOM elements for efficient access
    */
-  showFormContainer() {
-    const { formContainer, progressContainer, resultsContainer } = state.elements;
-    
-    if (formContainer) formContainer.classList.remove('d-none');
-    if (progressContainer) progressContainer.classList.add('d-none');
-    if (resultsContainer) resultsContainer.classList.add('d-none');
-  },
+  cacheElements() {
+    const elementIds = [
+      // Tab navigation
+      'scraper-tabs',
+      'web-tab-btn',
+      'academic-tab-btn', 
+      'downloads-tab-btn',
+      'history-tab-btn',
+      
+      // Web scraping tab
+      'web-tab-content',
+      'web-urls-input',
+      'web-recursive-toggle',
+      'web-max-depth',
+      'web-max-pages',
+      'web-output-dir',
+      'web-start-btn',
+      
+      // Academic search tab
+      'academic-tab-content',
+      'academic-query-input',
+      'academic-sources-select',
+      'academic-max-results',
+      'academic-search-btn',
+      
+      // Downloads tab
+      'downloads-tab-content',
+      'downloads-queue-container',
+      'downloads-active-container',
+      'downloads-completed-container',
+      
+      // PDF selection and results
+      'pdf-results-container',
+      'pdf-select-all-btn',
+      'pdf-select-none-btn',
+      'pdf-add-to-queue-btn',
+      'pdf-filter-container',
+      
+      // Progress and status
+      'scraper-progress-container',
+      'scraper-progress-bar',
+      'scraper-progress-text',
+      'scraper-stats-container',
+      'scraper-results-container',
+      'scraper-cancel-btn'
+    ];
+
+    elementIds.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        this.state.elements.set(id, element);
+      }
+    });
+  }
 
   /**
-   * Show the progress container
+   * Setup event handlers for UI interactions
    */
-  showProgressContainer() {
-    const { formContainer, progressContainer, resultsContainer, pdfDownloadProgress } = state.elements;
-    
-    if (formContainer) formContainer.classList.add('d-none');
-    if (progressContainer) progressContainer.classList.remove('d-none');
-    if (resultsContainer) resultsContainer.classList.add('d-none');
-    
-    // Initially hide PDF download progress section until we have PDFs
-    if (pdfDownloadProgress) pdfDownloadProgress.classList.add('d-none');
-  },
+  setupEventHandlers() {
+    // Tab switching
+    const tabButtons = ['web-tab-btn', 'academic-tab-btn', 'downloads-tab-btn', 'history-tab-btn'];
+    tabButtons.forEach(btnId => {
+      const btn = this.state.elements.get(btnId);
+      if (btn) {
+        const clickHandler = () => this.switchTab(btnId.replace('-tab-btn', ''));
+        btn.addEventListener('click', clickHandler);
+        this.state.eventListeners.add(() => btn.removeEventListener('click', clickHandler));
+      }
+    });
+
+    // Web scraping form
+    const webStartBtn = this.state.elements.get('web-start-btn');
+    if (webStartBtn) {
+      const clickHandler = () => this.startWebScraping();
+      webStartBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => webStartBtn.removeEventListener('click', clickHandler));
+    }
+
+    // Academic search form
+    const academicSearchBtn = this.state.elements.get('academic-search-btn');
+    if (academicSearchBtn) {
+      const clickHandler = () => this.startAcademicSearch();
+      academicSearchBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => academicSearchBtn.removeEventListener('click', clickHandler));
+    }
+
+    // PDF selection buttons
+    const selectAllBtn = this.state.elements.get('pdf-select-all-btn');
+    if (selectAllBtn) {
+      const clickHandler = () => this.selectAllPdfs();
+      selectAllBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => selectAllBtn.removeEventListener('click', clickHandler));
+    }
+
+    const selectNoneBtn = this.state.elements.get('pdf-select-none-btn');
+    if (selectNoneBtn) {
+      const clickHandler = () => this.selectNonePdfs();
+      selectNoneBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => selectNoneBtn.removeEventListener('click', clickHandler));
+    }
+
+    const addToQueueBtn = this.state.elements.get('pdf-add-to-queue-btn');
+    if (addToQueueBtn) {
+      const clickHandler = () => this.addSelectedToDownloadQueue();
+      addToQueueBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => addToQueueBtn.removeEventListener('click', clickHandler));
+    }
+
+    // Cancel button
+    const cancelBtn = this.state.elements.get('scraper-cancel-btn');
+    if (cancelBtn) {
+      const clickHandler = () => this.cancelCurrentTask();
+      cancelBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => cancelBtn.removeEventListener('click', clickHandler));
+    }
+
+    // Form validation
+    this.setupInputValidation();
+  }
 
   /**
-   * Show the results container
+   * Setup Socket.IO event handlers using Blueprint events
    */
-  showResultsContainer() {
-    const { formContainer, progressContainer, resultsContainer } = state.elements;
-    
-    if (formContainer) formContainer.classList.add('d-none');
-    if (progressContainer) progressContainer.classList.add('d-none');
-    if (resultsContainer) resultsContainer.classList.remove('d-none');
-  },
+  setupSocketHandlers() {
+    if (!window.socket) return;
+
+    // General task events
+    const taskStartedHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleTaskStarted(data);
+      }
+    };
+    window.socket.on(TASK_EVENTS.STARTED, taskStartedHandler);
+    this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.STARTED, taskStartedHandler));
+
+    const progressHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleProgressUpdate(data);
+      }
+    };
+    window.socket.on(TASK_EVENTS.PROGRESS, progressHandler);
+    this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.PROGRESS, progressHandler));
+
+    const completedHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleTaskCompleted(data);
+      }
+    };
+    window.socket.on(TASK_EVENTS.COMPLETED, completedHandler);
+    this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.COMPLETED, completedHandler));
+
+    const errorHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleTaskError(data);
+      }
+    };
+    window.socket.on(TASK_EVENTS.ERROR, errorHandler);
+    this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.ERROR, errorHandler));
+
+    // Scraper-specific events
+    const urlScrapedHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleUrlScraped(data);
+      }
+    };
+    window.socket.on(SCRAPER_EVENTS.url_scraped, urlScrapedHandler);
+    this.state.socketListeners.add(() => window.socket.off(SCRAPER_EVENTS.url_scraped, urlScrapedHandler));
+
+    const pdfFoundHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handlePdfFound(data);
+      }
+    };
+    window.socket.on(SCRAPER_EVENTS.pdf_found, pdfFoundHandler);
+    this.state.socketListeners.add(() => window.socket.off(SCRAPER_EVENTS.pdf_found, pdfFoundHandler));
+
+    // PDF download events
+    const pdfDownloadStartHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handlePdfDownloadStart(data);
+      }
+    };
+    window.socket.on(SCRAPER_EVENTS.pdf_download_start, pdfDownloadStartHandler);
+    this.state.socketListeners.add(() => window.socket.off(SCRAPER_EVENTS.pdf_download_start, pdfDownloadStartHandler));
+
+    const pdfDownloadProgressHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handlePdfDownloadProgress(data);
+      }
+    };
+    window.socket.on(SCRAPER_EVENTS.pdf_download_progress, pdfDownloadProgressHandler);
+    this.state.socketListeners.add(() => window.socket.off(SCRAPER_EVENTS.pdf_download_progress, pdfDownloadProgressHandler));
+
+    const pdfDownloadCompleteHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handlePdfDownloadComplete(data);
+      }
+    };
+    window.socket.on(SCRAPER_EVENTS.pdf_download_complete, pdfDownloadCompleteHandler);
+    this.state.socketListeners.add(() => window.socket.off(SCRAPER_EVENTS.pdf_download_complete, pdfDownloadCompleteHandler));
+
+    // Academic search events
+    const academicResultsHandler = (data) => {
+      this.handleAcademicResults(data);
+    };
+    window.socket.on(ACADEMIC_EVENTS.paper_found, academicResultsHandler);
+    this.state.socketListeners.add(() => window.socket.off(ACADEMIC_EVENTS.paper_found, academicResultsHandler));
+  }
 
   /**
-   * Handle progress updates from Socket.IO or API
-   * @param {Object} data - Progress data
+   * Setup tab navigation system
+   */
+  setupTabs() {
+    // Initialize with web tab active
+    this.switchTab('web');
+  }
+
+  /**
+   * Setup form validation
+   */
+  setupFormValidation() {
+    // Web scraping validation
+    const webUrlsInput = this.state.elements.get('web-urls-input');
+    if (webUrlsInput) {
+      webUrlsInput.addEventListener('input', () => this.validateWebForm());
+    }
+
+    // Academic search validation
+    const academicQueryInput = this.state.elements.get('academic-query-input');
+    if (academicQueryInput) {
+      academicQueryInput.addEventListener('input', () => this.validateAcademicForm());
+    }
+  }
+
+  /**
+   * Setup input validation with real-time feedback
+   */
+  setupInputValidation() {
+    const webUrlsInput = this.state.elements.get('web-urls-input');
+    if (webUrlsInput) {
+      webUrlsInput.addEventListener('blur', () => {
+        const urls = this.parseUrls(webUrlsInput.value);
+        this.validateUrls(urls);
+      });
+    }
+  }
+
+  /**
+   * Setup download manager
+   */
+  setupDownloadManager() {
+    // Start download queue processor
+    this.startDownloadQueueProcessor();
+    
+    // Setup auto-refresh for download status
+    this.setupAutoRefresh();
+  }
+
+  /**
+   * Switch between tabs
+   */
+  switchTab(tabName) {
+    this.state.activeTab = tabName;
+    
+    // Update tab button states
+    const tabButtons = ['web-tab-btn', 'academic-tab-btn', 'downloads-tab-btn', 'history-tab-btn'];
+    tabButtons.forEach(btnId => {
+      const btn = this.state.elements.get(btnId);
+      if (btn) {
+        const isActive = btnId === `${tabName}-tab-btn`;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive);
+      }
+    });
+
+    // Show/hide tab content
+    const tabContents = ['web-tab-content', 'academic-tab-content', 'downloads-tab-content', 'history-tab-content'];
+    tabContents.forEach(contentId => {
+      const content = this.state.elements.get(contentId);
+      if (content) {
+        const isActive = contentId === `${tabName}-tab-content`;
+        content.style.display = isActive ? 'block' : 'none';
+      }
+    });
+
+    // Update current mode
+    this.state.currentMode = tabName;
+    
+    // Save tab state
+    localStorage.setItem('webScraper_activeTab', tabName);
+    
+    // Tab-specific initialization
+    if (tabName === 'downloads') {
+      this.refreshDownloadsView();
+    } else if (tabName === 'history') {
+      this.refreshHistoryView();
+    }
+  }
+
+  /**
+   * Start web scraping process
+   */
+  async startWebScraping() {
+    try {
+      const urlsInput = this.state.elements.get('web-urls-input');
+      const recursiveToggle = this.state.elements.get('web-recursive-toggle');
+      const maxDepthInput = this.state.elements.get('web-max-depth');
+      const maxPagesInput = this.state.elements.get('web-max-pages');
+      const outputDirInput = this.state.elements.get('web-output-dir');
+
+      if (!urlsInput?.value.trim()) {
+        this.showError('Please enter at least one URL to scrape');
+        return;
+      }
+
+      const urls = this.parseUrls(urlsInput.value);
+      if (urls.length === 0) {
+        this.showError('Please enter valid URLs');
+        return;
+      }
+
+      const options = {
+        urls,
+        recursive: recursiveToggle?.checked || false,
+        max_depth: parseInt(maxDepthInput?.value) || this.config.maxDepth,
+        max_pages: parseInt(maxPagesInput?.value) || this.config.maxPages,
+        output_directory: outputDirInput?.value.trim() || null,
+        pdf_options: this.config.pdfOptions,
+        respect_robots: this.config.respectRobots,
+        request_delay: this.config.requestDelay,
+        timeout: this.config.timeout
+      };
+
+      this.state.processingState = 'scraping';
+      this.updateUI();
+
+      // Start scraping using Blueprint API
+      const response = await blueprintApi.startWebScraping(urls, options.output_directory, options);
+
+      // Store task information
+      this.state.currentTask = {
+        id: response.task_id,
+        type: 'web_scraping',
+        urls,
+        options,
+        startTime: Date.now(),
+        foundPdfs: new Map()
+      };
+
+      this.state.activeTasks.set(response.task_id, this.state.currentTask);
+
+      console.log(`🌐 Web scraping started: ${response.task_id}`);
+      this.showInfo(`Scraping started for ${urls.length} URL(s)`);
+
+    } catch (error) {
+      console.error('❌ Failed to start web scraping:', error);
+      this.handleTaskError({ error: error.message });
+    }
+  }
+
+  /**
+   * Start academic search
+   */
+  async startAcademicSearch() {
+    try {
+      const queryInput = this.state.elements.get('academic-query-input');
+      const sourcesSelect = this.state.elements.get('academic-sources-select');
+      const maxResultsInput = this.state.elements.get('academic-max-results');
+
+      if (!queryInput?.value.trim()) {
+        this.showError('Please enter a search query');
+        return;
+      }
+
+      const query = queryInput.value.trim();
+      const sources = this.getSelectedSources(sourcesSelect);
+      const maxResults = parseInt(maxResultsInput?.value) || this.config.maxResultsPerSource;
+
+      this.state.processingState = 'searching';
+      this.updateUI();
+
+      // Start academic search using Blueprint API
+      const response = await blueprintApi.searchAcademicPapers(query, sources, maxResults);
+
+      console.log(`📚 Academic search started: ${response.search_id || 'unknown'}`);
+      this.showInfo(`Searching for: "${query}" across ${sources.length} source(s)`);
+
+    } catch (error) {
+      console.error('❌ Failed to start academic search:', error);
+      this.handleTaskError({ error: error.message });
+    }
+  }
+
+  /**
+   * Parse URLs from input text
+   */
+  parseUrls(text) {
+    if (!text) return [];
+    
+    const urlRegex = /https?:\/\/[^\s]+/g;
+    const urls = text.match(urlRegex) || [];
+    
+    // Also handle line-separated URLs
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+    const lineUrls = lines.filter(line => /^https?:\/\//.test(line));
+    
+    return [...new Set([...urls, ...lineUrls])];
+  }
+
+  /**
+   * Validate URLs
+   */
+  validateUrls(urls) {
+    const urlsInput = this.state.elements.get('web-urls-input');
+    if (!urlsInput) return false;
+
+    urlsInput.classList.remove('is-invalid', 'is-valid');
+
+    if (urls.length === 0) {
+      urlsInput.classList.add('is-invalid');
+      this.showFieldFeedback(urlsInput, 'Please enter valid URLs', 'invalid');
+      return false;
+    }
+
+    // Validate each URL
+    const invalidUrls = urls.filter(url => {
+      try {
+        new URL(url);
+        return false;
+      } catch {
+        return true;
+      }
+    });
+
+    if (invalidUrls.length > 0) {
+      urlsInput.classList.add('is-invalid');
+      this.showFieldFeedback(urlsInput, `${invalidUrls.length} invalid URL(s) found`, 'invalid');
+      return false;
+    }
+
+    urlsInput.classList.add('is-valid');
+    this.showFieldFeedback(urlsInput, `${urls.length} valid URL(s)`, 'valid');
+    return true;
+  }
+
+  /**
+   * Get selected academic sources
+   */
+  getSelectedSources(selectElement) {
+    if (!selectElement) return this.config.academicSources;
+    
+    const selected = Array.from(selectElement.selectedOptions).map(option => option.value);
+    return selected.includes('all') ? this.config.academicSources : selected;
+  }
+
+  /**
+   * Validate web scraping form
+   */
+  validateWebForm() {
+    const urlsInput = this.state.elements.get('web-urls-input');
+    const startBtn = this.state.elements.get('web-start-btn');
+
+    const urls = this.parseUrls(urlsInput?.value || '');
+    const isValid = urls.length > 0 && this.state.processingState === 'idle';
+
+    if (startBtn) {
+      startBtn.disabled = !isValid;
+    }
+
+    return isValid;
+  }
+
+  /**
+   * Validate academic search form
+   */
+  validateAcademicForm() {
+    const queryInput = this.state.elements.get('academic-query-input');
+    const searchBtn = this.state.elements.get('academic-search-btn');
+
+    const query = queryInput?.value.trim() || '';
+    const isValid = query.length > 0 && this.state.processingState === 'idle';
+
+    if (searchBtn) {
+      searchBtn.disabled = !isValid;
+    }
+
+    return isValid;
+  }
+
+  /**
+   * Check if a task belongs to this module instance
+   */
+  isMyTask(taskId) {
+    return this.state.activeTasks.has(taskId) || 
+           (this.state.currentTask && this.state.currentTask.id === taskId);
+  }
+
+  /**
+   * Handle task started event
+   */
+  handleTaskStarted(data) {
+    console.log('🚀 Task started:', data);
+    this.showProgress(0, 'Starting...');
+    
+    // Update task info
+    if (this.state.currentTask) {
+      this.state.currentTask.status = 'started';
+    }
+  }
+
+  /**
+   * Handle progress update
    */
   handleProgressUpdate(data) {
-    try {
-      // Check if this update is for our task
-      if (!data.task_id || data.task_id !== state.currentTaskId) return;
-
-      const { progressStatus, progressStats } = state.elements;
-
-      // Use progressHandler to update UI if available
-      if (typeof updateProgressUI === 'function') {
-        updateProgressUI(data.task_id, data.progress, data.message, data.stats);
-      } else {
-        // Fallback to direct UI update
-        this.updateProgressUI(data);
-      }
-
-      // Update status text explicitly for better user experience
-      if (progressStatus && data.message) {
-        progressStatus.textContent = data.message;
-      }
-
-      // Handle PDF downloads if present
-      if (data.pdf_downloads) {
-        this.updatePdfDownloadsList(data.pdf_downloads);
-      }
-      
-      // Update local state
-      state.taskProgress = {
-        ...state.taskProgress,
-        progress: data.progress,
-        message: data.message,
-        stats: data.stats,
-        lastUpdate: Date.now()
-      };
-    } catch (error) {
-      this.handleError(error, "Error handling progress update");
+    const progress = Math.min(100, Math.max(0, data.progress || 0));
+    const message = data.message || `Processing... ${progress.toFixed(1)}%`;
+    
+    this.showProgress(progress, message);
+    
+    // Update stats if available
+    if (data.stats) {
+      this.updateStats(data.stats);
     }
-  },
+
+    // Update task info
+    if (this.state.currentTask) {
+      this.state.currentTask.progress = progress;
+      this.state.currentTask.stats = data.stats;
+    }
+  }
 
   /**
-   * Direct update of progress UI without progressHandler
-   * @param {Object} data - Progress data
+   * Handle URL scraped event
    */
-  updateProgressUI(data) {
-    try {
-      const { progressBar, progressStatus, progressStats } = state.elements;
-      
-      // Update progress bar
-      if (progressBar) {
-        progressBar.style.width = `${data.progress}%`;
-        progressBar.setAttribute('aria-valuenow', data.progress);
-        progressBar.textContent = `${Math.round(data.progress)}%`;
+  handleUrlScraped(data) {
+    console.log('🔍 URL scraped:', data);
+    
+    // Add to results
+    if (this.state.currentTask) {
+      if (!this.state.currentTask.scrapedUrls) {
+        this.state.currentTask.scrapedUrls = [];
       }
-      
-      // Update progress text
-      if (progressStatus) {
-        if (data.message) {
-          progressStatus.textContent = data.message;
-        } else {
-          progressStatus.textContent = `Processing... (${Math.round(data.progress)}%)`;
-        }
-      }
-      
-      // Update stats display if available
-      if (progressStats && data.stats) {
-        this.updateStatsDisplay(progressStats, data.stats);
-      }
-    } catch (error) {
-      this.handleError(error, "Error updating progress UI directly");
-    }
-  },
-
-  /**
-   * Update stats display
-   * @param {HTMLElement} element - Stats container
-   * @param {Object} stats - Stats data
-   */
-  updateStatsDisplay(element, stats) {
-    try {
-      if (!element || !stats) return;
-      
-      // Create stats HTML content
-      let html = '<div class="stats-container p-2">';
-      
-      // Different display for different types of stats
-      if (stats.total_urls !== undefined) {
-        // Web scraping stats
-        html += `
-          <div class="row">
-            <div class="col-6 col-md-3">
-              <span class="badge bg-primary">Total URLs: ${stats.total_urls || 0}</span>
-            </div>
-            <div class="col-6 col-md-3">
-              <span class="badge bg-success">Processed: ${stats.processed_urls || 0}</span>
-            </div>
-            <div class="col-6 col-md-3">
-              <span class="badge bg-warning">Pending: ${stats.pending_urls || 0}</span>
-            </div>
-            <div class="col-6 col-md-3">
-              <span class="badge bg-danger">Failed: ${stats.failed_urls || 0}</span>
-            </div>
-          </div>
-        `;
-        
-        // PDF downloads stats if available
-        if (stats.pdf_downloads_count !== undefined) {
-          html += `
-            <div class="mt-2">
-              <span class="badge bg-info">PDFs: ${stats.pdf_downloads_count}</span>
-              <span class="badge bg-success mx-1">Downloaded: ${stats.successful_downloads || 0}</span>
-              <span class="badge bg-danger mx-1">Failed: ${stats.failed_downloads || 0}</span>
-            </div>
-          `;
-        }
-      } else if (stats.pdf_downloads_count !== undefined) {
-        // PDF-only stats
-        html += `
-          <div class="row">
-            <div class="col-12 mb-2">
-              <span class="badge bg-primary">PDFs: ${stats.pdf_downloads_count}</span>
-              <span class="badge bg-success mx-1">Downloaded: ${stats.successful_downloads || 0}</span>
-              <span class="badge bg-danger mx-1">Failed: ${stats.failed_downloads || 0}</span>
-            </div>
-          </div>
-        `;
-      } else {
-        // Generic stats - display all key-value pairs
-        html += '<div class="row">';
-        
-        for (const [key, value] of Object.entries(stats)) {
-          if (typeof value !== 'object' && !key.startsWith('_')) {
-            const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            
-            html += `
-              <div class="col-6 col-md-4 mb-1">
-                <small>${formattedKey}:</small>
-                <span class="fw-bold">${value}</span>
-              </div>
-            `;
-          }
-        }
-        
-        html += '</div>';
-      }
-      
-      // Close container
-      html += '</div>';
-      
-      // Update element content
-      element.innerHTML = html;
-    } catch (error) {
-      this.handleError(error, "Error updating stats display");
-    }
-  },
-
-  /**
-   * Update the PDF downloads list
-   * @param {Array|Object} pdfDownloads - PDF downloads data
-   */
-  updatePdfDownloadsList(pdfDownloads) {
-    try {
-      const { pdfDownloadsList, pdfDownloadProgress } = state.elements;
-      if (!pdfDownloadsList || !pdfDownloadProgress) return;
-      
-      // Show the PDF downloads section
-      pdfDownloadProgress.classList.remove('d-none');
-      
-      // Handle array or object format
-      const downloadsArray = Array.isArray(pdfDownloads) ? 
-        pdfDownloads : 
-        (pdfDownloads.items || []);
-      
-      // Store in state for reference
-      state.pdfDownloads = downloadsArray;
-      
-      // Process each PDF download
-      downloadsArray.forEach(pdf => {
-        const listItem = pdfDownloadsList.querySelector(`[data-url="${pdf.url}"]`);
-        if (!listItem) {
-          this.addPdfToList(pdf);
-        } else {
-          this.updatePdfListItem(listItem, pdf);
-        }
+      this.state.currentTask.scrapedUrls.push({
+        url: data.url,
+        title: data.title,
+        size: data.size,
+        timestamp: Date.now()
       });
-      
-      // Add placeholder if list is empty
-      if (downloadsArray.length === 0 && pdfDownloadsList.children.length === 0) {
-        pdfDownloadsList.innerHTML = '<li class="list-group-item text-muted text-center">No PDFs downloaded yet</li>';
-      }
-    } catch (error) {
-      this.handleError(error, "Error updating PDF downloads list");
     }
-  },
+  }
 
   /**
-   * Add a PDF to the list
-   * @param {Object} pdf - PDF download data
+   * Handle PDF found event
    */
-  addPdfToList(pdf) {
-    try {
-      const { pdfDownloadsList } = state.elements;
-      if (!pdfDownloadsList) return;
-
-      // Clear placeholder if present
-      if (pdfDownloadsList.querySelector('.text-muted')) {
-        pdfDownloadsList.innerHTML = '';
-      }
-
-      // Create new list item
-      const listItem = document.createElement('li');
-      listItem.className = 'list-group-item pdf-list-item';
-      listItem.setAttribute('data-url', pdf.url);
-
-      // Determine badge class based on status
-      let badgeClass = 'bg-secondary';
-      switch (pdf.status) {
-        case 'downloading':
-          badgeClass = 'bg-primary';
-          break;
-        case 'processing':
-          badgeClass = 'bg-info';
-          break;
-        case 'success':
-          badgeClass = 'bg-success';
-          break;
-        case 'error':
-          badgeClass = 'bg-danger';
-          break;
-      }
-
-      // Extract filename from URL or use shortened URL
-      const urlObj = new URL(pdf.url);
-      let displayName = urlObj.pathname.split('/').pop() || urlObj.hostname;
-      if (displayName.length > 50) {
-        displayName = displayName.substring(0, 47) + '...';
-      }
-
-      // Show file path if available
-      const filePath = pdf.filePath || pdf.file_path || '';
-      const fileName = filePath ? filePath.split(/[\/\\]/).pop() : '';
-
-      // Build HTML content
-      listItem.innerHTML = `
-        <div class="d-flex flex-column">
-          <div class="d-flex justify-content-between align-items-center mb-1">
-            <div class="text-truncate me-2" title="${pdf.url}">${displayName}</div>
-            <span class="badge ${badgeClass} status-badge">${pdf.status}</span>
-          </div>
-          ${fileName ? `<div class="small text-muted mb-1 file-name">${fileName}</div>` : ''}
-          <div class="progress" style="height: 6px;">
-            <div class="progress-bar" role="progressbar" style="width: ${pdf.progress || 0}%"></div>
-          </div>
-          <div class="small text-muted mt-1 status-message">${pdf.message || ''}</div>
-        </div>
-      `;
-
-      // Add to list
-      pdfDownloadsList.appendChild(listItem);
-
-      // Scroll to bottom to show new items
-      pdfDownloadsList.scrollTop = pdfDownloadsList.scrollHeight;
-    } catch (error) {
-      this.handleError(error, "Error adding PDF to list");
+  handlePdfFound(data) {
+    console.log('📄 PDF found:', data);
+    
+    // Add to found PDFs
+    if (this.state.currentTask) {
+      this.state.currentTask.foundPdfs.set(data.pdf_url, {
+        url: data.pdf_url,
+        title: data.pdf_title || 'Unknown Title',
+        size: data.size || 0,
+        source: data.source_url || 'Unknown Source',
+        timestamp: Date.now()
+      });
     }
-  },
+
+    // Update PDF results display
+    this.updatePdfResults();
+  }
 
   /**
-   * Update an existing PDF list item
-   * @param {Element} listItem - List item element
-   * @param {Object} pdf - Updated PDF data
+   * Handle PDF download start
    */
-  updatePdfListItem(listItem, pdf) {
-    try {
-      // Update progress bar
-      const progressBar = listItem.querySelector('.progress-bar');
-      if (progressBar) {
-        progressBar.style.width = `${pdf.progress || 0}%`;
-      }
+  handlePdfDownloadStart(data) {
+    console.log('⬇️ PDF download started:', data);
+    
+    // Add to download progress tracking
+    this.state.downloadProgress.set(data.pdf_url, {
+      url: data.pdf_url,
+      title: data.pdf_title,
+      progress: 0,
+      status: 'downloading',
+      startTime: Date.now()
+    });
 
-      // Update status badge
-      const statusBadge = listItem.querySelector('.status-badge');
-      if (statusBadge) {
-        statusBadge.textContent = pdf.status;
+    this.updateDownloadsView();
+  }
 
-        // Update badge class based on status
-        statusBadge.className = 'badge status-badge';
-        switch (pdf.status) {
-          case 'downloading':
-            statusBadge.classList.add('bg-primary');
-            break;
-          case 'processing':
-            statusBadge.classList.add('bg-info');
-            break;
-          case 'success':
-            statusBadge.classList.add('bg-success');
-            break;
-          case 'error':
-            statusBadge.classList.add('bg-danger');
-            break;
-          default:
-            statusBadge.classList.add('bg-secondary');
-        }
-      }
-
-      // Update status message
-      const statusMessage = listItem.querySelector('.status-message');
-      if (statusMessage && pdf.message) {
-        statusMessage.textContent = pdf.message;
-      }
-
-      // Update file name if available
-      const filePath = pdf.filePath || pdf.file_path || '';
-      if (filePath) {
-        const fileName = filePath.split(/[\/\\]/).pop();
-        const fileNameElement = listItem.querySelector('.file-name');
-
-        if (fileName) {
-          if (fileNameElement) {
-            fileNameElement.textContent = fileName;
-          } else {
-            // Add filename element if it doesn't exist
-            const progressElement = listItem.querySelector('.progress');
-            if (progressElement) {
-              const fileNameDiv = document.createElement('div');
-              fileNameDiv.className = 'small text-muted mb-1 file-name';
-              fileNameDiv.textContent = fileName;
-              progressElement.parentNode.insertBefore(fileNameDiv, progressElement);
-            }
-          }
-        }
-      }
-
-      // If processing succeeded, show tables and document type if available
-      if (pdf.status === 'success') {
-        const metaInfo = [];
-
-        if (pdf.documentType || pdf.document_type) {
-          metaInfo.push(`Type: ${pdf.documentType || pdf.document_type}`);
-        }
-
-        if (pdf.tablesExtracted && pdf.tablesExtracted > 0) {
-          metaInfo.push(`Tables: ${pdf.tablesExtracted}`);
-        }
-
-        if (pdf.tables_extracted && pdf.tables_extracted > 0) {
-          metaInfo.push(`Tables: ${pdf.tables_extracted}`);
-        }
-
-        if (pdf.referencesExtracted && pdf.referencesExtracted > 0) {
-          metaInfo.push(`References: ${pdf.referencesExtracted}`);
-        }
-
-        if (pdf.references_extracted && pdf.references_extracted > 0) {
-          metaInfo.push(`References: ${pdf.references_extracted}`);
-        }
-
-        if (metaInfo.length > 0) {
-          const metaText = metaInfo.join(' | ');
-          const statusMessage = listItem.querySelector('.status-message');
-
-          if (statusMessage) {
-            statusMessage.innerHTML = `<span class="text-success">${metaText}</span>`;
-          }
-        }
-      }
-    } catch (error) {
-      this.handleError(error, "Error updating PDF list item");
+  /**
+   * Handle PDF download progress
+   */
+  handlePdfDownloadProgress(data) {
+    const downloadInfo = this.state.downloadProgress.get(data.pdf_url);
+    if (downloadInfo) {
+      downloadInfo.progress = data.progress;
+      downloadInfo.downloadedBytes = data.downloaded_bytes;
+      downloadInfo.totalBytes = data.total_bytes;
+      downloadInfo.speed = data.speed_bps;
     }
-  },
+
+    this.updateDownloadsView();
+  }
+
+  /**
+   * Handle PDF download complete
+   */
+  handlePdfDownloadComplete(data) {
+    console.log('✅ PDF download completed:', data);
+    
+    const downloadInfo = this.state.downloadProgress.get(data.pdf_url);
+    if (downloadInfo) {
+      downloadInfo.progress = 100;
+      downloadInfo.status = 'completed';
+      downloadInfo.filePath = data.file_path;
+      downloadInfo.endTime = Date.now();
+    }
+
+    this.updateDownloadsView();
+  }
+
+  /**
+   * Handle academic search results
+   */
+  handleAcademicResults(data) {
+    console.log('📚 Academic results received:', data);
+    
+    // Store results by source
+    if (!this.state.academicResults.has(data.source)) {
+      this.state.academicResults.set(data.source, []);
+    }
+    
+    const sourceResults = this.state.academicResults.get(data.source);
+    sourceResults.push(...(data.papers || []));
+    
+    // Update academic results display
+    this.updateAcademicResults();
+  }
 
   /**
    * Handle task completion
-   * @param {Object} data - Completion data
    */
   handleTaskCompleted(data) {
-    try {
-      // Check if this is our task
-      if (!data.task_id || data.task_id !== state.currentTaskId) return;
-
-      const { progressBar, progressStatus, statsContainer } = state.elements;
-
-      // Update progress to 100%
-      if (progressBar) {
-        progressBar.style.width = '100%';
-        progressBar.setAttribute('aria-valuenow', '100');
-        progressBar.textContent = '100%';
-      }
-      
-      if (progressStatus) progressStatus.textContent = 'Completed successfully';
-
-      // Update stats in results container
-      if (statsContainer && data.stats) {
-        let statsHtml = '<h5>Summary</h5><ul class="list-group mb-3">';
-        
-        // Add key statistics
-        statsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">
-          URLs Processed
-          <span class="badge bg-primary rounded-pill">${data.stats.total_urls || 0}</span>
-        </li>`;
-        
-        statsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">
-          Successful
-          <span class="badge bg-success rounded-pill">${data.stats.successful_urls || 0}</span>
-        </li>`;
-        
-        statsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">
-          Failed
-          <span class="badge bg-danger rounded-pill">${data.stats.failed_urls || 0}</span>
-        </li>`;
-        
-        if (data.stats.pdf_downloads_count) {
-          statsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">
-            PDFs Downloaded
-            <span class="badge bg-info rounded-pill">${data.stats.pdf_downloads_count}</span>
-          </li>`;
-        }
-        
-        // Add processing time
-        const processingTime = data.stats.processing_time_seconds || 
-                              data.stats.duration_seconds || 0;
-        
-        statsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">
-          Processing Time
-          <span>${this.formatTime(processingTime)}</span>
-        </li>`;
-        
-        statsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">
-          Output File
-          <span class="text-truncate" style="max-width: 70%;">${data.output_file}</span>
-        </li>`;
-        
-        statsHtml += '</ul>';
-        
-        statsContainer.innerHTML = statsHtml;
-      }
-
-      // Show result container
-      this.showResultsContainer();
-
-      // Show toast notification
-      showToast('Completed', 'Web scraping completed successfully', 'success');
-
-      // Reset task state
-      this.resetTaskState();
-    } catch (error) {
-      this.handleError(error, "Error handling task completion");
+    console.log('✅ Task completed:', data);
+    
+    this.state.processingState = 'completed';
+    this.showProgress(100, 'Task completed successfully!');
+    
+    // Show results
+    this.showResults(data);
+    
+    // Update stats
+    if (data.stats) {
+      this.updateStats(data.stats);
     }
-  },
-
-  /**
-   * Format time in seconds to a human-readable string
-   * @param {number} seconds - Time in seconds
-   * @returns {string} Formatted time
-   */
-  formatTime(seconds) {
-    if (seconds < 60) {
-      return `${Math.round(seconds)} seconds`;
-    } else if (seconds < 3600) {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = Math.round(seconds % 60);
-      return `${minutes} minute${minutes !== 1 ? 's' : ''} ${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}`;
-    } else {
-      const hours = Math.floor(seconds / 3600);
-      const remainingMinutes = Math.floor((seconds % 3600) / 60);
-      return `${hours} hour${hours !== 1 ? 's' : ''} ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
+    
+    // Update task info
+    if (this.state.currentTask) {
+      this.state.currentTask.status = 'completed';
+      this.state.currentTask.endTime = Date.now();
+      this.state.currentTask.results = data;
     }
-  },
+    
+    this.updateUI();
+  }
 
   /**
    * Handle task error
-   * @param {Object} data - Error data
    */
   handleTaskError(data) {
-    try {
-      // Check if this is our task
-      if (!data.task_id || data.task_id !== state.currentTaskId) return;
-
-      // Show error message
-      showToast('Error', data.error || 'An error occurred during web scraping', 'error');
-
-      // Update UI to show error state
-      const { progressStatus } = state.elements;
-      if (progressStatus) {
-        progressStatus.textContent = `Error: ${data.error || 'Unknown error'}`;
-        progressStatus.classList.add('text-danger');
-      }
-
-      // Reset task state
-      this.resetTaskState();
-
-      // Add a "New Task" button
-      const { progressContainer } = state.elements;
-      if (progressContainer) {
-        const newTaskButton = document.createElement('button');
-        newTaskButton.className = 'btn btn-primary mt-3';
-        newTaskButton.innerHTML = '<i class="fas fa-plus me-1"></i> New Task';
-        newTaskButton.addEventListener('click', () => this.resetAndShowForm());
-
-        // Check if button already exists
-        if (!progressContainer.querySelector('.btn-primary')) {
-          progressContainer.appendChild(newTaskButton);
-        }
-      }
-    } catch (error) {
-      this.handleError(error, "Error handling task error");
+    console.error('❌ Task error:', data);
+    
+    this.state.processingState = 'error';
+    this.showError(data.error || 'Task failed');
+    
+    // Update task info
+    if (this.state.currentTask) {
+      this.state.currentTask.status = 'error';
+      this.state.currentTask.error = data.error;
     }
-  },
+    
+    this.updateUI();
+  }
 
   /**
-   * Handle task cancellation
-   * @param {Object} data - Cancellation data
+   * Cancel current task
    */
-  handleTaskCancelled(data) {
+  async cancelCurrentTask() {
+    if (!this.state.currentTask) return;
+
     try {
-      // Check if this is our task
-      if (!data.task_id || data.task_id !== state.currentTaskId) return;
+      await blueprintApi.cancelTask(this.state.currentTask.id);
+      console.log(`🚫 Task cancelled: ${this.state.currentTask.id}`);
       
-      // Show cancellation message
-      showToast('Cancelled', 'Web scraping task was cancelled', 'warning');
+      this.state.processingState = 'idle';
+      this.updateUI();
       
-      // Update UI to show cancelled state
-      const { progressStatus } = state.elements;
-      if (progressStatus) {
-        progressStatus.textContent = 'Task cancelled';
-        progressStatus.classList.add('text-warning');
-      }
-      
-      // Reset task state
-      this.resetTaskState();
-      
-      // Add a "New Task" button
-      const { progressContainer } = state.elements;
-      if (progressContainer) {
-        const newTaskButton = document.createElement('button');
-        newTaskButton.className = 'btn btn-primary mt-3';
-        newTaskButton.innerHTML = '<i class="fas fa-plus me-1"></i> New Task';
-        newTaskButton.addEventListener('click', () => this.resetAndShowForm());
-        
-        // Check if button already exists
-        if (!progressContainer.querySelector('.btn-primary')) {
-          progressContainer.appendChild(newTaskButton);
-        }
-      }
     } catch (error) {
-      this.handleError(error, "Error handling task cancellation");
+      console.error('❌ Failed to cancel task:', error);
     }
-  },
+  }
 
   /**
-   * Reset form and show it
+   * Select all PDFs
    */
-  resetAndShowForm() {
-    try {
-      // Reset task state
-      this.resetTaskState();
-      
-      // Clear URL inputs except the first one
-      const { urlsContainer } = state.elements;
-      if (urlsContainer) {
-        urlsContainer.innerHTML = '';
-        this.addUrlInput();
-      }
-      
-      // Show form container
-      this.showFormContainer();
-    } catch (error) {
-      this.handleError(error, "Error resetting form");
-    }
-  },
-
-  /**
-   * Cancel the current scraping task
-   */
-  cancelScraping() {
-    try {
-      const taskId = state.currentTaskId;
-      if (!taskId) {
-        showToast('Error', 'No active scraping task to cancel', 'error');
-        return;
-      }
-
-      // Confirm cancellation
-      if (!confirm('Are you sure you want to cancel the current scraping task?')) {
-        return;
-      }
-
-      // Show loading indicator
-      const loading = showLoadingSpinner('Canceling task...');
-
-      // Try to cancel via socketHandler if available
-      if (socketHandlerFunctions.cancelTask) {
-        socketHandlerFunctions.cancelTask(taskId)
-          .then(() => {
-            loading.hide();
-            showToast('Cancelled', 'Scraping task cancelled successfully', 'success');
-            this.handleTaskCancelled({ task_id: taskId });
-          })
-          .catch(error => {
-            console.warn("Error cancelling via socketHandler:", error);
-            // Try fallback to API
-            this.cancelTaskViaApi(taskId, loading);
-          });
-      } else {
-        // Use direct API call
-        this.cancelTaskViaApi(taskId, loading);
-      }
-    } catch (error) {
-      this.handleError(error, "Error cancelling scraping task");
-      showToast('Error', `Failed to cancel task: ${error.message}`, 'error');
-    }
-  },
-
-  /**
-   * Cancel task via API
-   * @param {string} taskId - Task ID
-   * @param {Object} loading - Loading spinner object
-   */
-  cancelTaskViaApi(taskId, loading) {
-    // Call the Blueprint cancel API
-    blueprintApi.cancelTask(taskId)
-    .then(data => {
-      loading.hide();
-
-      if (data.status === 'cancelled' || data.success) {
-        showToast('Cancelled', 'Scraping task cancelled successfully', 'success');
-        this.handleTaskCancelled({ task_id: taskId });
-      } else {
-        throw new Error(data.message || 'Failed to cancel task');
-      }
-    })
-    .catch(error => {
-      loading.hide();
-      this.handleError(error, "Error cancelling task");
-      showToast('Error', `Failed to cancel task: ${error.message}`, 'error');
+  selectAllPdfs() {
+    const checkboxes = document.querySelectorAll('.pdf-checkbox');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = true;
+      this.state.selectedPdfs.add(checkbox.value);
     });
-  },
+    
+    this.updateSelectionButtons();
+  }
 
   /**
-   * Open a file
-   * @param {string} filePath - Path to file
+   * Select no PDFs
    */
-  openFile(filePath) {
-    try {
-      fetch(API_ENDPOINTS.OPEN_FILE, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ path: filePath })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.success) {
-          showToast('Success', 'Opening file', 'success');
-        } else {
-          throw new Error(data.message || 'Failed to open file');
-        }
-      })
-      .catch(error => {
-        this.handleError(error, "Error opening file");
-        showToast('Error', `Failed to open file: ${error.message}`, 'error');
-      });
-    } catch (error) {
-      this.handleError(error, "Error opening file");
+  selectNonePdfs() {
+    const checkboxes = document.querySelectorAll('.pdf-checkbox');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = false;
+    });
+    
+    this.state.selectedPdfs.clear();
+    this.updateSelectionButtons();
+  }
+
+  /**
+   * Add selected PDFs to download queue
+   */
+  async addSelectedToDownloadQueue() {
+    if (this.state.selectedPdfs.size === 0) {
+      this.showWarning('Please select PDFs to download');
+      return;
     }
-  },
+
+    try {
+      const selectedUrls = Array.from(this.state.selectedPdfs);
+      
+      // Add to download queue
+      selectedUrls.forEach(url => {
+        const pdfInfo = this.getPdfInfo(url);
+        if (pdfInfo) {
+          this.state.downloadQueue.set(url, {
+            ...pdfInfo,
+            status: 'queued',
+            addedTime: Date.now()
+          });
+        }
+      });
+
+      this.showInfo(`Added ${selectedUrls.length} PDF(s) to download queue`);
+      
+      // Switch to downloads tab
+      this.switchTab('downloads');
+      
+      // Start processing queue
+      this.processDownloadQueue();
+      
+    } catch (error) {
+      console.error('❌ Failed to add PDFs to queue:', error);
+      this.showError('Failed to add PDFs to download queue');
+    }
+  }
 
   /**
-   * Open a folder
-   * @param {string} folderPath - Path to folder
+   * Get PDF info from various sources
    */
-  openFolder(folderPath) {
-    try {
-      fetch(API_ENDPOINTS.OPEN_FOLDER, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ path: folderPath })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
+  getPdfInfo(url) {
+    // Check current task found PDFs
+    if (this.state.currentTask?.foundPdfs.has(url)) {
+      return this.state.currentTask.foundPdfs.get(url);
+    }
+    
+    // Check academic results
+    for (const sourceResults of this.state.academicResults.values()) {
+      const paper = sourceResults.find(p => p.pdf_url === url);
+      if (paper) {
+        return {
+          url: paper.pdf_url,
+          title: paper.title,
+          authors: paper.authors,
+          source: paper.source,
+          size: paper.size || 0
+        };
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Process download queue
+   */
+  async processDownloadQueue() {
+    const activeDownloads = Array.from(this.state.downloadProgress.values())
+      .filter(d => d.status === 'downloading').length;
+    
+    if (activeDownloads >= this.config.pdfOptions.maxDownloads) {
+      return; // Wait for current downloads to complete
+    }
+    
+    // Get next items from queue
+    const queuedItems = Array.from(this.state.downloadQueue.entries())
+      .filter(([_, item]) => item.status === 'queued')
+      .slice(0, this.config.pdfOptions.maxDownloads - activeDownloads);
+    
+    for (const [url, item] of queuedItems) {
+      try {
+        // Mark as downloading
+        item.status = 'downloading';
+        this.state.downloadProgress.set(url, {
+          ...item,
+          progress: 0,
+          startTime: Date.now()
+        });
+        
+        // Start download (this will trigger socket events)
+        await blueprintApi.request('/api/download-pdf', {
+          method: 'POST',
+          body: JSON.stringify({
+            url: url,
+            title: item.title,
+            output_directory: this.getCurrentOutputDirectory()
+          })
+        }, 'web_scraper');
+        
+      } catch (error) {
+        console.error(`❌ Failed to start download for ${url}:`, error);
+        item.status = 'error';
+        item.error = error.message;
+      }
+    }
+    
+    this.updateDownloadsView();
+  }
+
+  /**
+   * Start download queue processor (runs periodically)
+   */
+  startDownloadQueueProcessor() {
+    setInterval(() => {
+      if (this.state.downloadQueue.size > 0) {
+        this.processDownloadQueue();
+      }
+    }, 5000); // Check every 5 seconds
+  }
+
+  /**
+   * Setup auto-refresh for dynamic content
+   */
+  setupAutoRefresh() {
+    setInterval(() => {
+      if (this.state.activeTab === 'downloads') {
+        this.updateDownloadsView();
+      }
+    }, this.config.autoRefreshInterval);
+  }
+
+  /**
+   * Update PDF results display
+   */
+  updatePdfResults() {
+    const container = this.state.elements.get('pdf-results-container');
+    if (!container) return;
+
+    let allPdfs = [];
+    
+    // Collect PDFs from current task
+    if (this.state.currentTask?.foundPdfs) {
+      allPdfs.push(...Array.from(this.state.currentTask.foundPdfs.values()));
+    }
+    
+    // Collect PDFs from academic results
+    for (const sourceResults of this.state.academicResults.values()) {
+      const pdfs = sourceResults.filter(paper => paper.pdf_url);
+      allPdfs.push(...pdfs.map(paper => ({
+        url: paper.pdf_url,
+        title: paper.title,
+        authors: paper.authors,
+        source: paper.source,
+        size: paper.size || 0
+      })));
+    }
+
+    // Apply filters
+    allPdfs = this.applyFilters(allPdfs);
+
+    // Generate HTML
+    const html = this.generatePdfResultsHtml(allPdfs);
+    container.innerHTML = html;
+
+    // Add event listeners for checkboxes
+    this.setupPdfCheckboxes();
+    
+    this.updateSelectionButtons();
+  }
+
+  /**
+   * Generate HTML for PDF results
+   */
+  generatePdfResultsHtml(pdfs) {
+    if (pdfs.length === 0) {
+      return '<div class="text-center text-muted py-4">No PDFs found</div>';
+    }
+
+    return `
+      <div class="pdf-results-header mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Found PDFs (${pdfs.length})</h5>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="window.webScraper.selectAllPdfs()">
+              Select All
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.webScraper.selectNonePdfs()">
+              Select None
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pdf-list">
+        ${pdfs.map(pdf => `
+          <div class="pdf-item card mb-2">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-start">
+                <div class="form-check me-3">
+                  <input class="form-check-input pdf-checkbox" type="checkbox" 
+                         value="${pdf.url}" id="pdf-${this.generateId(pdf.url)}">
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="card-title mb-1">${this.escapeHtml(pdf.title)}</h6>
+                  ${pdf.authors ? `<p class="text-muted small mb-1">By: ${this.escapeHtml(pdf.authors)}</p>` : ''}
+                  <div class="d-flex justify-content-between text-sm">
+                    <span class="text-muted">Source: ${this.escapeHtml(pdf.source)}</span>
+                    <span class="text-muted">${this.formatFileSize(pdf.size)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="pdf-actions mt-3">
+        <button type="button" class="btn btn-primary" id="add-selected-to-queue">
+          <i class="fas fa-plus me-2"></i>Add Selected to Download Queue
+        </button>
+      </div>
+    `;
+  }
+
+  /**
+   * Setup PDF checkbox event listeners
+   */
+  setupPdfCheckboxes() {
+    const checkboxes = document.querySelectorAll('.pdf-checkbox');
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          this.state.selectedPdfs.add(e.target.value);
+        } else {
+          this.state.selectedPdfs.delete(e.target.value);
         }
-        return response.json();
-      })
-      .then(data => {
-        if (data.success) {
-          showToast('Success', 'Opening folder', 'success');
-       } else {
-         throw new Error(data.message || 'Failed to open folder');
-       }
-     })
-     .catch(error => {
-       this.handleError(error, "Error opening folder");
-       showToast('Error', `Failed to open folder: ${error.message}`, 'error');
-     });
-   } catch (error) {
-     this.handleError(error, "Error opening folder");
-   }
- },
+        this.updateSelectionButtons();
+      });
+    });
 
- /**
-  * Handle error in web scraper module
-  * @param {Error} error - Error object
-  * @param {string} context - Error context description
-  */
- handleError(error, context = 'Web Scraper Error') {
-   console.error(`[Web Scraper] ${context}:`, error);
+    // Add selected to queue button
+    const addButton = document.getElementById('add-selected-to-queue');
+    if (addButton) {
+      addButton.addEventListener('click', () => this.addSelectedToDownloadQueue());
+    }
+  }
 
-   // Use error handler if available
-   if (typeof handleError === 'function') {
-     handleError(error, 'WEB_SCRAPER', false);
-   }
+  /**
+   * Update selection buttons state
+   */
+  updateSelectionButtons() {
+    const addButton = document.getElementById('add-selected-to-queue');
+    if (addButton) {
+      addButton.disabled = this.state.selectedPdfs.size === 0;
+      addButton.textContent = `Add Selected to Queue (${this.state.selectedPdfs.size})`;
+    }
+  }
 
-   // Show error message in UI if not already handled
-   if (!error.handled) {
-     showToast('Error', error.message || 'An unknown error occurred', 'error');
-     error.handled = true;
-   }
- },
+  /**
+   * Apply filters to PDF list
+   */
+  applyFilters(pdfs) {
+    return pdfs.filter(pdf => {
+      // Source filter
+      if (this.state.filters.source !== 'all' && 
+          !pdf.source.toLowerCase().includes(this.state.filters.source.toLowerCase())) {
+        return false;
+      }
+      
+      // Title filter
+      if (this.state.filters.title && 
+          !pdf.title.toLowerCase().includes(this.state.filters.title.toLowerCase())) {
+        return false;
+      }
+      
+      // Author filter
+      if (this.state.filters.author && pdf.authors &&
+          !pdf.authors.toLowerCase().includes(this.state.filters.author.toLowerCase())) {
+        return false;
+      }
+      
+      // File size filter
+      if (this.state.filters.fileSize !== 'all') {
+        const size = pdf.size || 0;
+        switch (this.state.filters.fileSize) {
+          case 'small':
+            if (size > 5 * 1024 * 1024) return false; // > 5MB
+            break;
+          case 'medium':
+            if (size <= 5 * 1024 * 1024 || size > 20 * 1024 * 1024) return false; // 5-20MB
+            break;
+          case 'large':
+            if (size <= 20 * 1024 * 1024) return false; // > 20MB
+            break;
+        }
+      }
+      
+      return true;
+    });
+  }
 
- /**
-  * Clean up resources when module is unloaded
-  */
- cleanup() {
-   // Stop any active tasks
-   if (state.currentTaskId) {
-     if (socketHandlerFunctions.stopStatusPolling) {
-       socketHandlerFunctions.stopStatusPolling(state.currentTaskId);
-     }
-     
-     if (cancelTracking) {
-       cancelTracking(state.currentTaskId);
-     }
-   }
-   
-   // Unregister all event listeners
-   this.unregisterAllEvents();
-   
-   // Reset state
-   this.resetTaskState();
-   
-   console.log("Web Scraper module cleaned up");
- }
-};
+  /**
+   * Update academic results display
+   */
+  updateAcademicResults() {
+    // Academic results are displayed as PDFs in the PDF results container
+    this.updatePdfResults();
+  }
 
-// Export the module with default export
+  /**
+   * Update downloads view
+   */
+  updateDownloadsView() {
+    this.refreshDownloadsView();
+  }
+
+  /**
+   * Refresh downloads view
+   */
+  refreshDownloadsView() {
+    const container = this.state.elements.get('downloads-tab-content');
+    if (!container) return;
+
+    const queuedDownloads = Array.from(this.state.downloadQueue.values())
+      .filter(item => item.status === 'queued');
+    
+    const activeDownloads = Array.from(this.state.downloadProgress.values())
+      .filter(item => item.status === 'downloading');
+    
+    const completedDownloads = Array.from(this.state.downloadProgress.values())
+      .filter(item => item.status === 'completed');
+
+    const html = `
+      <div class="downloads-overview mb-4">
+        <div class="row text-center">
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 class="text-primary">${queuedDownloads.length}</h3>
+              <p class="text-muted">Queued</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 class="text-warning">${activeDownloads.length}</h3>
+              <p class="text-muted">Downloading</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 class="text-success">${completedDownloads.length}</h3>
+              <p class="text-muted">Completed</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 class="text-info">${this.config.pdfOptions.maxDownloads}</h3>
+              <p class="text-muted">Max Concurrent</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      ${activeDownloads.length > 0 ? `
+        <div class="active-downloads mb-4">
+          <h5>Active Downloads</h5>
+          ${activeDownloads.map(download => this.generateDownloadItemHtml(download, 'active')).join('')}
+        </div>
+      ` : ''}
+
+      ${queuedDownloads.length > 0 ? `
+        <div class="queued-downloads mb-4">
+          <h5>Download Queue</h5>
+          ${queuedDownloads.map(download => this.generateDownloadItemHtml(download, 'queued')).join('')}
+        </div>
+      ` : ''}
+
+      ${completedDownloads.length > 0 ? `
+        <div class="completed-downloads mb-4">
+          <h5>Completed Downloads</h5>
+          ${completedDownloads.map(download => this.generateDownloadItemHtml(download, 'completed')).join('')}
+        </div>
+      ` : ''}
+    `;
+
+    container.innerHTML = html;
+  }
+
+  /**
+   * Generate HTML for download item
+   */
+  generateDownloadItemHtml(download, type) {
+    const progress = download.progress || 0;
+    const statusIcon = {
+      'queued': 'fas fa-clock text-warning',
+      'active': 'fas fa-download text-primary',
+      'completed': 'fas fa-check-circle text-success',
+      'error': 'fas fa-exclamation-circle text-danger'
+    }[download.status] || 'fas fa-question-circle';
+
+    return `
+      <div class="download-item card mb-2">
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <i class="${statusIcon} me-3"></i>
+            <div class="flex-grow-1">
+              <h6 class="mb-1">${this.escapeHtml(download.title)}</h6>
+              <div class="small text-muted mb-2">${this.escapeHtml(download.url)}</div>
+              
+              ${type === 'active' ? `
+                <div class="progress mb-2" style="height: 6px;">
+                  <div class="progress-bar" role="progressbar" 
+                       style="width: ${progress}%" 
+                       aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between small text-muted">
+                  <span>${progress.toFixed(1)}%</span>
+                  ${download.speed ? `<span>${this.formatSpeed(download.speed)}</span>` : ''}
+                </div>
+              ` : ''}
+              
+              ${type === 'completed' ? `
+                <div class="small text-success">
+                  <i class="fas fa-check me-1"></i>
+                  Downloaded in ${this.formatDuration((download.endTime - download.startTime) / 1000)}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Refresh history view
+   */
+  refreshHistoryView() {
+    // Implementation for history view
+    console.log('Refreshing history view...');
+  }
+
+  /**
+   * Get current output directory
+   */
+  getCurrentOutputDirectory() {
+    const outputDirInput = this.state.elements.get('web-output-dir');
+    return outputDirInput?.value.trim() || null;
+  }
+
+  /**
+   * Update UI based on current state
+   */
+  updateUI() {
+    const webStartBtn = this.state.elements.get('web-start-btn');
+    const academicSearchBtn = this.state.elements.get('academic-search-btn');
+    const cancelBtn = this.state.elements.get('scraper-cancel-btn');
+    const progressContainer = this.state.elements.get('scraper-progress-container');
+
+    // Update buttons based on processing state
+    if (webStartBtn) {
+      webStartBtn.disabled = this.state.processingState !== 'idle';
+      webStartBtn.textContent = this.state.processingState === 'scraping' ? 'Scraping...' : 'Start Scraping';
+    }
+
+    if (academicSearchBtn) {
+      academicSearchBtn.disabled = this.state.processingState !== 'idle';
+      academicSearchBtn.textContent = this.state.processingState === 'searching' ? 'Searching...' : 'Search';
+    }
+
+    if (cancelBtn) {
+      cancelBtn.style.display = ['scraping', 'downloading', 'processing'].includes(this.state.processingState) ? 'inline-block' : 'none';
+    }
+
+    if (progressContainer) {
+      progressContainer.style.display = 
+        ['scraping', 'downloading', 'processing', 'completed', 'error'].includes(this.state.processingState) ? 'block' : 'none';
+    }
+  }
+
+  /**
+   * Show progress update
+   */
+  showProgress(progress, message) {
+    const progressBar = this.state.elements.get('scraper-progress-bar');
+    const progressText = this.state.elements.get('scraper-progress-text');
+
+    if (progressBar) {
+      progressBar.style.width = `${progress}%`;
+      progressBar.setAttribute('aria-valuenow', progress);
+    }
+
+    if (progressText) {
+      progressText.textContent = message;
+    }
+  }
+
+  /**
+   * Update statistics display
+   */
+  updateStats(stats) {
+    const statsContainer = this.state.elements.get('scraper-stats-container');
+    if (!statsContainer) return;
+
+    const statsHtml = `
+      <div class="row text-center">
+        <div class="col-md-2">
+          <div class="stat-item">
+            <div class="stat-value">${stats.urls_processed || 0}</div>
+            <div class="stat-label">URLs Processed</div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="stat-item">
+            <div class="stat-value">${stats.pdfs_found || 0}</div>
+            <div class="stat-label">PDFs Found</div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="stat-item">
+            <div class="stat-value">${stats.pdfs_downloaded || 0}</div>
+            <div class="stat-label">PDFs Downloaded</div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="stat-item">
+            <div class="stat-value">${this.formatFileSize(stats.total_size || 0)}</div>
+            <div class="stat-label">Total Size</div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="stat-item">
+            <div class="stat-value">${this.formatDuration(stats.elapsed_time || 0)}</div>
+            <div class="stat-label">Elapsed Time</div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="stat-item">
+            <div class="stat-value">${stats.current_depth || 0}</div>
+            <div class="stat-label">Crawl Depth</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    statsContainer.innerHTML = statsHtml;
+    statsContainer.style.display = 'block';
+  }
+
+  /**
+   * Show processing results
+   */
+  showResults(data) {
+    const resultsContainer = this.state.elements.get('scraper-results-container');
+    if (!resultsContainer) return;
+
+    const resultsHtml = `
+      <div class="alert alert-success">
+        <h5><i class="fas fa-check-circle me-2"></i>Scraping Complete!</h5>
+        <p>Successfully processed ${data.stats?.urls_processed || 0} URLs</p>
+        <p>Found ${data.stats?.pdfs_found || 0} PDFs and downloaded ${data.stats?.pdfs_downloaded || 0}</p>
+        
+        ${data.output_directory ? `
+          <p>Results saved to: <strong>${data.output_directory}</strong></p>
+        ` : ''}
+        
+        ${data.download_url ? `
+        <div class="mt-3">
+          <a href="${data.download_url}" class="btn btn-primary" download>
+            <i class="fas fa-download me-2"></i>Download Results
+          </a>
+        </div>
+        ` : ''}
+      </div>
+    `;
+
+    resultsContainer.innerHTML = resultsHtml;
+    resultsContainer.style.display = 'block';
+  }
+
+  /**
+   * Load saved state from localStorage
+   */
+  loadSavedState() {
+    try {
+      const savedTab = localStorage.getItem('webScraper_activeTab');
+      if (savedTab) {
+        this.switchTab(savedTab);
+      }
+
+      const savedFilters = localStorage.getItem('webScraper_filters');
+      if (savedFilters) {
+        this.state.filters = { ...this.state.filters, ...JSON.parse(savedFilters) };
+      }
+    } catch (error) {
+      console.warn('Failed to load saved state:', error);
+    }
+  }
+
+  /**
+   * Save state to localStorage
+   */
+  saveState() {
+    try {
+      localStorage.setItem('webScraper_activeTab', this.state.activeTab);
+      localStorage.setItem('webScraper_filters', JSON.stringify(this.state.filters));
+    } catch (error) {
+      console.warn('Failed to save state:', error);
+    }
+  }
+
+  /**
+   * Show field validation feedback
+   */
+  showFieldFeedback(element, message, type) {
+    // Remove existing feedback
+    const existingFeedback = element.parentNode.querySelector('.feedback-message');
+    if (existingFeedback) {
+      existingFeedback.remove();
+    }
+
+    // Add new feedback
+    const feedback = document.createElement('div');
+    feedback.className = `feedback-message ${type === 'valid' ? 'text-success' : 'text-danger'} small mt-1`;
+    feedback.textContent = message;
+    element.parentNode.appendChild(feedback);
+  }
+
+  /**
+   * Show toast notification
+   */
+  showToast(title, message, type = 'info') {
+    if (window.showToast) {
+      window.showToast(title, message, type);
+    } else {
+      console.log(`${type.toUpperCase()}: ${title} - ${message}`);
+    }
+  }
+
+  /**
+   * Show error message
+   */
+  showError(message) {
+    this.showToast('Web Scraper Error', message, 'error');
+  }
+
+  /**
+   * Show warning message
+   */
+  showWarning(message) {
+    this.showToast('Web Scraper Warning', message, 'warning');
+  }
+
+  /**
+   * Show info message
+   */
+  showInfo(message) {
+    this.showToast('Web Scraper', message, 'info');
+  }
+
+  /**
+   * Utility functions
+   */
+  
+  formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  formatDuration(seconds) {
+    if (seconds < 60) {
+      return `${seconds.toFixed(1)}s`;
+    } else if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      return `${minutes}m ${remainingSeconds}s`;
+    } else {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      return `${hours}h ${minutes}m`;
+    }
+  }
+
+  formatSpeed(bytesPerSecond) {
+    return `${this.formatFileSize(bytesPerSecond)}/s`;
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  generateId(text) {
+    return btoa(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, 8);
+  }
+
+  /**
+   * Reset to initial state
+   */
+  reset() {
+    this.state.currentTask = null;
+    this.state.processingState = 'idle';
+    this.state.selectedPdfs.clear();
+    this.state.downloadQueue.clear();
+    this.state.downloadProgress.clear();
+    
+    // Clear UI
+    const progressContainer = this.state.elements.get('scraper-progress-container');
+    const statsContainer = this.state.elements.get('scraper-stats-container');
+    const resultsContainer = this.state.elements.get('scraper-results-container');
+
+    if (progressContainer) progressContainer.style.display = 'none';
+    if (statsContainer) statsContainer.style.display = 'none';
+    if (resultsContainer) resultsContainer.style.display = 'none';
+
+    this.updateUI();
+  }
+
+  /**
+   * Cleanup event listeners and resources
+   */
+  cleanup() {
+    // Remove event listeners
+    this.state.eventListeners.forEach(removeListener => removeListener());
+    this.state.eventListeners.clear();
+
+    // Remove socket listeners
+    this.state.socketListeners.forEach(removeListener => removeListener());
+    this.state.socketListeners.clear();
+
+    // Cancel any ongoing tasks
+    if (this.state.currentTask) {
+      this.cancelCurrentTask();
+    }
+
+    // Save state before cleanup
+    this.saveState();
+
+    this.state.isInitialized = false;
+  }
+}
+
+// Create singleton instance
+const webScraper = new WebScraper();
+
+// Export for use by other modules
 export default webScraper;
 
-// Named exports for important functions
-export const initialize = webScraper.initialize.bind(webScraper);
-export const addUrlInput = webScraper.addUrlInput.bind(webScraper);
-export const performAcademicSearch = webScraper.performAcademicSearch.bind(webScraper);
-export const startScraping = webScraper.startScraping.bind(webScraper);
-export const cancelScraping = webScraper.cancelScraping.bind(webScraper);
-export const resetAndShowForm = webScraper.resetAndShowForm.bind(webScraper);
-export const handleTaskCompleted = webScraper.handleTaskCompleted.bind(webScraper);
-export const handleTaskError = webScraper.handleTaskError.bind(webScraper);
-export const handleProgressUpdate = webScraper.handleProgressUpdate.bind(webScraper);
-export const updatePdfDownloadsList = webScraper.updatePdfDownloadsList.bind(webScraper);
+// Expose to global scope for debugging and UI interaction
+if (typeof window !== 'undefined') {
+  window.webScraper = webScraper;
+}
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => webScraper.init());
+} else {
+  webScraper.init();
+}
+
+console.log('🌐 Web Scraper module loaded (Complete Blueprint Implementation)');

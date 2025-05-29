@@ -1,4 +1,4 @@
-/**
+fix /**
  * NeuroGen Server - Simplified Entry Point
  * 
  * This file's ONLY responsibility is to initialize the module loading system.
