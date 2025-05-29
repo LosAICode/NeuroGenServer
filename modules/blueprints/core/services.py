@@ -742,13 +742,18 @@ class BaseTask:
         self.progress = 0  # Reset progress at actual start
         logger.info(f"Task {self.task_id} ({self.task_type}) started processing.")
         try:
-            socketio.emit("task_started", {
-                "task_id": self.task_id,
-                "task_type": self.task_type,
-                "status": self.status,
-                "message": self.message,
-                "timestamp": time.time()
-            })
+            from flask import current_app
+            socketio = getattr(current_app, 'socketio', None)
+            if socketio:
+                socketio.emit("task_started", {
+                    "task_id": self.task_id,
+                    "task_type": self.task_type,
+                    "status": self.status,
+                    "message": self.message,
+                    "timestamp": time.time()
+                })
+            else:
+                logger.warning(f"SocketIO not available to emit task_started for {self.task_id}")
         except Exception as e:
             logger.error(f"Error emitting task_started for {self.task_id}: {e}")
 
@@ -809,9 +814,14 @@ class BaseTask:
         
         # Send event
         try:
-            socketio.emit("progress_update", payload)
-            self.last_emit_time = now
-            logger.debug(f"Progress emitted for {self.task_id}: {self.progress}% - {self.message}")
+            from flask import current_app
+            socketio = getattr(current_app, 'socketio', None)
+            if socketio:
+                socketio.emit("progress_update", payload)
+                self.last_emit_time = now
+                logger.debug(f"Progress emitted for {self.task_id}: {self.progress}% - {self.message}")
+            else:
+                logger.warning(f"SocketIO not available to emit progress_update for {self.task_id}")
         except Exception as e:
             logger.error(f"Error emitting progress_update for {self.task_id}: {e}")
 
@@ -853,7 +863,12 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            socketio.emit("task_error", payload)
+            from flask import current_app
+            socketio = getattr(current_app, 'socketio', None)
+            if socketio:
+                socketio.emit("task_error", payload)
+            else:
+                logger.warning(f"SocketIO not available to emit task_error for {self.task_id}")
         except Exception as e:
             logger.error(f"Error emitting task_error for {self.task_id}: {e}")
         
@@ -896,7 +911,12 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            socketio.emit("task_completed", payload)
+            from flask import current_app
+            socketio = getattr(current_app, 'socketio', None)
+            if socketio:
+                socketio.emit("task_completed", payload)
+            else:
+                logger.warning(f"SocketIO not available to emit task_completed for {self.task_id}")
         except Exception as e:
             logger.error(f"Error emitting task_completed for {self.task_id}: {e}")
 
@@ -942,8 +962,13 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            socketio.emit("task_cancelled", payload)
-            logger.info(f"Emitted task_cancelled for {self.task_id}")
+            from flask import current_app
+            socketio = getattr(current_app, 'socketio', None)
+            if socketio:
+                socketio.emit("task_cancelled", payload)
+                logger.info(f"Emitted task_cancelled for {self.task_id}")
+            else:
+                logger.warning(f"SocketIO not available to emit task_cancelled for {self.task_id}")
         except Exception as e:
             logger.error(f"Error emitting task_cancelled for {self.task_id}: {e}")
         
@@ -1182,6 +1207,15 @@ class ProcessingTask(BaseTask):
         if not path:
             return path
         
+        # Check if this is a Windows absolute path on a non-Windows system
+        if os.name != 'nt' and (path[1:3] == ':\\' or path[1:3] == ':/'):
+            # This is a Windows path on Linux/Unix
+            # Log warning and return the path as-is for now
+            logger.warning(f"Windows path detected on non-Windows system: {path}")
+            logger.warning("File processing will likely fail. Please use a valid local path.")
+            # Convert to a placeholder path to avoid processing Windows files on Linux
+            return "/invalid/windows/path"
+        
         # Normalize path separators and resolve relative paths
         normalized = os.path.normpath(os.path.abspath(path))
         
@@ -1207,13 +1241,17 @@ class ProcessingTask(BaseTask):
         try:
             # Check input directory existence and accessibility
             if not os.path.exists(self.input_dir):
+                error_msg = f"Input directory does not exist: {self.input_dir}"
+                if self.input_dir == "/invalid/windows/path":
+                    error_msg = "Invalid path: Windows paths cannot be processed on this Linux server"
+                    
                 self.handle_error(
-                    f"Input directory does not exist: {self.input_dir}",
+                    error_msg,
                     stage="initialization",
                     details={
-                        "suggested_action": "Create the directory or specify an existing path",
+                        "suggested_action": "Use a valid local Linux path or upload files to the server",
                         "current_working_dir": os.getcwd(),
-                        "absolute_path": os.path.abspath(self.input_dir)
+                        "absolute_path": os.path.abspath(self.input_dir) if self.input_dir != "/invalid/windows/path" else "N/A"
                     }
                 )
                 return False
@@ -4011,8 +4049,13 @@ def emit_task_completion(task_id, task_type="generic", output_file=None, stats=N
         if details:
             payload['details'] = details
             
-        socketio.emit('task_completed', payload)
-        logger.info(f"Emitted task_completed for task {task_id}")
+        from flask import current_app
+        socketio = getattr(current_app, 'socketio', None)
+        if socketio:
+            socketio.emit('task_completed', payload)
+            logger.info(f"Emitted task_completed for task {task_id}")
+        else:
+            logger.warning(f"SocketIO not available to emit task_completed for task {task_id}")
     except Exception as e:
         logger.error(f"Error emitting task_completed: {e}")
 
@@ -4057,8 +4100,11 @@ def emit_task_error(task_id, error_message, error_details=None, stats=None):
                 except (AttributeError, TypeError):
                     payload['stats'] = {'raw_stats': str(stats)}
                     
-        socketio.emit('task_failed', payload)
-        logger.info(f"Emitted task_failed for task {task_id}")
+        if socketio:
+            socketio.emit('task_failed', payload)
+            logger.info(f"Emitted task_failed for task {task_id}")
+        else:
+            logger.warning(f"SocketIO not available to emit task_failed for task {task_id}")
     except Exception as e:
         logger.error(f"Error emitting task_error: {e}")
 
@@ -4085,8 +4131,11 @@ def emit_task_cancelled(task_id, reason=None):
             'timestamp': time.time()
         }
         
-        socketio.emit('task_cancelled', payload)
-        logger.info(f"Emitted task_cancelled for task {task_id}")
+        if socketio:
+            socketio.emit('task_cancelled', payload)
+            logger.info(f"Emitted task_cancelled for task {task_id}")
+        else:
+            logger.warning(f"SocketIO not available to emit task_cancelled for task {task_id}")
     except Exception as e:
         logger.error(f"Error emitting task_cancelled: {e}")
 
@@ -4118,8 +4167,11 @@ def emit_progress_update(task_id, progress, message=None, details=None):
         if details:
             payload['details'] = details
             
-        socketio.emit('progress_update', payload)
-        logger.debug(f"Emitted progress_update for task {task_id}: {progress}%")
+        if socketio:
+            socketio.emit('progress_update', payload)
+            logger.debug(f"Emitted progress_update for task {task_id}: {progress}%")
+        else:
+            logger.warning(f"SocketIO not available to emit progress_update for task {task_id}")
     except Exception as e:
         logger.error(f"Error emitting progress_update: {e}")
 

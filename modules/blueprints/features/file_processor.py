@@ -18,7 +18,7 @@ from typing import Dict, List, Optional, Set, Any, Callable
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
 from blueprints.api.management import register_task, update_task_progress, complete_task
-from blueprints.core.utils import ensure_temp_directory
+from blueprints.core.utils import ensure_temp_directory, sanitize_filename
 from blueprints.core.services import ProcessingTask
 
 logger = logging.getLogger(__name__)
@@ -714,7 +714,8 @@ def start_processing():
         
         # Create and start the processing task
         task = ProcessingTask(task_id, input_dir, final_output_path)
-        add_task(task_id, task)
+        # Register task with API management
+        register_task(task_id, 'file_processing', {'input_dir': input_dir, 'output_file': final_output_path})
         task.start()
         
         # Return success response
