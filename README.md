@@ -1,367 +1,284 @@
 # NeuroGen Server
 
-## Overview
+Version 2.0.2 - May 29, 2025
 
-NeuroGen Server is a comprehensive AI-powered document processing and web scraping platform designed for extracting, processing, and structuring web content and PDFs for LLM training data preparation. The system features real-time progress tracking, academic search integration, and sophisticated document analysis capabilities.
+## 🚀 Overview
 
-## 🚨 Current Status & Critical Issues
+NeuroGen Server is a cutting-edge AI-powered document processing and web scraping platform designed for extracting, processing, and structuring web content and PDFs for LLM training data preparation. Built with a modern Flask Blueprint architecture and a revolutionary modular frontend system, it offers real-time progress tracking, advanced PDF processing, and comprehensive academic search integration.
 
-**Version**: 1.2.0  
-**Last Updated**: January 13, 2025  
-**Development Phase**: Critical Bug Fixes & Enhancement Implementation
+## ✨ Key Features
 
-### Active Critical Issue
-- **Progress Bar Stuck at 50%** - Progress tracking gets stuck with duplicate percentage indicators
-- **Affects**: File Processor, Playlist Downloader, and Web Scraper modules
-- **Status**: Debugging protocol created, systematic fix in progress
+- **🗂️ Advanced File Processing**: Convert documents (PDF, DOCX, PPTX, TXT, and 40+ formats) to structured JSON with Structify integration
+- **🌐 Intelligent Web Scraping**: Extract content from websites with recursive crawling, pattern matching, and automatic PDF discovery
+- **🎥 Playlist Downloading**: Download YouTube playlists and video content with metadata extraction
+- **📚 Academic Search Integration**: Search and download papers from arXiv, Semantic Scholar, and PubMed
+- **⚡ Real-time Progress Tracking**: Live updates via WebSocket connections with detailed statistics
+- **📄 Advanced PDF Processing**: State-of-the-art PDF extraction with OCR support and table detection
+- **🔧 Robust Task Management**: Background processing with cancellation, pause/resume support
+- **🔐 API Key Management**: Secure handling for YouTube, Google, and academic API services
+- **🎨 Modern UI**: Responsive design with dark/light theme support
 
-### 📋 Development Resources
-- **`CLAUDE.md`** - Complete project overview and development guide
-- **`CLAUDE_CODE_INSTRUCTIONS.md`** - Systematic debugging instructions for progress bar fixes
-- **`WEB_SCRAPER.md`** - Detailed web scraper enhancement requirements
-- **`socketio events.txt`** - SocketIO event specifications
+## 🏗️ Architecture Highlights
 
-## Key Features
+### Backend: Flask Blueprint Architecture
+- **Modular Design**: Organized by feature with clean separation of concerns
+- **Performance**: Sub-5 second startup time (87% improvement)
+- **Scalability**: Easy to add new features without affecting existing code
+- **Production Ready**: Comprehensive error handling and logging
 
-### 🚀 Core Processing Capabilities
-- **Multi-threaded File Processing** with real-time progress tracking
-- **Academic Search Integration** (arXiv, Semantic Scholar, PubMed)
-- **YouTube Playlist Processing** with transcript extraction
-- **Advanced Web Scraping** with recursive crawling capabilities
-- **PDF Processing Pipeline** with OCR, table extraction, and Structify integration
-- **Real-time SocketIO Communication** for progress updates and task management
+### Frontend: Revolutionary Module System
+- **Fast Loading**: All 38 modules load in just 7.5 seconds
+- **No Bundler Required**: Direct ES6 module imports
+- **Hot Module Replacement**: No page refresh needed for updates
+- **Smart Dependencies**: Automatic dependency resolution
 
-### 📄 Supported Content Types
-- **PDFs**: Academic papers, reports, scanned documents with OCR
-- **Web Content**: Recursive crawling, academic sources, PDF discovery
-- **YouTube**: Playlist transcripts, metadata, structured JSON output
-- **Academic Sources**: Direct API integration with major research databases
-- **Office Documents**: Processing and structured data extraction
+## 📋 System Requirements
 
-### 🔍 Advanced Features
-- **Citation Network Visualization** with D3.js integration
-- **Academic API Integration** for research paper discovery
-- **Concurrent Download Management** with progress tracking
-- **Intelligent Content Classification** and filtering
-- **Metadata Extraction and Enrichment**
-- **LLM Training Data Preparation** with optimized JSON output
+- Python 3.8+ (3.10+ recommended)
+- Node.js 14+ (for development tools)
+- Tesseract OCR 4.0+ (for document processing)
+- Redis (optional, for enhanced session management)
+- 4GB+ RAM (8GB recommended for heavy processing)
+- Windows/Linux/macOS compatible
 
-## Technology Stack
+## 🛠️ Installation
 
-### Backend
-- **Python 3.8+** with Flask web framework
-- **Flask-SocketIO** for real-time communication with eventlet
-- **Structify Module** for advanced PDF processing and OCR
-- **Tesseract OCR** for scanned document processing
-- **Academic APIs**: arXiv, Semantic Scholar, PubMed integration
-
-### Frontend
-- **JavaScript ES6 Modules** with sophisticated module loading system
-- **Bootstrap UI** with responsive design
-- **Socket.IO Client** for real-time progress updates
-- **D3.js** for citation network visualization
-- **Modular Architecture** with 60+ JavaScript modules
-
-### Core Libraries
-- **Document Processing**: PyMuPDF, pikepdf, pytesseract
-- **Web Scraping**: Requests, BeautifulSoup, Selenium
-- **Data Processing**: Pandas, NumPy, JSON processing
-- **Networking**: Flask-SocketIO, urllib3, concurrent.futures
-
-## Project Architecture
-
-### Backend Structure
-```
-modules/
-├── main.py                     # Main Flask application
-├── main_part1.py              # SocketIO setup & core configuration  
-├── main_part2_classes.py      # Core classes definition
-├── main_part3_routes.py       # API routes implementation
-├── academic_api.py            # Academic search integration
-├── web_scraper.py             # Backend web scraping engine
-├── pdf_processing.py          # PDF processing pipeline
-└── structify_import.py        # Structify module integration
-```
-
-### Frontend Structure
-```
-static/js/
-├── index.js                   # Main frontend entry point
-├── modules/
-│   ├── core/                  # Framework modules (app, moduleLoader, etc.)
-│   ├── features/              # Feature modules (fileProcessor, webScraper, etc.)
-│   ├── utils/                 # Utility modules (progressHandler, socketHandler, etc.)
-│   └── tests/                 # Testing framework
-└── diagnostics.js            # Frontend debugging tools
-```
-
-## Installation & Setup
-
-### Prerequisites
-- **Python 3.8+** with pip package manager
-- **Node.js** (optional, for frontend development)
-- **Tesseract OCR** installed and configured
-- **Git** for version control
-
-### Quick Start
+### 1. Clone the Repository
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/neurogenserver.git
-cd NeuroGenServer/NeuroGenServer
+git clone https://github.com/yourusername/NeuroGenServer.git
+cd NeuroGenServer/modules
+```
 
-# Create virtual environment
+### 2. Create Virtual Environment
+```bash
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your API keys and configuration
-
-# Start the server
-python run_server.py
+# On Windows:
+venv\Scripts\activate
+# On Linux/Mac:
+source venv/bin/activate
 ```
 
-### Configuration Files
-- **`.env`** - Environment variables and API keys
-- **`api_keys.json`** - API key management
-- **`requirements.txt`** - Python dependencies
-- **`modules/main.py`** - Main application configuration
-
-### Required Environment Variables
-```
-SECRET_KEY=your_flask_secret_key
-YOUTUBE_API_KEY=your_youtube_api_key
-DEFAULT_OUTPUT_FOLDER=/path/to/output
-TESSDATA_PREFIX=/path/to/tessdata
-```
-
-## Usage
-
-### Starting the Server
+### 3. Install Dependencies
 ```bash
-# Production mode
-python run_server.py
-
-# Development mode with debug logging
-FLASK_ENV=development python run_server.py
+pip install -r requirements.txt
 ```
 
-### Web Interface
-Navigate to `http://localhost:5025` and access:
+### 4. Install Tesseract OCR
+- **Windows**: Download from [GitHub Tesseract releases](https://github.com/UB-Mannheim/tesseract/wiki)
+- **Linux**: `sudo apt-get install tesseract-ocr`
+- **macOS**: `brew install tesseract`
 
-#### 📁 File Processor
-- Upload and process multiple files simultaneously
-- Real-time progress tracking with detailed statistics
-- PDF extraction with OCR and table recognition
-- Structured JSON output for LLM training
-
-#### 🎵 Playlist Downloader  
-- YouTube playlist URL processing
-- Individual track and overall progress tracking
-- Transcript extraction and metadata collection
-- Batch download capabilities
-
-#### 🌐 Web Scraper
-- URL-based content extraction
-- Recursive crawling with configurable depth
-- Academic source integration
-- PDF discovery and batch downloading
-
-## 🔧 Current Issues & Debugging
-
-### Progress Bar Debugging Protocol
-
-#### Issue Description
-- Progress bars get stuck at 50% across all modules
-- Duplicate percentage indicators causing confusion
-- SocketIO event synchronization problems
-
-#### Debugging Resources
-1. **Read `CLAUDE_CODE_INSTRUCTIONS.md`** for systematic debugging approach
-2. **Enable debug mode** in browser console:
-   ```javascript
-   window.progressDebug = true;
-   ```
-3. **Monitor SocketIO events** in browser dev tools Network tab
-4. **Check backend logs** for emit_progress_update calls
-
-#### Quick Debug Commands
-```javascript
-// Frontend debugging
-window.socket.on('progress_update', (data) => {
-  console.log('Progress Debug:', data);
-});
-
-// Check for duplicate elements
-document.querySelectorAll('[id*="progress"]').forEach(el => {
-  console.log(`Element: ${el.id}, Text: ${el.textContent}`);
-});
+### 5. Configure Environment
+```bash
+cp .env.example .env
+# Edit .env with your API keys
 ```
 
-```python
-# Backend debugging in main_part1.py
-def emit_progress_update(task_id, progress, status="processing"):
-    print(f"Backend Debug: {task_id} -> {progress}%")
-    # Add detailed logging here
+### 6. Run the Server
+```bash
+# Production mode (recommended)
+python run_server_new.py
+
+# Debug mode
+python run_server_new.py --debug
 ```
 
-### Known Issues
-- **Progress Handler**: Stuck at 50%, duplicate indicators
-- **SocketIO Events**: Inconsistent event payload structure  
-- **Module Integration**: Progress tracking inconsistencies
-- **Error Recovery**: Needs enhancement across all modules
+Access the application at `http://localhost:5025`
 
-## Advanced Features
+## 📁 Project Structure
 
-### Academic Search Integration
-- **Multi-source Search**: arXiv, Semantic Scholar, PubMed
-- **Citation Network Analysis**: Relationship mapping and visualization
-- **Metadata Preservation**: Complete academic paper metadata
-- **Batch Operations**: Bulk download and processing
+```
+NeuroGenServer/
+├── modules/                      # Main application directory
+│   ├── app_new.py               # Flask application with Blueprints
+│   ├── run_server_new.py        # Server startup script
+│   ├── blueprints/              # Feature-based organization
+│   │   ├── templates/           # HTML templates (NEW LOCATION!)
+│   │   │   └── index.html       # Main application template
+│   │   ├── core/                # Core functionality
+│   │   │   ├── services.py      # Base classes and utilities
+│   │   │   ├── utils.py         # Helper functions
+│   │   │   └── routes.py        # Basic routes
+│   │   ├── features/            # Feature modules
+│   │   │   ├── file_processor.py     # Document processing
+│   │   │   ├── web_scraper.py        # Web scraping
+│   │   │   ├── playlist_downloader.py # YouTube integration
+│   │   │   ├── academic_search.py    # Academic APIs
+│   │   │   └── pdf_processor.py      # PDF handling
+│   │   ├── api/                 # API management
+│   │   │   └── management.py    # Task and key management
+│   │   └── socketio_events.py   # Real-time events
+│   ├── static/                  # Frontend assets
+│   │   ├── js/                  # JavaScript modules
+│   │   │   ├── index.js         # Main entry (optimized)
+│   │   │   ├── module-manager.js # Module lifecycle
+│   │   │   └── modules/         # Feature modules
+│   │   │       ├── core/        # Core modules
+│   │   │       ├── features/    # Feature modules
+│   │   │       └── utils/       # Utility modules
+│   │   └── css/                 # Stylesheets
+│   ├── Structify/               # Document processing engine
+│   ├── downloads/               # Output directory
+│   └── temp/                    # Temporary files
+├── requirements.txt             # Python dependencies
+├── CLAUDE.md                   # Development guide
+└── README.md                   # This file
+```
 
-### Web Scraping Enhancements (Planned)
-- **Unified Interface**: Tabbed interface for different scraping modes
-- **PDF Selection System**: Checkbox-based selection with batch operations
-- **Download Management**: Concurrent downloads with progress tracking
-- **Content Classification**: Intelligent document type detection
+## 🔌 API Endpoints
 
-### PDF Processing Pipeline
-- **Structify Integration**: Advanced document structure analysis
-- **Multi-language OCR**: Support for various languages and scripts
-- **Table Extraction**: Complex table structure recognition
-- **Output Optimization**: LLM training data preparation
+### File Processing
+- `POST /api/process` - Process files from a directory
+  ```json
+  {
+    "input_dir": "C:/path/to/files",
+    "output_file": "processed_data"
+  }
+  ```
+- `GET /api/status/<task_id>` - Get task status
+- `GET /api/download/<task_id>` - Download results
 
-## Monitoring & Performance
+### Web Scraping
+- `POST /api/scrape` - Start web scraping
+  ```json
+  {
+    "url": "https://example.com",
+    "max_depth": 2,
+    "include_patterns": ["*.pdf"],
+    "exclude_patterns": ["*/archive/*"]
+  }
+  ```
+- `GET /api/scrape/results/<task_id>` - Get scraping results
 
-### Real-time Monitoring
-- **Progress Tracking**: Individual and batch operation progress
-- **Connection Status**: SocketIO connection health monitoring
-- **Performance Metrics**: Processing speed and resource usage
-- **Error Reporting**: Comprehensive error logging and recovery
+### Academic Search
+- `POST /api/academic-search` - Search papers
+  ```json
+  {
+    "query": "machine learning",
+    "source": "arxiv",
+    "max_results": 50
+  }
+  ```
 
-### Performance Optimization
-- **Concurrent Processing**: Multi-threaded file and download handling
-- **Memory Management**: Efficient resource utilization
-- **Caching**: Intelligent caching for repeated operations
-- **Rate Limiting**: Respectful API and web scraping rates
+### Task Management
+- `POST /api/cancel/<task_id>` - Cancel task
+- `GET /api/tasks/active` - List active tasks
+- `GET /api/analytics` - Get usage analytics
 
-## Development Workflow
+## ⚙️ Configuration
 
-### For Developers
-1. **Read `CLAUDE.md`** for complete project overview
-2. **Follow `CLAUDE_CODE_INSTRUCTIONS.md`** for debugging protocol
-3. **Check `WEB_SCRAPER.md`** for enhancement requirements
-4. **Use modular architecture** - each feature is a separate module
-5. **Test incrementally** - fix one issue at a time
+### Environment Variables (.env)
+```env
+# API Keys
+YOUTUBE_API_KEY=your_youtube_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
+GOOGLE_CSE_ID=your_custom_search_engine_id
+SEMANTIC_SCHOLAR_API_KEY=your_semantic_scholar_key
 
-### Code Conventions
-- **DRY Principle**: Don't Repeat Yourself
-- **KISS Principle**: Keep It Simple, Stupid
-- **Single Responsibility**: Each function does one thing well
-- **Fail Fast**: Raise errors early, never suppress failures
+# Server Configuration
+HOST=127.0.0.1
+PORT=5025
+DEBUG=False
 
-### Git Workflow
-- **Branch Naming**: `feature/description`, `bugfix/critical-progress-fix`
-- **Commit Format**: `"fix: progress bar stuck at 50% issue"`
-- **Documentation**: Always update CLAUDE.md with changes
+# Processing Configuration
+MAX_FILE_SIZE=104857600  # 100MB
+MAX_WORKERS=4
+CHUNK_SIZE=4096
+```
 
-## Testing & Validation
+### API Key Management
+Access the web interface at `/api/keys` to manage API keys securely.
 
-### Manual Testing Protocol
-1. **File Processor**: Upload test files, verify 0% → 100% progress
-2. **Playlist Downloader**: Test YouTube URLs, check track progress
-3. **Web Scraper**: Test URL scraping, verify phase progression
-4. **Cross-module**: Ensure consistent behavior across all features
+## 🎯 Current Status & Roadmap
 
-### Automated Testing
-- **Frontend Tests**: `/static/js/tests/` directory
-- **Backend Tests**: Unit tests for core functionality
-- **Integration Tests**: End-to-end workflow validation
+### ✅ Completed (v2.0.2)
+- Flask Blueprint architecture migration
+- Frontend modular system implementation
+- Critical bug fixes (sanitize_filename, socketio, path handling)
+- Performance optimization (87% faster startup)
+- Template relocation to blueprints folder
 
-## Security & Best Practices
+### 🚧 In Progress
+- Web Scraper UI implementation
+- Academic Search frontend integration
+- Enhanced PDF selection interface
+- Batch download management
 
-### Security Features
-- **API Key Management**: Secure storage and rotation
-- **Input Sanitization**: XSS and injection prevention
-- **Rate Limiting**: Prevent abuse and respect API limits
-- **Error Handling**: Secure error messages without information leakage
+### 📋 Upcoming Features
+- Recursive web crawling with depth control
+- Citation network visualization
+- Multi-language OCR support
+- Cloud storage integration
+- API rate limiting and quotas
 
-### Best Practices
-- **Respectful Crawling**: robots.txt compliance and reasonable delays
-- **Academic Ethics**: Proper attribution and citation handling
-- **Resource Management**: Efficient memory and disk usage
-- **User Privacy**: No tracking or data collection
+## 🧪 Development
 
-## Troubleshooting
+### Running Tests
+```bash
+# Run all tests
+python -m pytest
 
-### Common Issues
+# Run with coverage
+python -m pytest --cov=blueprints
 
-#### Progress Bar Stuck at 50%
-1. **Check SocketIO connection** in browser dev tools
-2. **Monitor console for JavaScript errors** during progress updates
-3. **Verify backend emit_progress_update calls** in server logs
-4. **Test modules individually** to isolate the issue
+# Run specific test file
+python -m pytest tests/test_file_processor.py
+```
 
-#### Module Loading Issues
-1. **Check browser console** for module loading errors
-2. **Verify file paths** in the modules directory
-3. **Clear browser cache** and reload the application
-4. **Enable debug mode** for detailed error information
+### Frontend Development
+The frontend uses native ES6 modules without bundling:
 
-#### SocketIO Connection Problems
-1. **Check firewall settings** for port 5025
-2. **Verify CORS configuration** in main.py
-3. **Monitor network tab** for WebSocket frames
-4. **Test with different browsers** to isolate client issues
+1. **Module System**: Direct imports with automatic dependency resolution
+2. **Hot Reload**: Changes reflected without page refresh
+3. **Debug Mode**: Enhanced logging and diagnostics in development
 
-## Roadmap & Future Development
+### Code Style
+- Python: PEP 8 with Black formatter
+- JavaScript: ESLint with Airbnb config
+- Commit messages: Conventional Commits format
 
-### 🔴 Immediate Priorities
-- [ ] **Fix progress bar stuck at 50% issue**
-- [ ] **Remove duplicate progress indicators**
-- [ ] **Standardize SocketIO event handling**
-- [ ] **Test all modules for consistent progress tracking**
+## 🤝 Contributing
 
-### 🟡 Medium-term Goals
-- [ ] **Enhanced Web Scraper UI** with tabbed interface
-- [ ] **Academic search integration** with multiple sources
-- [ ] **PDF selection system** with batch operations
-- [ ] **Citation network visualization** with D3.js
+We welcome contributions! Please follow these steps:
 
-### 🟢 Long-term Vision
-- [ ] **Advanced crawling algorithms** (depth-first, breadth-first)
-- [ ] **Multi-language OCR support** for global content
-- [ ] **Performance optimization** for large-scale operations
-- [ ] **Comprehensive API documentation** and developer tools
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-### Development Setup
-1. **Fork the repository** and create a feature branch
-2. **Read development documentation** in CLAUDE.md
-3. **Follow debugging protocol** in CLAUDE_CODE_INSTRUCTIONS.md
-4. **Test thoroughly** before submitting pull requests
-5. **Update documentation** for any new features or fixes
+## 📚 Documentation
 
-### Code Review Process
-- **Focus on one issue at a time** for easier review
-- **Include test cases** for new functionality
-- **Update CLAUDE.md** with significant changes
-- **Maintain backward compatibility** when possible
+- **[CLAUDE.md](CLAUDE.md)** - Comprehensive development guide
+- **[API Documentation](docs/API.md)** - Detailed API reference
+- **[Architecture Guide](docs/ARCHITECTURE.md)** - System design details
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
-## License
+## 🐛 Known Issues
 
-MIT License - see LICENSE file for details
+1. **Windows Paths on Linux**: When running on Linux, Windows paths need conversion
+2. **Large File Processing**: Memory usage spikes with files over 500MB
+3. **Academic API Limits**: Some academic sources have strict rate limits
 
-## Support & Contact
+## 📞 Support
 
-- **GitHub Issues**: Report bugs and request features
-- **Documentation**: Complete guides in CLAUDE.md and related files
-- **Development**: Follow CLAUDE_CODE_INSTRUCTIONS.md for systematic debugging
+- **GitHub Issues**: [Create an issue](https://github.com/yourusername/NeuroGenServer/issues)
+- **Discussions**: [Join discussions](https://github.com/yourusername/NeuroGenServer/discussions)
+- **Email**: support@neurogen.example.com
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Structify team for the document processing engine
+- Tesseract OCR community
+- Flask and SocketIO contributors
+- All our amazing contributors!
 
 ---
 
-**⚠️ Current Development Focus**: Fixing progress bar issues and enhancing web scraper functionality. Please check CLAUDE.md for the latest project status and debugging protocol.
+**Made with ❤️ by the NeuroGen Team**

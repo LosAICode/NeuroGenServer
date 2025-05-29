@@ -715,7 +715,7 @@ def start_processing():
         # Create and start the processing task
         task = ProcessingTask(task_id, input_dir, final_output_path)
         # Register task with API management
-        register_task(task_id, 'file_processing', {'input_dir': input_dir, 'output_file': final_output_path})
+        register_task(task_id, 'file_processing', input_dir=input_dir, output_file=final_output_path)
         task.start()
         
         # Return success response
