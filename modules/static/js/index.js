@@ -79,7 +79,9 @@ const diagnostics = {
 const MODULE_CONFIG = {
   core: {
     paths: [
+      './modules/core/module-bridge.js',  // Load first for circular dependency resolution
       './modules/core/errorHandler.js',
+      './modules/core/domUtils.js',        // Load early as many modules depend on it
       './modules/core/uiRegistry.js',
       './modules/core/stateManager.js',
       './modules/core/eventRegistry.js',
@@ -146,9 +148,25 @@ const MODULE_DEPENDENCIES = {
 
 // Path resolution overrides for legacy compatibility
 const MODULE_PATH_OVERRIDES = {
+  // Features
   './modules/features/playlistDownloader.js': '/static/js/modules/features/playlistDownloader.js',
+  './modules/features/fileProcessor.js': '/static/js/modules/features/fileProcessor.js',
+  './modules/features/webScraper.js': '/static/js/modules/features/webScraper.js',
+  './modules/features/academicSearch.js': '/static/js/modules/features/academicSearch.js',
+  
+  // Core
+  './modules/core/app.js': '/static/js/modules/core/app.js',
+  './modules/core/moduleLoader.js': '/static/js/modules/core/moduleLoader.js',
+  './modules/core/module-bridge.js': '/static/js/modules/core/module-bridge.js',
+  
+  // Utils
+  './modules/utils/socketHandler.js': '/static/js/modules/utils/socketHandler.js',
+  './modules/utils/progressHandler.js': '/static/js/modules/utils/progressHandler.js',
+  
+  // Short names
   'playlistDownloader.js': '/static/js/modules/features/playlistDownloader.js',
-  './playlistDownloader.js': '/static/js/modules/features/playlistDownloader.js'
+  'fileProcessor.js': '/static/js/modules/features/fileProcessor.js',
+  'webScraper.js': '/static/js/modules/features/webScraper.js'
 };
 
 // --------------------------------------------------------------------------
@@ -556,16 +574,25 @@ async function initializeApp() {
     // Phase 1: Core modules (critical for app operation)
     diagnostics.logPhase('core-modules', true);
     console.log('📦 Loading core modules...');
+    console.log('Core module paths:', MODULE_CONFIG.core.paths);
     showLoadingProgress('Loading core modules...', 15);
     
-    const coreModules = await moduleLoader.loadModules(
-      MODULE_CONFIG.core.paths, 
-      { 
-        required: MODULE_CONFIG.core.required,
-        timeout: MODULE_CONFIG.core.timeout,
-        retries: MODULE_CONFIG.core.retries
-      }
-    );
+    let coreModules = {};
+    try {
+      coreModules = await moduleLoader.loadModules(
+        MODULE_CONFIG.core.paths, 
+        { 
+          required: MODULE_CONFIG.core.required,
+          timeout: MODULE_CONFIG.core.timeout,
+          retries: MODULE_CONFIG.core.retries
+        }
+      );
+      console.log('✅ Core modules loaded:', Object.keys(coreModules));
+    } catch (error) {
+      console.error('❌ Critical error loading core modules:', error);
+      diagnostics.logError(error, 'core-modules-loading');
+      // Continue with partial modules rather than failing completely
+    }
     
     showLoadingProgress('Core modules loaded', 30);
     diagnostics.logPhase('core-modules', false);
@@ -573,16 +600,24 @@ async function initializeApp() {
     // Phase 2: Utility modules (support functions)
     diagnostics.logPhase('utility-modules', true);
     console.log('🔧 Loading utility modules...');
+    console.log('Utility module paths:', MODULE_CONFIG.utilities.paths);
     showLoadingProgress('Loading utility modules...', 35);
     
-    const utilityModules = await moduleLoader.loadModules(
-      MODULE_CONFIG.utilities.paths,
-      {
-        required: MODULE_CONFIG.utilities.required,
-        timeout: MODULE_CONFIG.utilities.timeout,
-        retries: MODULE_CONFIG.utilities.retries
-      }
-    );
+    let utilityModules = {};
+    try {
+      utilityModules = await moduleLoader.loadModules(
+        MODULE_CONFIG.utilities.paths,
+        {
+          required: MODULE_CONFIG.utilities.required,
+          timeout: MODULE_CONFIG.utilities.timeout,
+          retries: MODULE_CONFIG.utilities.retries
+        }
+      );
+      console.log('✅ Utility modules loaded:', Object.keys(utilityModules));
+    } catch (error) {
+      console.error('❌ Error loading utility modules:', error);
+      diagnostics.logError(error, 'utility-modules-loading');
+    }
     
     showLoadingProgress('Utility modules loaded', 55);
     diagnostics.logPhase('utility-modules', false);
@@ -590,16 +625,24 @@ async function initializeApp() {
     // Phase 3: Feature modules (main functionality)
     diagnostics.logPhase('feature-modules', true);
     console.log('🎯 Loading feature modules...');
+    console.log('Feature module paths:', MODULE_CONFIG.features.paths);
     showLoadingProgress('Loading feature modules...', 60);
     
-    const featureModules = await moduleLoader.loadModules(
-      MODULE_CONFIG.features.paths,
-      {
-        required: MODULE_CONFIG.features.required,
-        timeout: MODULE_CONFIG.features.timeout,
-        retries: MODULE_CONFIG.features.retries
-      }
-    );
+    let featureModules = {};
+    try {
+      featureModules = await moduleLoader.loadModules(
+        MODULE_CONFIG.features.paths,
+        {
+          required: MODULE_CONFIG.features.required,
+          timeout: MODULE_CONFIG.features.timeout,
+          retries: MODULE_CONFIG.features.retries
+        }
+      );
+      console.log('✅ Feature modules loaded:', Object.keys(featureModules));
+    } catch (error) {
+      console.error('❌ Error loading feature modules:', error);
+      diagnostics.logError(error, 'feature-modules-loading');
+    }
     
     showLoadingProgress('Feature modules loaded', 75);
     diagnostics.logPhase('feature-modules', false);
@@ -607,16 +650,24 @@ async function initializeApp() {
     // Phase 4: Optional modules (enhanced features)
     diagnostics.logPhase('optional-modules', true);
     console.log('🔧 Loading optional modules...');
+    console.log('Optional module paths:', MODULE_CONFIG.optional.paths);
     showLoadingProgress('Loading optional modules...', 80);
     
-    const optionalModules = await moduleLoader.loadModules(
-      MODULE_CONFIG.optional.paths,
-      {
-        required: MODULE_CONFIG.optional.required,
-        timeout: MODULE_CONFIG.optional.timeout,
-        retries: MODULE_CONFIG.optional.retries
-      }
-    );
+    let optionalModules = {};
+    try {
+      optionalModules = await moduleLoader.loadModules(
+        MODULE_CONFIG.optional.paths,
+        {
+          required: MODULE_CONFIG.optional.required,
+          timeout: MODULE_CONFIG.optional.timeout,
+          retries: MODULE_CONFIG.optional.retries
+        }
+      );
+      console.log('✅ Optional modules loaded:', Object.keys(optionalModules));
+    } catch (error) {
+      console.error('❌ Error loading optional modules:', error);
+      diagnostics.logError(error, 'optional-modules-loading');
+    }
     
     showLoadingProgress('Optional modules loaded', 85);
     diagnostics.logPhase('optional-modules', false);
@@ -634,10 +685,20 @@ async function initializeApp() {
     // Final setup
     diagnostics.logPhase('final-setup', true);
     window.appInitialized = true;
+    window.__appReady = true;  // Additional flag for compatibility
     const initTime = Date.now() - window.performanceStartTime;
     
     showLoadingProgress('Application ready!', 100);
     console.log(`✅ NeuroGen Server initialized successfully in ${initTime}ms`);
+    
+    // Dispatch neurogenInitialized event for compatibility with modular system
+    window.dispatchEvent(new CustomEvent('neurogenInitialized', {
+      detail: { 
+        initTime, 
+        modules: Object.keys(window.moduleInstances || {}),
+        diagnostics: diagnostics.getReport()
+      }
+    }));
     
     // Post-initialization setup
     setTimeout(() => {
@@ -686,6 +747,18 @@ async function initializeModules(coreModules, utilityModules, featureModules, op
     ...optionalModules 
   };
   
+  // Register modules with module manager if available
+  if (window.moduleManager) {
+    console.log('📦 Registering modules with module manager...');
+    for (const [name, module] of Object.entries(allModules)) {
+      if (module) {
+        window.moduleManager.register(name, module);
+        // Also store in moduleInstances for compatibility
+        window.moduleInstances[name] = module;
+      }
+    }
+  }
+  
   // Dependency-aware initialization order
   const initOrder = [
     // Core foundation
@@ -708,6 +781,19 @@ async function initializeModules(coreModules, utilityModules, featureModules, op
   
   const initResults = { success: [], failed: [], skipped: [] };
   
+  // Use module manager's initialization if available
+  if (window.moduleManager && window.moduleManager.initializeAll) {
+    try {
+      console.log('🚀 Using module manager for initialization...');
+      await window.moduleManager.initializeAll();
+      console.log('✅ All modules initialized via module manager');
+      return initResults;
+    } catch (error) {
+      console.warn('⚠️ Module manager initialization failed, falling back to direct init', error);
+    }
+  }
+  
+  // Fallback to direct initialization
   for (const moduleName of initOrder) {
     const module = allModules[moduleName];
     
