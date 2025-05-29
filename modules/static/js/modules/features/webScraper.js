@@ -71,12 +71,14 @@ import('../utils/socketHandler.js')
     console.error("Could not import socketHandler in webScraper:", err);
   });
 
-// Module API endpoints
+// Module API endpoints aligned with Blueprint structure
 const API_ENDPOINTS = {
-  SCRAPE: '/api/scrape2',
-  SCRAPE_STATUS: '/api/scrape2/status',
-  SCRAPE_CANCEL: '/api/scrape2/cancel',
-  ACADEMIC_SEARCH: '/api/academic-search',
+  SCRAPE: '/api/scrape',
+  SCRAPE_STATUS: '/api/scrape/status',
+  SCRAPE_CANCEL: '/api/scrape/cancel',
+  SCRAPE_RESULTS: '/api/scrape/results',
+  ACADEMIC_SEARCH: '/api/academic/search',
+  ACADEMIC_HEALTH: '/api/academic/health',
   OPEN_FILE: '/api/open-file',
   OPEN_FOLDER: '/api/open-folder',
   DOWNLOAD: '/download'

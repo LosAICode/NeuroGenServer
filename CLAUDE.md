@@ -1,631 +1,245 @@
-# NeuroGenServer - Claude Development Guide
+# NeuroGenServer - Development Guide v3.0
 
 ## Project Overview
-NeuroGenServer is a comprehensive AI-powered document processing and web scraping platform for extracting, processing, and structuring web content and PDFs for LLM training data preparation with real-time progress tracking and academic search integration.
+NeuroGenServer is a Flask Blueprint-based document processing platform with real-time progress tracking and cross-platform download capabilities for production Linux servers serving Windows clients.
 
 ## Current Project State
-- **Version**: 2.0.2 - **BACKEND FIXES APPLIED**
+- **Version**: 3.0 - **CRITICAL FIXES IN PROGRESS**
 - **Last Updated**: May 29, 2025  
-- **Development Phase**: ✅ **PRODUCTION READY** - Critical backend fixes applied
-- **Backend**: ✅ **Flask Blueprints Operational** - Fixed critical errors in file_processor and services
-- **Frontend**: ✅ **Modular system working** - All 38 modules loading successfully
-- **Active Modules**: File Processor, Playlist Downloader, Web Scraper, Academic Search, PDF Processor
-- **Current Status**: ✅ **app_new.py FUNCTIONAL** - Fixed sanitize_filename, socketio, and path handling errors
-- **Performance**: **Frontend modules load in 7.5 seconds** (total init ~35s due to network)
-- **Priority**: **IMPLEMENT WEB SCRAPER UI** - Backend ready, need frontend implementation
+- **Development Phase**: 🚧 **FIXING CORE ISSUES** - Backend errors resolved, testing needed
+- **Backend**: ✅ **Flask Blueprints Architecture** - Clean modular structure
+- **Frontend**: ✅ **35 Modules Loading** - Fast 5-second startup achieved
+- **Active Issue**: File processing imports fixed, testing required
 
-## Master To-Do List
+## 🎯 MASTER TO-DO LIST
 
-### ✅ VALIDATION COMPLETE - May 28, 2025
-- [x] **Complete Architecture Validation**: ✅ **COMPLETED** - All blueprint implementations verified
-  - Original implementations moved from app.py to replace all placeholders
-  - All emit functions (task_completion, task_error, task_cancelled, progress_update) added to services.py
-  - Comprehensive __all__ exports added to all modules
-  - app_new.py tested and operational
-- [x] **Blueprint Structure Validated**: ✅ **COMPLETED** - Clean Flask Blueprint architecture
-  - **Core**: services.py, utils.py, config.py, routes.py - All properly exported
-  - **Features**: file_processor, web_scraper, playlist_downloader, academic_search, pdf_processor - All functional
-  - **API**: management.py, analytics.py - Complete with original implementations
-- [x] **Module Exports Standardized**: ✅ **COMPLETED** - All modules have proper __all__ exports
-  - services.py: 16 exports including all classes and functions
-  - analytics.py: 9 exports including analytics functions
-  - All feature blueprints: Proper blueprint and function exports
-- [x] **Production Migration**: ✅ **COMPLETED** - app_new.py ready for production
-  - Clean application factory pattern
-  - Proper error handlers
-  - All blueprints registered successfully
-  - SocketIO integration working
+### 🔥 CRITICAL - Current Sprint (Next 24-48 Hours)
+- [x] **Fix Backend Import Errors**: ✅ **COMPLETED** - Fixed add_task, emit functions, socketio imports
+- [ ] **Test File Processing**: Test the fixed file processor with real directory
+- [ ] **Fix Windows Path Handling**: Ensure Linux server can create Windows-compatible downloads
+- [ ] **Validate Module Loading**: Verify all 35 frontend modules work with blueprints
+- [ ] **Cross-Platform Download Testing**: Test Linux→Windows download capability
 
-### 🟢 PRODUCTION READY - Ready for Deployment
-- [x] **Flask Blueprints**: All modules properly structured and exported
-- [x] **Original Implementations**: All placeholders replaced with original code from app.py
-- [x] **Error Handling**: Comprehensive error handlers implemented
-- [x] **SocketIO Events**: All emission functions properly implemented
-- [x] **Module Loading**: All imports and exports validated
+### 🟡 HIGH PRIORITY - Production Ready (Next Week)
+- [ ] **Web Scraper Module Integration**: Connect frontend webScraper.js to backend web_scraper.py
+- [ ] **Academic Search Integration**: Connect academicSearch.js to academic_search.py
+- [ ] **PDF Processor Integration**: Connect pdfProcessor.js to pdf_processor.py
+- [ ] **Playlist Downloader Integration**: Connect playlistDownloader.js to playlist_downloader.py
+- [ ] **Cross-Platform Path Resolution**: Windows paths from Linux server
 
-### 🔴 HIGH PRIORITY - Web Scraper Frontend Implementation
-The backend is ready but the frontend needs implementation:
+### 🟢 MEDIUM PRIORITY - Feature Enhancement (2-4 Weeks)
+- [ ] **Progress Bar Optimization**: Real-time updates for all modules
+- [ ] **File Selection Interface**: Checkbox system for batch operations
+- [ ] **Error Recovery System**: Automatic retry and fallback mechanisms
+- [ ] **Download Management**: Queue system with concurrent downloads
+- [ ] **API Rate Limiting**: Throttling for academic and YouTube APIs
 
-#### Backend Status (Ready ✅)
-- Web scraper routes implemented in `blueprints/features/web_scraper.py`
-- Academic search routes in `blueprints/features/academic_search.py`
-- SocketIO events properly configured
-- Task management and progress tracking working
+### 🔵 LOW PRIORITY - Nice to Have (1-2 Months)
+- [ ] **Citation Network Visualization**: D3.js graphs for academic papers
+- [ ] **Multi-language OCR**: Support for non-English documents
+- [ ] **Cloud Storage Integration**: S3, Google Drive, OneDrive support
+- [ ] **Performance Analytics**: Detailed processing metrics and optimization
 
-#### Frontend Requirements (TODO 🚧)
-1. **Update webScraper.js module**:
-   - Currently missing proper UI initialization
-   - Need to connect form submission to backend `/api/scrape` endpoint
-   - Implement progress tracking using SocketIO events
-   
-2. **Update academicSearch.js module**:
-   - Connect to `/api/academic-search` endpoint
-   - Handle source selection (arXiv, Semantic Scholar, PubMed)
-   - Display results with download options
-   
-3. **UI Components Needed**:
-   - URL input validation
-   - Crawl depth selector
-   - Include/exclude pattern inputs
-   - Results display with PDF selection checkboxes
-   - Download progress indicators
-   
-4. **Integration Points**:
-   - Ensure SocketIO events match between frontend/backend
-   - Handle task cancellation properly
-   - Update progress bars with real-time data
+## 🏗️ ARCHITECTURE OVERVIEW
 
-### 🟡 Medium Priority - Enhanced Features
-- [ ] Implement recursive crawling algorithms
-- [ ] Full Structify integration for PDF processing
-- [ ] Add citation network visualization
-- [ ] Batch download management
-
-### 🟢 Low Priority / Nice to Have
-- [ ] Citation network visualization with D3.js
-- [ ] Multi-language OCR support
-- [ ] Advanced performance optimization
-- [ ] Comprehensive API documentation
-- [ ] User training materials
-
-### ✅ Recently Completed (May 26-27, 2025)
-- [x] **Fixed progress bar stuck at 50% issue** - Removed smoothing logic
-- [x] **Fixed duplicate progress indicators** - Removed percentage badge duplication
-- [x] **Resolved module loading errors** - Fixed getElement redeclarations and syntax errors
-- [x] **Fixed core module exports** - All core modules properly structured
-- [x] **Resolved WeakMap Symbol error** in utils/ui.js
-- [x] **Fixed academic search import issues** - Updated function name references
-- [x] **Fixed web scraper loading error** - Replaced non-existent function calls
-- [x] **Repository cleanup** - Removed backup files for cleaner structure
-
-## 🚀 Major Architecture Improvements (May 27, 2025)
-
-### ✅ Frontend Performance Revolution
-- **Before**: 3,030-line monolithic index.js causing 35+ second startup
-- **After**: 90-line index-simple.js with **sub-5 second startup**
-- **Impact**: 87% reduction in code size, 85% improvement in startup time
-- **Architecture**: Clean entry point → module manager → feature modules
-
-### ✅ Backend Refactoring Success  
-- **Before**: Confusing main_partX.py files scattered across project
-- **After**: Clean Flask Blueprint organization by feature
-- **Benefits**: Easy maintenance, parallel development, clear code structure
-- **Standard**: Follows Flask best practices with proper separation
-
-### ✅ Module Loading System Overhaul
-- **Before**: Complex moduleLoader.js with refresh requirements
-- **After**: Simple module-manager.js with lifecycle management
-- **Features**: Automatic cleanup, event tracking, debug tools
-- **Reliability**: No more browser refresh needed for module loading
-
-## 🚨 CRITICAL PATH CHANGES - May 29, 2025
-
-### Template Folder Location Change
-**OLD**: `modules/templates/`  
-**NEW**: `modules/blueprints/templates/` ✅
-
-The template folder has been moved as part of the Blueprint architecture. This is the **CORRECT** location:
-- Templates path: `C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\templates`
-- Static files remain at: `modules/static/`
-
-## Recent Fixes Applied (May 29, 2025)
-
-### Backend Fixes
-1. **Fixed `sanitize_filename` import** in file_processor.py
-   - Added missing import from blueprints.core.utils
-   
-2. **Fixed `add_task` undefined error** in file_processor.py
-   - Changed to use `register_task()` which was already imported
-   
-3. **Fixed `socketio` undefined errors** in services.py
-   - Updated all BaseTask methods to properly import socketio from current_app
-   - Added null checks before emitting events
-   
-4. **Fixed Windows path handling** in services.py
-   - Added detection for Windows paths on Linux systems
-   - Provides helpful error messages for cross-platform path issues
-
-### Frontend Status
-- ✅ All 38 modules loading successfully
-- ✅ Module manager integration working
-- ✅ SocketIO connection established
-- ✅ Module loading takes only 7.5 seconds
-
-## Project Architecture
-
-### Backend Structure - New Flask Blueprint Architecture ✅
+### Backend: Flask Blueprint Structure
 ```
 modules/
-├── app_new.py                # 🎯 NEW: Clean Flask app with Blueprints
-├── run_server_new.py         # 🎯 NEW: Startup script for new architecture
-├── blueprints/               # 🎯 NEW: Feature-based organization
-│   ├── templates/           # ⚠️ NEW LOCATION: HTML templates moved here!
-│   │   ├── index.html       # Main application template
-│   │   └── ...              # Other templates
-│   ├── core/
-│   │   ├── services.py      # Core classes (Fixed socketio issues)
-│   │   ├── utils.py         # Utilities (contains sanitize_filename)
-│   │   └── routes.py        # Basic routes (home, diagnostics, etc.)
-│   ├── features/
-│   │   ├── file_processor.py    # File processing (Fixed add_task, imports)
-│   │   ├── web_scraper.py       # Web scraping routes
-│   │   ├── playlist_downloader.py # Playlist routes
-│   │   └── academic_search.py   # Academic search routes
-│   └── api/
-│       └── management.py     # Task management, cancellation, analytics
-├── static/                   # ✅ UNCHANGED: Static files remain here
-│   ├── js/                  # JavaScript files
-│   ├── css/                 # Stylesheets
-│   └── img/                 # Images
-└── templates/               # ❌ OLD LOCATION: No longer used
+├── app_new.py                    # Main Flask application
+├── run_server_new.py            # Production server launcher
+├── blueprints/
+│   ├── templates/index.html     # Main UI (NEW LOCATION!)
+│   ├── core/                    # Core functionality
+│   │   ├── services.py          # BaseTask, emit functions, task management
+│   │   ├── utils.py             # Helper functions, sanitize_filename
+│   │   ├── routes.py            # Basic routes (home, health)
+│   │   └── config.py            # Configuration management
+│   ├── features/                # Feature modules (FIXED IMPORTS)
+│   │   ├── file_processor.py    # ✅ Document processing
+│   │   ├── web_scraper.py       # 🔧 Web scraping
+│   │   ├── academic_search.py   # 🔧 Academic APIs
+│   │   ├── pdf_processor.py     # 🔧 PDF handling
+│   │   └── playlist_downloader.py # 🔧 YouTube integration
+│   ├── api/                     # API management
+│   │   ├── management.py        # Task management, analytics
+│   │   └── analytics.py         # Usage statistics
+│   └── socketio_events.py       # Real-time communication
 ```
 
-### Complete Directory Structure
+### Frontend: Modular JavaScript System
 ```
-NeuroGenServer/
-├── CLAUDE.md                 # This development guide
-├── README.md                 # Project documentation
-├── requirements.txt          # Python dependencies
-└── modules/                  # Main application directory
-    ├── WEB_SCRAPER.md       # Web scraper requirements
-    ├── app.py              # Main Flask application
-    ├── run_server.py       # Server startup script
-    ├── .env                # Environment variables
-    ├── api_keys.json       # API configuration
-    │
-    ├── static/             # Frontend assets
-    │   ├── css/
-    │   │   ├── styles.css          # Main stylesheet
-    │   │   ├── neurogenStyles.css  # NeuroGen specific styles
-    │   │   └── main.styles.css     # Additional styles
-    │   └── js/
-    │       ├── index-simple.js     # 🎯 NEW: Simplified entry point (90 lines)
-    │       ├── module-manager.js   # 🎯 NEW: Centralized module lifecycle
-    │       ├── simple-debug.js     # 🎯 NEW: Lightweight debugging tools
-    │       ├── index.js            # ❌ OLD: Monolithic entry (3,030 lines)
-    │       ├── diagnostics.js      # Frontend diagnostics
-    │       ├── socket-events.js    # SocketIO event handling
-    │       ├── modules/
-    │       │   ├── core/           # 🏗️ CORE FRAMEWORK MODULES
-    │       │   │   ├── app.js      # Main application controller
-    │       │   │   ├── moduleLoader.js # Module loading system
-    │       │   │   ├── eventManager.js # Event management
-    │       │   │   ├── eventRegistry.js # Event registration
-    │       │   │   ├── stateManager.js # Application state
-    │       │   │   ├── themeManager.js # Theme switching
-    │       │   │   ├── errorHandler.js # Error handling
-    │       │   │   ├── uiRegistry.js # UI component registry
-    │       │   │   ├── domUtils.js # DOM utilities
-    │       │   │   └── module-bridge.js # Circular dependency resolution
-    │       │   │
-    │       │   ├── features/       # 🚀 FEATURE MODULES
-    │       │   │   ├── fileProcessor.js # File processing module
-    │       │   │   ├── safeFileProcessor.js # Safe file processing wrapper
-    │       │   │   ├── playlistDownloader.js # YouTube playlist handling
-    │       │   │   ├── webScraper.js # Web scraping module
-    │       │   │   ├── webScraperUtils.js # Web scraper utilities
-    │       │   │   ├── academicSearch.js # Academic search integration
-    │       │   │   ├── academicScraper.js # Academic content scraping
-    │       │   │   ├── academicApiClient.js # Academic API client
-    │       │   │   ├── historyManager.js # Task history management
-    │       │   │   ├── pdfProcessor.js # PDF processing
-    │       │   │   ├── helpMode.js # Help system
-    │       │   │   └── performanceOptimizer.js # Performance optimization
-    │       │   │
-    │       │   ├── utils/          # 🛠️ UTILITY MODULES
-    │       │   │   ├── progressHandler.js # Progress tracking (fixed)
-    │       │   │   ├── socketHandler.js # SocketIO communication
-    │       │   │   ├── domUtils.js # DOM manipulation utilities
-    │       │   │   ├── ui.js       # UI helper functions
-    │       │   │   ├── utils.js    # General utilities
-    │       │   │   ├── fileHandler.js # File handling utilities
-    │       │   │   ├── debugTools.js # Development debugging tools
-    │       │   │   ├── moduleDiagnostics.js # Module diagnostic tools
-    │       │   │   └── errorHandler.js # Error handling utilities
-    │       │   │
-    │       │   └── module-standardizer.js # Module standardization
-    │       │
-    │       └── tests/              # 🧪 TESTING FRAMEWORK
-    │           ├── testFramework.js # Core testing framework
-    │           ├── runTests.js     # Test runner
-    │           ├── stateManager.test.js # State manager tests
-    │           ├── ui.test.js      # UI tests
-    │           └── utils.test.js   # Utility tests
-    │
-    ├── templates/                  # 🎨 HTML TEMPLATES
-    │   ├── index.html              # Main application template
-    │   ├── app.index.html          # App-specific template
-    │   ├── main.index.html         # Alternative main template
-    │   └── key_manager.html        # API key management
-    │
-    ├── routes/                     # 🛣️ BACKEND ROUTING
-    │   ├── routes.py               # Main route definitions
-    │   ├── downloads/              # Download-related routes
-    │   └── temp/                   # Temporary route files
-    │
-    ├── Structify/                  # 📄 PDF PROCESSING ENGINE
-    │   ├── __init__.py             # Package initialization
-    │   ├── claude.py               # Main Structify module
-    │   └── structify.original.py   # Legacy Structify module
-    │
-    ├── academic_downloads/         # 📚 ACADEMIC CONTENT STORAGE
-    ├── downloads/                  # 💾 GENERAL DOWNLOADS
-    ├── temp/                       # 🗂️ TEMPORARY FILES
-    └── backups/                    # 💾 BACKUP FILES
+static/js/
+├── index.js                     # Main entry (optimized)
+├── module-manager.js            # Module lifecycle management
+└── modules/
+    ├── core/                    # Framework modules (8 modules)
+    │   ├── app.js              # Main application controller
+    │   ├── errorHandler.js     # Error handling
+    │   ├── stateManager.js     # Application state
+    │   └── ...
+    ├── features/               # Feature modules (12 modules)
+    │   ├── fileProcessor.js    # File processing UI
+    │   ├── webScraper.js       # Web scraping interface
+    │   ├── academicSearch.js   # Academic search UI
+    │   └── ...
+    └── utils/                  # Utility modules (15 modules)
+        ├── progressHandler.js  # Progress tracking
+        ├── socketHandler.js    # Real-time communication
+        └── ...
 ```
 
-### Key Technologies
-- **Backend**: Python Flask with SocketIO for real-time communication
-- **Frontend**: JavaScript ES6 modules with Bootstrap UI
-- **Real-time**: Socket.IO for progress updates and task communication
-- **Document Processing**: Structify module for PDF extraction and OCR
-- **Academic APIs**: arXiv, Semantic Scholar, PubMed integration
-- **Database**: File-based storage with JSON for configuration
+## 🚀 RECENT FIXES APPLIED (May 29, 2025)
 
-## Development Conventions
+### ✅ Backend Import Resolution
+1. **Fixed file_processor.py**:
+   - Added missing `add_task` import from `blueprints.core.services`
+   - Added missing emit functions: `emit_progress_update`, `emit_task_error`, `emit_task_completion`
+   - Fixed function signatures to match services.py implementations
+   - Added proper task registration flow
 
-### Code Style Guidelines
-- **DRY**: Don't Repeat Yourself - refactor repetitive logic into reusable functions
-- **KISS**: Keep It Simple, Stupid - clear, minimal, readable code
-- **SRP**: Single Responsibility Principle - each function does one thing well
-- **Separation of Concerns**: UI logic, state management, and backend comms should be modular
-- **Fail Fast**: Raise errors early, never suppress failures
-- **Use Established Interfaces**: Reuse existing functions before creating new ones
+2. **Fixed Function Calls**:
+   - `emit_progress_update(task_id, progress, message)` - simplified signature
+   - `emit_task_error(task_id, error_message)` - removed socketio_instance parameter
+   - `emit_task_completion(task_id, task_type, output_file, stats)` - proper completion event
 
-### Git Workflow
-- Branch naming: `feature/description`, `bugfix/critical-progress-fix`
-- Commit format: `"fix: progress bar stuck at 50% issue"` or `"feat: add academic search"`
-- Always update CLAUDE.md before committing major changes
-- Create backup branches before critical fixes
+3. **Task Management Flow**:
+   ```python
+   # Correct task creation and registration
+   task = ProcessingTask(task_id, input_dir, final_output_path)
+   add_task(task_id, task)  # Add to active tasks
+   register_task(task_id, 'file_processing', **kwargs)  # API registry
+   task.start()  # Begin processing
+   ```
 
-### SocketIO Event Conventions
-- **Backend events**: `progress_update`, `task_completed`, `task_error`, `task_cancelled`
-- **Frontend events**: `request_task_status`, `cancel_task`, `pause_task`, `resume_task`
-- **All events must include**: `task_id`, `timestamp`, and relevant metadata
-- **Event payload structure** must be consistent across all modules
+## 🔧 CRITICAL TESTING NEEDED
 
+### File Processor Testing
+1. **Backend Test**: Process a real directory with mixed file types
+2. **Progress Tracking**: Verify real-time updates reach frontend
+3. **Path Handling**: Test Windows paths from Linux server
+4. **Download Capability**: Ensure files are downloadable by Windows clients
+
+### Module Integration Testing
+1. **Frontend-Backend Connection**: Each JS module → Python blueprint
+2. **Socket.IO Events**: Real-time communication working
+3. **Error Handling**: Proper error propagation and display
+4. **Cross-Platform Paths**: Windows-compatible file paths from Linux
+
+## 🌐 CROSS-PLATFORM DOWNLOAD REQUIREMENTS
+
+### Primary Goal: Linux Server → Windows Client Downloads
+- **Server Environment**: Linux (production)
+- **Client Environment**: Windows (end users)
+- **Challenge**: Generate Windows-compatible file paths and downloads
+- **Solution**: Path conversion utilities in utils.py
+
+### Path Handling Strategy
 ```python
-# Standard backend event emission
-def emit_progress_update(task_id, progress, status="processing", message=None, stats=None):
-    payload = {
-        'task_id': task_id,
-        'progress': progress,
-        'status': status,
-        'message': message or f"Progress: {progress}%",
-        'timestamp': time.time(),
-        'stats': stats
-    }
-    socketio.emit('progress_update', payload)
+def convert_to_windows_path(linux_path, drive_letter="C"):
+    """Convert Linux path to Windows path for download"""
+    # Remove leading slash and convert separators
+    windows_path = linux_path.lstrip('/').replace('/', '\\')
+    return f"{drive_letter}:\\{windows_path}"
+
+def sanitize_for_windows(filename):
+    """Ensure filename is Windows-compatible"""
+    invalid_chars = '<>:"|?*'
+    for char in invalid_chars:
+        filename = filename.replace(char, '_')
+    return filename
 ```
 
-## Environment Setup
+## 📊 MODULE STATUS MATRIX
 
-### Required Dependencies
-- **Python 3.8+** with Flask, Flask-SocketIO, eventlet
-- **Node.js** for frontend package management (optional)
-- **Tesseract OCR** for document processing
-- **Redis** for session management
-- **Required Python packages**: see requirements.txt
+| Module | Frontend | Backend | Integration | Status |
+|--------|----------|---------|-------------|--------|
+| File Processor | ✅ Ready | ✅ Fixed | 🔧 Testing | 90% |
+| Web Scraper | ✅ Ready | ✅ Ready | ❌ Missing | 60% |
+| Academic Search | ✅ Ready | ✅ Ready | ❌ Missing | 60% |
+| PDF Processor | ✅ Ready | ✅ Ready | ❌ Missing | 60% |
+| Playlist Downloader | ✅ Ready | ✅ Ready | ❌ Missing | 60% |
 
-### Development Environment
-- **Backend**: Run with `python run_server.py` on port 5025
-- **Frontend**: Served via Flask static files
-- **Debug Mode**: Enable in development for detailed SocketIO logging
-- **Environment Variables**: API keys in .env file (YOUTUBE_API_KEY, etc.)
+## 🔍 IMMEDIATE NEXT STEPS
+
+### Today's Priority
+1. **Test File Processing**: Run a complete test with real directory
+2. **Fix Path Issues**: Ensure cross-platform path compatibility
+3. **Verify Socket.IO**: Test real-time progress updates
+4. **Module Loading Check**: Confirm all 35 modules load correctly
+
+### This Week's Goals
+1. **Complete Module Integration**: Connect all frontend modules to backends
+2. **Cross-Platform Testing**: Verify Linux→Windows download capability
+3. **Error Handling**: Implement comprehensive error recovery
+4. **Performance Optimization**: Ensure sub-5 second startup maintained
+
+## 📝 DEVELOPMENT COMMANDS
 
 ### Server Management
 ```bash
-# Start server
-python run_server.py
+# Start production server
+cd modules && python run_server_new.py
 
-# Shutdown server  
-python shutdown_server.py
+# Test server with debug
+cd modules && python run_server_new.py --debug
+
+# Quick test file processing
+curl -X POST http://localhost:5025/api/process \
+  -H "Content-Type: application/json" \
+  -d '{"input_dir": "/path/to/test", "output_file": "test_output"}'
 ```
 
-## Current Issues & Status
-
-### ✅ RESOLVED Issues
-1. **Progress Bar Stuck at 50%** - FIXED: Removed smoothing logic causing deadlock
-2. **Duplicate Progress Indicators** - FIXED: Removed percentage badge duplication  
-3. **Module Loading Errors** - FIXED: Resolved getElement conflicts and syntax errors
-4. **Stats Display** - FIXED: Force visibility on completion
-5. **Core Module Exports** - FIXED: All modules properly structured with correct ES6 exports
-6. **WeakMap Symbol Error** - FIXED: Replaced WeakMap with simple object in utils/ui.js
-7. **Academic Search Imports** - FIXED: Updated function references from showError to showErrorNotification
-8. **Web Scraper Loading** - FIXED: Replaced non-existent loadModuleWithDependencies function
-
-### 🟡 ACTIVE Issues
-1. **Performance Bottleneck**: index.js is 3,030 lines with 267 function declarations (target: under 1,000)
-2. **Startup Time**: 25+ seconds loading time with blocking operations (target: under 10)
-3. **Browser Refresh**: Sometimes required for module loading after fixes
-4. **Button Testing**: Need comprehensive end-to-end testing of all start buttons
-5. **Memory Usage**: No proper module cleanup/unloading mechanisms
-6. **Error Recovery**: Needs faster failure detection and recovery
-
-### 🔧 Known Performance Issues
-- **Frontend Bloat**: Single 3,030-line index.js file causing parsing overhead
-- **Module Loading**: Complex initialization sequence with blocking operations
-- **Memory Leaks**: Long-running sessions without proper cleanup
-- **DOM Manipulation**: Excessive DOM operations during startup
-- **Event Handlers**: No cleanup for removed/replaced elements
-
-### 🚨 Critical File Locations
-```
-CRITICAL FILES TO MONITOR:
-├── modules/static/js/index.js                           # BLOATED: 3,030 lines
-├── modules/static/js/modules/core/moduleLoader.js       # Complex loading logic
-├── modules/static/js/modules/utils/progressHandler.js   # Recently fixed
-├── modules/app.py                                       # Main backend
-└── modules/templates/index.html                         # Frontend conflicts
-```
-
-## Testing Strategy
-
-### Current Testing Priorities
-1. **Progress Bar Testing**: Manual testing across all three modules
-2. **SocketIO Event Testing**: Monitor WebSocket frames in browser dev tools
-3. **Module Integration Testing**: Test File Processor, Playlist Downloader, Web Scraper individually
-4. **End-to-End Testing**: Complete workflow testing from start to finish
-5. **Performance Testing**: Measure startup times and memory usage
-
-### Module Testing Protocol
-1. **Hard refresh browser** (Ctrl+F5) to clear cache
-2. **Check console** for any loading errors and timing
-3. **Test each feature systematically**:
-   - File Processor with small file upload
-   - Playlist Downloader with YouTube URL  
-   - Web Scraper with simple website
-4. **Verify progress bars** reach 100% smoothly without getting stuck
-5. **Confirm stats display** on completion
-6. **Monitor memory usage** in browser dev tools
-
-### Debug Commands & Tools
+### Frontend Development
 ```javascript
-// Frontend debugging
-window.progressDebug = true;
-window.socket.on('progress_update', (data) => {
-  console.log('PROGRESS DEBUG:', data);
-});
+// Test module loading
+window.NeuroGenDebug.modules.list()
 
-// Check for duplicate DOM elements
-document.querySelectorAll('[id*="progress"]').forEach(el => {
-  console.log('Progress element found:', el.id, el.textContent);
-});
+// Check module status
+window.NeuroGenDebug.modules.status('fileProcessor')
 
-// Module diagnostics
-import('/static/js/modules/utils/moduleDiagnostics.js').then(m => m.logDiagnosticReport());
-
-// Performance monitoring
-console.time('moduleLoad');
-// ... module loading code ...
-console.timeEnd('moduleLoad');
+// Test Socket.IO connection
+window.NeuroGenDebug.socket.test()
 ```
 
-```python
-# Backend debugging in app.py
-def emit_progress_update(task_id, progress, status="processing", message=None, stats=None):
-    print(f"BACKEND DEBUG: Emitting {task_id}: {progress}%")
-    print(f"BACKEND DEBUG: Connected clients: {len(socketio.server.manager.rooms.get('/', {}))}")
-    
-    payload = {
-        'task_id': task_id,
-        'progress': progress,
-        'status': status,
-        'message': message or f"Progress: {progress}%",
-        'timestamp': time.time()
-    }
-    
-    try:
-        socketio.emit('progress_update', payload)
-        print(f"BACKEND DEBUG: Successfully emitted progress_update")
-    except Exception as e:
-        print(f"BACKEND DEBUG: Failed to emit: {e}")
-```
+## 🚨 KNOWN ISSUES & WORKAROUNDS
 
-## Module System Health
+### Current Issues
+1. **Windows Path Conversion**: Need robust Linux→Windows path translation
+2. **Module Integration**: Frontend modules not connected to backend blueprints
+3. **Progress Bar Edge Cases**: Some modules may have stale progress indicators
+4. **Error Recovery**: Limited automatic retry mechanisms
 
-### ✅ Successfully Loading Modules
-- **Core Modules**: errorHandler, uiRegistry, stateManager, eventRegistry, eventManager, themeManager
-- **Utility Modules**: socketHandler, progressHandler, utils, fileHandler, moduleDiagnostics  
-- **Feature Modules**: playlistDownloader, historyManager, debugTools
-- **Main App Module**: app.js
+### Workarounds
+1. **Path Issues**: Use sanitize_filename and manual path conversion
+2. **Module Issues**: Test modules individually before integration
+3. **Progress Issues**: Clear progress state before starting new tasks
+4. **Error Issues**: Implement manual retry in frontend
 
-### 🔄 Recently Fixed (Should Work After Refresh)
-- **utils/ui.js** - Fixed WeakMap Symbol error, replaced with simple object
-- **features/webScraper.js** - Fixed function reference error (loadModuleWithDependencies)
-- **features/academicSearch.js** - Fixed import/export issues (showError → showErrorNotification)
+## 🔮 ROADMAP SUMMARY
 
-### 📊 Module Loading Order
-```javascript
-// Core loading sequence (from moduleLoader.js)
-INITIALIZATION_ORDER = [
-  'module-bridge.js',     // Circular dependency resolution
-  'errorHandler.js',      // Error handling foundation
-  'domUtils.js',          // DOM utilities
-  'uiRegistry.js',        // UI component registry
-  'stateManager.js',      // Application state
-  'eventRegistry.js',     // Event registration
-  'eventManager.js',      // Event management
-  'themeManager.js'       // Theme switching
-];
-```
+### Phase 1: Core Stability (This Week)
+- Fix all backend import/integration issues
+- Test cross-platform download capability
+- Verify all 35 modules load and function
 
-## Emergency Fallback Plans
+### Phase 2: Feature Integration (Next 2 Weeks)
+- Connect all frontend modules to backend blueprints
+- Implement robust error handling and recovery
+- Optimize real-time progress tracking
 
-### Option A: Minimal Progress System
-```javascript
-function simpleProgressUpdate(elementId, progress) {
-  const element = document.getElementById(elementId);
-  if (element) {
-    element.style.width = `${progress}%`;
-    element.textContent = `${Math.round(progress)}%`;
-  }
-}
-```
+### Phase 3: Production Ready (Next Month)
+- Comprehensive testing across platforms
+- Performance optimization and monitoring
+- Documentation and deployment guides
 
-### Option B: Polling-Based Progress
-```javascript
-async function pollTaskProgress(taskId) {
-  try {
-    const response = await fetch(`/api/status/${taskId}`);
-    const data = await response.json();
-    updateProgressDisplay(data.progress);
-  } catch (error) {
-    console.error('Polling failed:', error);
-  }
-}
-```
-
-### Option C: Module Loading Fallback
-```javascript
-// Simplified module loader for emergency use
-async function loadModuleSimple(modulePath) {
-  try {
-    const module = await import(modulePath);
-    return module.default || module;
-  } catch (error) {
-    console.error(`Failed to load ${modulePath}:`, error);
-    return null;
-  }
-}
-```
-
-## Success Criteria
-
-### Immediate Goals (Next 1-2 Days)
-- [ ] All modules load successfully without browser refresh required
-- [ ] Progress bars display 0-100% without getting stuck at any percentage
-- [ ] No duplicate progress indicators visible anywhere in UI
-- [ ] All start buttons functional for File Processor, Playlist Downloader, Web Scraper
-- [ ] Tasks complete properly and show final stats on completion
-- [ ] Startup time reduced to under 15 seconds (from current 25+)
-
-### Performance Goals (Next Week)
-- [ ] index.js optimized to under 1,000 lines (from current 3,030)
-- [ ] Startup time under 10 seconds consistently
-- [ ] Memory usage optimization with proper cleanup
-- [ ] Smooth progress updates with proper animations across all modules
-- [ ] Consistent SocketIO event flow without dropped connections
-
-### Feature Completion Goals (Next 2-4 Weeks)
-- [ ] Unified tabbed interface for all scraping features
-- [ ] PDF selection system with batch operations
-- [ ] Academic search integration fully functional
-- [ ] Recursive crawling algorithms implemented
-- [ ] Citation network visualization working
+### Phase 4: Advanced Features (2-3 Months)
+- Citation network visualization
+- Advanced PDF processing with AI
+- Cloud storage integration
+- Multi-language support
 
 ---
 
-## 🔄 CURRENT STATUS - May 29, 2025
-
-### Backend-Frontend Alignment Status
-
-#### ✅ What's Working:
-1. **Backend Architecture**: Flask Blueprints fully operational
-2. **Module System**: Frontend loads all modules successfully
-3. **File Processor**: Working (after fixes)
-4. **Playlist Downloader**: Working
-5. **SocketIO**: Real-time communication established
-
-#### 🚧 What Needs Implementation:
-1. **Web Scraper UI**: Backend ready, frontend needs connection
-2. **Academic Search UI**: Backend ready, frontend needs connection
-3. **Progress Tracking**: Need to connect frontend progress bars to backend events
-4. **Results Display**: Need UI for showing scraped content and PDFs
-
-### Next Steps for Perfect Alignment:
-
-1. **Connect Frontend Forms to Backend Endpoints**:
-   ```javascript
-   // In webScraper.js
-   const response = await fetch('/api/scrape', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({
-           url: scraperUrl,
-           max_depth: maxDepth,
-           include_patterns: includePatterns,
-           exclude_patterns: excludePatterns
-       })
-   });
-   ```
-
-2. **Handle SocketIO Events in Frontend**:
-   ```javascript
-   // Listen for scraping progress
-   socket.on('scraping_progress', (data) => {
-       updateProgress(data.progress, data.message);
-   });
-   
-   socket.on('pdf_found', (data) => {
-       addPdfToList(data.url, data.title);
-   });
-   ```
-
-3. **Update UI Components**:
-   - Add form validation
-   - Show/hide progress containers
-   - Display results dynamically
-   - Handle errors gracefully
-
-## ✅ VALIDATION SUMMARY - May 28, 2025
-
-### 🎯 BACKEND REFACTORING COMPLETE
-**Backend validation and refactoring of NeuroGenServer architecture is COMPLETE!**
-
-### 📋 VALIDATION CHECKLIST - ALL ✅
-- [x] **All Placeholders Replaced**: Original implementations from app.py moved to blueprints
-- [x] **Module Exports Standardized**: Comprehensive __all__ exports in all modules  
-- [x] **Flask Blueprints Validated**: Clean, maintainable architecture verified
-- [x] **SocketIO Integration**: All emit functions properly implemented
-- [x] **Error Handling**: Complete error handler registration  
-- [x] **Production Testing**: app_new.py successfully starts and runs
-- [x] **Import Validation**: All module imports and dependencies verified
-- [x] **Code Organization**: Feature-based blueprint structure confirmed
-
-### 🚀 PRODUCTION READINESS STATUS
-- **Backend**: ✅ **PRODUCTION READY** - app_new.py fully operational
-- **Architecture**: ✅ **CLEAN & MAINTAINABLE** - Flask Blueprint best practices
-- **Performance**: ✅ **OPTIMIZED** - Sub-5 second startup achieved  
-- **Reliability**: ✅ **ROBUST** - Original implementations preserved
-- **Exports**: ✅ **STANDARDIZED** - All modules properly exported
-
-### 🎉 KEY ACHIEVEMENTS
-1. **87% Code Reduction**: Frontend simplified from 3,030 to 90 lines
-2. **85% Performance Improvement**: Startup time reduced from 35+ to <5 seconds
-3. **100% Blueprint Migration**: All functionality moved to clean Flask architecture
-4. **Zero Placeholders**: All original implementations properly migrated
-5. **Complete Validation**: Every module tested and verified functional
-
-### 📁 PRODUCTION FILES
-- **Main Application**: `modules/app_new.py` - Ready for production deployment
-- **Entry Point**: `modules/cli.py` - Command-line interface 
-- **Blueprints**: `modules/blueprints/` - Complete modular architecture
-- **Frontend**: `modules/static/js/index-simple.js` - Optimized entry point
-
----
-
-**Last Updated**: May 28, 2025  
-**Validation Status**: ✅ **COMPLETE** - All placeholders replaced, all exports standardized
-**Production Status**: ✅ **READY** - app_new.py operational and validated  
-**Next Phase**: Deploy to production and begin end-to-end testing
+**Development Focus**: Cross-platform compatibility, module integration, production readiness
+**Key Success Metric**: Linux server successfully serving Windows clients with real-time progress
+**Last Updated**: May 29, 2025 - Post import fixes, pre-integration testing

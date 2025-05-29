@@ -127,25 +127,25 @@ def test_modules():
         static_js_path = os.path.join(blueprints_dir, 'static', 'js')
         modules_path = os.path.join(static_js_path, 'modules')
         
-        # Define expected modules based on your system
+        # Define expected modules based on current Blueprint system
         expected_modules = {
             'core': [
-                'errorHandler.js', 'uiRegistry.js', 'stateManager.js',
-                'eventRegistry.js', 'eventManager.js', 'themeManager.js',
-                'module-bridge.js', 'ui.js', 'domUtils.js', 'app.js',
-                'moduleLoader.js', 'index.js'
+                'app.js', 'domUtils.js', 'errorHandler.js', 'eventManager.js',
+                'eventRegistry.js', 'index.js', 'module-bridge.js', 'moduleLoader.js',
+                'stateManager.js', 'themeManager.js', 'ui.js', 'uiRegistry.js'
             ],
             'utils': [
-                'socketHandler.js', 'progressHandler.js', 'ui.js',
-                'utils.js', 'fileHandler.js', 'domUtils.js',
-                'moduleDiagnostics.js', 'systemHealth.js', 'debugTools.js',
-                'safeFileProcessor.js'
+                'debugTools.js', 'domUtils.js', 'errorHandler.js', 'fileHandler.js',
+                'index.js', 'moduleDiagnostics.js', 'progressHandler.js', 
+                'safeFileProcessor.js', 'socketHandler.js', 'systemHealth.js',
+                'ui.js', 'utils.js'
             ],
             'features': [
-                'fileProcessor.js', 'webScraper.js', 'playlistDownloader.js',
-                'academicSearch.js', 'academicScraper.js', 'academicApiClient.js',
-                'historyManager.js', 'pdfProcessor.js', 'helpMode.js',
-                'performanceOptimizer.js', 'keyboardShortcuts.js', 'dragDropHandler.js'
+                'academicApiClient.js', 'academicScraper.js', 'academicSearch.js',
+                'dragDropHandler.js', 'fileProcessor.js', 'helpMode.js',
+                'historyManager.js', 'keyboardShortcuts.js', 'pdfProcessor.js',
+                'performanceOptimizer.js', 'playlistDownloader.js', 'safeFileProcessor.js',
+                'webScraper.js', 'webScraperUtils.js'
             ]
         }
         
@@ -217,35 +217,46 @@ def test_modules():
                     'message': f'Critical file missing: {path}'
                 })
         
-        # Check API endpoints - Import comprehensive endpoint registry
-        try:
-            from endpoint_registry import ENDPOINT_REGISTRY
-            endpoints_to_check = ENDPOINT_REGISTRY
-        except ImportError:
-            # Fallback to basic endpoints if registry not available
-            endpoints_to_check = {
-                'fileProcessor': {
-                    'process': ('/api/process', ['POST']),
-                    'status': ('/api/status/<task_id>', ['GET']),
-                    'download': ('/api/download/<task_id>', ['GET'])
-                },
-                'playlistDownloader': {
-                    'start': ('/api/start-playlists', ['POST']),
-                    'cancel': ('/api/cancel/<task_id>', ['POST'])
-                },
-                'webScraper': {
-                    'scrape': ('/api/scrape2', ['POST']),
-                    'status': ('/api/scrape2/status/<task_id>', ['GET']),
-                    'cancel': ('/api/scrape2/cancel/<task_id>', ['POST'])
-                },
-                'academicSearch': {
-                    'search': ('/api/academic/search', ['GET']),
-                    'health': ('/api/academic/health', ['GET'])
-                }
+        # Blueprint endpoints for current system
+        blueprint_endpoints = {
+            'fileProcessor': {
+                'process': ('/api/process', ['POST']),
+                'status': ('/api/status/<task_id>', ['GET']),
+                'download': ('/api/download/<task_id>', ['GET']),
+                'open': ('/api/open/<task_id>', ['GET']),
+                'detect_path': ('/api/detect-path', ['POST']),
+                'verify_path': ('/api/verify-path', ['POST'])
+            },
+            'webScraper': {
+                'scrape': ('/api/scrape', ['POST']),
+                'status': ('/api/scrape/status/<task_id>', ['GET']),
+                'cancel': ('/api/scrape/cancel/<task_id>', ['POST']),
+                'results': ('/api/scrape/results/<task_id>', ['GET'])
+            },
+            'academicSearch': {
+                'search': ('/api/academic/search', ['POST']),
+                'health': ('/api/academic/health', ['GET']),
+                'download': ('/api/academic/download', ['POST'])
+            },
+            'playlistDownloader': {
+                'start': ('/api/start-playlists', ['POST']),
+                'cancel': ('/api/cancel-playlists/<task_id>', ['POST'])
+            },
+            'pdfProcessor': {
+                'process': ('/api/pdf/process', ['POST']),
+                'status': ('/api/pdf/status/<task_id>', ['GET']),
+                'extract': ('/api/pdf/extract', ['POST'])
+            },
+            'management': {
+                'tasks': ('/api/tasks', ['GET']),
+                'cancel': ('/api/cancel/<task_id>', ['POST']),
+                'analytics': ('/api/analytics', ['GET']),
+                'keys': ('/api/keys', ['GET'])
             }
+        }
         
         # Check if endpoints exist
-        for feature, endpoints in endpoints_to_check.items():
+        for feature, endpoints in blueprint_endpoints.items():
             diagnostics['endpoints'][feature] = {}
             for name, (rule_pattern, methods) in endpoints.items():
                 # Check if route exists in Flask app
@@ -319,7 +330,7 @@ def test_modules():
                            for mod in cat.values() if mod.get('exists', False))
         
         # Count endpoints
-        total_endpoints = sum(len(endpoints) for endpoints in endpoints_to_check.values())
+        total_endpoints = sum(len(endpoints) for endpoints in blueprint_endpoints.values())
         checked_endpoints = sum(1 for cat in diagnostics['endpoints'].values() 
                                for ep in cat.values() if ep.get('exists', False))
         missing_endpoints = sum(1 for cat in diagnostics['endpoints'].values() 

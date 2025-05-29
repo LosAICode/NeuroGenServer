@@ -19,7 +19,7 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
 from blueprints.api.management import register_task, update_task_progress, complete_task
 from blueprints.core.utils import ensure_temp_directory, sanitize_filename
-from blueprints.core.services import ProcessingTask
+from blueprints.core.services import ProcessingTask, add_task, emit_progress_update, emit_task_error, emit_task_completion
 
 logger = logging.getLogger(__name__)
 
@@ -714,6 +714,8 @@ def start_processing():
         
         # Create and start the processing task
         task = ProcessingTask(task_id, input_dir, final_output_path)
+        # Add task to active tasks registry
+        add_task(task_id, task)
         # Register task with API management
         register_task(task_id, 'file_processing', input_dir=input_dir, output_file=final_output_path)
         task.start()
@@ -1197,13 +1199,11 @@ def start_file_processing_task(task_id, input_dir, output_file, output_dir=None)
         
         # Update task status to processing
         update_task_progress(task_id, 0, "processing", stats={'stage': 'initializing'})
-        emit_progress_update(task_id, 0, "processing", "Initializing file processing...", 
-                           socketio_instance=current_app.socketio)
+        emit_progress_update(task_id, 0, "Initializing file processing...")
         
         # Simulate file discovery
         time.sleep(1)
-        emit_progress_update(task_id, 10, "processing", "Discovering files...", 
-                           socketio_instance=current_app.socketio)
+        emit_progress_update(task_id, 10, "Discovering files...")
         
         # Get list of files to process
         files_to_process = []
@@ -1215,14 +1215,11 @@ def start_file_processing_task(task_id, input_dir, output_file, output_dir=None)
         
         total_files = len(files_to_process)
         if total_files == 0:
-            emit_task_error(task_id, "No supported files found in directory", 
-                          socketio_instance=current_app.socketio)
+            emit_task_error(task_id, "No supported files found in directory")
             return
         
         logger.info(f"Found {total_files} files to process")
-        emit_progress_update(task_id, 20, "processing", f"Found {total_files} files to process", 
-                           stats={'total_files': total_files}, 
-                           socketio_instance=current_app.socketio)
+        emit_progress_update(task_id, 20, f"Found {total_files} files to process")
         
         # Process files (simulate processing)
         processed_files = 0
@@ -1232,10 +1229,7 @@ def start_file_processing_task(task_id, input_dir, output_file, output_dir=None)
             try:
                 # Update progress
                 progress = 20 + (60 * i / total_files)  # Progress from 20% to 80%
-                emit_progress_update(task_id, progress, "processing", 
-                                   f"Processing {os.path.basename(file_path)}...", 
-                                   stats={'processed_files': processed_files, 'total_files': total_files},
-                                   socketio_instance=current_app.socketio)
+                emit_progress_update(task_id, progress, f"Processing {os.path.basename(file_path)}...")
                 
                 # Simulate file processing time
                 time.sleep(0.5)
@@ -1254,8 +1248,7 @@ def start_file_processing_task(task_id, input_dir, output_file, output_dir=None)
                 logger.error(f"Error processing file {file_path}: {e}")
         
         # Write output file
-        emit_progress_update(task_id, 80, "processing", "Writing output file...", 
-                           socketio_instance=current_app.socketio)
+        emit_progress_update(task_id, 80, "Writing output file...")
         
         # Determine output path
         if output_dir and not os.path.isabs(output_file):
@@ -1274,31 +1267,22 @@ def start_file_processing_task(task_id, input_dir, output_file, output_dir=None)
             f.write("\n".join(output_content))
         
         # Final progress update
-        emit_progress_update(task_id, 100, "completed", "File processing completed successfully!", 
+        emit_progress_update(task_id, 100, "File processing completed successfully!")
+        
+        # Mark task as completed
+        emit_task_completion(task_id, task_type="file_processing", 
+                           output_file=output_path,
                            stats={
                                'total_files': total_files,
                                'processed_files': processed_files,
-                               'output_path': output_path,
-                               'file_size': os.path.getsize(output_path)
-                           },
-                           socketio_instance=current_app.socketio)
-        
-        # Mark task as completed
-        emit_task_completed(task_id, success=True, 
-                          message="File processing completed successfully",
-                          stats={
-                              'total_files': total_files,
-                              'processed_files': processed_files,
-                              'output_path': output_path
-                          },
-                          socketio_instance=current_app.socketio)
+                               'output_path': output_path
+                           })
         
         logger.info(f"File processing task {task_id} completed successfully")
         
     except Exception as e:
         logger.error(f"Error in file processing task {task_id}: {str(e)}")
-        emit_task_error(task_id, f"File processing failed: {str(e)}", 
-                       socketio_instance=current_app.socketio)
+        emit_task_error(task_id, f"File processing failed: {str(e)}")
 
 
 # Export the blueprint and key functions

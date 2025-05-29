@@ -2935,13 +2935,13 @@ const playlistDownloader = {
         
         // As a fallback, also try API
         try {
-          await fetch(`/api/cancel/${targetTaskId}`, { method: 'POST' });
+          await fetch(`/api/cancel-playlists/${targetTaskId}`, { method: 'POST' });
         } catch (apiError) {
           console.warn('API cancellation failed, socket cancellation may still succeed');
         }
       } else {
         // Use API directly
-        const response = await fetch(`/api/cancel/${targetTaskId}`, { method: 'POST' });
+        const response = await fetch(`/api/cancel-playlists/${targetTaskId}`, { method: 'POST' });
         
         if (!response.ok) {
           const text = await response.text();
