@@ -1,0 +1,892 @@
+2025-05-29 15:22:39,063 - app_new - INFO - Using static folder: /workspace/modules/static
+2025-05-29 15:22:39,064 - app_new - INFO - Using template folder: /workspace/modules/blueprints/templates
+Server initialized for eventlet.
+2025-05-29 15:22:39,108 - engineio.server - INFO - Server initialized for eventlet.
+2025-05-29 15:22:39,371 - blueprints.core.utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 15:22:39,427 - blueprints.core.http_client - INFO - HTTP session created with retry strategy
+2025-05-29 15:22:42,536 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-29 15:22:42,536 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-29 15:22:42,539 - file_processor - INFO - Started temp file cleanup service
+2025-05-29 15:22:42,539 - file_processor - INFO - Started temp file cleanup service
+🚀 Starting NeuroGen Server (Blueprint Architecture)
+==================================================
+📍 Server URL: http://127.0.0.1:5025
+🔧 Debug mode: True
+📁 Working directory: /workspace/modules
+==================================================
+2025-05-29 15:22:42,757 - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-29 15:22:42,757 - pdf_extractor - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-29 15:22:42,889 - INFO - PyPDF2 version 3.0.1 detected
+2025-05-29 15:22:42,889 - pdf_extractor - INFO - PyPDF2 version 3.0.1 detected
+2025-05-29 15:22:42,894 - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-29 15:22:42,894 - pdf_extractor - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-29 15:22:42,921 - INFO - Tabula detected for table extraction
+2025-05-29 15:22:42,921 - pdf_extractor - INFO - Tabula detected for table extraction
+2025-05-29 15:22:42,922 - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-29 15:22:42,922 - pdf_extractor - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-29 15:22:42,937 - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-29 15:22:42,937 - pdf_extractor - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-29 15:22:42,938 - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-29 15:22:42,938 - pdf_extractor - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-29 15:22:42,943 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-29 15:22:42,943 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-29 15:22:42,944 - INFO - Initializing PDF extractor module...
+2025-05-29 15:22:42,944 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-29 15:22:42,946 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 15:22:42,946 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 15:22:42,957 - pdf_output_enhancer - INFO - PDF Output Enhancer module imported. Call init_improved_output_format() to initialize.
+2025-05-29 15:22:42,957 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-29 15:22:42,957 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-29 15:22:42,960 - Structify - INFO - Successfully imported claude.py from Structify package
+2025-05-29 15:22:42,961 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-29 15:22:42,961 - blueprints.core.structify_integration - INFO - Set structify TEMP_OCR_DIR to: /workspace/modules/blueprints/core/../../temp
+2025-05-29 15:22:42,979 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-29 15:22:42,979 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-29 15:22:42,983 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-29 15:22:42,983 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-29 15:22:42,986 - blueprints.core.structify_integration - INFO - Initialized structify OCR environment
+2025-05-29 15:22:42,987 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-29 15:22:42,987 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-29 15:22:42,987 - blueprints.core.structify_integration - INFO - Patched pytesseract temp directory
+2025-05-29 15:22:42,987 - blueprints.core.structify_integration - INFO - Successfully loaded structify_module and components
+2025-05-29 15:22:43,013 - blueprints.core.ocr_config - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-29 15:22:43,023 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-29 15:22:43,023 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 15:22:43,023 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-29 15:22:43,028 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 15:22:43,039 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 15:22:43,045 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-29 15:22:43,046 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 15:22:43,046 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-29 15:22:43,053 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 15:22:43,054 - blueprints.core.ocr_config - INFO - Successfully imported pdf_extractor module
+2025-05-29 15:22:43,054 - INFO - Initializing PDF extractor module...
+2025-05-29 15:22:43,054 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-29 15:22:43,057 - blueprints.core.ocr_config - ERROR - Error initializing PDF extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 15:22:43,072 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 15:22:43,076 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 15:22:43,077 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-29 15:22:43,077 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-29 15:22:43,608 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-29 15:22:43,614 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 15:22:43,624 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 15:22:43,625 - blueprints.core.ocr_config - INFO - OCR environment set up with temp directory: /workspace/modules/temp
+2025-05-29 15:22:43,625 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-29 15:22:43,626 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-29 15:22:44,072 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-29 15:22:44,072 - blueprints.core.ocr_config - INFO - OCR handler initialized successfully
+2025-05-29 15:22:44,080 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 15:22:44,801 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-29 15:22:44,802 - INFO - Claude module is available for processing
+2025-05-29 15:22:44,802 - web_scraper - INFO - Claude module is available for processing
+2025-05-29 15:22:44,807 - INFO - PDF extractor module is available
+2025-05-29 15:22:44,807 - web_scraper - INFO - PDF extractor module is available
+2025-05-29 15:22:47,498 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 15:22:47,527 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-05-29 15:22:47,655 - app_new - INFO - All blueprints registered successfully
+2025-05-29 15:22:47,657 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-05-29 15:22:47,659 - app_new - INFO - NeuroGen Server application created successfully
+2025-05-29 15:22:47,659 - app_new - INFO - Starting NeuroGen Server on 127.0.0.1:5025
+2025-05-29 15:22:47,660 - app_new - INFO - Debug mode: True
+(63068) wsgi starting up on http://127.0.0.1:5025
+(63068) accepted ('127.0.0.1', 48256)
+(63068) accepted ('127.0.0.1', 48272)
+127.0.0.1 - - [29/May/2025 15:22:52] "GET /api/health HTTP/1.1" 200 2656 1.002112
+(63068) accepted ('127.0.0.1', 48284)
+prhTG9sLXVFhd5dPAAAA: Sending packet OPEN data {'sid': 'prhTG9sLXVFhd5dPAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:22:55,221 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet OPEN data {'sid': 'prhTG9sLXVFhd5dPAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:22:55] "GET /socket.io/?EIO=4&transport=polling&t=PSTVrae HTTP/1.1" 200 300 0.001127
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 0
+2025-05-29 15:22:55,249 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 0
+2025-05-29 15:22:55,253 - blueprints.socketio_events - INFO - Client connected: 1YVJpsnFjdnZz4GUAAAB
+emitting event "connection_established" to 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:22:55,254 - socketio.server - INFO - emitting event "connection_established" to 1YVJpsnFjdnZz4GUAAAB [/]
+prhTG9sLXVFhd5dPAAAA: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"1YVJpsnFjdnZz4GUAAAB","timestamp":1748546575.2540178,"server_version":"1.2.0"}]
+2025-05-29 15:22:55,255 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"1YVJpsnFjdnZz4GUAAAB","timestamp":1748546575.2540178,"server_version":"1.2.0"}]
+prhTG9sLXVFhd5dPAAAA: Sending packet MESSAGE data 0{"sid":"1YVJpsnFjdnZz4GUAAAB"}
+2025-05-29 15:22:55,255 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet MESSAGE data 0{"sid":"1YVJpsnFjdnZz4GUAAAB"}
+127.0.0.1 - - [29/May/2025 15:22:55] "POST /socket.io/?EIO=4&transport=polling&t=PSTVrjz&sid=prhTG9sLXVFhd5dPAAAA HTTP/1.1" 200 219 0.007620
+(63068) accepted ('127.0.0.1', 48300)
+(63068) accepted ('127.0.0.1', 48310)
+prhTG9sLXVFhd5dPAAAA: Received request to upgrade to websocket
+2025-05-29 15:22:55,693 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received request to upgrade to websocket
+127.0.0.1 - - [29/May/2025 15:22:55] "GET /socket.io/?EIO=4&transport=polling&t=PSTVrj_&sid=prhTG9sLXVFhd5dPAAAA HTTP/1.1" 200 181 0.000194
+prhTG9sLXVFhd5dPAAAA: Upgrade to websocket successful
+2025-05-29 15:22:55,711 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Upgrade to websocket successful
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546579466}]
+2025-05-29 15:22:59,470 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546579466}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:22:59,477 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+(63068) accepted ('127.0.0.1', 47676)
+127.0.0.1 - - [29/May/2025 15:23:13] "GET /api/test-modules HTTP/1.1" 200 29555 1.350848
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:23:20,223 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:23:20,232 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546604457}]
+2025-05-29 15:23:24,459 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546604457}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:23:24,459 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:23:45,232 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:23:45,245 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+(63068) accepted ('127.0.0.1', 38102)
+127.0.0.1 - - [29/May/2025 15:23:47] "GET /test-modules HTTP/1.1" 200 23214 0.021571
+127.0.0.1 - - [29/May/2025 15:23:50] "GET /test-modules?format=json HTTP/1.1" 200 24062 1.852014
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546629457}]
+2025-05-29 15:23:50,895 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546629457}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:23:50,898 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:23:58] "GET /api/test-modules HTTP/1.1" 200 29579 0.463416
+(63068) accepted ('127.0.0.1', 54574)
+127.0.0.1 - - [29/May/2025 15:23:58] "GET /favicon.ico HTTP/1.1" 404 262 0.000606
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:24:10,253 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:24:10,261 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546654458}]
+2025-05-29 15:24:14,460 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546654458}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:24:14,463 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:24:35,260 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:24:35,266 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546680302}]
+2025-05-29 15:24:40,308 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546680302}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:24:40,309 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:25:00,269 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:25:00,278 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546704559}]
+2025-05-29 15:25:04,561 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546704559}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:25:04,572 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:25:05] "GET /test-modules?format=json HTTP/1.1" 200 24062 0.278397
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:25:25,282 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:25:25,294 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546730315}]
+2025-05-29 15:25:30,325 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546730315}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:25:30,353 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:25:37] "GET /test-modules?format=json HTTP/1.1" 200 24062 0.092091
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:25:50,284 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:25:50,295 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546754462}]
+2025-05-29 15:25:54,477 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546754462}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:25:54,492 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:26:09] "GET /test-modules?format=json HTTP/1.1" 200 24062 0.827137
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:26:15,305 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:26:15,338 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546779456}]
+2025-05-29 15:26:19,468 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546779456}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:26:19,469 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:26:38] "GET /test-modules?format=json HTTP/1.1" 200 24062 0.163873
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:26:40,341 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:26:40,348 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546805321}]
+2025-05-29 15:26:45,324 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546805321}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:26:45,324 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/wsgi.py", line 641, in handle_one_response
+    write(b''.join(towrite))
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/wsgi.py", line 575, in write
+    wfile.flush()
+  File "/usr/lib/python3.12/socket.py", line 725, in write
+    return self._sock.send(b)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/greenio/base.py", line 383, in send
+    return self._send_loop(self.fd.send, data, flags)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/greenio/base.py", line 370, in _send_loop
+    return send_method(data, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+127.0.0.1 - - [29/May/2025 15:26:51] "GET /static/js/index.js HTTP/1.1" 200 33087 1.097928
+(63068) accepted ('127.0.0.1', 51508)
+127.0.0.1 - - [29/May/2025 15:26:52] "GET /static/img/favicon.png HTTP/1.1" 404 262 0.048586
+(63068) accepted ('127.0.0.1', 51510)
+127.0.0.1 - - [29/May/2025 15:26:53] "GET /static/js/modules/core/module-bridge.js HTTP/1.1" 200 10296 0.684579
+(63068) accepted ('127.0.0.1', 51526)
+(63068) accepted ('127.0.0.1', 51542)
+(63068) accepted ('127.0.0.1', 51552)
+(63068) accepted ('127.0.0.1', 51562)
+(63068) accepted ('127.0.0.1', 51566)
+(63068) accepted ('127.0.0.1', 51572)
+127.0.0.1 - - [29/May/2025 15:26:53] "GET /static/js/modules/core/errorHandler.js HTTP/1.1" 200 23911 0.109613
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/wsgi.py", line 641, in handle_one_response
+    write(b''.join(towrite))
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/wsgi.py", line 575, in write
+    wfile.flush()
+  File "/usr/lib/python3.12/socket.py", line 725, in write
+    return self._sock.send(b)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/greenio/base.py", line 383, in send
+    return self._send_loop(self.fd.send, data, flags)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/greenio/base.py", line 370, in _send_loop
+    return send_method(data, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+127.0.0.1 - - [29/May/2025 15:26:54] "GET /static/js/modules/core/stateManager.js HTTP/1.1" 200 24903 0.204587
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/wsgi.py", line 650, in handle_one_response
+    write(b''.join(towrite))
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/wsgi.py", line 575, in write
+    wfile.flush()
+  File "/usr/lib/python3.12/socket.py", line 725, in write
+    return self._sock.send(b)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/greenio/base.py", line 383, in send
+    return self._send_loop(self.fd.send, data, flags)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eventlet/greenio/base.py", line 370, in _send_loop
+    return send_method(data, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+127.0.0.1 - - [29/May/2025 15:26:54] "GET /static/js/modules/core/eventRegistry.js HTTP/1.1" 200 24904 0.032776
+127.0.0.1 - - [29/May/2025 15:26:54] "GET /static/js/modules/core/uiRegistry.js HTTP/1.1" 200 16389 0.380338
+127.0.0.1 - - [29/May/2025 15:26:54] "GET /static/js/module-manager.js HTTP/1.1" 200 4407 0.017345
+127.0.0.1 - - [29/May/2025 15:26:54] "GET /static/js/modules/core/domUtils.js HTTP/1.1" 200 5707 0.043038
+(63068) accepted ('127.0.0.1', 51582)
+127.0.0.1 - - [29/May/2025 15:26:54] "GET /static/js/modules/features/playlistDownloader.js HTTP/1.1" 304 221 0.033196
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/features/webScraper.js HTTP/1.1" 200 61449 0.312052
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/features/academicSearch.js HTTP/1.1" 304 216 0.015144
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/features/historyManager.js HTTP/1.1" 304 215 0.017927
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/features/keyboardShortcuts.js HTTP/1.1" 304 219 0.016453
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/features/dragDropHandler.js HTTP/1.1" 304 217 0.042155
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/utils/systemHealth.js HTTP/1.1" 404 262 0.012521
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/utils/debugTools.js HTTP/1.1" 404 262 0.004760
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/utils/moduleDiagnostics.js HTTP/1.1" 304 218 0.020273
+127.0.0.1 - - [29/May/2025 15:26:56] "GET /static/js/modules/core/ui.js HTTP/1.1" 304 205 0.050815
+(63068) accepted ('127.0.0.1', 51588)
+GxBHSLxGCoxi3PFrAAAC: Sending packet OPEN data {'sid': 'GxBHSLxGCoxi3PFrAAAC', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:26:57,015 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Sending packet OPEN data {'sid': 'GxBHSLxGCoxi3PFrAAAC', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:26:57] "GET /socket.io/?EIO=4&transport=polling&t=PSTWmdq HTTP/1.1" 200 300 0.039852
+GxBHSLxGCoxi3PFrAAAC: Received packet MESSAGE data 0
+2025-05-29 15:26:57,068 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Received packet MESSAGE data 0
+2025-05-29 15:26:57,102 - blueprints.socketio_events - INFO - Client connected: mPpxgSCkhp5duH6BAAAD
+emitting event "connection_established" to mPpxgSCkhp5duH6BAAAD [/]
+2025-05-29 15:26:57,106 - socketio.server - INFO - emitting event "connection_established" to mPpxgSCkhp5duH6BAAAD [/]
+GxBHSLxGCoxi3PFrAAAC: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"mPpxgSCkhp5duH6BAAAD","timestamp":1748546817.102476,"server_version":"1.2.0"}]
+2025-05-29 15:26:57,116 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"mPpxgSCkhp5duH6BAAAD","timestamp":1748546817.102476,"server_version":"1.2.0"}]
+GxBHSLxGCoxi3PFrAAAC: Sending packet MESSAGE data 0{"sid":"mPpxgSCkhp5duH6BAAAD"}
+2025-05-29 15:26:57,123 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Sending packet MESSAGE data 0{"sid":"mPpxgSCkhp5duH6BAAAD"}
+127.0.0.1 - - [29/May/2025 15:26:57] "POST /socket.io/?EIO=4&transport=polling&t=PSTWmmT&sid=GxBHSLxGCoxi3PFrAAAC HTTP/1.1" 200 219 0.065982
+127.0.0.1 - - [29/May/2025 15:26:57] "GET /socket.io/?EIO=4&transport=polling&t=PSTWmmW&sid=GxBHSLxGCoxi3PFrAAAC HTTP/1.1" 200 350 0.013248
+(63068) accepted ('127.0.0.1', 51602)
+GxBHSLxGCoxi3PFrAAAC: Received request to upgrade to websocket
+2025-05-29 15:26:57,569 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Received request to upgrade to websocket
+127.0.0.1 - - [29/May/2025 15:26:57] "GET /socket.io/?EIO=4&transport=polling&t=PSTWmoB&sid=GxBHSLxGCoxi3PFrAAAC HTTP/1.1" 200 181 0.429595
+GxBHSLxGCoxi3PFrAAAC: Upgrade to websocket successful
+2025-05-29 15:26:57,622 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Upgrade to websocket successful
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:27:05,347 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:27:05,385 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546829456}]
+2025-05-29 15:27:09,485 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546829456}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:27:09,491 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+GxBHSLxGCoxi3PFrAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748546841512}]
+2025-05-29 15:27:21,516 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748546841512}]
+received event "ping" from mPpxgSCkhp5duH6BAAAD [/]
+2025-05-29 15:27:21,520 - socketio.server - INFO - received event "ping" from mPpxgSCkhp5duH6BAAAD [/]
+GxBHSLxGCoxi3PFrAAAC: Sending packet PING data None
+2025-05-29 15:27:22,045 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Sending packet PING data None
+GxBHSLxGCoxi3PFrAAAC: Received packet PONG data 
+2025-05-29 15:27:22,135 - engineio.server - INFO - GxBHSLxGCoxi3PFrAAAC: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:27:30,410 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:27:30,423 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546854461}]
+2025-05-29 15:27:34,461 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546854461}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:27:34,463 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:27:35,854 - blueprints.socketio_events - INFO - Client disconnected: mPpxgSCkhp5duH6BAAAD
+127.0.0.1 - - [29/May/2025 15:27:35] "GET /socket.io/?EIO=4&transport=websocket&sid=GxBHSLxGCoxi3PFrAAAC HTTP/1.1" 200 0 38.355013
+127.0.0.1 - - [29/May/2025 15:27:36] "GET /?input_dir=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGenServer&output_file=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGen.Server HTTP/1.1" 200 75618 0.536009
+127.0.0.1 - - [29/May/2025 15:27:37] "GET /static/css/styles.css HTTP/1.1" 304 210 0.457830
+127.0.0.1 - - [29/May/2025 15:27:37] "GET /static/js/fixThemePersistence.js HTTP/1.1" 304 219 0.164461
+127.0.0.1 - - [29/May/2025 15:27:37] "GET /static/img/logo.png HTTP/1.1" 404 262 0.020904
+(63068) accepted ('127.0.0.1', 60824)
+127.0.0.1 - - [29/May/2025 15:27:37] "GET /static/js/console-diagnostics.js HTTP/1.1" 404 262 0.008748
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/index.js HTTP/1.1" 304 207 0.081392
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/img/favicon.png HTTP/1.1" 404 262 0.002340
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/module-manager.js HTTP/1.1" 304 215 0.064037
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/modules/core/module-bridge.js HTTP/1.1" 304 214 0.252345
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/modules/core/errorHandler.js HTTP/1.1" 304 215 0.063465
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/modules/core/domUtils.js HTTP/1.1" 304 209 0.036262
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/modules/core/uiRegistry.js HTTP/1.1" 304 213 0.035068
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/modules/core/stateManager.js HTTP/1.1" 304 215 0.028051
+127.0.0.1 - - [29/May/2025 15:27:38] "GET /static/js/modules/core/eventRegistry.js HTTP/1.1" 304 216 0.014973
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/core/eventManager.js HTTP/1.1" 304 215 0.049765
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/core/themeManager.js HTTP/1.1" 304 215 0.038836
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/utils/socketHandler.js HTTP/1.1" 304 216 0.087257
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/utils/domUtils.js HTTP/1.1" 304 210 0.177556
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/config/socketEvents.js HTTP/1.1" 304 214 0.088270
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/utils/progressHandler.js HTTP/1.1" 304 218 0.043275
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/utils/ui.js HTTP/1.1" 304 205 0.105215
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/utils/utils.js HTTP/1.1" 304 206 0.038430
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/utils/fileHandler.js HTTP/1.1" 304 214 0.016799
+127.0.0.1 - - [29/May/2025 15:27:39] "GET /static/js/modules/core/app.js HTTP/1.1" 304 206 0.009733
+127.0.0.1 - - [29/May/2025 15:27:40] "GET /static/js/modules/features/fileProcessor.js HTTP/1.1" 304 216 0.007716
+127.0.0.1 - - [29/May/2025 15:27:40] "GET /static/js/modules/services/blueprintApi.js HTTP/1.1" 304 215 0.025104
+127.0.0.1 - - [29/May/2025 15:27:40] "GET /static/js/modules/config/endpoints.js HTTP/1.1" 304 211 0.038316
+127.0.0.1 - - [29/May/2025 15:27:40] "GET /static/js/modules/config/constants.js HTTP/1.1" 304 212 0.034384
+127.0.0.1 - - [29/May/2025 15:27:41] "GET /static/js/modules/features/playlistDownloader.js HTTP/1.1" 304 221 0.054048
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/features/webScraper.js HTTP/1.1" 304 213 0.029204
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/features/academicSearch.js HTTP/1.1" 304 216 0.010227
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/features/historyManager.js HTTP/1.1" 304 215 0.012121
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/features/keyboardShortcuts.js HTTP/1.1" 304 219 0.016668
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/features/dragDropHandler.js HTTP/1.1" 304 217 0.041420
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/utils/systemHealth.js HTTP/1.1" 404 262 0.011575
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/utils/debugTools.js HTTP/1.1" 404 262 0.029934
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/utils/moduleDiagnostics.js HTTP/1.1" 304 218 0.030844
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /static/js/modules/core/ui.js HTTP/1.1" 304 205 0.053566
+K0tYQ0iFDfMd853QAAAE: Sending packet OPEN data {'sid': 'K0tYQ0iFDfMd853QAAAE', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:27:42,860 - engineio.server - INFO - K0tYQ0iFDfMd853QAAAE: Sending packet OPEN data {'sid': 'K0tYQ0iFDfMd853QAAAE', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /socket.io/?EIO=4&transport=polling&t=PSTWxx5 HTTP/1.1" 200 300 0.002071
+K0tYQ0iFDfMd853QAAAE: Received packet MESSAGE data 0
+2025-05-29 15:27:42,934 - engineio.server - INFO - K0tYQ0iFDfMd853QAAAE: Received packet MESSAGE data 0
+2025-05-29 15:27:42,946 - blueprints.socketio_events - INFO - Client connected: ub7da2pO7xfk3zpBAAAF
+emitting event "connection_established" to ub7da2pO7xfk3zpBAAAF [/]
+2025-05-29 15:27:42,956 - socketio.server - INFO - emitting event "connection_established" to ub7da2pO7xfk3zpBAAAF [/]
+K0tYQ0iFDfMd853QAAAE: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"ub7da2pO7xfk3zpBAAAF","timestamp":1748546862.9565728,"server_version":"1.2.0"}]
+2025-05-29 15:27:42,957 - engineio.server - INFO - K0tYQ0iFDfMd853QAAAE: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"ub7da2pO7xfk3zpBAAAF","timestamp":1748546862.9565728,"server_version":"1.2.0"}]
+K0tYQ0iFDfMd853QAAAE: Sending packet MESSAGE data 0{"sid":"ub7da2pO7xfk3zpBAAAF"}
+2025-05-29 15:27:42,959 - engineio.server - INFO - K0tYQ0iFDfMd853QAAAE: Sending packet MESSAGE data 0{"sid":"ub7da2pO7xfk3zpBAAAF"}
+127.0.0.1 - - [29/May/2025 15:27:42] "POST /socket.io/?EIO=4&transport=polling&t=PSTWxyY&sid=K0tYQ0iFDfMd853QAAAE HTTP/1.1" 200 219 0.028467
+127.0.0.1 - - [29/May/2025 15:27:42] "GET /socket.io/?EIO=4&transport=polling&t=PSTWxya&sid=K0tYQ0iFDfMd853QAAAE HTTP/1.1" 200 351 0.000178
+(63068) accepted ('127.0.0.1', 34042)
+K0tYQ0iFDfMd853QAAAE: Received request to upgrade to websocket
+2025-05-29 15:27:43,396 - engineio.server - INFO - K0tYQ0iFDfMd853QAAAE: Received request to upgrade to websocket
+127.0.0.1 - - [29/May/2025 15:27:43] "GET /socket.io/?EIO=4&transport=polling&t=PSTWx-L&sid=K0tYQ0iFDfMd853QAAAE HTTP/1.1" 200 181 0.356065
+K0tYQ0iFDfMd853QAAAE: Upgrade to websocket successful
+2025-05-29 15:27:43,418 - engineio.server - INFO - K0tYQ0iFDfMd853QAAAE: Upgrade to websocket successful
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:27:55,425 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:27:55,445 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:27:57,945 - blueprints.socketio_events - INFO - Client disconnected: ub7da2pO7xfk3zpBAAAF
+127.0.0.1 - - [29/May/2025 15:27:57] "GET /socket.io/?EIO=4&transport=websocket&sid=K0tYQ0iFDfMd853QAAAE HTTP/1.1" 200 0 14.600885
+127.0.0.1 - - [29/May/2025 15:27:58] "GET /?input_dir=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGenServer&output_file=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGen.Server HTTP/1.1" 200 75618 0.034143
+127.0.0.1 - - [29/May/2025 15:27:58] "GET /static/css/styles.css HTTP/1.1" 304 210 0.033023
+127.0.0.1 - - [29/May/2025 15:27:58] "GET /static/js/fixThemePersistence.js HTTP/1.1" 304 219 0.024290
+127.0.0.1 - - [29/May/2025 15:27:58] "GET /static/img/logo.png HTTP/1.1" 404 262 0.138373
+127.0.0.1 - - [29/May/2025 15:27:58] "GET /static/js/console-diagnostics.js HTTP/1.1" 404 262 0.045191
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/index.js HTTP/1.1" 304 207 0.099733
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/img/favicon.png HTTP/1.1" 404 262 0.015131
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/module-manager.js HTTP/1.1" 304 215 0.172269
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/module-bridge.js HTTP/1.1" 304 214 0.125746
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/errorHandler.js HTTP/1.1" 304 215 0.053241
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/domUtils.js HTTP/1.1" 304 209 0.025542
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/uiRegistry.js HTTP/1.1" 304 213 0.024026
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/stateManager.js HTTP/1.1" 304 215 0.024318
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/eventRegistry.js HTTP/1.1" 304 216 0.011851
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/eventManager.js HTTP/1.1" 304 215 0.023051
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/core/themeManager.js HTTP/1.1" 304 215 0.010215
+127.0.0.1 - - [29/May/2025 15:27:59] "GET /static/js/modules/utils/socketHandler.js HTTP/1.1" 304 216 0.011520
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/utils/domUtils.js HTTP/1.1" 304 210 0.048318
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/config/socketEvents.js HTTP/1.1" 304 214 0.031914
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/utils/progressHandler.js HTTP/1.1" 304 218 0.027986
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/utils/ui.js HTTP/1.1" 304 205 0.029871
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/utils/utils.js HTTP/1.1" 304 206 0.024225
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/utils/fileHandler.js HTTP/1.1" 304 214 0.010930
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/core/app.js HTTP/1.1" 304 206 0.012800
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/features/fileProcessor.js HTTP/1.1" 304 216 0.051602
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/services/blueprintApi.js HTTP/1.1" 304 215 0.060380
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/config/endpoints.js HTTP/1.1" 304 211 0.047054
+127.0.0.1 - - [29/May/2025 15:28:00] "GET /static/js/modules/config/constants.js HTTP/1.1" 304 212 0.037420
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546880351}]
+2025-05-29 15:28:00,547 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546880351}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:28:00,548 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:28:01] "GET /static/js/modules/features/playlistDownloader.js HTTP/1.1" 304 221 0.009694
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/features/webScraper.js HTTP/1.1" 304 213 0.060354
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/features/academicSearch.js HTTP/1.1" 304 216 0.031989
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/features/historyManager.js HTTP/1.1" 304 215 0.009606
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/features/keyboardShortcuts.js HTTP/1.1" 304 219 0.011134
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/features/dragDropHandler.js HTTP/1.1" 304 217 0.011506
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/utils/systemHealth.js HTTP/1.1" 404 262 0.003852
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/utils/debugTools.js HTTP/1.1" 404 262 0.005389
+127.0.0.1 - - [29/May/2025 15:28:02] "GET /static/js/modules/utils/moduleDiagnostics.js HTTP/1.1" 304 218 0.013208
+127.0.0.1 - - [29/May/2025 15:28:03] "GET /static/js/modules/core/ui.js HTTP/1.1" 304 205 0.034872
+ji5ArmT2ZaD_KDSQAAAG: Sending packet OPEN data {'sid': 'ji5ArmT2ZaD_KDSQAAAG', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:28:03,018 - engineio.server - INFO - ji5ArmT2ZaD_KDSQAAAG: Sending packet OPEN data {'sid': 'ji5ArmT2ZaD_KDSQAAAG', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:28:03] "GET /socket.io/?EIO=4&transport=polling&t=PSTX0rz HTTP/1.1" 200 300 0.001071
+ji5ArmT2ZaD_KDSQAAAG: Received packet MESSAGE data 0
+2025-05-29 15:28:03,080 - engineio.server - INFO - ji5ArmT2ZaD_KDSQAAAG: Received packet MESSAGE data 0
+2025-05-29 15:28:03,082 - blueprints.socketio_events - INFO - Client connected: YacJkclk1eFYTVZlAAAH
+emitting event "connection_established" to YacJkclk1eFYTVZlAAAH [/]
+2025-05-29 15:28:03,082 - socketio.server - INFO - emitting event "connection_established" to YacJkclk1eFYTVZlAAAH [/]
+ji5ArmT2ZaD_KDSQAAAG: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"YacJkclk1eFYTVZlAAAH","timestamp":1748546883.0827436,"server_version":"1.2.0"}]
+2025-05-29 15:28:03,083 - engineio.server - INFO - ji5ArmT2ZaD_KDSQAAAG: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"YacJkclk1eFYTVZlAAAH","timestamp":1748546883.0827436,"server_version":"1.2.0"}]
+ji5ArmT2ZaD_KDSQAAAG: Sending packet MESSAGE data 0{"sid":"YacJkclk1eFYTVZlAAAH"}
+2025-05-29 15:28:03,097 - engineio.server - INFO - ji5ArmT2ZaD_KDSQAAAG: Sending packet MESSAGE data 0{"sid":"YacJkclk1eFYTVZlAAAH"}
+127.0.0.1 - - [29/May/2025 15:28:03] "POST /socket.io/?EIO=4&transport=polling&t=PSTX0tY&sid=ji5ArmT2ZaD_KDSQAAAG HTTP/1.1" 200 219 0.018336
+127.0.0.1 - - [29/May/2025 15:28:03] "GET /socket.io/?EIO=4&transport=polling&t=PSTX0tb&sid=ji5ArmT2ZaD_KDSQAAAG HTTP/1.1" 200 351 0.000240
+(63068) accepted ('127.0.0.1', 48986)
+ji5ArmT2ZaD_KDSQAAAG: Received request to upgrade to websocket
+2025-05-29 15:28:03,429 - engineio.server - INFO - ji5ArmT2ZaD_KDSQAAAG: Received request to upgrade to websocket
+127.0.0.1 - - [29/May/2025 15:28:03] "GET /socket.io/?EIO=4&transport=polling&t=PSTX0uw&sid=ji5ArmT2ZaD_KDSQAAAG HTTP/1.1" 200 181 0.316059
+ji5ArmT2ZaD_KDSQAAAG: Upgrade to websocket successful
+2025-05-29 15:28:03,665 - engineio.server - INFO - ji5ArmT2ZaD_KDSQAAAG: Upgrade to websocket successful
+2025-05-29 15:28:08,812 - blueprints.socketio_events - INFO - Client disconnected: YacJkclk1eFYTVZlAAAH
+127.0.0.1 - - [29/May/2025 15:28:08] "GET /socket.io/?EIO=4&transport=websocket&sid=ji5ArmT2ZaD_KDSQAAAG HTTP/1.1" 200 0 5.398698
+61473Nd5-iKY2xx3AAAI: Sending packet OPEN data {'sid': '61473Nd5-iKY2xx3AAAI', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:28:09,902 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Sending packet OPEN data {'sid': '61473Nd5-iKY2xx3AAAI', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:28:09] "GET /socket.io/?EIO=4&transport=polling&t=PSTX2YW HTTP/1.1" 200 300 0.001085
+61473Nd5-iKY2xx3AAAI: Received packet MESSAGE data 0
+2025-05-29 15:28:09,924 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Received packet MESSAGE data 0
+2025-05-29 15:28:09,927 - blueprints.socketio_events - INFO - Client connected: G6dWbMTDHr08ErZ3AAAJ
+emitting event "connection_established" to G6dWbMTDHr08ErZ3AAAJ [/]
+2025-05-29 15:28:09,927 - socketio.server - INFO - emitting event "connection_established" to G6dWbMTDHr08ErZ3AAAJ [/]
+61473Nd5-iKY2xx3AAAI: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"G6dWbMTDHr08ErZ3AAAJ","timestamp":1748546889.927718,"server_version":"1.2.0"}]
+2025-05-29 15:28:09,928 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"G6dWbMTDHr08ErZ3AAAJ","timestamp":1748546889.927718,"server_version":"1.2.0"}]
+61473Nd5-iKY2xx3AAAI: Sending packet MESSAGE data 0{"sid":"G6dWbMTDHr08ErZ3AAAJ"}
+2025-05-29 15:28:09,929 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Sending packet MESSAGE data 0{"sid":"G6dWbMTDHr08ErZ3AAAJ"}
+127.0.0.1 - - [29/May/2025 15:28:09] "POST /socket.io/?EIO=4&transport=polling&t=PSTX2Z1&sid=61473Nd5-iKY2xx3AAAI HTTP/1.1" 200 219 0.006346
+127.0.0.1 - - [29/May/2025 15:28:09] "GET /socket.io/?EIO=4&transport=polling&t=PSTX2ZO&sid=61473Nd5-iKY2xx3AAAI HTTP/1.1" 200 350 0.000209
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:28:20,445 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:28:20,494 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546904462}]
+2025-05-29 15:28:24,498 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546904462}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:28:24,500 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+61473Nd5-iKY2xx3AAAI: Received packet MESSAGE data 2["ping",{"timestamp":1748546908874}]
+2025-05-29 15:28:28,908 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Received packet MESSAGE data 2["ping",{"timestamp":1748546908874}]
+received event "ping" from G6dWbMTDHr08ErZ3AAAJ [/]
+2025-05-29 15:28:28,909 - socketio.server - INFO - received event "ping" from G6dWbMTDHr08ErZ3AAAJ [/]
+127.0.0.1 - - [29/May/2025 15:28:28] "POST /socket.io/?EIO=4&transport=polling&t=PSTX7BB&sid=61473Nd5-iKY2xx3AAAI HTTP/1.1" 200 219 0.001636
+61473Nd5-iKY2xx3AAAI: Sending packet PING data None
+2025-05-29 15:28:34,905 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:28:34] "GET /socket.io/?EIO=4&transport=polling&t=PSTX2aV&sid=61473Nd5-iKY2xx3AAAI HTTP/1.1" 200 181 24.894475
+61473Nd5-iKY2xx3AAAI: Received packet PONG data 
+2025-05-29 15:28:34,958 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Received packet PONG data 
+127.0.0.1 - - [29/May/2025 15:28:34] "POST /socket.io/?EIO=4&transport=polling&t=PSTX8fs&sid=61473Nd5-iKY2xx3AAAI HTTP/1.1" 200 219 0.000954
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:28:45,492 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:28:45,721 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+127.0.0.1 - - [29/May/2025 15:28:48] "GET /?input_dir=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGenServer&output_file=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGen.Server HTTP/1.1" 200 75618 0.155809
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/css/styles.css HTTP/1.1" 304 210 0.038399
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/js/fixThemePersistence.js HTTP/1.1" 304 219 0.112827
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/img/logo.png HTTP/1.1" 404 262 0.013996
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/js/console-diagnostics.js HTTP/1.1" 404 262 0.024509
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546929459}]
+2025-05-29 15:28:49,544 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546929459}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:28:49,548 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/img/logo.png HTTP/1.1" 404 262 0.016860
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/js/index.js HTTP/1.1" 304 207 0.026134
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/img/favicon.png HTTP/1.1" 404 262 0.003170
+127.0.0.1 - - [29/May/2025 15:28:49] "GET /static/js/module-manager.js HTTP/1.1" 304 215 0.014501
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/module-bridge.js HTTP/1.1" 304 214 0.390239
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/errorHandler.js HTTP/1.1" 304 215 0.132997
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/domUtils.js HTTP/1.1" 304 209 0.122554
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/uiRegistry.js HTTP/1.1" 304 213 0.090989
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/stateManager.js HTTP/1.1" 304 215 0.066393
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/eventRegistry.js HTTP/1.1" 304 216 0.028353
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/eventManager.js HTTP/1.1" 304 215 0.032144
+127.0.0.1 - - [29/May/2025 15:28:50] "GET /static/js/modules/core/themeManager.js HTTP/1.1" 304 215 0.015760
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/utils/socketHandler.js HTTP/1.1" 304 216 0.030890
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/config/socketEvents.js HTTP/1.1" 304 214 0.076195
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/utils/domUtils.js HTTP/1.1" 304 210 0.120523
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/utils/progressHandler.js HTTP/1.1" 304 218 0.073058
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/utils/ui.js HTTP/1.1" 304 205 0.037858
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/utils/utils.js HTTP/1.1" 304 206 0.120059
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/utils/fileHandler.js HTTP/1.1" 304 214 0.020863
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/core/app.js HTTP/1.1" 304 206 0.072112
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/features/fileProcessor.js HTTP/1.1" 304 216 0.020664
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/services/blueprintApi.js HTTP/1.1" 304 215 0.032231
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/config/endpoints.js HTTP/1.1" 304 211 0.034151
+127.0.0.1 - - [29/May/2025 15:28:51] "GET /static/js/modules/config/constants.js HTTP/1.1" 304 212 0.054177
+127.0.0.1 - - [29/May/2025 15:28:53] "GET /static/js/modules/features/playlistDownloader.js HTTP/1.1" 304 221 0.014888
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/features/webScraper.js HTTP/1.1" 304 213 0.066288
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/features/academicSearch.js HTTP/1.1" 304 216 0.014089
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/features/historyManager.js HTTP/1.1" 304 215 0.102150
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/features/keyboardShortcuts.js HTTP/1.1" 304 219 0.089762
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/features/dragDropHandler.js HTTP/1.1" 304 217 0.083125
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/utils/systemHealth.js HTTP/1.1" 404 262 0.007129
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/utils/debugTools.js HTTP/1.1" 404 262 0.014834
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/utils/moduleDiagnostics.js HTTP/1.1" 304 218 0.022552
+4SCZrBMmmZ7GHG1wAAAK: Sending packet OPEN data {'sid': '4SCZrBMmmZ7GHG1wAAAK', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:28:54,786 - engineio.server - INFO - 4SCZrBMmmZ7GHG1wAAAK: Sending packet OPEN data {'sid': '4SCZrBMmmZ7GHG1wAAAK', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /socket.io/?EIO=4&transport=polling&t=PSTXDVX HTTP/1.1" 200 300 0.003633
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /static/js/modules/core/ui.js HTTP/1.1" 304 205 0.131980
+4SCZrBMmmZ7GHG1wAAAK: Received packet MESSAGE data 0
+2025-05-29 15:28:54,925 - engineio.server - INFO - 4SCZrBMmmZ7GHG1wAAAK: Received packet MESSAGE data 0
+2025-05-29 15:28:54,939 - blueprints.socketio_events - INFO - Client connected: -8V1xevChgQREm-hAAAL
+emitting event "connection_established" to -8V1xevChgQREm-hAAAL [/]
+2025-05-29 15:28:54,945 - socketio.server - INFO - emitting event "connection_established" to -8V1xevChgQREm-hAAAL [/]
+4SCZrBMmmZ7GHG1wAAAK: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"-8V1xevChgQREm-hAAAL","timestamp":1748546934.9449337,"server_version":"1.2.0"}]
+2025-05-29 15:28:54,946 - engineio.server - INFO - 4SCZrBMmmZ7GHG1wAAAK: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"-8V1xevChgQREm-hAAAL","timestamp":1748546934.9449337,"server_version":"1.2.0"}]
+4SCZrBMmmZ7GHG1wAAAK: Sending packet MESSAGE data 0{"sid":"-8V1xevChgQREm-hAAAL"}
+2025-05-29 15:28:54,948 - engineio.server - INFO - 4SCZrBMmmZ7GHG1wAAAK: Sending packet MESSAGE data 0{"sid":"-8V1xevChgQREm-hAAAL"}
+127.0.0.1 - - [29/May/2025 15:28:54] "POST /socket.io/?EIO=4&transport=polling&t=PSTXDWF&sid=4SCZrBMmmZ7GHG1wAAAK HTTP/1.1" 200 219 0.025306
+127.0.0.1 - - [29/May/2025 15:28:54] "GET /socket.io/?EIO=4&transport=polling&t=PSTXDWG&sid=4SCZrBMmmZ7GHG1wAAAK HTTP/1.1" 200 351 0.000754
+61473Nd5-iKY2xx3AAAI: Sending packet PING data None
+2025-05-29 15:28:59,962 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:28:59] "GET /socket.io/?EIO=4&transport=polling&t=PSTX8fu&sid=61473Nd5-iKY2xx3AAAI HTTP/1.1" 200 181 25.008104
+127.0.0.1 - - [29/May/2025 15:29:09] "GET /?input_dir=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGenServer&output_file=C%3A%5CUsers%5CLos%5CDocuments%5CNeuroGen.Server HTTP/1.1" 200 75618 0.175465
+127.0.0.1 - - [29/May/2025 15:29:10] "GET /static/css/styles.css HTTP/1.1" 304 210 0.030364
+127.0.0.1 - - [29/May/2025 15:29:10] "GET /static/js/fixThemePersistence.js HTTP/1.1" 304 219 0.019886
+127.0.0.1 - - [29/May/2025 15:29:10] "GET /static/img/logo.png HTTP/1.1" 404 262 0.011822
+127.0.0.1 - - [29/May/2025 15:29:10] "GET /static/js/console-diagnostics.js HTTP/1.1" 404 262 0.084600
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:29:10,712 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:29:10] "GET /static/img/logo.png HTTP/1.1" 404 262 0.083302
+127.0.0.1 - - [29/May/2025 15:29:10] "GET /static/js/index.js HTTP/1.1" 304 207 0.053559
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:29:10,994 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/img/favicon.png HTTP/1.1" 404 262 0.002628
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/js/module-manager.js HTTP/1.1" 304 215 0.046546
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/js/modules/core/module-bridge.js HTTP/1.1" 304 214 0.083076
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/js/modules/core/errorHandler.js HTTP/1.1" 304 215 0.065834
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/js/modules/core/domUtils.js HTTP/1.1" 304 209 0.120078
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/js/modules/core/uiRegistry.js HTTP/1.1" 304 213 0.063329
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/js/modules/core/stateManager.js HTTP/1.1" 304 215 0.086034
+127.0.0.1 - - [29/May/2025 15:29:11] "GET /static/js/modules/core/eventRegistry.js HTTP/1.1" 304 216 0.018942
+127.0.0.1 - - [29/May/2025 15:29:12] "GET /static/js/modules/core/eventManager.js HTTP/1.1" 304 215 0.057158
+127.0.0.1 - - [29/May/2025 15:29:12] "GET /static/js/modules/core/themeManager.js HTTP/1.1" 304 215 0.058409
+127.0.0.1 - - [29/May/2025 15:29:12] "GET /static/js/modules/utils/socketHandler.js HTTP/1.1" 304 216 0.046266
+127.0.0.1 - - [29/May/2025 15:29:12] "GET /static/js/modules/utils/domUtils.js HTTP/1.1" 304 210 0.029974
+127.0.0.1 - - [29/May/2025 15:29:12] "GET /static/js/modules/config/socketEvents.js HTTP/1.1" 304 214 0.048512
+127.0.0.1 - - [29/May/2025 15:29:12] "GET /static/js/modules/utils/progressHandler.js HTTP/1.1" 304 218 0.025005
+127.0.0.1 - - [29/May/2025 15:29:12] "GET /static/js/modules/utils/ui.js HTTP/1.1" 304 205 0.110017
+127.0.0.1 - - [29/May/2025 15:29:13] "GET /static/js/modules/utils/utils.js HTTP/1.1" 304 206 0.520976
+127.0.0.1 - - [29/May/2025 15:29:13] "GET /static/js/modules/utils/fileHandler.js HTTP/1.1" 304 214 0.062844
+127.0.0.1 - - [29/May/2025 15:29:13] "GET /static/js/modules/core/app.js HTTP/1.1" 304 206 0.097743
+127.0.0.1 - - [29/May/2025 15:29:13] "GET /static/js/modules/features/fileProcessor.js HTTP/1.1" 304 216 0.054752
+127.0.0.1 - - [29/May/2025 15:29:13] "GET /static/js/modules/services/blueprintApi.js HTTP/1.1" 304 215 0.065923
+127.0.0.1 - - [29/May/2025 15:29:13] "GET /static/js/modules/config/endpoints.js HTTP/1.1" 304 211 0.071524
+127.0.0.1 - - [29/May/2025 15:29:13] "GET /static/js/modules/config/constants.js HTTP/1.1" 304 212 0.072941
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546954457}]
+2025-05-29 15:29:14,455 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546954457}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:29:14,493 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+127.0.0.1 - - [29/May/2025 15:29:14] "GET /static/js/modules/features/playlistDownloader.js HTTP/1.1" 304 221 0.016692
+127.0.0.1 - - [29/May/2025 15:29:16] "GET /static/js/modules/features/webScraper.js HTTP/1.1" 304 213 0.785946
+127.0.0.1 - - [29/May/2025 15:29:18] "GET /static/js/modules/features/academicSearch.js HTTP/1.1" 304 216 0.388348
+127.0.0.1 - - [29/May/2025 15:29:19] "GET /static/js/modules/features/historyManager.js HTTP/1.1" 304 215 0.883700
+127.0.0.1 - - [29/May/2025 15:29:19] "GET /static/js/modules/features/keyboardShortcuts.js HTTP/1.1" 304 219 0.031332
+127.0.0.1 - - [29/May/2025 15:29:19] "GET /static/js/modules/features/dragDropHandler.js HTTP/1.1" 304 217 0.018450
+127.0.0.1 - - [29/May/2025 15:29:19] "GET /static/js/modules/utils/systemHealth.js HTTP/1.1" 404 262 0.003734
+127.0.0.1 - - [29/May/2025 15:29:19] "GET /static/js/modules/utils/debugTools.js HTTP/1.1" 404 262 0.003284
+4SCZrBMmmZ7GHG1wAAAK: Sending packet PING data None
+2025-05-29 15:29:19,766 - engineio.server - INFO - 4SCZrBMmmZ7GHG1wAAAK: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:29:19] "GET /socket.io/?EIO=4&transport=polling&t=PSTXDYm&sid=4SCZrBMmmZ7GHG1wAAAK HTTP/1.1" 200 181 24.826272
+61473Nd5-iKY2xx3AAAI: Client is gone, closing socket
+2025-05-29 15:29:22,026 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Client is gone, closing socket
+2025-05-29 15:29:22,140 - blueprints.socketio_events - INFO - Client disconnected: G6dWbMTDHr08ErZ3AAAJ
+61473Nd5-iKY2xx3AAAI: Client is gone, closing socket
+2025-05-29 15:29:22,237 - engineio.server - INFO - 61473Nd5-iKY2xx3AAAI: Client is gone, closing socket
+127.0.0.1 - - [29/May/2025 15:29:22] "GET /static/js/modules/utils/moduleDiagnostics.js HTTP/1.1" 304 218 0.049525
+127.0.0.1 - - [29/May/2025 15:29:23] "GET /static/js/modules/core/ui.js HTTP/1.1" 304 205 0.709727
+PR07Wt67kdKSF9iHAAAM: Sending packet OPEN data {'sid': 'PR07Wt67kdKSF9iHAAAM', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:29:23,542 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Sending packet OPEN data {'sid': 'PR07Wt67kdKSF9iHAAAM', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:29:23] "GET /socket.io/?EIO=4&transport=polling&t=PSTXKL3 HTTP/1.1" 200 300 0.063481
+PR07Wt67kdKSF9iHAAAM: Received packet MESSAGE data 0
+2025-05-29 15:29:23,863 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Received packet MESSAGE data 0
+2025-05-29 15:29:23,884 - blueprints.socketio_events - INFO - Client connected: 8NEAQ5ksdzMnec8NAAAN
+emitting event "connection_established" to 8NEAQ5ksdzMnec8NAAAN [/]
+2025-05-29 15:29:23,887 - socketio.server - INFO - emitting event "connection_established" to 8NEAQ5ksdzMnec8NAAAN [/]
+PR07Wt67kdKSF9iHAAAM: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"8NEAQ5ksdzMnec8NAAAN","timestamp":1748546963.8871932,"server_version":"1.2.0"}]
+2025-05-29 15:29:23,896 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"8NEAQ5ksdzMnec8NAAAN","timestamp":1748546963.8871932,"server_version":"1.2.0"}]
+PR07Wt67kdKSF9iHAAAM: Sending packet MESSAGE data 0{"sid":"8NEAQ5ksdzMnec8NAAAN"}
+2025-05-29 15:29:23,898 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Sending packet MESSAGE data 0{"sid":"8NEAQ5ksdzMnec8NAAAN"}
+127.0.0.1 - - [29/May/2025 15:29:23] "POST /socket.io/?EIO=4&transport=polling&t=PSTXKak&sid=PR07Wt67kdKSF9iHAAAM HTTP/1.1" 200 219 0.043011
+127.0.0.1 - - [29/May/2025 15:29:23] "GET /socket.io/?EIO=4&transport=polling&t=PSTXKav&sid=PR07Wt67kdKSF9iHAAAM HTTP/1.1" 200 351 0.000250
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:29:36,028 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:29:36,103 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546979457}]
+2025-05-29 15:29:39,468 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748546979457}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:29:39,471 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+4SCZrBMmmZ7GHG1wAAAK: Client is gone, closing socket
+2025-05-29 15:29:45,636 - engineio.server - INFO - 4SCZrBMmmZ7GHG1wAAAK: Client is gone, closing socket
+2025-05-29 15:29:45,654 - blueprints.socketio_events - INFO - Client disconnected: -8V1xevChgQREm-hAAAL
+4SCZrBMmmZ7GHG1wAAAK: Client is gone, closing socket
+2025-05-29 15:29:45,670 - engineio.server - INFO - 4SCZrBMmmZ7GHG1wAAAK: Client is gone, closing socket
+PR07Wt67kdKSF9iHAAAM: Sending packet PING data None
+2025-05-29 15:29:48,642 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:29:48] "GET /socket.io/?EIO=4&transport=polling&t=PSTXKeQ&sid=PR07Wt67kdKSF9iHAAAM HTTP/1.1" 200 181 24.631132
+PR07Wt67kdKSF9iHAAAM: Received packet MESSAGE data 2["ping",{"timestamp":1748546988142}]
+2025-05-29 15:29:48,657 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Received packet MESSAGE data 2["ping",{"timestamp":1748546988142}]
+received event "ping" from 8NEAQ5ksdzMnec8NAAAN [/]
+2025-05-29 15:29:48,662 - socketio.server - INFO - received event "ping" from 8NEAQ5ksdzMnec8NAAAN [/]
+127.0.0.1 - - [29/May/2025 15:29:48] "POST /socket.io/?EIO=4&transport=polling&t=PSTXQXl&sid=PR07Wt67kdKSF9iHAAAM HTTP/1.1" 200 219 0.006929
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:30:01,126 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:30:01,269 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547004458}]
+2025-05-29 15:30:04,462 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547004458}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:30:04,464 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+PR07Wt67kdKSF9iHAAAM: Client is gone, closing socket
+2025-05-29 15:30:09,011 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Client is gone, closing socket
+2025-05-29 15:30:09,013 - blueprints.socketio_events - INFO - Client disconnected: 8NEAQ5ksdzMnec8NAAAN
+PR07Wt67kdKSF9iHAAAM: Client is gone, closing socket
+2025-05-29 15:30:09,013 - engineio.server - INFO - PR07Wt67kdKSF9iHAAAM: Client is gone, closing socket
+127.0.0.1 - - [29/May/2025 15:30:09] "GET /socket.io/?EIO=4&transport=polling&t=PSTXQfv&sid=PR07Wt67kdKSF9iHAAAM HTTP/1.1" 200 180 20.318101
+qtV9F7_2duy5bCu7AAAO: Sending packet OPEN data {'sid': 'qtV9F7_2duy5bCu7AAAO', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:30:12,836 - engineio.server - INFO - qtV9F7_2duy5bCu7AAAO: Sending packet OPEN data {'sid': 'qtV9F7_2duy5bCu7AAAO', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:30:12] "GET /socket.io/?EIO=4&transport=polling&t=PSTXWX_ HTTP/1.1" 200 300 0.002651
+qtV9F7_2duy5bCu7AAAO: Received packet MESSAGE data 0
+2025-05-29 15:30:12,885 - engineio.server - INFO - qtV9F7_2duy5bCu7AAAO: Received packet MESSAGE data 0
+2025-05-29 15:30:12,889 - blueprints.socketio_events - INFO - Client connected: ljozN2IYTO8u7wp_AAAP
+emitting event "connection_established" to ljozN2IYTO8u7wp_AAAP [/]
+2025-05-29 15:30:12,892 - socketio.server - INFO - emitting event "connection_established" to ljozN2IYTO8u7wp_AAAP [/]
+qtV9F7_2duy5bCu7AAAO: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"ljozN2IYTO8u7wp_AAAP","timestamp":1748547012.8921094,"server_version":"1.2.0"}]
+2025-05-29 15:30:12,893 - engineio.server - INFO - qtV9F7_2duy5bCu7AAAO: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"ljozN2IYTO8u7wp_AAAP","timestamp":1748547012.8921094,"server_version":"1.2.0"}]
+qtV9F7_2duy5bCu7AAAO: Sending packet MESSAGE data 0{"sid":"ljozN2IYTO8u7wp_AAAP"}
+2025-05-29 15:30:12,912 - engineio.server - INFO - qtV9F7_2duy5bCu7AAAO: Sending packet MESSAGE data 0{"sid":"ljozN2IYTO8u7wp_AAAP"}
+127.0.0.1 - - [29/May/2025 15:30:12] "POST /socket.io/?EIO=4&transport=polling&t=PSTXWZx&sid=qtV9F7_2duy5bCu7AAAO HTTP/1.1" 200 219 0.028603
+127.0.0.1 - - [29/May/2025 15:30:12] "GET /socket.io/?EIO=4&transport=polling&t=PSTXWa8&sid=qtV9F7_2duy5bCu7AAAO HTTP/1.1" 200 351 0.000228
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:30:26,282 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:30:26,289 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547029456}]
+2025-05-29 15:30:29,463 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547029456}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:30:29,464 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+qtV9F7_2duy5bCu7AAAO: Sending packet PING data None
+2025-05-29 15:30:37,840 - engineio.server - INFO - qtV9F7_2duy5bCu7AAAO: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:30:37] "GET /socket.io/?EIO=4&transport=polling&t=PSTXWbI&sid=qtV9F7_2duy5bCu7AAAO HTTP/1.1" 200 181 24.880339
+dh7Ik-TGVty2vmtoAAAQ: Sending packet OPEN data {'sid': 'dh7Ik-TGVty2vmtoAAAQ', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:30:37,848 - engineio.server - INFO - dh7Ik-TGVty2vmtoAAAQ: Sending packet OPEN data {'sid': 'dh7Ik-TGVty2vmtoAAAQ', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:30:37] "GET /socket.io/?EIO=4&transport=polling&t=PSTXcGz HTTP/1.1" 200 300 0.001553
+dh7Ik-TGVty2vmtoAAAQ: Received packet MESSAGE data 0
+2025-05-29 15:30:37,875 - engineio.server - INFO - dh7Ik-TGVty2vmtoAAAQ: Received packet MESSAGE data 0
+2025-05-29 15:30:37,877 - blueprints.socketio_events - INFO - Client connected: fPlGp6gTbTp-Geo-AAAR
+emitting event "connection_established" to fPlGp6gTbTp-Geo-AAAR [/]
+2025-05-29 15:30:37,879 - socketio.server - INFO - emitting event "connection_established" to fPlGp6gTbTp-Geo-AAAR [/]
+dh7Ik-TGVty2vmtoAAAQ: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"fPlGp6gTbTp-Geo-AAAR","timestamp":1748547037.8790784,"server_version":"1.2.0"}]
+2025-05-29 15:30:37,881 - engineio.server - INFO - dh7Ik-TGVty2vmtoAAAQ: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"fPlGp6gTbTp-Geo-AAAR","timestamp":1748547037.8790784,"server_version":"1.2.0"}]
+dh7Ik-TGVty2vmtoAAAQ: Sending packet MESSAGE data 0{"sid":"fPlGp6gTbTp-Geo-AAAR"}
+2025-05-29 15:30:37,882 - engineio.server - INFO - dh7Ik-TGVty2vmtoAAAQ: Sending packet MESSAGE data 0{"sid":"fPlGp6gTbTp-Geo-AAAR"}
+127.0.0.1 - - [29/May/2025 15:30:37] "POST /socket.io/?EIO=4&transport=polling&t=PSTXcgZ&sid=dh7Ik-TGVty2vmtoAAAQ HTTP/1.1" 200 219 0.008929
+127.0.0.1 - - [29/May/2025 15:30:37] "GET /socket.io/?EIO=4&transport=polling&t=PSTXcgg&sid=dh7Ik-TGVty2vmtoAAAQ HTTP/1.1" 200 351 0.000241
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:30:51,288 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:30:51,293 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547054461}]
+2025-05-29 15:30:54,466 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547054461}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:30:54,468 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+qtV9F7_2duy5bCu7AAAO: Client is gone, closing socket
+2025-05-29 15:31:02,370 - engineio.server - INFO - qtV9F7_2duy5bCu7AAAO: Client is gone, closing socket
+2025-05-29 15:31:02,373 - blueprints.socketio_events - INFO - Client disconnected: ljozN2IYTO8u7wp_AAAP
+qtV9F7_2duy5bCu7AAAO: Client is gone, closing socket
+2025-05-29 15:31:02,374 - engineio.server - INFO - qtV9F7_2duy5bCu7AAAO: Client is gone, closing socket
+dh7Ik-TGVty2vmtoAAAQ: Sending packet PING data None
+2025-05-29 15:31:02,853 - engineio.server - INFO - dh7Ik-TGVty2vmtoAAAQ: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:31:02] "GET /socket.io/?EIO=4&transport=polling&t=PSTXchF&sid=dh7Ik-TGVty2vmtoAAAQ HTTP/1.1" 200 181 24.931829
+-_XVc42FP5fIuzMzAAAS: Sending packet OPEN data {'sid': '-_XVc42FP5fIuzMzAAAS', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:31:08,223 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Sending packet OPEN data {'sid': '-_XVc42FP5fIuzMzAAAS', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:31:08] "GET /socket.io/?EIO=4&transport=polling&t=PSTXk4t HTTP/1.1" 200 300 0.001852
+-_XVc42FP5fIuzMzAAAS: Received packet MESSAGE data 0
+2025-05-29 15:31:08,252 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Received packet MESSAGE data 0
+2025-05-29 15:31:08,254 - blueprints.socketio_events - INFO - Client connected: YUtAxwGwKzn53XPnAAAT
+emitting event "connection_established" to YUtAxwGwKzn53XPnAAAT [/]
+2025-05-29 15:31:08,254 - socketio.server - INFO - emitting event "connection_established" to YUtAxwGwKzn53XPnAAAT [/]
+-_XVc42FP5fIuzMzAAAS: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"YUtAxwGwKzn53XPnAAAT","timestamp":1748547068.2546773,"server_version":"1.2.0"}]
+2025-05-29 15:31:08,255 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"YUtAxwGwKzn53XPnAAAT","timestamp":1748547068.2546773,"server_version":"1.2.0"}]
+-_XVc42FP5fIuzMzAAAS: Sending packet MESSAGE data 0{"sid":"YUtAxwGwKzn53XPnAAAT"}
+2025-05-29 15:31:08,256 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Sending packet MESSAGE data 0{"sid":"YUtAxwGwKzn53XPnAAAT"}
+127.0.0.1 - - [29/May/2025 15:31:08] "POST /socket.io/?EIO=4&transport=polling&t=PSTXk5D&sid=-_XVc42FP5fIuzMzAAAS HTTP/1.1" 200 219 0.004284
+127.0.0.1 - - [29/May/2025 15:31:08] "GET /socket.io/?EIO=4&transport=polling&t=PSTXk5J&sid=-_XVc42FP5fIuzMzAAAS HTTP/1.1" 200 351 0.000292
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:31:16,292 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:31:16,299 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547079456}]
+2025-05-29 15:31:19,460 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547079456}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:31:19,461 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+dh7Ik-TGVty2vmtoAAAQ: Client is gone, closing socket
+2025-05-29 15:31:25,711 - engineio.server - INFO - dh7Ik-TGVty2vmtoAAAQ: Client is gone, closing socket
+2025-05-29 15:31:25,714 - blueprints.socketio_events - INFO - Client disconnected: fPlGp6gTbTp-Geo-AAAR
+dh7Ik-TGVty2vmtoAAAQ: Client is gone, closing socket
+2025-05-29 15:31:25,715 - engineio.server - INFO - dh7Ik-TGVty2vmtoAAAQ: Client is gone, closing socket
+-_XVc42FP5fIuzMzAAAS: Sending packet PING data None
+2025-05-29 15:31:33,226 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:31:33] "GET /socket.io/?EIO=4&transport=polling&t=PSTXk5u&sid=-_XVc42FP5fIuzMzAAAS HTTP/1.1" 200 181 24.941914
+-_XVc42FP5fIuzMzAAAS: Received packet MESSAGE data 2["ping",{"timestamp":1748547091255}]
+2025-05-29 15:31:33,234 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Received packet MESSAGE data 2["ping",{"timestamp":1748547091255}]
+received event "ping" from YUtAxwGwKzn53XPnAAAT [/]
+2025-05-29 15:31:33,239 - socketio.server - INFO - received event "ping" from YUtAxwGwKzn53XPnAAAT [/]
+127.0.0.1 - - [29/May/2025 15:31:33] "POST /socket.io/?EIO=4&transport=polling&t=PSTXpiu&sid=-_XVc42FP5fIuzMzAAAS HTTP/1.1" 200 219 0.008385
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:31:41,300 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:31:41,315 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547104461}]
+2025-05-29 15:31:44,465 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547104461}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:31:44,467 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+-_XVc42FP5fIuzMzAAAS: Client is gone, closing socket
+2025-05-29 15:32:05,727 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Client is gone, closing socket
+2025-05-29 15:32:05,728 - blueprints.socketio_events - INFO - Client disconnected: YUtAxwGwKzn53XPnAAAT
+-_XVc42FP5fIuzMzAAAS: Client is gone, closing socket
+2025-05-29 15:32:05,728 - engineio.server - INFO - -_XVc42FP5fIuzMzAAAS: Client is gone, closing socket
+127.0.0.1 - - [29/May/2025 15:32:05] "GET /socket.io/?EIO=4&transport=polling&t=PSTXqCF&sid=-_XVc42FP5fIuzMzAAAS HTTP/1.1" 200 180 32.431458
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:32:06,314 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:32:06,324 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547129456}]
+2025-05-29 15:32:09,460 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547129456}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:32:09,462 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+Tn6v04Dc09M1pAp4AAAU: Sending packet OPEN data {'sid': 'Tn6v04Dc09M1pAp4AAAU', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:32:10,985 - engineio.server - INFO - Tn6v04Dc09M1pAp4AAAU: Sending packet OPEN data {'sid': 'Tn6v04Dc09M1pAp4AAAU', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:32:10] "GET /socket.io/?EIO=4&transport=polling&t=PSTXzPU HTTP/1.1" 200 300 0.002354
+Tn6v04Dc09M1pAp4AAAU: Received packet MESSAGE data 0
+2025-05-29 15:32:11,012 - engineio.server - INFO - Tn6v04Dc09M1pAp4AAAU: Received packet MESSAGE data 0
+2025-05-29 15:32:11,014 - blueprints.socketio_events - INFO - Client connected: PS51nGxbB0hegHtDAAAV
+emitting event "connection_established" to PS51nGxbB0hegHtDAAAV [/]
+2025-05-29 15:32:11,014 - socketio.server - INFO - emitting event "connection_established" to PS51nGxbB0hegHtDAAAV [/]
+Tn6v04Dc09M1pAp4AAAU: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"PS51nGxbB0hegHtDAAAV","timestamp":1748547131.0146382,"server_version":"1.2.0"}]
+2025-05-29 15:32:11,015 - engineio.server - INFO - Tn6v04Dc09M1pAp4AAAU: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"PS51nGxbB0hegHtDAAAV","timestamp":1748547131.0146382,"server_version":"1.2.0"}]
+Tn6v04Dc09M1pAp4AAAU: Sending packet MESSAGE data 0{"sid":"PS51nGxbB0hegHtDAAAV"}
+2025-05-29 15:32:11,016 - engineio.server - INFO - Tn6v04Dc09M1pAp4AAAU: Sending packet MESSAGE data 0{"sid":"PS51nGxbB0hegHtDAAAV"}
+127.0.0.1 - - [29/May/2025 15:32:11] "POST /socket.io/?EIO=4&transport=polling&t=PSTXzPq&sid=Tn6v04Dc09M1pAp4AAAU HTTP/1.1" 200 219 0.004516
+127.0.0.1 - - [29/May/2025 15:32:11] "GET /socket.io/?EIO=4&transport=polling&t=PSTXzPx&sid=Tn6v04Dc09M1pAp4AAAU HTTP/1.1" 200 351 0.000315
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:32:31,328 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:32:31,335 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547154456}]
+2025-05-29 15:32:34,456 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547154456}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:32:34,457 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+Tn6v04Dc09M1pAp4AAAU: Sending packet PING data None
+2025-05-29 15:32:35,984 - engineio.server - INFO - Tn6v04Dc09M1pAp4AAAU: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:32:35] "GET /socket.io/?EIO=4&transport=polling&t=PSTXzQb&sid=Tn6v04Dc09M1pAp4AAAU HTTP/1.1" 200 181 24.932353
+4wFyoHPF05O5WbJoAAAW: Sending packet OPEN data {'sid': '4wFyoHPF05O5WbJoAAAW', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:32:35,991 - engineio.server - INFO - 4wFyoHPF05O5WbJoAAAW: Sending packet OPEN data {'sid': '4wFyoHPF05O5WbJoAAAW', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:32:35] "GET /socket.io/?EIO=4&transport=polling&t=PSTY3As HTTP/1.1" 200 300 0.005357
+4wFyoHPF05O5WbJoAAAW: Received packet MESSAGE data 0
+2025-05-29 15:32:36,020 - engineio.server - INFO - 4wFyoHPF05O5WbJoAAAW: Received packet MESSAGE data 0
+2025-05-29 15:32:36,022 - blueprints.socketio_events - INFO - Client connected: 7jIyOXGP7Rfx4CTxAAAX
+emitting event "connection_established" to 7jIyOXGP7Rfx4CTxAAAX [/]
+2025-05-29 15:32:36,022 - socketio.server - INFO - emitting event "connection_established" to 7jIyOXGP7Rfx4CTxAAAX [/]
+4wFyoHPF05O5WbJoAAAW: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"7jIyOXGP7Rfx4CTxAAAX","timestamp":1748547156.0226376,"server_version":"1.2.0"}]
+2025-05-29 15:32:36,023 - engineio.server - INFO - 4wFyoHPF05O5WbJoAAAW: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"7jIyOXGP7Rfx4CTxAAAX","timestamp":1748547156.0226376,"server_version":"1.2.0"}]
+4wFyoHPF05O5WbJoAAAW: Sending packet MESSAGE data 0{"sid":"7jIyOXGP7Rfx4CTxAAAX"}
+2025-05-29 15:32:36,024 - engineio.server - INFO - 4wFyoHPF05O5WbJoAAAW: Sending packet MESSAGE data 0{"sid":"7jIyOXGP7Rfx4CTxAAAX"}
+127.0.0.1 - - [29/May/2025 15:32:36] "POST /socket.io/?EIO=4&transport=polling&t=PSTY3Wc&sid=4wFyoHPF05O5WbJoAAAW HTTP/1.1" 200 219 0.005685
+127.0.0.1 - - [29/May/2025 15:32:36] "GET /socket.io/?EIO=4&transport=polling&t=PSTY3Wn&sid=4wFyoHPF05O5WbJoAAAW HTTP/1.1" 200 351 0.000233
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:32:56,332 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:32:56,344 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547179457}]
+2025-05-29 15:32:59,461 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547179457}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:32:59,462 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+4wFyoHPF05O5WbJoAAAW: Sending packet PING data None
+2025-05-29 15:33:01,017 - engineio.server - INFO - 4wFyoHPF05O5WbJoAAAW: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:33:01] "GET /socket.io/?EIO=4&transport=polling&t=PSTY3XF&sid=4wFyoHPF05O5WbJoAAAW HTTP/1.1" 200 181 24.966457
+Tn6v04Dc09M1pAp4AAAU: Client is gone, closing socket
+2025-05-29 15:33:02,421 - engineio.server - INFO - Tn6v04Dc09M1pAp4AAAU: Client is gone, closing socket
+2025-05-29 15:33:02,422 - blueprints.socketio_events - INFO - Client disconnected: PS51nGxbB0hegHtDAAAV
+Tn6v04Dc09M1pAp4AAAU: Client is gone, closing socket
+2025-05-29 15:33:02,424 - engineio.server - INFO - Tn6v04Dc09M1pAp4AAAU: Client is gone, closing socket
+3vLRH7lUGAyNKjcmAAAY: Sending packet OPEN data {'sid': '3vLRH7lUGAyNKjcmAAAY', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:33:06,283 - engineio.server - INFO - 3vLRH7lUGAyNKjcmAAAY: Sending packet OPEN data {'sid': '3vLRH7lUGAyNKjcmAAAY', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:33:06] "GET /socket.io/?EIO=4&transport=polling&t=PSTYAvO HTTP/1.1" 200 300 0.000853
+3vLRH7lUGAyNKjcmAAAY: Received packet MESSAGE data 0
+2025-05-29 15:33:06,308 - engineio.server - INFO - 3vLRH7lUGAyNKjcmAAAY: Received packet MESSAGE data 0
+2025-05-29 15:33:06,313 - blueprints.socketio_events - INFO - Client connected: 4GYLhzbMuzdW0laDAAAZ
+emitting event "connection_established" to 4GYLhzbMuzdW0laDAAAZ [/]
+2025-05-29 15:33:06,314 - socketio.server - INFO - emitting event "connection_established" to 4GYLhzbMuzdW0laDAAAZ [/]
+3vLRH7lUGAyNKjcmAAAY: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"4GYLhzbMuzdW0laDAAAZ","timestamp":1748547186.3139572,"server_version":"1.2.0"}]
+2025-05-29 15:33:06,315 - engineio.server - INFO - 3vLRH7lUGAyNKjcmAAAY: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"4GYLhzbMuzdW0laDAAAZ","timestamp":1748547186.3139572,"server_version":"1.2.0"}]
+3vLRH7lUGAyNKjcmAAAY: Sending packet MESSAGE data 0{"sid":"4GYLhzbMuzdW0laDAAAZ"}
+2025-05-29 15:33:06,316 - engineio.server - INFO - 3vLRH7lUGAyNKjcmAAAY: Sending packet MESSAGE data 0{"sid":"4GYLhzbMuzdW0laDAAAZ"}
+127.0.0.1 - - [29/May/2025 15:33:06] "POST /socket.io/?EIO=4&transport=polling&t=PSTYAvu&sid=3vLRH7lUGAyNKjcmAAAY HTTP/1.1" 200 219 0.008572
+127.0.0.1 - - [29/May/2025 15:33:06] "GET /socket.io/?EIO=4&transport=polling&t=PSTYAvy&sid=3vLRH7lUGAyNKjcmAAAY HTTP/1.1" 200 351 0.000290
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:33:21,343 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:33:21,354 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547204457}]
+2025-05-29 15:33:24,460 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547204457}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:33:24,461 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+4wFyoHPF05O5WbJoAAAW: Client is gone, closing socket
+2025-05-29 15:33:25,766 - engineio.server - INFO - 4wFyoHPF05O5WbJoAAAW: Client is gone, closing socket
+2025-05-29 15:33:25,768 - blueprints.socketio_events - INFO - Client disconnected: 7jIyOXGP7Rfx4CTxAAAX
+4wFyoHPF05O5WbJoAAAW: Client is gone, closing socket
+2025-05-29 15:33:25,769 - engineio.server - INFO - 4wFyoHPF05O5WbJoAAAW: Client is gone, closing socket
+3vLRH7lUGAyNKjcmAAAY: Sending packet PING data None
+2025-05-29 15:33:31,285 - engineio.server - INFO - 3vLRH7lUGAyNKjcmAAAY: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:33:31] "GET /socket.io/?EIO=4&transport=polling&t=PSTYAwU&sid=3vLRH7lUGAyNKjcmAAAY HTTP/1.1" 200 181 24.941775
+_z_Bvwqb1M1WEt6aAAAa: Sending packet OPEN data {'sid': '_z_Bvwqb1M1WEt6aAAAa', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:33:31,292 - engineio.server - INFO - _z_Bvwqb1M1WEt6aAAAa: Sending packet OPEN data {'sid': '_z_Bvwqb1M1WEt6aAAAa', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:33:31] "GET /socket.io/?EIO=4&transport=polling&t=PSTYG-k HTTP/1.1" 200 300 0.004392
+_z_Bvwqb1M1WEt6aAAAa: Received packet MESSAGE data 0
+2025-05-29 15:33:31,338 - engineio.server - INFO - _z_Bvwqb1M1WEt6aAAAa: Received packet MESSAGE data 0
+2025-05-29 15:33:31,341 - blueprints.socketio_events - INFO - Client connected: W-k7whZVElt9hyoVAAAb
+emitting event "connection_established" to W-k7whZVElt9hyoVAAAb [/]
+2025-05-29 15:33:31,343 - socketio.server - INFO - emitting event "connection_established" to W-k7whZVElt9hyoVAAAb [/]
+_z_Bvwqb1M1WEt6aAAAa: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"W-k7whZVElt9hyoVAAAb","timestamp":1748547211.3430128,"server_version":"1.2.0"}]
+2025-05-29 15:33:31,343 - engineio.server - INFO - _z_Bvwqb1M1WEt6aAAAa: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"W-k7whZVElt9hyoVAAAb","timestamp":1748547211.3430128,"server_version":"1.2.0"}]
+_z_Bvwqb1M1WEt6aAAAa: Sending packet MESSAGE data 0{"sid":"W-k7whZVElt9hyoVAAAb"}
+2025-05-29 15:33:31,344 - engineio.server - INFO - _z_Bvwqb1M1WEt6aAAAa: Sending packet MESSAGE data 0{"sid":"W-k7whZVElt9hyoVAAAb"}
+127.0.0.1 - - [29/May/2025 15:33:31] "POST /socket.io/?EIO=4&transport=polling&t=PSTYH0i&sid=_z_Bvwqb1M1WEt6aAAAa HTTP/1.1" 200 219 0.007400
+127.0.0.1 - - [29/May/2025 15:33:31] "GET /socket.io/?EIO=4&transport=polling&t=PSTYH1E&sid=_z_Bvwqb1M1WEt6aAAAa HTTP/1.1" 200 351 0.000287
+prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+2025-05-29 15:33:46,352 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Sending packet PING data None
+prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+2025-05-29 15:33:46,361 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet PONG data 
+prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547229469}]
+2025-05-29 15:33:49,472 - engineio.server - INFO - prhTG9sLXVFhd5dPAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748547229469}]
+received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+2025-05-29 15:33:49,479 - socketio.server - INFO - received event "ping" from 1YVJpsnFjdnZz4GUAAAB [/]
+_z_Bvwqb1M1WEt6aAAAa: Sending packet PING data None
+2025-05-29 15:33:56,294 - engineio.server - INFO - _z_Bvwqb1M1WEt6aAAAa: Sending packet PING data None
+127.0.0.1 - - [29/May/2025 15:33:56] "GET /socket.io/?EIO=4&transport=polling&t=PSTYH1o&sid=_z_Bvwqb1M1WEt6aAAAa HTTP/1.1" 200 181 24.901721
+f5aHtNQ5hST6rkxzAAAc: Sending packet OPEN data {'sid': 'f5aHtNQ5hST6rkxzAAAc', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 15:33:56,301 - engineio.server - INFO - f5aHtNQ5hST6rkxzAAAc: Sending packet OPEN data {'sid': 'f5aHtNQ5hST6rkxzAAAc', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+127.0.0.1 - - [29/May/2025 15:33:56] "GET /socket.io/?EIO=4&transport=polling&t=PSTYN5A HTTP/1.1" 200 300 0.001525
+f5aHtNQ5hST6rkxzAAAc: Received packet MESSAGE data 0
+2025-05-29 15:33:56,328 - engineio.server - INFO - f5aHtNQ5hST6rkxzAAAc: Received packet MESSAGE data 0
+2025-05-29 15:33:56,331 - blueprints.socketio_events - INFO - Client connected: 9afFpL4vLDUEoyxlAAAd
+emitting event "connection_established" to 9afFpL4vLDUEoyxlAAAd [/]
+2025-05-29 15:33:56,332 - socketio.server - INFO - emitting event "connection_established" to 9afFpL4vLDUEoyxlAAAd [/]
+f5aHtNQ5hST6rkxzAAAc: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"9afFpL4vLDUEoyxlAAAd","timestamp":1748547236.3322456,"server_version":"1.2.0"}]
+2025-05-29 15:33:56,333 - engineio.server - INFO - f5aHtNQ5hST6rkxzAAAc: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"9afFpL4vLDUEoyxlAAAd","timestamp":1748547236.3322456,"server_version":"1.2.0"}]
+f5aHtNQ5hST6rkxzAAAc: Sending packet MESSAGE data 0{"sid":"9afFpL4vLDUEoyxlAAAd"}
+2025-05-29 15:33:56,334 - engineio.server - INFO - f5aHtNQ5hST6rkxzAAAc: Sending packet MESSAGE data 0{"sid":"9afFpL4vLDUEoyxlAAAd"}
+127.0.0.1 - - [29/May/2025 15:33:56] "POST /socket.io/?EIO=4&transport=polling&t=PSTYN7O&sid=f5aHtNQ5hST6rkxzAAAc HTTP/1.1" 200 219 0.008301
+127.0.0.1 - - [29/May/2025 15:33:56] "GET /socket.io/?EIO=4&transport=polling&t=PSTYN7S&sid=f5aHtNQ5hST6rkxzAAAc HTTP/1.1" 200 351 0.000335

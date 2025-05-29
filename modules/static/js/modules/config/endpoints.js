@@ -453,7 +453,6 @@ export const ENDPOINTS = {
  * Export Blueprint validation functions
  */
 export {
-  buildEndpoint,
   buildUrlWithQuery,
   getBlueprintEndpoints,
   getEndpointMethods,

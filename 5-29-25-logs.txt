@@ -1,208 +1,174 @@
 
 SES The 'dateTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
-🧹 Cleaning up playlistDownloader... module-manager.js:69:17
-✅ playlistDownloader initialized successfully module-manager.js:53:21
-🔧 Initializing webScraper... module-manager.js:42:21
-🧹 Cleaning up webScraper... module-manager.js:69:17
-Web Scraper module cleaned up webScraper.js:1810:12
-Initializing Web Scraper module... webScraper.js:117:15
-Web Scraper module already initialized webScraper.js:120:17
-✅ webScraper initialized successfully module-manager.js:53:21
-🔧 Initializing academicSearch... module-manager.js:42:21
-🧹 Cleaning up academicSearch... module-manager.js:69:17
+🔄 Loading /static/js/modules/core/module-bridge.js (attempt 1/3) index.js:273:19
+Module Bridge v2.1.0 initializing... module-bridge.js:15:9
+Module Bridge v2.1.0 initialized successfully module-bridge.js:325:9
+✅ Successfully loaded /static/js/modules/core/module-bridge.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/core/module-bridge.js: ✅ (150ms) index.js:52:15
+📦 Registered module: module-bridge index.js:326:19
+🔄 Loading ./modules/core/errorHandler.js (attempt 1/3) index.js:273:19
+✅ Successfully loaded ./modules/core/errorHandler.js on attempt 1 index.js:287:19
+📦 Module ./modules/core/errorHandler.js: ✅ (101ms) index.js:52:15
+📦 Registered module: errorHandler index.js:326:19
+🔄 Loading ./modules/core/domUtils.js (attempt 1/3) index.js:273:19
+✅ Successfully loaded ./modules/core/domUtils.js on attempt 1 index.js:287:19
+📦 Module ./modules/core/domUtils.js: ✅ (157ms) index.js:52:15
+📦 Registered module: domUtils index.js:326:19
+🔄 Loading ./modules/core/uiRegistry.js (attempt 1/3) index.js:273:19
+Setting up error handler for uiRegistry uiRegistry.js:20:11
+✅ Successfully loaded ./modules/core/uiRegistry.js on attempt 1 index.js:287:19
+📦 Module ./modules/core/uiRegistry.js: ✅ (93ms) index.js:52:15
+📦 Registered module: uiRegistry index.js:326:19
+🔄 Loading ./modules/core/stateManager.js (attempt 1/3) index.js:273:19
+✅ Successfully loaded ./modules/core/stateManager.js on attempt 1 index.js:287:19
+📦 Module ./modules/core/stateManager.js: ✅ (118ms) index.js:52:15
+📦 Registered module: stateManager index.js:326:19
+🔄 Loading ./modules/core/eventRegistry.js (attempt 1/3) index.js:273:19
+✅ Successfully loaded ./modules/core/eventRegistry.js on attempt 1 index.js:287:19
+📦 Module ./modules/core/eventRegistry.js: ✅ (42ms) index.js:52:15
+📦 Registered module: eventRegistry index.js:326:19
+🔄 Loading ./modules/core/eventManager.js (attempt 1/3) index.js:273:19
+Event Registry initialized eventRegistry.js:143:13
+✅ Successfully loaded ./modules/core/eventManager.js on attempt 1 index.js:287:19
+📦 Module ./modules/core/eventManager.js: ✅ (91ms) index.js:52:15
+📦 Registered module: eventManager index.js:326:19
+🔄 Loading ./modules/core/themeManager.js (attempt 1/3) index.js:273:19
+✅ Successfully loaded ./modules/core/themeManager.js on attempt 1 index.js:287:19
+📦 Module ./modules/core/themeManager.js: ✅ (96ms) index.js:52:15
+📦 Registered module: themeManager index.js:326:19
+✅ Core modules loaded: 
+Array(8) [ "module-bridge", "errorHandler", "domUtils", "uiRegistry", "stateManager", "eventRegistry", "eventManager", "themeManager" ]
+index.js:590:15
+✅ Phase completed: core-modules in 849ms index.js:44:17
+🔄 Phase started: utility-modules (1098ms) index.js:40:15
+🔧 Loading utility modules... index.js:602:13
+Utility module paths: 
+Array(5) [ "./modules/utils/socketHandler.js", "./modules/utils/progressHandler.js", "./modules/utils/ui.js", "./modules/utils/utils.js", "./modules/utils/fileHandler.js" ]
+index.js:603:13
+🔄 Loading /static/js/modules/utils/socketHandler.js (attempt 1/3) index.js:273:19
+Found themeManager, adding persistence overrides fixThemePersistence.js:143:17
+Loaded theme from localStorage: dark fixThemePersistence.js:190:23
+Applied theme: dark themeManager.js:510:15
+✅ Successfully loaded /static/js/modules/utils/socketHandler.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/utils/socketHandler.js: ✅ (213ms) index.js:52:15
+📦 Registered module: socketHandler index.js:326:19
+🔄 Loading /static/js/modules/utils/progressHandler.js (attempt 1/3) index.js:273:19
+✅ Successfully loaded /static/js/modules/utils/progressHandler.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/utils/progressHandler.js: ✅ (49ms) index.js:52:15
+📦 Registered module: progressHandler index.js:326:19
+🔄 Loading ./modules/utils/ui.js (attempt 1/3) index.js:273:19
+[Bridge] Updated ui bridge (update #1) module-bridge.js:228:13
+UI module initialized and bridge updated ui.js:1648:9
+✅ Successfully loaded ./modules/utils/ui.js on attempt 1 index.js:287:19
+📦 Module ./modules/utils/ui.js: ✅ (203ms) index.js:52:15
+📦 Registered module: ui index.js:326:19
+🔄 Loading ./modules/utils/utils.js (attempt 1/3) index.js:273:19
+
+╔═══════════════════════════════════════════════════════════════╗
+║                    🧠 NeuroGen Server v3.0.0                  ║
+║                Enhanced Frontend Module System               ║
+╠═══════════════════════════════════════════════════════════════╣
+║ 🔧 Debug Mode: ENABLED                                       ║
+║ 📊 Performance Tracking: ACTIVE                              ║
+║ 🛠️ Diagnostics: window.NeuroGenDebug                         ║
+║ 🎯 API: window.NeuroGenServer                                ║
+╚═══════════════════════════════════════════════════════════════╝
+    index.js:1924:13
+📦 Module Status: 11/12 loaded successfully index.js:1937:13
+🔍 Run window.NeuroGenDebug.showModal() for detailed diagnostics index.js:1943:13
+✅ Successfully loaded ./modules/utils/utils.js on attempt 1 index.js:287:19
+📦 Module ./modules/utils/utils.js: ✅ (627ms) index.js:52:15
+📦 Registered module: utils index.js:326:19
+🔄 Loading ./modules/utils/fileHandler.js (attempt 1/3) index.js:273:19
+✅ Successfully loaded ./modules/utils/fileHandler.js on attempt 1 index.js:287:19
+📦 Module ./modules/utils/fileHandler.js: ✅ (174ms) index.js:52:15
+📦 Registered module: fileHandler index.js:326:19
+✅ Utility modules loaded: 
+Array(5) [ "socketHandler", "progressHandler", "ui", "utils", "fileHandler" ]
+index.js:616:15
+✅ Phase completed: utility-modules in 1269ms index.js:44:17
+🔄 Phase started: feature-modules (2367ms) index.js:40:15
+🎯 Loading feature modules... index.js:627:13
+Feature module paths: 
+Array(5) [ "./modules/core/app.js", "./modules/features/fileProcessor.js", "./modules/features/playlistDownloader.js", "./modules/features/webScraper.js", "./modules/features/academicSearch.js" ]
+index.js:628:13
+🔄 Loading /static/js/modules/core/app.js (attempt 1/2) index.js:273:19
+✅ Successfully loaded /static/js/modules/core/app.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/core/app.js: ✅ (134ms) index.js:52:15
+📦 Registered module: app index.js:326:19
+🔄 Loading /static/js/modules/features/fileProcessor.js (attempt 1/2) index.js:273:19
+❌ Attempt 1 failed for /static/js/modules/features/fileProcessor.js: duplicate export name 'buildEndpoint' index.js:294:19
+🔄 Loading /static/js/modules/features/fileProcessor.js (attempt 2/2) index.js:273:19
+❌ Attempt 2 failed for /static/js/modules/features/fileProcessor.js: duplicate export name 'buildEndpoint' index.js:294:19
+❌ Error in loadModule(/static/js/modules/features/fileProcessor.js): SyntaxError: duplicate export name 'buildEndpoint' index.js:58:13
+📦 Module /static/js/modules/features/fileProcessor.js: ❌ (1379ms) index.js:52:15
+🔄 Loading /static/js/modules/features/playlistDownloader.js (attempt 1/2) index.js:273:19
+❌ Attempt 1 failed for /static/js/modules/features/playlistDownloader.js: duplicate export name 'buildEndpoint' index.js:294:19
+🔄 Loading /static/js/modules/features/playlistDownloader.js (attempt 2/2) index.js:273:19
+❌ Attempt 2 failed for /static/js/modules/features/playlistDownloader.js: duplicate export name 'buildEndpoint' index.js:294:19
+❌ Error in loadModule(/static/js/modules/features/playlistDownloader.js): SyntaxError: duplicate export name 'buildEndpoint' index.js:58:13
+📦 Module /static/js/modules/features/playlistDownloader.js: ❌ (1141ms) index.js:52:15
+🔄 Loading /static/js/modules/features/webScraper.js (attempt 1/2) index.js:273:19
+🌐 Initializing Web Scraper... webScraper.js:185:15
+🌐 Web Scraper module loaded (Blueprint Architecture v3.0) webScraper.js:2024:9
+✅ Successfully loaded /static/js/modules/features/webScraper.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/features/webScraper.js: ✅ (1201ms) index.js:52:15
+📦 Registered module: webScraper index.js:326:19
+🔄 Loading /static/js/modules/features/academicSearch.js (attempt 1/2) index.js:273:19
+Failed to import modules: SyntaxError: duplicate export name 'buildEndpoint' webScraper.js:92:15
+Failed to import modules: SyntaxError: duplicate export name 'buildEndpoint' webScraper.js:92:15
+BlueprintAPI not available, some features may be limited webScraper.js:192:17
+Socket.IO not available, real-time updates will be limited webScraper.js:348:15
+✅ Web Scraper initialized successfully webScraper.js:206:15
 Initializing Academic Search module academicSearch.js:89:17
 Academic search event listeners set up academicSearch.js:198:21
-✅ academicSearch initialized successfully module-manager.js:53:21
-🔧 Initializing historyManager... module-manager.js:42:21
-🧹 Cleaning up historyManager... module-manager.js:69:17
-History manager already initialized historyManager.js:36:25
-✅ historyManager initialized successfully module-manager.js:53:21
-🔧 Initializing keyboardShortcuts... module-manager.js:42:21
-🧹 Cleaning up keyboardShortcuts... module-manager.js:69:17
-Keyboard shortcuts already initialized keyboardShortcuts.js:22:15
-✅ keyboardShortcuts initialized successfully module-manager.js:53:21
-🔧 Initializing dragDropHandler... module-manager.js:42:21
-🧹 Cleaning up dragDropHandler... module-manager.js:69:17
-Drag and drop handler already initialized dragDropHandler.js:24:15
-✅ dragDropHandler initialized successfully module-manager.js:53:21
-🔧 Initializing systemHealth... module-manager.js:42:21
-🧹 Cleaning up systemHealth... module-manager.js:69:17
-System health monitor already initialized systemHealth.js:24:15
-✅ systemHealth initialized successfully module-manager.js:53:21
-🔧 Initializing debugTools... module-manager.js:42:21
-🧹 Cleaning up debugTools... module-manager.js:69:17
-✅ debugTools initialized successfully module-manager.js:53:21
-🔧 Initializing moduleDiagnostics... module-manager.js:42:21
-🧹 Cleaning up moduleDiagnostics... module-manager.js:69:17
-✅ moduleDiagnostics initialized successfully module-manager.js:53:21
-✅ All modules initialized module-manager.js:133:17
-✅ All modules initialized via module manager index.js:789:15
-✅ Phase completed: module-initialization in 53ms index.js:44:17
-🔄 Phase started: final-setup (4076ms) index.js:40:15
-✅ NeuroGen Server initialized successfully in 4076ms index.js:692:13
-✅ Phase completed: final-setup in 2ms index.js:44:17
-✅ Phase completed: initialization in 3975ms index.js:44:17
-✅ Successfully loaded /static/js/modules/utils/utils.js on attempt 1 index.js:287:19
-📦 Module /static/js/modules/utils/utils.js: ✅ (12ms) index.js:52:15
-Utility module loaded: utils app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/ui.js on attempt 1 index.js:287:19
-📦 Module /static/js/modules/utils/ui.js: ✅ (12ms) index.js:52:15
-UI module already initialized ui.js:57:15
-Utility module loaded: ui app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/fileHandler.js on attempt 1 index.js:287:19
-📦 Module /static/js/modules/utils/fileHandler.js: ✅ (13ms) index.js:52:15
-File handler already initialized fileHandler.js:56:15
-Utility module loaded: fileHandler app.js:263:19
-✅ Successfully loaded /static/js/modules/utils/moduleDiagnostics.js on attempt 1 index.js:287:19
-📦 Module /static/js/modules/utils/moduleDiagnostics.js: ✅ (13ms) index.js:52:15
-Utility module loaded: moduleDiagnostics app.js:263:19
-Utility modules loaded successfully app.js:276:15
-ErrorHandler registered with eventRegistry errorHandler.js:204:19
-Registering common UI elements... uiRegistry.js:138:13
-UI elements registered successfully uiRegistry.js:181:15
-Registering common UI elements... uiRegistry.js:138:13
-UI elements registered successfully uiRegistry.js:181:15
-[Bridge] Updated ui bridge (update #2) module-bridge.js:228:13
-UI module initialized and bridge updated ui.js:848:9
-UI module loaded in errorHandler errorHandler.js:126:17
-⚠️ Warning in enhanceSocketIOIntegration: Socket.IO not available for enhancement index.js:63:13
-✅ Global error handlers registered index.js:1413:11
-🔧 Ensuring form handlers are properly set up... index.js:1242:13
-✅ File Processor form handler ensured index.js:1254:17
-✅ Playlist Downloader form handler ensured index.js:1330:15
-✅ Web Scraper form handler ensured index.js:1348:17
-✅ Enabled button: submit-btn index.js:1357:17
-✅ Enabled button: scrape-btn index.js:1357:17
-Socket.IO connected with ID: rjbfMzKLTcVJxJdbAAAB socketHandler.js:443:13
-🔍 Detailed Application Status index.js:1598:11
-📊 Performance: 
-Object { totalTime: "5091ms", appInitialized: true, debugMode: true }
-index.js:1599:11
-📦 Module Statistics: 
-Object { total: 35, loaded: 35, failed: 0, fallbacks: 0 }
-index.js:1605:11
-✅ Loaded Modules: 
-Array(35) [ "/static/js/modules/core/module-bridge.js", "./modules/core/errorHandler.js", "./modules/core/domUtils.js", "./modules/core/uiRegistry.js", "./modules/core/stateManager.js", "./modules/core/eventRegistry.js", "./modules/core/eventManager.js", "./modules/core/themeManager.js", "/static/js/modules/utils/socketHandler.js", "/static/js/modules/utils/progressHandler.js", … ]
-index.js:1606:11
-❌ Failed Modules: 
-Array []
-index.js:1607:11
-🔄 Fallback Modules: 
-Array []
-index.js:1608:11
-🎯 Available Instances: 
-Array(24) [ "module-bridge", "errorHandler", "domUtils", "uiRegistry", "stateManager", "eventRegistry", "eventManager", "themeManager", "socketHandler", "progressHandler", … ]
-index.js:1609:11
-⚠️ Warnings: 
-Array [ {…} ]
-index.js:1616:13
-🔧 Debug API exposed as window.NeuroGenDebug index.js:1641:11
+✅ Successfully loaded /static/js/modules/features/academicSearch.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/features/academicSearch.js: ✅ (1049ms) index.js:52:15
+📦 Registered module: academicSearch index.js:326:19
+✅ Feature modules loaded: 
+Array(3) [ "app", "webScraper", "academicSearch" ]
+index.js:641:15
+✅ Phase completed: feature-modules in 4909ms index.js:44:17
+🔄 Phase started: optional-modules (7279ms) index.js:40:15
+🔧 Loading optional modules... index.js:652:13
+Optional module paths: 
+Array(6) [ "./modules/features/historyManager.js", "./modules/features/keyboardShortcuts.js", "./modules/features/dragDropHandler.js", "./modules/utils/systemHealth.js", "./modules/utils/debugTools.js", "./modules/utils/moduleDiagnostics.js" ]
+index.js:653:13
+🔄 Loading ./modules/features/historyManager.js (attempt 1/1) index.js:273:19
+✅ Successfully loaded ./modules/features/historyManager.js on attempt 1 index.js:287:19
+📦 Module ./modules/features/historyManager.js: ✅ (994ms) index.js:52:15
+📦 Registered module: historyManager index.js:326:19
+🔄 Loading ./modules/features/keyboardShortcuts.js (attempt 1/1) index.js:273:19
+Keyboard shortcuts initialized keyboardShortcuts.js:29:13
+✅ Successfully loaded ./modules/features/keyboardShortcuts.js on attempt 1 index.js:287:19
+📦 Module ./modules/features/keyboardShortcuts.js: ✅ (60ms) index.js:52:15
+📦 Registered module: keyboardShortcuts index.js:326:19
+🔄 Loading ./modules/features/dragDropHandler.js (attempt 1/1) index.js:273:19
+Drop zone registered: main dragDropHandler.js:106:13
+Drag and drop handler initialized dragDropHandler.js:30:13
+✅ Successfully loaded ./modules/features/dragDropHandler.js on attempt 1 index.js:287:19
+📦 Module ./modules/features/dragDropHandler.js: ✅ (57ms) index.js:52:15
+📦 Registered module: dragDropHandler index.js:326:19
+🔄 Loading ./modules/utils/systemHealth.js (attempt 1/1) index.js:273:19
+GET
+http://localhost:5025/static/js/modules/utils/systemHealth.js
+[HTTP/1.1 404 NOT FOUND 11ms]
+
+Loading failed for the module with source “http://localhost:5025/static/js/modules/utils/systemHealth.js”. localhost:5025
+❌ Attempt 1 failed for ./modules/utils/systemHealth.js: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/systemHealth.js index.js:294:19
+❌ Error in loadModule(./modules/utils/systemHealth.js): TypeError: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/systemHealth.js index.js:58:13
+📦 Module ./modules/utils/systemHealth.js: ❌ (36ms) index.js:52:15
+🔄 Loading ./modules/utils/debugTools.js (attempt 1/1) index.js:273:19
+GET
+http://localhost:5025/static/js/modules/utils/debugTools.js
+[HTTP/1.1 404 NOT FOUND 38ms]
+
+Loading failed for the module with source “http://localhost:5025/static/js/modules/utils/debugTools.js”. localhost:5025
+❌ Attempt 1 failed for ./modules/utils/debugTools.js: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/debugTools.js index.js:294:19
+❌ Error in loadModule(./modules/utils/debugTools.js): TypeError: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/debugTools.js index.js:58:13
+📦 Module ./modules/utils/debugTools.js: ❌ (525ms) index.js:52:15
+🔄 Loading ./modules/utils/moduleDiagnostics.js (attempt 1/1) index.js:273:19
+❌ Attempt 2 failed for /static/js/modules/features/playlistDownloader.js: duplicate export name 'buildEndpoint' index.js:294:19
 
 ​
-127.0.0.1 - - [29/May/2025 10:48:46] "GET / HTTP/1.1" 200 75618 0.063065
-127.0.0.1 - - [29/May/2025 10:48:47] "GET /static/css/styles.css HTTP/1.1" 200 43316 0.102016
-(37123) accepted ('127.0.0.1', 38264)
-127.0.0.1 - - [29/May/2025 10:48:48] "GET /static/js/fixThemePersistence.js HTTP/1.1" 200 8411 0.059650
-127.0.0.1 - - [29/May/2025 10:48:48] "GET /static/img/logo.png HTTP/1.1" 404 262 0.046307
-(37123) accepted ('127.0.0.1', 38274)
-127.0.0.1 - - [29/May/2025 10:48:49] "GET /static/js/console-diagnostics.js HTTP/1.1" 200 11237 0.137761
-127.0.0.1 - - [29/May/2025 10:48:50] "GET /static/js/index.js HTTP/1.1" 200 84359 0.117326
-127.0.0.1 - - [29/May/2025 10:48:50] "GET /static/img/favicon.png HTTP/1.1" 404 262 0.006310
-127.0.0.1 - - [29/May/2025 10:48:50] "GET /static/js/module-manager.js HTTP/1.1" 304 215 0.160929
-127.0.0.1 - - [29/May/2025 10:48:50] "GET /static/js/modules/core/module-bridge.js HTTP/1.1" 304 214 0.030237
-127.0.0.1 - - [29/May/2025 10:48:50] "GET /static/js/modules/core/errorHandler.js HTTP/1.1" 304 215 0.016348
-127.0.0.1 - - [29/May/2025 10:48:50] "GET /static/js/modules/core/domUtils.js HTTP/1.1" 304 209 0.019350
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/core/uiRegistry.js HTTP/1.1" 304 213 0.090437
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/core/stateManager.js HTTP/1.1" 304 215 0.014205
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/core/eventRegistry.js HTTP/1.1" 304 216 0.098482
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/core/eventManager.js HTTP/1.1" 304 215 0.043342
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/core/themeManager.js HTTP/1.1" 304 215 0.011955
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/utils/socketHandler.js HTTP/1.1" 304 216 0.023699
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/utils/domUtils.js HTTP/1.1" 304 210 0.048300
-127.0.0.1 - - [29/May/2025 10:48:51] "GET /static/js/modules/utils/progressHandler.js HTTP/1.1" 304 218 0.127733
-127.0.0.1 - - [29/May/2025 10:48:52] "GET /static/js/modules/utils/ui.js HTTP/1.1" 304 205 0.033859
-127.0.0.1 - - [29/May/2025 10:48:52] "GET /static/js/modules/utils/utils.js HTTP/1.1" 304 206 0.024861
-127.0.0.1 - - [29/May/2025 10:48:52] "GET /static/js/modules/utils/fileHandler.js HTTP/1.1" 304 214 0.025092
-127.0.0.1 - - [29/May/2025 10:48:52] "GET /static/js/modules/core/app.js HTTP/1.1" 304 206 0.018121
-127.0.0.1 - - [29/May/2025 10:48:52] "GET /static/js/modules/features/fileProcessor.js HTTP/1.1" 304 217 0.019239
-127.0.0.1 - - [29/May/2025 10:48:52] "GET /static/js/modules/features/historyManager.js HTTP/1.1" 304 215 0.032127
-127.0.0.1 - - [29/May/2025 10:48:52] "GET /static/js/modules/features/playlistDownloader.js HTTP/1.1" 304 222 0.016167
-127.0.0.1 - - [29/May/2025 10:48:53] "GET /static/js/modules/features/webScraper.js HTTP/1.1" 304 213 0.013474
-127.0.0.1 - - [29/May/2025 10:48:53] "GET /static/js/modules/utils/errorHandler.js HTTP/1.1" 304 215 0.031341
-127.0.0.1 - - [29/May/2025 10:48:53] "GET /static/js/modules/features/academicSearch.js HTTP/1.1" 304 216 0.039294
-127.0.0.1 - - [29/May/2025 10:48:53] "GET /static/js/modules/features/keyboardShortcuts.js HTTP/1.1" 304 219 0.049261
-127.0.0.1 - - [29/May/2025 10:48:53] "GET /static/js/modules/features/dragDropHandler.js HTTP/1.1" 304 217 0.044868
-127.0.0.1 - - [29/May/2025 10:48:53] "GET /static/js/modules/utils/systemHealth.js HTTP/1.1" 304 213 0.100885
-127.0.0.1 - - [29/May/2025 10:48:54] "GET /static/js/modules/utils/debugTools.js HTTP/1.1" 304 213 0.076913
-127.0.0.1 - - [29/May/2025 10:48:54] "GET /static/js/modules/utils/moduleDiagnostics.js HTTP/1.1" 304 218 0.024003
-127.0.0.1 - - [29/May/2025 10:48:54] "GET /static/js/modules/core/ui.js HTTP/1.1" 304 205 0.049443
--k4_eoCfRms84BNqAAAA: Sending packet OPEN data {'sid': '-k4_eoCfRms84BNqAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
-2025-05-29 10:48:54,323 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Sending packet OPEN data {'sid': '-k4_eoCfRms84BNqAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
-127.0.0.1 - - [29/May/2025 10:48:54] "GET /socket.io/?EIO=4&transport=polling&t=PSSX7pm HTTP/1.1" 200 300 0.000753
--k4_eoCfRms84BNqAAAA: Received packet MESSAGE data 0
-2025-05-29 10:48:54,739 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Received packet MESSAGE data 0
-2025-05-29 10:48:54,740 - blueprints.socketio_events - INFO - Client connected: rjbfMzKLTcVJxJdbAAAB
-emitting event "connection_established" to rjbfMzKLTcVJxJdbAAAB [/]
-2025-05-29 10:48:54,740 - socketio.server - INFO - emitting event "connection_established" to rjbfMzKLTcVJxJdbAAAB [/]
--k4_eoCfRms84BNqAAAA: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"rjbfMzKLTcVJxJdbAAAB","timestamp":1748530134.7409437,"server_version":"1.2.0"}]
-2025-05-29 10:48:54,741 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"rjbfMzKLTcVJxJdbAAAB","timestamp":1748530134.7409437,"server_version":"1.2.0"}]
--k4_eoCfRms84BNqAAAA: Sending packet MESSAGE data 0{"sid":"rjbfMzKLTcVJxJdbAAAB"}
-2025-05-29 10:48:54,741 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Sending packet MESSAGE data 0{"sid":"rjbfMzKLTcVJxJdbAAAB"}
-127.0.0.1 - - [29/May/2025 10:48:54] "POST /socket.io/?EIO=4&transport=polling&t=PSSX7ty&sid=-k4_eoCfRms84BNqAAAA HTTP/1.1" 200 219 0.001830
-127.0.0.1 - - [29/May/2025 10:48:54] "GET /socket.io/?EIO=4&transport=polling&t=PSSX7u9&sid=-k4_eoCfRms84BNqAAAA HTTP/1.1" 200 351 0.000250
-(37123) accepted ('127.0.0.1', 55826)
--k4_eoCfRms84BNqAAAA: Received request to upgrade to websocket
-2025-05-29 10:48:56,002 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Received request to upgrade to websocket
-127.0.0.1 - - [29/May/2025 10:48:56] "GET /socket.io/?EIO=4&transport=polling&t=PSSX7zA&sid=-k4_eoCfRms84BNqAAAA HTTP/1.1" 200 181 1.066425
--k4_eoCfRms84BNqAAAA: Upgrade to websocket successful
-2025-05-29 10:48:56,074 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Upgrade to websocket successful
--k4_eoCfRms84BNqAAAA: Sending packet PING data None
-2025-05-29 10:49:19,323 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Sending packet PING data None
--k4_eoCfRms84BNqAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748530159275}]
-2025-05-29 10:49:19,357 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748530159275}]
-received event "ping" from rjbfMzKLTcVJxJdbAAAB [/]
-2025-05-29 10:49:19,357 - socketio.server - INFO - received event "ping" from rjbfMzKLTcVJxJdbAAAB [/]
--k4_eoCfRms84BNqAAAA: Received packet PONG data 
-2025-05-29 10:49:19,408 - engineio.server - INFO - -k4_eoCfRms84BNqAAAA: Received packet PONG data 
-2025-05-29 10:49:23,367 - blueprints.features.file_processor - INFO - Processing request: input_dir=C:\Users\Los\Documents\NeuroGenServer, output_file=C:\Users\Los\Documents\NeuroGen.Server, output_dir=None
-2025-05-29 10:49:23,368 - blueprints.features.file_processor - INFO - Output file will be saved at: /workspace/modules/downloads/C__Users_Los_Documents_NeuroGen.Server.json
-2025-05-29 10:49:23,368 - blueprints.features.file_processor - INFO - Resolved output path: /workspace/modules/downloads/C__Users_Los_Documents_NeuroGen.Server.json
-2025-05-29 10:49:23,368 - blueprints.core.services - INFO - BaseTask c6001027-a3ee-4107-8035-e63808d5416a (file_processing) created.
-2025-05-29 10:49:23,370 - blueprints.core.services - ERROR - Task c6001027-a3ee-4107-8035-e63808d5416a (file_processing) failed: Input directory does not exist: /workspace/modules/C:/Users/Los/Documents/NeuroGenServer. Details: {'suggested_action': 'Create the directory or specify an existing path', 'current_working_dir': '/workspace/modules', 'absolute_path': '/workspace/modules/C:/Users/Los/Documents/NeuroGenServer', 'stage_at_failure': 'initialization'}
-2025-05-29 10:49:23,370 - blueprints.core.services - ERROR - Error emitting task_error for c6001027-a3ee-4107-8035-e63808d5416a: name 'socketio' is not defined
-2025-05-29 10:49:23,384 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
-2025-05-29 10:49:23,385 - blueprints.features.file_processor - ERROR - Error in start_processing: name 'add_task' is not defined
-Traceback (most recent call last):
-  File "/workspace/modules/blueprints/features/file_processor.py", line 717, in start_processing
-    add_task(task_id, task)
-    ^^^^^^^^
-NameError: name 'add_task' is not defined. Did you mean: 'get_task'?
-127.0.0.1 - - [29/May/2025 10:49:23] "POST /api/process HTTP/1.1" 500 248 0.072882
-2025-05-29 10:49:24,824 - blueprints.features.file_processor - INFO - Processing request: input_dir=C:\Users\Los\Documents\NeuroGenServer, output_file=C:\Users\Los\Documents\NeuroGen.Server, output_dir=None
-2025-05-29 10:49:24,838 - blueprints.features.file_processor - INFO - Output file will be saved at: /workspace/modules/downloads/C__Users_Los_Documents_NeuroGen.Server.json
-2025-05-29 10:49:24,838 - blueprints.features.file_processor - INFO - Resolved output path: /workspace/modules/downloads/C__Users_Los_Documents_NeuroGen.Server.json
-2025-05-29 10:49:24,838 - blueprints.core.services - INFO - BaseTask 65a6af0d-cda4-44db-b262-6f80677df9ab (file_processing) created.
-2025-05-29 10:49:24,839 - blueprints.core.services - ERROR - Task 65a6af0d-cda4-44db-b262-6f80677df9ab (file_processing) failed: Input directory does not exist: /workspace/modules/C:/Users/Los/Documents/NeuroGenServer. Details: {'suggested_action': 'Create the directory or specify an existing path', 'current_working_dir': '/workspace/modules', 'absolute_path': '/workspace/modules/C:/Users/Los/Documents/NeuroGenServer', 'stage_at_failure': 'initialization'}
-2025-05-29 10:49:24,840 - blueprints.core.services - ERROR - Error emitting task_error for 65a6af0d-cda4-44db-b262-6f80677df9ab: name 'socketio' is not defined
-2025-05-29 10:49:24,958 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
-2025-05-29 10:49:24,958 - blueprints.features.file_processor - ERROR - Error in start_processing: name 'add_task' is not defined
-Traceback (most recent call last):
-  File "/workspace/modules/blueprints/features/file_processor.py", line 717, in start_processing
-    add_task(task_id, task)
-    ^^^^^^^^
-NameError: name 'add_task' is not defined. Did you mean: 'get_task'?
-127.0.0.1 - - [29/May/2025 10:49:24] "POST /api/process HTTP/1.1" 500 248 0.170499
-2025-05-29 10:49:26,824 - blueprints.features.file_processor - INFO - Processing request: input_dir=C:\Users\Los\Documents\NeuroGenServer, output_file=C:\Users\Los\Documents\NeuroGen.Server, output_dir=None
-2025-05-29 10:49:26,826 - blueprints.features.file_processor - INFO - Output file will be saved at: /workspace/modules/downloads/C__Users_Los_Documents_NeuroGen.Server.json
-2025-05-29 10:49:26,826 - blueprints.features.file_processor - INFO - Resolved output path: /workspace/modules/downloads/C__Users_Los_Documents_NeuroGen.Server.json
-2025-05-29 10:49:26,826 - blueprints.core.services - INFO - BaseTask d535e179-f0e5-42c1-96ea-ca98057e313b (file_processing) created.
-2025-05-29 10:49:26,827 - blueprints.core.services - ERROR - Task d535e179-f0e5-42c1-96ea-ca98057e313b (file_processing) failed: Input directory does not exist: /workspace/modules/C:/Users/Los/Documents/NeuroGenServer. Details: {'suggested_action': 'Create the directory or specify an existing path', 'current_working_dir': '/workspace/modules', 'absolute_path': '/workspace/modules/C:/Users/Los/Documents/NeuroGenServer', 'stage_at_failure': 'initialization'}
-2025-05-29 10:49:26,827 - blueprints.core.services - ERROR - Error emitting task_error for d535e179-f0e5-42c1-96ea-ca98057e313b: name 'socketio' is not defined
-2025-05-29 10:49:26,860 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
-2025-05-29 10:49:26,860 - blueprints.features.file_processor - ERROR - Error in start_processing: name 'add_task' is not defined
-Traceback (most recent call last):
-  File "/workspace/modules/blueprints/features/file_processor.py", line 717, in start_processing
-    add_task(task_id, task)
-    ^^^^^^^^
-NameError: name 'add_task' is not defined. Did you mean: 'get_task'?
-127.0.0.1 - - [29/May/2025 10:49:26] "POST /api/process HTTP/1.1" 500 248 0.109625
+

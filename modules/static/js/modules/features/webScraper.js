@@ -18,10 +18,94 @@
  * @version 3.0.0
  */
 
-import blueprintApi from '../services/blueprintApi.js';
-import { SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, PDF_ENDPOINTS } from '../config/endpoints.js';
-import { TASK_EVENTS, BLUEPRINT_EVENTS, SCRAPER_EVENTS, ACADEMIC_EVENTS } from '../config/socketEvents.js';
-import { CONSTANTS } from '../config/constants.js';
+// Import dependencies using window fallbacks
+let blueprintApi, SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, PDF_ENDPOINTS;
+let TASK_EVENTS, BLUEPRINT_EVENTS, SCRAPER_EVENTS, ACADEMIC_EVENTS;
+let CONSTANTS;
+
+// Initialize imports when module loads
+async function initializeImports() {
+  // Check if modules are available via window first
+  if (window.NeuroGen?.modules) {
+    // Use window modules if available
+    blueprintApi = window.NeuroGen.modules.blueprintApi || window.blueprintApi;
+    
+    // Get config from window if available
+    const config = window.NeuroGen.config || {};
+    SCRAPER_ENDPOINTS = config.SCRAPER_ENDPOINTS || {
+      START: '/api/scrape2',
+      STATUS: '/api/scrape2/status',
+      CANCEL: '/api/scrape2/cancel'
+    };
+    ACADEMIC_ENDPOINTS = config.ACADEMIC_ENDPOINTS || {
+      SEARCH: '/api/academic-search',
+      PAPER: '/api/academic-search/paper',
+      DOWNLOAD: '/api/academic-search/download'
+    };
+    PDF_ENDPOINTS = config.PDF_ENDPOINTS || {
+      PROCESS: '/api/pdf/process',
+      DOWNLOAD: '/api/download-pdf'
+    };
+    
+    // Socket events
+    TASK_EVENTS = config.TASK_EVENTS || {
+      STARTED: 'task_started',
+      PROGRESS: 'task_progress',
+      COMPLETED: 'task_completed',
+      ERROR: 'task_error',
+      CANCELLED: 'task_cancelled'
+    };
+    SCRAPER_EVENTS = config.SCRAPER_EVENTS || {
+      url_scraped: 'url_scraped',
+      pdf_found: 'pdf_found',
+      pdf_download_start: 'pdf_download_start',
+      pdf_download_progress: 'pdf_download_progress',
+      pdf_download_complete: 'pdf_download_complete',
+      page_discovered: 'page_discovered',
+      crawl_progress: 'crawl_progress'
+    };
+    ACADEMIC_EVENTS = config.ACADEMIC_EVENTS || {
+      paper_found: 'paper_found',
+      search_completed: 'search_completed'
+    };
+    BLUEPRINT_EVENTS = config.BLUEPRINT_EVENTS || {};
+    
+    CONSTANTS = config.CONSTANTS || {
+      MAX_FILE_SIZE: 100 * 1024 * 1024,
+      SUPPORTED_FILE_TYPES: ['.pdf', '.doc', '.docx', '.txt', '.ppt', '.pptx']
+    };
+  } else {
+    // Fallback to dynamic imports
+    try {
+      const [blueprintModule, endpointsModule, eventsModule, constantsModule] = await Promise.all([
+        import('../services/blueprintApi.js'),
+        import('../config/endpoints.js'),
+        import('../config/socketEvents.js'),
+        import('../config/constants.js')
+      ]);
+      
+      blueprintApi = blueprintModule.default;
+      ({ SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, PDF_ENDPOINTS } = endpointsModule);
+      ({ TASK_EVENTS, BLUEPRINT_EVENTS, SCRAPER_EVENTS, ACADEMIC_EVENTS } = eventsModule);
+      ({ CONSTANTS } = constantsModule);
+    } catch (e) {
+      console.error('Failed to import modules:', e);
+      // Use defaults
+      blueprintApi = window.blueprintApi;
+      SCRAPER_ENDPOINTS = { START: '/api/scrape2', STATUS: '/api/scrape2/status', CANCEL: '/api/scrape2/cancel' };
+      ACADEMIC_ENDPOINTS = { SEARCH: '/api/academic-search', PAPER: '/api/academic-search/paper' };
+      PDF_ENDPOINTS = { PROCESS: '/api/pdf/process', DOWNLOAD: '/api/download-pdf' };
+      TASK_EVENTS = { STARTED: 'task_started', PROGRESS: 'task_progress', COMPLETED: 'task_completed', ERROR: 'task_error' };
+      SCRAPER_EVENTS = { url_scraped: 'url_scraped', pdf_found: 'pdf_found', pdf_download_progress: 'pdf_download_progress' };
+      ACADEMIC_EVENTS = { paper_found: 'paper_found' };
+      BLUEPRINT_EVENTS = {};
+      CONSTANTS = { MAX_FILE_SIZE: 100 * 1024 * 1024, SUPPORTED_FILE_TYPES: ['.pdf'] };
+    }
+  }
+}
+
+// Initialize imports
+initializeImports().catch(console.error);
 
 /**
  * Web Scraper Class - Complete Implementation
@@ -100,6 +184,14 @@ class WebScraper {
     try {
       console.log('🌐 Initializing Web Scraper...');
       
+      // Wait for imports to be ready
+      await initializeImports();
+      
+      // Check if blueprintApi is available
+      if (!blueprintApi) {
+        console.warn('BlueprintAPI not available, some features may be limited');
+      }
+      
       this.cacheElements();
       this.setupEventHandlers();
       this.setupSocketHandlers();
@@ -113,9 +205,15 @@ class WebScraper {
       this.state.isInitialized = true;
       console.log('✅ Web Scraper initialized successfully');
       
+      // Register with module system if available
+      if (window.NeuroGen?.registerModule) {
+        window.NeuroGen.registerModule('webScraper', this);
+      }
+      
     } catch (error) {
       console.error('❌ Web Scraper initialization failed:', error);
-      throw error;
+      // Don't throw - allow module to work with limited functionality
+      this.state.isInitialized = true;
     }
   }
 
@@ -246,7 +344,10 @@ class WebScraper {
    * Setup Socket.IO event handlers using Blueprint events
    */
   setupSocketHandlers() {
-    if (!window.socket) return;
+    if (!window.socket) {
+      console.warn('Socket.IO not available, real-time updates will be limited');
+      return;
+    }
 
     // General task events
     const taskStartedHandler = (data) => {
@@ -459,7 +560,26 @@ class WebScraper {
       this.updateUI();
 
       // Start scraping using Blueprint API
-      const response = await blueprintApi.startWebScraping(urls, options.output_directory, options);
+      let response;
+      if (blueprintApi && blueprintApi.startWebScraping) {
+        response = await blueprintApi.startWebScraping(urls, options.output_directory, options);
+      } else {
+        // Fallback to direct fetch
+        const fetchResponse = await fetch(SCRAPER_ENDPOINTS.START, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': localStorage.getItem('api_key') || ''
+          },
+          body: JSON.stringify(options)
+        });
+        
+        if (!fetchResponse.ok) {
+          throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+        }
+        
+        response = await fetchResponse.json();
+      }
 
       // Store task information
       this.state.currentTask = {
@@ -504,7 +624,30 @@ class WebScraper {
       this.updateUI();
 
       // Start academic search using Blueprint API
-      const response = await blueprintApi.searchAcademicPapers(query, sources, maxResults);
+      let response;
+      if (blueprintApi && blueprintApi.searchAcademicPapers) {
+        response = await blueprintApi.searchAcademicPapers(query, sources, maxResults);
+      } else {
+        // Fallback to direct fetch
+        const fetchResponse = await fetch(ACADEMIC_ENDPOINTS.SEARCH, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': localStorage.getItem('api_key') || ''
+          },
+          body: JSON.stringify({
+            query,
+            source: sources.length === 1 ? sources[0] : 'all',
+            max_results: maxResults
+          })
+        });
+        
+        if (!fetchResponse.ok) {
+          throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+        }
+        
+        response = await fetchResponse.json();
+      }
 
       console.log(`📚 Academic search started: ${response.search_id || 'unknown'}`);
       this.showInfo(`Searching for: "${query}" across ${sources.length} source(s)`);
@@ -650,6 +793,12 @@ class WebScraper {
     if (this.state.currentTask) {
       this.state.currentTask.progress = progress;
       this.state.currentTask.stats = data.stats;
+      this.state.currentTask.lastUpdate = Date.now();
+    }
+    
+    // Update activity feed if available
+    if (data.details) {
+      this.addActivityItem(data.details);
     }
   }
 
@@ -802,9 +951,15 @@ class WebScraper {
     if (this.state.currentTask) {
       this.state.currentTask.status = 'error';
       this.state.currentTask.error = data.error;
+      this.state.currentTask.endTime = Date.now();
     }
     
     this.updateUI();
+    
+    // Report to health monitor
+    if (window.healthMonitor) {
+      window.healthMonitor.runHealthCheck();
+    }
   }
 
   /**
@@ -814,10 +969,26 @@ class WebScraper {
     if (!this.state.currentTask) return;
 
     try {
-      await blueprintApi.cancelTask(this.state.currentTask.id);
+      if (blueprintApi && blueprintApi.cancelTask) {
+        await blueprintApi.cancelTask(this.state.currentTask.id);
+      } else {
+        // Fallback to direct fetch
+        const fetchResponse = await fetch(`${SCRAPER_ENDPOINTS.CANCEL}/${this.state.currentTask.id}`, {
+          method: 'POST',
+          headers: {
+            'X-API-Key': localStorage.getItem('api_key') || ''
+          }
+        });
+        
+        if (!fetchResponse.ok) {
+          throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+        }
+      }
+      
       console.log(`🚫 Task cancelled: ${this.state.currentTask.id}`);
       
       this.state.processingState = 'idle';
+      this.state.currentTask = null;
       this.updateUI();
       
     } catch (error) {
@@ -942,14 +1113,40 @@ class WebScraper {
         });
         
         // Start download (this will trigger socket events)
-        await blueprintApi.request('/api/download-pdf', {
-          method: 'POST',
-          body: JSON.stringify({
-            url: url,
-            title: item.title,
-            output_directory: this.getCurrentOutputDirectory()
-          })
-        }, 'web_scraper');
+        if (blueprintApi && blueprintApi.request) {
+          await blueprintApi.request('/api/download-pdf', {
+            method: 'POST',
+            body: JSON.stringify({
+              url: url,
+              outputFolder: this.getCurrentOutputDirectory(),
+              outputFilename: item.title,
+              processFile: true,
+              extractTables: this.config.pdfOptions.extractTables,
+              useOcr: this.config.pdfOptions.useOcr
+            })
+          }, 'web_scraper');
+        } else {
+          // Fallback to direct fetch
+          const fetchResponse = await fetch(PDF_ENDPOINTS.DOWNLOAD, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': localStorage.getItem('api_key') || ''
+            },
+            body: JSON.stringify({
+              url: url,
+              outputFolder: this.getCurrentOutputDirectory(),
+              outputFilename: item.title,
+              processFile: true,
+              extractTables: this.config.pdfOptions.extractTables,
+              useOcr: this.config.pdfOptions.useOcr
+            })
+          });
+          
+          if (!fetchResponse.ok) {
+            throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+          }
+        }
         
       } catch (error) {
         console.error(`❌ Failed to start download for ${url}:`, error);
@@ -1005,12 +1202,26 @@ class WebScraper {
         title: paper.title,
         authors: paper.authors,
         source: paper.source,
-        size: paper.size || 0
+        size: paper.size || 0,
+        year: paper.year,
+        citations: paper.citation_count
       })));
     }
 
     // Apply filters
     allPdfs = this.applyFilters(allPdfs);
+    
+    // Show/hide PDF selection panel
+    const selectionPanel = document.getElementById('pdf-selection-panel');
+    if (selectionPanel) {
+      selectionPanel.style.display = allPdfs.length > 0 ? 'block' : 'none';
+    }
+    
+    // Update counts
+    const totalCount = document.getElementById('total-pdfs-count');
+    if (totalCount) {
+      totalCount.textContent = allPdfs.length;
+    }
 
     // Generate HTML
     const html = this.generatePdfResultsHtml(allPdfs);
@@ -1338,10 +1549,25 @@ class WebScraper {
   showProgress(progress, message) {
     const progressBar = this.state.elements.get('scraper-progress-bar');
     const progressText = this.state.elements.get('scraper-progress-text');
+    const progressContainer = this.state.elements.get('scraper-progress-container');
+
+    if (progressContainer && progressContainer.style.display === 'none') {
+      progressContainer.style.display = 'block';
+    }
 
     if (progressBar) {
       progressBar.style.width = `${progress}%`;
       progressBar.setAttribute('aria-valuenow', progress);
+      progressBar.textContent = `${progress.toFixed(1)}%`;
+      
+      // Update progress bar color based on progress
+      if (progress < 30) {
+        progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-danger';
+      } else if (progress < 70) {
+        progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-warning';
+      } else {
+        progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-success';
+      }
     }
 
     if (progressText) {
@@ -1496,6 +1722,16 @@ class WebScraper {
    */
   showError(message) {
     this.showToast('Web Scraper Error', message, 'error');
+    
+    // Report to error handler
+    if (window.NeuroGen?.errorHandler) {
+      window.NeuroGen.errorHandler.logError({
+        module: 'webScraper',
+        message,
+        severity: 'error',
+        timestamp: new Date().toISOString()
+      });
+    }
   }
 
   /**
@@ -1503,6 +1739,15 @@ class WebScraper {
    */
   showWarning(message) {
     this.showToast('Web Scraper Warning', message, 'warning');
+    
+    // Report to error handler
+    if (window.NeuroGen?.errorHandler) {
+      window.NeuroGen.errorHandler.logWarning({
+        module: 'webScraper',
+        message,
+        timestamp: new Date().toISOString()
+      });
+    }
   }
 
   /**
@@ -1511,7 +1756,95 @@ class WebScraper {
   showInfo(message) {
     this.showToast('Web Scraper', message, 'info');
   }
+  
+  /**
+   * Get module health status
+   */
+  getHealthStatus() {
+    return {
+      module: 'webScraper',
+      initialized: this.state.isInitialized,
+      status: this.state.processingState,
+      activeTasks: this.state.activeTasks.size,
+      downloadQueue: this.state.downloadQueue.size,
+      currentTask: this.state.currentTask ? {
+        id: this.state.currentTask.id,
+        type: this.state.currentTask.type,
+        startTime: this.state.currentTask.startTime
+      } : null,
+      dependencies: {
+        blueprintApi: !!blueprintApi,
+        socket: !!window.socket?.connected,
+        endpoints: !!SCRAPER_ENDPOINTS
+      }
+    };
+  }
 
+  /**
+   * Add activity item to feed
+   */
+  addActivityItem(details) {
+    const activityFeed = document.getElementById('activity-feed');
+    if (!activityFeed) return;
+    
+    const item = document.createElement('div');
+    item.className = 'list-group-item';
+    item.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <i class="fas fa-${details.icon || 'info-circle'} text-${details.type || 'info'} me-2"></i>
+          <span>${this.escapeHtml(details.message || 'Activity')}</span>
+        </div>
+        <small class="text-muted">${new Date().toLocaleTimeString()}</small>
+      </div>
+    `;
+    
+    // Add to top of feed
+    activityFeed.insertBefore(item, activityFeed.firstChild);
+    
+    // Limit feed items
+    while (activityFeed.children.length > 50) {
+      activityFeed.removeChild(activityFeed.lastChild);
+    }
+  }
+  
+  /**
+   * Get module statistics
+   */
+  getModuleStats() {
+    const stats = {
+      totalTasksRun: this.state.activeTasks.size,
+      pdfsFound: 0,
+      pdfsDownloaded: 0,
+      academicPapersFound: 0,
+      currentQueueSize: this.state.downloadQueue.size,
+      completedDownloads: 0,
+      failedDownloads: 0
+    };
+    
+    // Count PDFs
+    if (this.state.currentTask?.foundPdfs) {
+      stats.pdfsFound += this.state.currentTask.foundPdfs.size;
+    }
+    
+    // Count downloads
+    for (const download of this.state.downloadProgress.values()) {
+      if (download.status === 'completed') {
+        stats.completedDownloads++;
+        stats.pdfsDownloaded++;
+      } else if (download.status === 'error') {
+        stats.failedDownloads++;
+      }
+    }
+    
+    // Count academic papers
+    for (const results of this.state.academicResults.values()) {
+      stats.academicPapersFound += results.length;
+    }
+    
+    return stats;
+  }
+  
   /**
    * Utility functions
    */
@@ -1558,45 +1891,94 @@ class WebScraper {
    * Reset to initial state
    */
   reset() {
+    console.log('🔄 Resetting Web Scraper to initial state...');
+    
+    // Cancel current task if any
+    if (this.state.currentTask) {
+      this.cancelCurrentTask().catch(console.error);
+    }
+    
+    // Clear state
     this.state.currentTask = null;
     this.state.processingState = 'idle';
     this.state.selectedPdfs.clear();
     this.state.downloadQueue.clear();
     this.state.downloadProgress.clear();
+    this.state.scrapingResults.clear();
+    this.state.academicResults.clear();
     
-    // Clear UI
-    const progressContainer = this.state.elements.get('scraper-progress-container');
-    const statsContainer = this.state.elements.get('scraper-stats-container');
-    const resultsContainer = this.state.elements.get('scraper-results-container');
-
-    if (progressContainer) progressContainer.style.display = 'none';
-    if (statsContainer) statsContainer.style.display = 'none';
-    if (resultsContainer) resultsContainer.style.display = 'none';
+    // Clear UI elements
+    const elements = [
+      'scraper-progress-container',
+      'scraper-stats-container', 
+      'scraper-results-container',
+      'pdf-selection-panel',
+      'academic-results'
+    ];
+    
+    elements.forEach(id => {
+      const element = this.state.elements.get(id) || document.getElementById(id);
+      if (element) {
+        element.style.display = 'none';
+      }
+    });
+    
+    // Clear activity feed
+    const activityFeed = document.getElementById('activity-feed');
+    if (activityFeed) {
+      activityFeed.innerHTML = '';
+    }
+    
+    // Reset progress bar
+    this.showProgress(0, 'Ready to start');
 
     this.updateUI();
+    
+    console.log('✅ Web Scraper reset complete');
   }
 
   /**
    * Cleanup event listeners and resources
    */
   cleanup() {
+    console.log('🧹 Cleaning up Web Scraper module...');
+    
     // Remove event listeners
-    this.state.eventListeners.forEach(removeListener => removeListener());
+    this.state.eventListeners.forEach(removeListener => {
+      try {
+        removeListener();
+      } catch (e) {
+        console.warn('Error removing event listener:', e);
+      }
+    });
     this.state.eventListeners.clear();
 
     // Remove socket listeners
-    this.state.socketListeners.forEach(removeListener => removeListener());
+    this.state.socketListeners.forEach(removeListener => {
+      try {
+        removeListener();
+      } catch (e) {
+        console.warn('Error removing socket listener:', e);
+      }
+    });
     this.state.socketListeners.clear();
 
     // Cancel any ongoing tasks
     if (this.state.currentTask) {
-      this.cancelCurrentTask();
+      this.cancelCurrentTask().catch(console.error);
     }
 
     // Save state before cleanup
     this.saveState();
 
     this.state.isInitialized = false;
+    
+    // Unregister from module system
+    if (window.NeuroGen?.modules?.webScraper) {
+      delete window.NeuroGen.modules.webScraper;
+    }
+    
+    console.log('✅ Web Scraper cleanup complete');
   }
 }
 
@@ -1609,13 +1991,34 @@ export default webScraper;
 // Expose to global scope for debugging and UI interaction
 if (typeof window !== 'undefined') {
   window.webScraper = webScraper;
+  
+  // Register with NeuroGen module system
+  if (window.NeuroGen) {
+    window.NeuroGen.modules = window.NeuroGen.modules || {};
+    window.NeuroGen.modules.webScraper = webScraper;
+  }
 }
 
 // Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => webScraper.init());
+  document.addEventListener('DOMContentLoaded', () => {
+    webScraper.init().then(() => {
+      // Notify health monitor if available
+      if (window.healthMonitor) {
+        window.healthMonitor.runHealthCheck();
+      }
+    }).catch(error => {
+      console.error('Web Scraper initialization error:', error);
+      // Report to error handler if available
+      if (window.NeuroGen?.errorHandler) {
+        window.NeuroGen.errorHandler.handleError(error, 'webScraper.init');
+      }
+    });
+  });
 } else {
-  webScraper.init();
+  webScraper.init().catch(error => {
+    console.error('Web Scraper initialization error:', error);
+  });
 }
 
-console.log('🌐 Web Scraper module loaded (Complete Blueprint Implementation)');
+console.log('🌐 Web Scraper module loaded (Blueprint Architecture v3.0)');

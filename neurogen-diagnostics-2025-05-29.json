@@ -1,47 +1,12 @@
 {
   "endpoints": {
     "academicSearch": {
-      "analyze": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/academic/analyze/<path:id>"
-      },
-      "bulk_download": {
+      "download": {
         "exists": true,
         "methods": [
           "POST"
         ],
-        "url": "/api/academic/bulk/download"
-      },
-      "citations": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/academic/citations/<path:id>"
-      },
-      "details": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/academic/details/<path:id>"
-      },
-      "download": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/academic/download/<path:id>"
-      },
-      "extract": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/academic/extract"
+        "url": "/api/academic/download"
       },
       "health": {
         "exists": true,
@@ -50,100 +15,12 @@
         ],
         "url": "/api/academic/health"
       },
-      "multi_source": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/academic/multi-source"
-      },
-      "recommendations": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/academic/recommendations/<path:id>"
-      },
       "search": {
         "exists": true,
         "methods": [
-          "GET"
+          "POST"
         ],
         "url": "/api/academic/search"
-      }
-    },
-    "apiKeys": {
-      "create": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/keys/create"
-      },
-      "list": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/keys"
-      },
-      "revoke": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/keys/revoke"
-      }
-    },
-    "core": {
-      "diagnostics": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/diagnostics"
-      },
-      "endpoint_dashboard": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/endpoint-dashboard"
-      },
-      "home": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/"
-      },
-      "key_manager": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/key-manager"
-      },
-      "module_diagnostics_complete": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/module-diagnostics-complete"
-      },
-      "shutdown": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/shutdown"
-      },
-      "test_modules": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/test-modules"
       }
     },
     "fileProcessor": {
@@ -161,33 +38,12 @@
         ],
         "url": "/api/download/<task_id>"
       },
-      "download_direct": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/download/<path:filename>"
-      },
       "open": {
         "exists": true,
         "methods": [
           "GET"
         ],
         "url": "/api/open/<task_id>"
-      },
-      "open_file": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/open-file"
-      },
-      "open_folder": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/open-folder"
       },
       "process": {
         "exists": true,
@@ -203,43 +59,6 @@
         ],
         "url": "/api/status/<task_id>"
       },
-      "upload_path_detection": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/upload-for-path-detection"
-      }
-    },
-    "fileSystem": {
-      "check_file_exists": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/check-file-exists"
-      },
-      "create_directory": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/create-directory"
-      },
-      "get_default_output_folder": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/get-default-output-folder"
-      },
-      "get_output_filepath": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/get-output-filepath"
-      },
       "verify_path": {
         "exists": true,
         "methods": [
@@ -248,69 +67,43 @@
         "url": "/api/verify-path"
       }
     },
-    "pdfProcessor": {
-      "analyze": {
+    "management": {
+      "analytics": {
         "exists": true,
         "methods": [
-          "POST"
+          "GET"
         ],
-        "url": "/api/pdf/analyze"
-      },
-      "batch_process": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/pdf/batch-process"
+        "url": "/api/analytics"
       },
       "cancel": {
         "exists": true,
         "methods": [
           "POST"
         ],
-        "url": "/api/pdf/cancel/<task_id>"
+        "url": "/api/cancel/<task_id>"
       },
-      "capabilities": {
-        "exists": false,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/pdf-capabilities"
-      },
-      "detect_type": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/pdf/detect-type"
-      },
-      "download_file_path": {
+      "keys": {
         "exists": true,
         "methods": [
           "GET"
         ],
-        "url": "/download-file/<path:file_path>"
+        "url": "/api/keys"
       },
-      "download_pdf": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/download-pdf"
-      },
-      "download_pdf_path": {
+      "tasks": {
         "exists": true,
         "methods": [
           "GET"
         ],
-        "url": "/download-pdf/<path:pdf_path>"
-      },
-      "extract_tables": {
+        "url": "/api/tasks"
+      }
+    },
+    "pdfProcessor": {
+      "extract": {
         "exists": true,
         "methods": [
           "POST"
         ],
-        "url": "/api/pdf/extract-tables"
+        "url": "/api/pdf/extract"
       },
       "process": {
         "exists": true,
@@ -333,7 +126,7 @@
         "methods": [
           "POST"
         ],
-        "url": "/api/cancel/<task_id>"
+        "url": "/api/cancel-playlists/<task_id>"
       },
       "start": {
         "exists": true,
@@ -343,113 +136,41 @@
         "url": "/api/start-playlists"
       }
     },
-    "taskManagement": {
-      "analytics": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/tasks/analytics"
-      },
-      "cancel": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/cancel/<task_id>"
-      },
-      "emergency_stop": {
-        "exists": true,
-        "methods": [
-          "POST"
-        ],
-        "url": "/api/emergency-stop"
-      },
-      "export_stats": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/task/<task_id>/stats/export"
-      },
-      "history": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/tasks/history"
-      },
-      "stats": {
-        "exists": true,
-        "methods": [
-          "GET"
-        ],
-        "url": "/api/task/<task_id>/stats"
-      }
-    },
     "webScraper": {
       "cancel": {
-        "exists": true,
+        "exists": false,
         "methods": [
           "POST"
         ],
-        "url": "/api/scrape2/cancel/<task_id>"
+        "url": "/api/scrape/cancel/<task_id>"
+      },
+      "results": {
+        "exists": false,
+        "methods": [
+          "GET"
+        ],
+        "url": "/api/scrape/results/<task_id>"
       },
       "scrape": {
         "exists": true,
         "methods": [
           "POST"
         ],
-        "url": "/api/scrape2"
+        "url": "/api/scrape"
       },
       "status": {
-        "exists": true,
+        "exists": false,
         "methods": [
           "GET"
         ],
-        "url": "/api/scrape2/status/<task_id>"
+        "url": "/api/scrape/status/<task_id>"
       }
     }
   },
   "issues": [
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/errorHandler.js",
-      "module": "core/errorHandler.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/uiRegistry.js",
-      "module": "core/uiRegistry.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/stateManager.js",
-      "module": "core/stateManager.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventRegistry.js",
-      "module": "core/eventRegistry.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventManager.js",
-      "module": "core/eventManager.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/themeManager.js",
-      "module": "core/themeManager.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/module-bridge.js",
-      "module": "core/module-bridge.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/ui.js",
-      "module": "core/ui.js",
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/app.js",
+      "module": "core/app.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
@@ -458,13 +179,18 @@
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/app.js",
-      "module": "core/app.js",
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/errorHandler.js",
+      "module": "core/errorHandler.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/moduleLoader.js",
-      "module": "core/moduleLoader.js",
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventManager.js",
+      "module": "core/eventManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventRegistry.js",
+      "module": "core/eventRegistry.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
@@ -473,13 +199,83 @@
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/socketHandler.js",
-      "module": "utils/socketHandler.js",
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/module-bridge.js",
+      "module": "core/module-bridge.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/moduleLoader.js",
+      "module": "core/moduleLoader.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/stateManager.js",
+      "module": "core/stateManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/themeManager.js",
+      "module": "core/themeManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/ui.js",
+      "module": "core/ui.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/uiRegistry.js",
+      "module": "core/uiRegistry.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/debugTools.js",
+      "module": "utils/debugTools.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/domUtils.js",
+      "module": "utils/domUtils.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/errorHandler.js",
+      "module": "utils/errorHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/fileHandler.js",
+      "module": "utils/fileHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/index.js",
+      "module": "utils/index.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/moduleDiagnostics.js",
+      "module": "utils/moduleDiagnostics.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
       "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/progressHandler.js",
       "module": "utils/progressHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/safeFileProcessor.js",
+      "module": "utils/safeFileProcessor.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/socketHandler.js",
+      "module": "utils/socketHandler.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/systemHealth.js",
+      "module": "utils/systemHealth.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
@@ -493,53 +289,8 @@
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/fileHandler.js",
-      "module": "utils/fileHandler.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/domUtils.js",
-      "module": "utils/domUtils.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/moduleDiagnostics.js",
-      "module": "utils/moduleDiagnostics.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/systemHealth.js",
-      "module": "utils/systemHealth.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/debugTools.js",
-      "module": "utils/debugTools.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/safeFileProcessor.js",
-      "module": "utils/safeFileProcessor.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/fileProcessor.js",
-      "module": "features/fileProcessor.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/webScraper.js",
-      "module": "features/webScraper.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/playlistDownloader.js",
-      "module": "features/playlistDownloader.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicSearch.js",
-      "module": "features/academicSearch.js",
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicApiClient.js",
+      "module": "features/academicApiClient.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
@@ -548,33 +299,8 @@
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicApiClient.js",
-      "module": "features/academicApiClient.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/historyManager.js",
-      "module": "features/historyManager.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/pdfProcessor.js",
-      "module": "features/pdfProcessor.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/helpMode.js",
-      "module": "features/helpMode.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/performanceOptimizer.js",
-      "module": "features/performanceOptimizer.js",
-      "type": "MODULE_NOT_FOUND"
-    },
-    {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/keyboardShortcuts.js",
-      "module": "features/keyboardShortcuts.js",
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicSearch.js",
+      "module": "features/academicSearch.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
@@ -583,18 +309,73 @@
       "type": "MODULE_NOT_FOUND"
     },
     {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/fileProcessor.js",
+      "module": "features/fileProcessor.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/helpMode.js",
+      "module": "features/helpMode.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/historyManager.js",
+      "module": "features/historyManager.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/keyboardShortcuts.js",
+      "module": "features/keyboardShortcuts.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/pdfProcessor.js",
+      "module": "features/pdfProcessor.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/performanceOptimizer.js",
+      "module": "features/performanceOptimizer.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/playlistDownloader.js",
+      "module": "features/playlistDownloader.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/safeFileProcessor.js",
+      "module": "features/safeFileProcessor.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/webScraper.js",
+      "module": "features/webScraper.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
+      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/webScraperUtils.js",
+      "module": "features/webScraperUtils.js",
+      "type": "MODULE_NOT_FOUND"
+    },
+    {
       "file": "index.js",
       "message": "Critical file missing: /workspace/modules/blueprints/static/js/index.js",
       "type": "CRITICAL_FILE_MISSING"
     },
     {
-      "file": "index.html",
-      "message": "Critical file missing: /workspace/modules/blueprints/templates/index.html",
-      "type": "CRITICAL_FILE_MISSING"
+      "endpoint": "webScraper.status",
+      "message": "API endpoint not found: /api/scrape/status/<task_id>",
+      "type": "ENDPOINT_MISSING"
     },
     {
-      "endpoint": "pdfProcessor.capabilities",
-      "message": "API endpoint not found: /api/pdf-capabilities",
+      "endpoint": "webScraper.cancel",
+      "message": "API endpoint not found: /api/scrape/cancel/<task_id>",
+      "type": "ENDPOINT_MISSING"
+    },
+    {
+      "endpoint": "webScraper.results",
+      "message": "API endpoint not found: /api/scrape/results/<task_id>",
       "type": "ENDPOINT_MISSING"
     }
   ],
@@ -855,6 +636,16 @@
         "size": 0,
         "syntaxValid": false
       },
+      "safeFileProcessor": {
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
+        "name": "safeFileProcessor.js",
+        "path": "/static/js/modules/features/safeFileProcessor.js",
+        "size": 0,
+        "syntaxValid": false
+      },
       "webScraper": {
         "exists": false,
         "hasExports": false,
@@ -862,6 +653,16 @@
         "modified": null,
         "name": "webScraper.js",
         "path": "/static/js/modules/features/webScraper.js",
+        "size": 0,
+        "syntaxValid": false
+      },
+      "webScraperUtils": {
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
+        "name": "webScraperUtils.js",
+        "path": "/static/js/modules/features/webScraperUtils.js",
         "size": 0,
         "syntaxValid": false
       }
@@ -887,6 +688,16 @@
         "size": 0,
         "syntaxValid": false
       },
+      "errorHandler": {
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
+        "name": "errorHandler.js",
+        "path": "/static/js/modules/utils/errorHandler.js",
+        "size": 0,
+        "syntaxValid": false
+      },
       "fileHandler": {
         "exists": false,
         "hasExports": false,
@@ -894,6 +705,16 @@
         "modified": null,
         "name": "fileHandler.js",
         "path": "/static/js/modules/utils/fileHandler.js",
+        "size": 0,
+        "syntaxValid": false
+      },
+      "index": {
+        "exists": false,
+        "hasExports": false,
+        "hasImports": false,
+        "modified": null,
+        "name": "index.js",
+        "path": "/static/js/modules/utils/index.js",
         "size": 0,
         "syntaxValid": false
       },
@@ -972,12 +793,12 @@
   "recommendations": [
     {
       "action": "Check module file paths and ensure all files are present",
-      "message": "Found 34 missing modules",
+      "message": "Found 38 missing modules",
       "priority": "HIGH"
     },
     {
       "action": "Verify backend routes are properly defined",
-      "message": "Found 1 missing API endpoints",
+      "message": "Found 3 missing API endpoints",
       "priority": "MEDIUM"
     }
   ],
@@ -988,16 +809,16 @@
     "version": "1.2.3"
   },
   "summary": {
-    "checkedEndpoints": 55,
+    "checkedEndpoints": 19,
     "foundModules": 0,
     "health": "CRITICAL",
-    "issueCount": 37,
-    "missingEndpoints": 1,
-    "missingModules": 34,
-    "totalEndpoints": 56,
-    "totalExpectedModules": 34
+    "issueCount": 42,
+    "missingEndpoints": 3,
+    "missingModules": 38,
+    "totalEndpoints": 22,
+    "totalExpectedModules": 38
   },
-  "timestamp": "2025-05-28T21:31:31.266429",
-  "generatedAt": "2025-05-29T01:31:42.885Z",
+  "timestamp": "2025-05-29T15:23:49.036520",
+  "generatedAt": "2025-05-29T19:25:02.467Z",
   "reportType": "NeuroGen Module Diagnostics Report"
 }
