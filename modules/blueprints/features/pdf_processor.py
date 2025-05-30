@@ -6,6 +6,7 @@ Handles all PDF processing, extraction, and analysis functionality
 from flask import Blueprint, request, jsonify, send_file, current_app
 import logging
 import os
+import sys
 import uuid
 import time
 import traceback
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_OUTPUT_FOLDER = "downloads"
 
 # Create the blueprint
-pdf_processor_bp = Blueprint('pdf_processor', __name__, url_prefix='/api/pdf')
+pdf_processor_bp = Blueprint('pdf_processor', __name__, url_prefix='/api/pdf-process')
 
 # Import necessary modules and functions
 from blueprints.core.services import (

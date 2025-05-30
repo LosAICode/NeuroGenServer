@@ -650,6 +650,321 @@
                         </div>
                     </div>
                     
+                    <!-- ========== PDF DOWNLOADER TAB ========== -->
+                    <div class="tab-pane fade" id="pdf-downloader" role="tabpanel" aria-labelledby="pdf-tab">
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0"><i class="fas fa-file-pdf me-2"></i>PDF Downloader</h5>
+                                <div class="d-flex">
+                                    <button id="pdf-clear-queue-btn" class="btn btn-sm btn-outline-warning me-2">
+                                        <i class="fas fa-list me-1"></i> Clear Queue
+                                    </button>
+                                    <button id="pdf-cancel-all-btn" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-stop me-1"></i> Cancel All
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="alert alert-info mt-3 small">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Download PDFs individually or in batches with automatic Structify processing for LLM training data.
+                            </div>
+                        </div>
+
+                        <!-- PDF Downloader Sub-tabs -->
+                        <ul class="nav nav-pills mb-4" id="pdf-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="pdf-single-tab-btn" data-bs-toggle="pill" data-bs-target="#pdf-single-tab-content" type="button" role="tab">
+                                    <i class="fas fa-download me-1"></i> Single Download
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pdf-batch-tab-btn" data-bs-toggle="pill" data-bs-target="#pdf-batch-tab-content" type="button" role="tab">
+                                    <i class="fas fa-layer-group me-1"></i> Batch Download
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pdf-queue-tab-btn" data-bs-toggle="pill" data-bs-target="#pdf-queue-tab-content" type="button" role="tab">
+                                    <i class="fas fa-list-ol me-1"></i> Download Queue
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pdf-history-tab-btn" data-bs-toggle="pill" data-bs-target="#pdf-history-tab-content" type="button" role="tab">
+                                    <i class="fas fa-history me-1"></i> Download History
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- PDF Sub-tab Content -->
+                        <div class="tab-content" id="pdf-sub-tabs-content">
+                            
+                            <!-- Single Download Tab -->
+                            <div class="tab-pane fade show active" id="pdf-single-tab-content" role="tabpanel">
+                                <form id="pdf-single-form">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                <label for="pdf-single-url-input" class="form-label">PDF URL</label>
+                                                <input type="url" class="form-control" id="pdf-single-url-input" 
+                                                       placeholder="https://arxiv.org/pdf/2301.00001.pdf" 
+                                                       aria-describedby="pdf-single-url-help">
+                                                <div id="pdf-single-url-help" class="form-text">
+                                                    Enter the direct URL to a PDF file. arXiv abstract URLs will be automatically converted.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="pdf-single-filename" class="form-label">Custom Filename (Optional)</label>
+                                                <input type="text" class="form-control" id="pdf-single-filename" 
+                                                       placeholder="research-paper">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="pdf-single-output-dir" class="form-label">Output Directory</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="pdf-single-output-dir" 
+                                                   placeholder="Leave empty for default downloads folder">
+                                            <button class="btn btn-outline-secondary" type="button" id="pdf-single-browse-btn">
+                                                <i class="fas fa-folder-open"></i> Browse
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary" id="pdf-single-download-btn">
+                                            <i class="fas fa-download me-2"></i>Download PDF
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Batch Download Tab -->
+                            <div class="tab-pane fade" id="pdf-batch-tab-content" role="tabpanel">
+                                <form id="pdf-batch-form">
+                                    <div class="mb-3">
+                                        <label for="pdf-batch-urls-input" class="form-label">PDF URLs</label>
+                                        <textarea class="form-control" id="pdf-batch-urls-input" rows="8" 
+                                                  placeholder="Enter one URL per line:&#10;https://arxiv.org/pdf/2301.00001.pdf&#10;https://arxiv.org/pdf/2301.00002.pdf&#10;https://example.com/paper.pdf"
+                                                  aria-describedby="pdf-batch-urls-help"></textarea>
+                                        <div id="pdf-batch-urls-help" class="form-text">
+                                            Enter one PDF URL per line. Mix of arXiv and direct PDF URLs is supported.
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                <label for="pdf-batch-output-dir" class="form-label">Output Directory</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="pdf-batch-output-dir" 
+                                                           placeholder="Leave empty for default downloads folder">
+                                                    <button class="btn btn-outline-secondary" type="button" id="pdf-batch-browse-btn">
+                                                        <i class="fas fa-folder-open"></i> Browse
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="pdf-concurrent-downloads" class="form-label">Concurrent Downloads</label>
+                                                <select class="form-select" id="pdf-concurrent-downloads">
+                                                    <option value="1">1 (Sequential)</option>
+                                                    <option value="3">3 (Balanced)</option>
+                                                    <option value="5" selected>5 (Default)</option>
+                                                    <option value="10">10 (Fast)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary" id="pdf-batch-download-btn">
+                                            <i class="fas fa-layer-group me-2"></i>Download All PDFs
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Download Queue Tab -->
+                            <div class="tab-pane fade" id="pdf-queue-tab-content" role="tabpanel">
+                                <div class="mb-3">
+                                    <div class="row text-center">
+                                        <div class="col-md-3">
+                                            <div class="card border-0 bg-light">
+                                                <div class="card-body py-2">
+                                                    <h5 class="card-title mb-1" id="pdf-queue-total">0</h5>
+                                                    <small class="text-muted">Queued</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card border-0 bg-primary text-white">
+                                                <div class="card-body py-2">
+                                                    <h5 class="card-title mb-1" id="pdf-downloading-total">0</h5>
+                                                    <small>Downloading</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card border-0 bg-success text-white">
+                                                <div class="card-body py-2">
+                                                    <h5 class="card-title mb-1" id="pdf-completed-total">0</h5>
+                                                    <small>Completed</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card border-0 bg-danger text-white">
+                                                <div class="card-body py-2">
+                                                    <h5 class="card-title mb-1" id="pdf-failed-total">0</h5>
+                                                    <small>Failed</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Active Downloads -->
+                                <div id="pdf-active-downloads" class="mb-4">
+                                    <h6><i class="fas fa-download me-2"></i>Active Downloads</h6>
+                                    <div id="pdf-active-downloads-container">
+                                        <div class="text-center py-3 text-muted">
+                                            No active downloads
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Completed Downloads -->
+                                <div id="pdf-completed-downloads">
+                                    <h6><i class="fas fa-check-circle me-2"></i>Completed Downloads</h6>
+                                    <div id="pdf-completed-downloads-container">
+                                        <div class="text-center py-3 text-muted">
+                                            No completed downloads
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Download History Tab -->
+                            <div class="tab-pane fade" id="pdf-history-tab-content" role="tabpanel">
+                                <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                                <input type="text" id="pdf-history-search" class="form-control" placeholder="Search download history...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select id="pdf-history-filter" class="form-select">
+                                                <option value="all">All Downloads</option>
+                                                <option value="completed">Completed</option>
+                                                <option value="failed">Failed</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button id="pdf-history-clear-btn" class="btn btn-outline-danger w-100">
+                                                <i class="fas fa-trash me-1"></i> Clear History
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="pdf-history-container">
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="fas fa-file-pdf me-2"></i>No download history available
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PDF Processing Options (Shared across all tabs) -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>Processing Options</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="pdf-process-structify" checked>
+                                            <label class="form-check-label" for="pdf-process-structify">
+                                                Process with Structify
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="pdf-extract-tables" checked>
+                                            <label class="form-check-label" for="pdf-extract-tables">
+                                                Extract Tables
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="pdf-use-ocr">
+                                            <label class="form-check-label" for="pdf-use-ocr">
+                                                Use OCR (Scanned PDFs)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="pdf-extract-structure" checked>
+                                            <label class="form-check-label" for="pdf-extract-structure">
+                                                Extract Document Structure
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label for="pdf-timeout" class="form-label small">Timeout (seconds)</label>
+                                        <input type="number" class="form-control form-control-sm" id="pdf-timeout" value="60" min="10" max="300">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="pdf-max-file-size" class="form-label small">Max File Size (MB)</label>
+                                        <input type="number" class="form-control form-control-sm" id="pdf-max-file-size" value="100" min="1" max="500">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="pdf-retry-attempts" class="form-label small">Retry Attempts</label>
+                                        <input type="number" class="form-control form-control-sm" id="pdf-retry-attempts" value="3" min="1" max="10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PDF Progress Section -->
+                        <div id="pdf-progress-container" class="mt-4" style="display: none;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">Download Progress</h6>
+                                        <button id="pdf-cancel-btn" class="btn btn-sm btn-outline-danger" style="display: none;">
+                                            <i class="fas fa-stop me-1"></i> Cancel
+                                        </button>
+                                    </div>
+                                    <div class="progress mb-2">
+                                        <div id="pdf-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                             role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                            0%
+                                        </div>
+                                    </div>
+                                    <div id="pdf-progress-text" class="small text-muted">Ready to download</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PDF Stats Container -->
+                        <div id="pdf-stats-container" class="mt-4" style="display: none;">
+                            <!-- PDF download statistics will be shown here -->
+                        </div>
+                    </div>
+                    
                     <!-- ========== HISTORY TAB ========== -->
                     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                         <div class="mb-4">

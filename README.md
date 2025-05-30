@@ -83,10 +83,10 @@ pip install -r requirements.txt
 ### 4. Start Server
 ```bash
 # Production mode (recommended)
-python run_server_new.py
+python server.py
 
 # Debug mode with enhanced logging
-python run_server_new.py --debug
+python server.py --debug
 ```
 
 🌐 **Access**: `http://localhost:5025`
@@ -96,8 +96,8 @@ python run_server_new.py --debug
 ```
 NeuroGenServer/
 ├── modules/                          # Main application
-│   ├── app_new.py                   # Flask application (Blueprint architecture)
-│   ├── run_server_new.py            # Production server launcher
+│   ├── app.py                       # Flask application (Blueprint architecture)
+│   ├── server.py                    # Production server launcher
 │   ├── blueprints/                  # Feature-based organization
 │   │   ├── templates/index.html     # Main UI template
 │   │   ├── core/                    # Core functionality ✅

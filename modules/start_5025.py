@@ -24,7 +24,7 @@ def start_server():
     
     # Start the server
     try:
-        subprocess.run([sys.executable, 'main.py', '--port', '5025'], check=True)
+        subprocess.run([sys.executable, 'server.py', '--port', '5025'], check=True)
     except KeyboardInterrupt:
         print("\n✅ Server stopped gracefully")
     except Exception as e:

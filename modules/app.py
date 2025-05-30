@@ -179,6 +179,7 @@ def register_blueprints(app):
     # Feature blueprints
     from blueprints.features.file_processor import file_processor_bp
     from blueprints.features.web_scraper import web_scraper_bp
+    from blueprints.features.pdf_downloader import pdf_downloader_bp
     from blueprints.features.playlist_downloader import playlist_downloader_bp
     from blueprints.features.academic_search import academic_search_bp
     from blueprints.features.pdf_processor import pdf_processor_bp
@@ -186,6 +187,7 @@ def register_blueprints(app):
     
     app.register_blueprint(file_processor_bp)
     app.register_blueprint(web_scraper_bp)
+    app.register_blueprint(pdf_downloader_bp)
     app.register_blueprint(playlist_downloader_bp)
     app.register_blueprint(academic_search_bp)
     app.register_blueprint(pdf_processor_bp)

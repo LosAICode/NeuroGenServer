@@ -575,3 +575,24 @@ This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
 2025-05-30 17:50:08,962 - blueprints.core.services - INFO - Removed task 0d85a807-d57f-446c-b04b-359f99b9dcf5 from active tasks
+2025-05-30 19:46:39,780 - blueprints.api.management - ERROR - Error listing API keys: 'ApiKeyManager' object has no attribute 'get_all_keys'
+2025-05-30 19:46:39,787 - blueprints.core.services - INFO - Saved 1 API keys
+2025-05-30 19:46:39,788 - app_new - ERROR - Exception on /api/get-default-output-folder [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/modules/blueprints/core/services.py", line 4039, in decorated_function
+    from flask import request, jsonify
+                           ^^^^^^^^^^^^
+AttributeError: 'ApiKeyManager' object has no attribute 'get_key_info'
+2025-05-30 19:46:39,802 - blueprints.core.routes - ERROR - Internal server error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.

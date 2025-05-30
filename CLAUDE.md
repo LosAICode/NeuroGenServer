@@ -98,8 +98,8 @@ PDF Downloads:      ✅ Centralized
 ### **Backend: Flask Blueprint Structure** ✅
 ```
 modules/
-├── app_new.py                      # Main Flask application ✅
-├── run_server_new.py              # Production server launcher  
+├── app.py                          # Main Flask application ✅
+├── server.py                      # Production server launcher  
 ├── socketio_context_helper.py      # ✅ Flask context fix
 ├── centralized_download_pdf.py     # ✅ Unified PDF downloads
 ├── blueprints/
@@ -212,10 +212,10 @@ def sanitize_for_windows(filename):
 ### **Server Management:**
 ```bash
 # Start production server
-cd modules && python run_server_new.py
+cd modules && python server.py
 
 # Test server with debug
-cd modules && python run_server_new.py --debug
+cd modules && python server.py --debug
 
 # Health check
 curl http://localhost:5025/api/health

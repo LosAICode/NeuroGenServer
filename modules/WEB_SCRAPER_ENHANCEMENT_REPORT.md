@@ -35,7 +35,7 @@ Successfully enhanced the Web Scraper module by:
 - `/workspace/modules/socketio_context_helper.py` - Centralized context-safe SocketIO emission functions
 
 **Files Modified**:
-- `/workspace/modules/app_new.py` - Integrated socketio_context_helper initialization
+- `/workspace/modules/app.py` - Integrated socketio_context_helper initialization
 - `/workspace/modules/blueprints/core/services.py` - Updated all emit functions to use safe versions
 
 ### 3. ✅ **PDF Download Consolidation**

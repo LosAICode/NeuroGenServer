@@ -9,7 +9,7 @@ by checking:
 3. Socket.IO events are properly aligned
 4. Cross-platform features work correctly
 
-Run this script after starting app_new.py to validate the system.
+Run this script after starting app.py to validate the system.
 """
 
 import requests

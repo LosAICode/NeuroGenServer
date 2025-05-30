@@ -19,4 +19,4 @@ export API_DEBUG=True
 # Start the server
 echo "Starting server on http://localhost:5025"
 echo ""
-python3 main.py --port 5025
+python3 server.py --port 5025

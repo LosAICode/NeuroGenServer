@@ -62,8 +62,8 @@ def run_server_mode(args):
         print("🚀 Starting NeuroGen Server (Blueprint Architecture)")
         print("=" * 50)
         
-        # Import and run the new app
-        from app_new import run_server
+        # Import and run the app
+        from app import run_server
         
         print(f"📍 Server URL: http://{args.host}:{args.port}")
         print(f"🔧 Debug mode: {args.debug}")

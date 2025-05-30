@@ -155,6 +155,10 @@ class ApiKeyManager:
             return True
         return False
     
+    def get_all_keys(self):
+        """Get all keys with metadata (for internal API use)"""
+        return self.keys
+    
     def list_keys(self):
         """Get list of all keys (without exposing the actual keys)"""
         return [

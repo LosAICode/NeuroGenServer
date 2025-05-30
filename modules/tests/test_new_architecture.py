@@ -24,7 +24,7 @@ class ArchitectureTest:
         """Start the new server in a separate thread"""
         try:
             print("🚀 Starting server for testing...")
-            from app_new import create_app
+            from app import create_app
             
             def run_server():
                 app, socketio = create_app()

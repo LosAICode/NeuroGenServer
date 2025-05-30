@@ -18,6 +18,6 @@ set API_DEBUG=True
 REM Start the server
 echo Starting server on http://localhost:5025
 echo.
-python main.py --port 5025
+python server.py --port 5025
 
 pause
