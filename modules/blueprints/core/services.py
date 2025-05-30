@@ -9,13 +9,18 @@ import uuid
 import logging
 import threading
 import time
+import traceback
 from datetime import datetime
 from functools import wraps
 from flask import request, jsonify
 from typing import Optional, Dict, Any, Union, List, Set
 from abc import ABC, abstractmethod
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 logger = logging.getLogger(__name__)
+
+# Import utility functions
+from .utils import get_output_filepath
 
 # Export main classes and functions for use by other modules
 __all__ = [
@@ -3103,6 +3108,9 @@ class ScraperTask(BaseTask):
 
     def _download_pdf_with_retries(self, url: str, output_folder: str) -> Optional[str]:
         """Download PDF with intelligent retry logic and performance tracking."""
+        # Import here to avoid circular import
+        from ..features.pdf_processor import enhanced_download_pdf
+        
         for attempt in range(self.max_retries + 1):
             try:
                 if check_task_cancellation(self.task_id):
@@ -3962,6 +3970,30 @@ def remove_task(task_id: str) -> bool:
             del active_tasks[task_id]
             logger.info(f"Removed task {task_id} from active tasks")
             return True
+        return False
+
+def check_task_cancellation(task_id: str) -> bool:
+    """
+    Thread-safe check if a task has been cancelled.
+    
+    Args:
+        task_id: The task ID to check
+        
+    Returns:
+        bool: True if task should be cancelled
+    """
+    if not task_id:
+        return False
+        
+    with tasks_lock:
+        task = active_tasks.get(task_id)
+        if task:
+            # Check if task has is_cancelled_flag attribute
+            if hasattr(task, 'is_cancelled_flag'):
+                return task.is_cancelled_flag
+            # Check status for older task types
+            elif hasattr(task, 'status'):
+                return task.status in ['cancelled', 'cancelling']
         return False
 
 # ----------------------------------------------------------------------------

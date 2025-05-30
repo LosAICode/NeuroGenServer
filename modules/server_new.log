@@ -1,0 +1,278 @@
+2025-05-29 19:28:09,421 - app_new - INFO - Using static folder: /workspace/modules/static
+2025-05-29 19:28:09,425 - app_new - INFO - Using template folder: /workspace/modules/blueprints/templates
+Server initialized for eventlet.
+2025-05-29 19:28:09,467 - engineio.server - INFO - Server initialized for eventlet.
+2025-05-29 19:28:09,681 - blueprints.core.utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 19:28:09,793 - blueprints.core.http_client - INFO - HTTP session created with retry strategy
+2025-05-29 19:28:15,738 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-29 19:28:15,738 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-29 19:28:15,794 - file_processor - INFO - Started temp file cleanup service
+2025-05-29 19:28:15,794 - file_processor - INFO - Started temp file cleanup service
+🚀 Starting NeuroGen Server (Blueprint Architecture)
+==================================================
+📍 Server URL: http://127.0.0.1:5025
+🔧 Debug mode: False
+📁 Working directory: /workspace/modules
+==================================================
+2025-05-29 19:28:17,824 - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-29 19:28:17,824 - pdf_extractor - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-29 19:28:17,996 - INFO - PyPDF2 version 3.0.1 detected
+2025-05-29 19:28:17,996 - pdf_extractor - INFO - PyPDF2 version 3.0.1 detected
+2025-05-29 19:28:17,999 - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-29 19:28:17,999 - pdf_extractor - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-29 19:28:18,033 - INFO - Tabula detected for table extraction
+2025-05-29 19:28:18,033 - pdf_extractor - INFO - Tabula detected for table extraction
+2025-05-29 19:28:18,039 - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-29 19:28:18,039 - pdf_extractor - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-29 19:28:18,043 - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-29 19:28:18,043 - pdf_extractor - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-29 19:28:18,045 - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-29 19:28:18,045 - pdf_extractor - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-29 19:28:18,046 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-29 19:28:18,046 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-29 19:28:18,046 - INFO - Initializing PDF extractor module...
+2025-05-29 19:28:18,046 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-29 19:28:18,048 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 19:28:18,048 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 19:28:18,059 - pdf_output_enhancer - INFO - PDF Output Enhancer module imported. Call init_improved_output_format() to initialize.
+2025-05-29 19:28:18,060 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-29 19:28:18,060 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-29 19:28:18,064 - Structify - INFO - Successfully imported claude.py from Structify package
+2025-05-29 19:28:18,064 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-29 19:28:18,065 - blueprints.core.structify_integration - INFO - Set structify TEMP_OCR_DIR to: /workspace/modules/blueprints/core/../../temp
+2025-05-29 19:28:18,100 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-29 19:28:18,100 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-29 19:28:18,100 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-29 19:28:18,100 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-29 19:28:18,102 - blueprints.core.structify_integration - INFO - Initialized structify OCR environment
+2025-05-29 19:28:18,103 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-29 19:28:18,103 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-29 19:28:18,103 - blueprints.core.structify_integration - INFO - Patched pytesseract temp directory
+2025-05-29 19:28:18,104 - blueprints.core.structify_integration - INFO - Successfully loaded structify_module and components
+2025-05-29 19:28:18,122 - blueprints.core.ocr_config - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-29 19:28:18,132 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-29 19:28:18,132 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 19:28:18,133 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-29 19:28:18,142 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 19:28:18,150 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 19:28:18,167 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-29 19:28:18,169 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 19:28:18,170 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-29 19:28:18,179 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 19:28:18,179 - blueprints.core.ocr_config - INFO - Successfully imported pdf_extractor module
+2025-05-29 19:28:18,180 - INFO - Initializing PDF extractor module...
+2025-05-29 19:28:18,180 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-29 19:28:18,183 - blueprints.core.ocr_config - ERROR - Error initializing PDF extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 19:28:18,210 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 19:28:18,213 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 19:28:18,214 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-29 19:28:18,214 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-29 19:28:18,840 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-29 19:28:18,847 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 19:28:18,858 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 19:28:18,858 - blueprints.core.ocr_config - INFO - OCR environment set up with temp directory: /workspace/modules/temp
+2025-05-29 19:28:18,859 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-29 19:28:18,859 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-29 19:28:21,813 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-29 19:28:21,814 - blueprints.core.ocr_config - INFO - OCR handler initialized successfully
+2025-05-29 19:28:21,830 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 19:28:22,617 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-29 19:28:22,618 - INFO - Claude module is available for processing
+2025-05-29 19:28:22,618 - web_scraper - INFO - Claude module is available for processing
+2025-05-29 19:28:22,618 - INFO - PDF extractor module is available
+2025-05-29 19:28:22,618 - web_scraper - INFO - PDF extractor module is available
+2025-05-29 19:28:28,707 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 19:28:28,773 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-05-29 19:28:29,751 - app_new - INFO - All blueprints registered successfully
+2025-05-29 19:28:29,767 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-05-29 19:28:29,774 - app_new - INFO - NeuroGen Server application created successfully
+2025-05-29 19:28:29,776 - app_new - INFO - Starting NeuroGen Server on 127.0.0.1:5025
+2025-05-29 19:28:29,778 - app_new - INFO - Debug mode: False
+0eiXdLxSk8uFlWMnAAAA: Sending packet OPEN data {'sid': '0eiXdLxSk8uFlWMnAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 19:28:53,234 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Sending packet OPEN data {'sid': '0eiXdLxSk8uFlWMnAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+0eiXdLxSk8uFlWMnAAAA: Received packet MESSAGE data 0
+2025-05-29 19:28:53,282 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Received packet MESSAGE data 0
+2025-05-29 19:28:53,311 - blueprints.socketio_events - INFO - Client connected: xSBIkizQEuVF8F4nAAAB
+emitting event "connection_established" to xSBIkizQEuVF8F4nAAAB [/]
+2025-05-29 19:28:53,331 - socketio.server - INFO - emitting event "connection_established" to xSBIkizQEuVF8F4nAAAB [/]
+0eiXdLxSk8uFlWMnAAAA: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"xSBIkizQEuVF8F4nAAAB","timestamp":1748561333.3316927,"server_version":"1.2.0"}]
+2025-05-29 19:28:53,338 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"xSBIkizQEuVF8F4nAAAB","timestamp":1748561333.3316927,"server_version":"1.2.0"}]
+0eiXdLxSk8uFlWMnAAAA: Sending packet MESSAGE data 0{"sid":"xSBIkizQEuVF8F4nAAAB"}
+2025-05-29 19:28:53,340 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Sending packet MESSAGE data 0{"sid":"xSBIkizQEuVF8F4nAAAB"}
+0eiXdLxSk8uFlWMnAAAA: Received request to upgrade to websocket
+2025-05-29 19:28:54,248 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Received request to upgrade to websocket
+0eiXdLxSk8uFlWMnAAAA: Upgrade to websocket successful
+2025-05-29 19:28:54,289 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Upgrade to websocket successful
+0eiXdLxSk8uFlWMnAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748561358274}]
+2025-05-29 19:29:18,282 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Received packet MESSAGE data 2["ping",{"timestamp":1748561358274}]
+received event "ping" from xSBIkizQEuVF8F4nAAAB [/]
+2025-05-29 19:29:18,283 - socketio.server - INFO - received event "ping" from xSBIkizQEuVF8F4nAAAB [/]
+0eiXdLxSk8uFlWMnAAAA: Sending packet PING data None
+2025-05-29 19:29:18,493 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Sending packet PING data None
+0eiXdLxSk8uFlWMnAAAA: Received packet PONG data 
+2025-05-29 19:29:18,509 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Received packet PONG data 
+0eiXdLxSk8uFlWMnAAAA: Sending packet PING data None
+2025-05-29 19:29:43,537 - engineio.server - INFO - 0eiXdLxSk8uFlWMnAAAA: Sending packet PING data None
+2025-05-29 19:29:46,120 - blueprints.socketio_events - INFO - Client disconnected: xSBIkizQEuVF8F4nAAAB
+CiYj9W5Itf3muT4cAAAC: Sending packet OPEN data {'sid': 'CiYj9W5Itf3muT4cAAAC', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 19:29:49,722 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet OPEN data {'sid': 'CiYj9W5Itf3muT4cAAAC', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 0
+2025-05-29 19:29:52,547 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 0
+2025-05-29 19:29:52,578 - blueprints.socketio_events - INFO - Client connected: KwrnVDCJYCmkyJZOAAAD
+emitting event "connection_established" to KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:29:52,580 - socketio.server - INFO - emitting event "connection_established" to KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"KwrnVDCJYCmkyJZOAAAD","timestamp":1748561392.580057,"server_version":"1.2.0"}]
+2025-05-29 19:29:52,591 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"KwrnVDCJYCmkyJZOAAAD","timestamp":1748561392.580057,"server_version":"1.2.0"}]
+CiYj9W5Itf3muT4cAAAC: Sending packet MESSAGE data 0{"sid":"KwrnVDCJYCmkyJZOAAAD"}
+2025-05-29 19:29:52,598 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet MESSAGE data 0{"sid":"KwrnVDCJYCmkyJZOAAAD"}
+CiYj9W5Itf3muT4cAAAC: Received request to upgrade to websocket
+2025-05-29 19:29:52,621 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received request to upgrade to websocket
+CiYj9W5Itf3muT4cAAAC: Upgrade to websocket successful
+2025-05-29 19:29:56,627 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Upgrade to websocket successful
+bZyY-uuttqcXdtBgAAAE: Sending packet OPEN data {'sid': 'bZyY-uuttqcXdtBgAAAE', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-05-29 19:30:02,377 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet OPEN data {'sid': 'bZyY-uuttqcXdtBgAAAE', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 0
+2025-05-29 19:30:02,528 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 0
+2025-05-29 19:30:02,577 - blueprints.socketio_events - INFO - Client connected: YUo8yNGbCTJIGoWcAAAF
+emitting event "connection_established" to YUo8yNGbCTJIGoWcAAAF [/]
+2025-05-29 19:30:02,596 - socketio.server - INFO - emitting event "connection_established" to YUo8yNGbCTJIGoWcAAAF [/]
+bZyY-uuttqcXdtBgAAAE: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"YUo8yNGbCTJIGoWcAAAF","timestamp":1748561402.596562,"server_version":"1.2.0"}]
+2025-05-29 19:30:02,637 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet MESSAGE data 2["connection_established",{"status":"connected","sid":"YUo8yNGbCTJIGoWcAAAF","timestamp":1748561402.596562,"server_version":"1.2.0"}]
+bZyY-uuttqcXdtBgAAAE: Sending packet MESSAGE data 0{"sid":"YUo8yNGbCTJIGoWcAAAF"}
+2025-05-29 19:30:02,662 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet MESSAGE data 0{"sid":"YUo8yNGbCTJIGoWcAAAF"}
+bZyY-uuttqcXdtBgAAAE: Received request to upgrade to websocket
+2025-05-29 19:30:05,032 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received request to upgrade to websocket
+bZyY-uuttqcXdtBgAAAE: Upgrade to websocket successful
+2025-05-29 19:30:05,285 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Upgrade to websocket successful
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561411316}]
+2025-05-29 19:30:11,805 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561411316}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:30:11,816 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:30:14,729 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:30:14,821 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561425877}]
+2025-05-29 19:30:25,903 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561425877}]
+received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+2025-05-29 19:30:25,904 - socketio.server - INFO - received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+2025-05-29 19:30:27,386 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+2025-05-29 19:30:27,514 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561437255}]
+2025-05-29 19:30:37,266 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561437255}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:30:37,266 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:30:39,796 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:30:39,877 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:30:43,090 - app_new - ERROR - Exception on /api/scrape2 [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/modules/blueprints/features/web_scraper.py", line 104, in scrape2
+    final_json = get_output_filepath(output_filename, folder_override=download_directory)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: get_output_filepath() got an unexpected keyword argument 'folder_override'
+2025-05-29 19:30:43,203 - blueprints.core.routes - ERROR - Internal server error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561450885}]
+2025-05-29 19:30:50,883 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561450885}]
+received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+2025-05-29 19:30:50,884 - socketio.server - INFO - received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+2025-05-29 19:30:52,502 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+2025-05-29 19:30:52,519 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561462777}]
+2025-05-29 19:31:02,783 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561462777}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:31:02,784 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:31:04,882 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:31:04,891 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561475876}]
+2025-05-29 19:31:15,885 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561475876}]
+received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+2025-05-29 19:31:15,908 - socketio.server - INFO - received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+2025-05-29 19:31:17,512 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+2025-05-29 19:31:17,551 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561487778}]
+2025-05-29 19:31:27,798 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561487778}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:31:27,813 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:31:29,889 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:31:29,968 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561500877}]
+2025-05-29 19:31:40,889 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561500877}]
+received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+2025-05-29 19:31:40,891 - socketio.server - INFO - received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+2025-05-29 19:31:42,544 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+2025-05-29 19:31:42,552 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561513517}]
+2025-05-29 19:31:53,528 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561513517}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:31:53,529 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:31:54,960 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:31:54,981 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561525876}]
+2025-05-29 19:32:06,102 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561525876}]
+received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+2025-05-29 19:32:06,784 - socketio.server - INFO - received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+2025-05-29 19:32:07,553 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+2025-05-29 19:32:07,770 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:32:19,979 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561538774}]
+2025-05-29 19:32:23,650 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561538774}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:32:23,731 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:32:23,850 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561550878}]
+2025-05-29 19:32:30,890 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet MESSAGE data 2["ping",{"timestamp":1748561550878}]
+received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+2025-05-29 19:32:30,895 - socketio.server - INFO - received event "ping" from YUo8yNGbCTJIGoWcAAAF [/]
+bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+2025-05-29 19:32:32,787 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Sending packet PING data None
+bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+2025-05-29 19:32:32,831 - engineio.server - INFO - bZyY-uuttqcXdtBgAAAE: Received packet PONG data 
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561563777}]
+2025-05-29 19:32:43,776 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561563777}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:32:43,779 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:32:48,862 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:32:48,869 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:32:51,424 - blueprints.socketio_events - INFO - Client disconnected: YUo8yNGbCTJIGoWcAAAF
+CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561589556}]
+2025-05-29 19:33:09,748 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet MESSAGE data 2["ping",{"timestamp":1748561589556}]
+received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+2025-05-29 19:33:09,849 - socketio.server - INFO - received event "ping" from KwrnVDCJYCmkyJZOAAAD [/]
+CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+2025-05-29 19:33:13,871 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Sending packet PING data None
+CiYj9W5Itf3muT4cAAAC: Received packet PONG data 
+2025-05-29 19:33:14,117 - engineio.server - INFO - CiYj9W5Itf3muT4cAAAC: Received packet PONG data 

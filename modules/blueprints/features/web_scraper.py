@@ -101,7 +101,7 @@ def scrape2():
     download_directory = os.path.abspath(download_directory)
     
     # Get properly formatted output path
-    final_json = get_output_filepath(output_filename, folder_override=download_directory)
+    final_json = get_output_filepath(output_filename, user_defined_dir=download_directory)
     
     # Validate and create download directory if it doesn't exist
     if not os.path.isdir(download_directory):
@@ -131,10 +131,12 @@ def scrape2():
         "max_downloads": max_downloads
     }
     
+    # Start the task with parameters
     scraper_task.start(
         url_configs=url_configs,
-        root_directory=download_directory,
-        output_file=final_json
+        root_scrape_directory=download_directory,
+        output_json_file=output_filename,
+        pdf_options=scraper_task.pdf_options
     )
     
     return jsonify({
@@ -162,7 +164,7 @@ def scrape2_status(task_id):
         "stats": task.stats,
         "error": task.error,
         "output_file": task.output_file,
-        "output_folder": task.output_folder
+        "output_folder": task.root_scrape_directory if hasattr(task, 'root_scrape_directory') else None
     }
     
     # Include PDF downloads information if available
@@ -703,7 +705,7 @@ def process_url_with_settings(url, setting, keyword, output_folder):
                 output_json_name = os.path.splitext(pdf_filename)[0] + "_processed"
                 
                 # Create a unique JSON output filename
-                json_output = get_output_filepath(output_json_name, folder_override=output_folder)
+                json_output = get_output_filepath(output_json_name, user_defined_dir=output_folder)
                 
                 # Process the downloaded PDF using Structify (claude.py)
                 if structify_module:
@@ -782,7 +784,7 @@ def process_url_with_settings(url, setting, keyword, output_folder):
                         # Get filename and create JSON output path
                         pdf_filename = os.path.basename(pdf_file)
                         output_json_name = os.path.splitext(pdf_filename)[0] + "_processed"
-                        json_output = get_output_filepath(output_json_name, folder_override=output_folder)
+                        json_output = get_output_filepath(output_json_name, user_defined_dir=output_folder)
                         
                         # Check if task cancelled before processing
                         if self.is_cancelled:

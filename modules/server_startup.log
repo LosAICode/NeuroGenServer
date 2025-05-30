@@ -1,0 +1,13 @@
+2025-05-29 20:56:17,964 - app_new - INFO - Using static folder: /workspace/modules/static
+2025-05-29 20:56:17,965 - app_new - INFO - Using template folder: /workspace/modules/blueprints/templates
+Server initialized for eventlet.
+2025-05-29 20:56:18,084 - engineio.server - INFO - Server initialized for eventlet.
+2025-05-29 20:56:19,590 - blueprints.core.utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 20:56:21,127 - app_new - ERROR - Failed to start server: cannot import name 'active_tasks' from partially initialized module 'blueprints.core.services' (most likely due to a circular import) (/workspace/modules/blueprints/core/services.py)
+🚀 Starting NeuroGen Server (Blueprint Architecture)
+==================================================
+📍 Server URL: http://127.0.0.1:5025
+🔧 Debug mode: True
+📁 Working directory: /workspace/modules
+==================================================
+💥 Error starting server: cannot import name 'active_tasks' from partially initialized module 'blueprints.core.services' (most likely due to a circular import) (/workspace/modules/blueprints/core/services.py)

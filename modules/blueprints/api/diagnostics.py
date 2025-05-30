@@ -276,7 +276,7 @@ def check_dependencies() -> Dict[str, Any]:
         'flask': 'Flask',
         'flask_socketio': 'Flask-SocketIO',
         'requests': 'requests',
-        'beautifulsoup4': 'BeautifulSoup'
+        'bs4': 'BeautifulSoup'
     }
     
     # Check optional dependencies

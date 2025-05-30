@@ -27,7 +27,6 @@ import { getElement, getElements, getUIElements, toggleElementVisibility } from 
 
 // Import Blueprint API service and configuration
 import blueprintApi from '../services/blueprintApi.js';
-import { PLAYLIST_ENDPOINTS } from '../config/endpoints.js';
 import { SOCKET_EVENTS, BLUEPRINT_EVENTS } from '../config/socketEvents.js';
 
 // Import core modules - use dynamic imports with fallbacks for error resilience 

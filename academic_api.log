@@ -1,0 +1,64 @@
+2025-05-29 20:31:12,609 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 20:31:12,626 - blueprints.core.services - INFO - BaseTask c7b79457-2593-4e71-b48b-42b5db93e78a (web_scraping) created.
+2025-05-29 20:31:12,629 - blueprints.core.services - INFO - ScraperTask c7b79457-2593-4e71-b48b-42b5db93e78a initialized with 2 concurrent downloads
+2025-05-29 20:31:12,630 - blueprints.core.services - INFO - Added task c7b79457-2593-4e71-b48b-42b5db93e78a to active tasks
+2025-05-29 20:31:12,630 - blueprints.core.services - INFO - Removed task c7b79457-2593-4e71-b48b-42b5db93e78a from active tasks
+2025-05-29 20:32:12,812 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 20:32:12,836 - blueprints.core.services - INFO - BaseTask a54d4463-1410-43cc-ba3c-47bf67689f9b (web_scraping) created.
+2025-05-29 20:32:12,851 - blueprints.core.services - INFO - ScraperTask a54d4463-1410-43cc-ba3c-47bf67689f9b initialized with 2 concurrent downloads
+2025-05-29 20:32:12,852 - blueprints.core.services - INFO - Added task a54d4463-1410-43cc-ba3c-47bf67689f9b to active tasks
+2025-05-29 20:32:12,861 - blueprints.core.utils - INFO - Created output directory: /workspace/modules/downloads/test_direct
+2025-05-29 20:32:12,869 - blueprints.core.services - ERROR - Error emitting progress_update for a54d4463-1410-43cc-ba3c-47bf67689f9b: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-29 20:32:12,869 - blueprints.core.services - ERROR - Error emitting progress_update for a54d4463-1410-43cc-ba3c-47bf67689f9b: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-29 20:32:12,876 - blueprints.core.services - INFO - Task a54d4463-1410-43cc-ba3c-47bf67689f9b (web_scraping) started processing.
+2025-05-29 20:32:12,876 - blueprints.core.services - INFO - Task a54d4463-1410-43cc-ba3c-47bf67689f9b (web_scraping) thread started.
+2025-05-29 20:32:12,882 - blueprints.core.services - ERROR - Error emitting task_started for a54d4463-1410-43cc-ba3c-47bf67689f9b: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-29 20:32:12,883 - blueprints.core.services - INFO - Task a54d4463-1410-43cc-ba3c-47bf67689f9b: Starting enhanced scraping of 1 URLs. Output dir: /workspace/modules/downloads/test_direct
+2025-05-29 20:32:12,884 - blueprints.core.services - ERROR - Error emitting progress_update for a54d4463-1410-43cc-ba3c-47bf67689f9b: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-29 20:32:12,885 - blueprints.core.services - INFO - Starting URL processing with 1 workers (0 PDFs)
+2025-05-29 20:32:12,885 - blueprints.core.services - ERROR - Error during enhanced scraping for task a54d4463-1410-43cc-ba3c-47bf67689f9b: name 'ThreadPoolExecutor' is not defined
+Traceback (most recent call last):
+  File "/workspace/modules/blueprints/core/services.py", line 3389, in _process_logic
+    processed_url_results = self._execute_url_processing_phase()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/modules/blueprints/core/services.py", line 3429, in _execute_url_processing_phase
+    with ThreadPoolExecutor(max_workers=optimal_workers) as executor:
+         ^^^^^^^^^^^^^^^^^^
+NameError: name 'ThreadPoolExecutor' is not defined
+2025-05-29 20:32:12,954 - blueprints.core.services - ERROR - Unhandled error in task a54d4463-1410-43cc-ba3c-47bf67689f9b (web_scraping): name 'traceback' is not defined
+Traceback (most recent call last):
+  File "/workspace/modules/blueprints/core/services.py", line 3389, in _process_logic
+    processed_url_results = self._execute_url_processing_phase()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/modules/blueprints/core/services.py", line 3429, in _execute_url_processing_phase
+    with ThreadPoolExecutor(max_workers=optimal_workers) as executor:
+         ^^^^^^^^^^^^^^^^^^
+NameError: name 'ThreadPoolExecutor' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/modules/blueprints/core/services.py", line 680, in _run_process
+    self._process_logic()  # Call the actual processing method
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/modules/blueprints/core/services.py", line 3413, in _process_logic
+    details={"traceback": traceback.format_exc()})
+                          ^^^^^^^^^
+NameError: name 'traceback' is not defined. Did you forget to import 'traceback'
+2025-05-29 20:32:12,982 - blueprints.core.services - INFO - Removed task a54d4463-1410-43cc-ba3c-47bf67689f9b from active tasks
