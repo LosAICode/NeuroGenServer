@@ -81,6 +81,11 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pdf-tab" data-bs-toggle="tab" data-bs-target="#pdf-downloader" type="button" role="tab" aria-controls="pdf-downloader" aria-selected="false">
+                            <i class="fas fa-file-pdf me-1"></i> PDF Downloader
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
                             <i class="fas fa-history me-1"></i> History
                         </button>
@@ -395,36 +400,152 @@
                                 </div>
                             </div>
                             
-                            <!-- Main Scraper Form -->
+                            <!-- Enhanced 2-Option Scraper Form -->
                             <form id="scraper-form">
-                                <div class="mb-4">
-                                    <label class="form-label">Web Scraper URLs</label>
-                                    <div id="scraper-urls-container">
-                                        <div class="input-group mb-2">
-                                            <input type="url" class="form-control scraper-url" placeholder="Enter Website URL" required>
-                                            <select class="form-select scraper-settings" style="max-width: 160px;">
-                                                <option value="full">Full Text</option>
-                                                <option value="metadata">Metadata Only</option>
-                                                <option value="title">Title Only</option>
-                                                <option value="keyword">Keyword Search</option>
-                                                <option value="pdf">PDF Download</option>
-                                            </select>
-                                            <input type="text" class="form-control scraper-keyword" placeholder="Keyword (optional)" style="display:none;">
-                                            <button type="button" class="btn btn-outline-danger remove-url">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                <div class="card mb-4 border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-rocket me-2"></i>NeuroGen Web Scraper
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <!-- URL Input -->
+                                            <div class="col-md-8">
+                                                <label for="enhanced-scraper-url" class="form-label">Website URL</label>
+                                                <input type="url" class="form-control" id="enhanced-scraper-url" placeholder="Enter Website URL or Direct PDF URL" required>
+                                            </div>
+                                            
+                                            <!-- Scraper Mode Selection -->
+                                            <div class="col-md-4">
+                                                <label for="scraper-mode" class="form-label">Scraping Mode</label>
+                                                <select class="form-select" id="scraper-mode">
+                                                    <option value="smart_pdf">Smart PDF Discovery</option>
+                                                    <option value="full_website">Full Website Crawler</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Mode Descriptions -->
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div id="smart-pdf-info" class="mode-info alert alert-primary">
+                                                    <h6><i class="fas fa-file-pdf me-2"></i><strong>Smart PDF Discovery & Processing</strong></h6>
+                                                    <ul class="mb-0 small">
+                                                        <li><strong>Direct PDF</strong>: Downloads and processes single PDF with Structify</li>
+                                                        <li><strong>HTML Page</strong>: Discovers all PDFs on the page and processes each one</li>
+                                                        <li><strong>Perfect for</strong>: Academic papers, research documents, arXiv pages</li>
+                                                        <li><strong>Output</strong>: Structured JSON with text, tables, references, and metadata</li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div id="full-website-info" class="mode-info alert alert-warning d-none">
+                                                    <h6><i class="fas fa-globe me-2"></i><strong>Full Website & Documentation Crawler</strong></h6>
+                                                    <ul class="mb-0 small">
+                                                        <li><strong>Recursive Crawling</strong>: Explores entire sites up to configurable depth</li>
+                                                        <li><strong>Documentation Optimized</strong>: Special handling for docs sites (GitBook, ReadTheDocs)</li>
+                                                        <li><strong>Clean Content</strong>: Removes navigation, ads, preserves structure</li>
+                                                        <li><strong>LLM Ready</strong>: Outputs clean Markdown perfect for AI training</li>
+                                                        <li><strong>Perfect for</strong>: docs.n8n.io, documentation sites, knowledge bases</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="add-scraper-url">
-                                        <i class="fas fa-plus me-1"></i> Add Another URL
+                                </div>
+                                
+                                <!-- Advanced Options (Collapsible) -->
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <button class="btn btn-link text-decoration-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#advanced-options">
+                                            <i class="fas fa-cog me-2"></i>Advanced Options
+                                        </button>
+                                    </div>
+                                    <div class="collapse" id="advanced-options">
+                                        <div class="card-body">
+                                            <!-- Smart PDF Options -->
+                                            <div id="pdf-advanced-options" class="advanced-options-group">
+                                                <h6>PDF Processing Options</h6>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="process-pdfs" checked>
+                                                            <label class="form-check-label" for="process-pdfs">Process PDFs</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="extract-tables" checked>
+                                                            <label class="form-check-label" for="extract-tables">Extract Tables</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="use-ocr">
+                                                            <label class="form-check-label" for="use-ocr">Use OCR</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="extract-structure" checked>
+                                                            <label class="form-check-label" for="extract-structure">Extract Structure</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Full Website Options -->
+                                            <div id="website-advanced-options" class="advanced-options-group d-none">
+                                                <h6>Website Crawling Options</h6>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <label for="max-depth" class="form-label">Max Depth</label>
+                                                        <select class="form-select" id="max-depth">
+                                                            <option value="1">1 level</option>
+                                                            <option value="2">2 levels</option>
+                                                            <option value="3" selected>3 levels</option>
+                                                            <option value="5">5 levels</option>
+                                                            <option value="10">10 levels</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="max-pages" class="form-label">Max Pages</label>
+                                                        <select class="form-select" id="max-pages">
+                                                            <option value="50">50 pages</option>
+                                                            <option value="100">100 pages</option>
+                                                            <option value="200" selected>200 pages</option>
+                                                            <option value="500">500 pages</option>
+                                                            <option value="1000">1000 pages</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="output-format" class="form-label">Output Format</label>
+                                                        <select class="form-select" id="output-format">
+                                                            <option value="markdown" selected>Markdown</option>
+                                                            <option value="json">JSON</option>
+                                                            <option value="html">Clean HTML</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-3 d-flex align-items-end">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="respect-robots" checked>
+                                                            <label class="form-check-label" for="respect-robots">Respect robots.txt</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Submit Button -->
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="enhanced-scrape-btn">
+                                        <i class="fas fa-rocket me-2"></i>Start Enhanced Scraping
                                     </button>
-                                    <div class="form-text mt-2">
-                                        <strong>Options:</strong>
-                                        <span class="badge bg-primary">Full Text</span> - Extract all page content
-                                        <span class="badge bg-info">Metadata Only</span> - Extract title, description, etc.
-                                        <span class="badge bg-success">Title Only</span> - Extract just the page title
-                                        <span class="badge bg-warning">Keyword Search</span> - Search for specific keywords
-                                        <span class="badge bg-secondary">PDF Download</span> - Download PDFs from academic sites
+                                    <div class="text-muted small">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Choose mode above, then click to start
                                     </div>
                                 </div>
                                 
@@ -1322,6 +1443,189 @@ ${error.stack || 'No stack trace available'}
         // - Drag and drop: dragDropHandler.js
         // - Keyboard shortcuts: keyboardShortcuts.js
     });
+</script>
+
+<!-- Enhanced Web Scraper JavaScript for 2-Option System -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced Web Scraper UI Handler
+    const scraperModeSelect = document.getElementById('scraper-mode');
+    const smartPdfInfo = document.getElementById('smart-pdf-info');
+    const fullWebsiteInfo = document.getElementById('full-website-info');
+    const pdfAdvancedOptions = document.getElementById('pdf-advanced-options');
+    const websiteAdvancedOptions = document.getElementById('website-advanced-options');
+    const enhancedScraperForm = document.getElementById('scraper-form');
+    
+    // Mode switching handler
+    if (scraperModeSelect) {
+        scraperModeSelect.addEventListener('change', function() {
+            const selectedMode = this.value;
+            
+            // Show/hide mode descriptions
+            if (selectedMode === 'smart_pdf') {
+                smartPdfInfo.classList.remove('d-none');
+                fullWebsiteInfo.classList.add('d-none');
+                pdfAdvancedOptions.classList.remove('d-none');
+                websiteAdvancedOptions.classList.add('d-none');
+            } else if (selectedMode === 'full_website') {
+                smartPdfInfo.classList.add('d-none');
+                fullWebsiteInfo.classList.remove('d-none');
+                pdfAdvancedOptions.classList.add('d-none');
+                websiteAdvancedOptions.classList.remove('d-none');
+            }
+        });
+        
+        // Initialize default state
+        scraperModeSelect.dispatchEvent(new Event('change'));
+    }
+    
+    // Enhanced form submission handler
+    if (enhancedScraperForm) {
+        enhancedScraperForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check if webScraper module is available
+            if (window.NeuroGen?.modules?.webScraper?.handleScrapingMode) {
+                // Use the webScraper module's method
+                window.NeuroGen.modules.webScraper.handleScrapingMode();
+            } else {
+                // Fallback to direct implementation
+                const url = document.getElementById('enhanced-scraper-url').value;
+                const scraperMode = document.getElementById('scraper-mode').value;
+                const downloadDirectory = document.getElementById('download-folder-select')?.value || 'downloads';
+                
+                if (!url) {
+                    alert('Please enter a URL');
+                    return;
+                }
+                
+                // Build request payload based on mode
+                const payload = {
+                    scrape_mode: scraperMode,
+                    url: url,
+                    download_directory: downloadDirectory
+                };
+                
+                // Get submit button for loading state
+                const submitBtn = e.target.querySelector('button[type="submit"]') || document.getElementById('enhanced-scrape-btn');
+                const originalText = submitBtn ? submitBtn.innerHTML : '';
+            
+            if (scraperMode === 'smart_pdf') {
+                // Add PDF processing options
+                payload.pdf_options = {
+                    process_pdfs: document.getElementById('process-pdfs').checked,
+                    extract_tables: document.getElementById('extract-tables').checked,
+                    use_ocr: document.getElementById('use-ocr').checked,
+                    extract_structure: document.getElementById('extract-structure').checked
+                };
+            } else if (scraperMode === 'full_website') {
+                // Add website crawling options
+                payload.max_depth = parseInt(document.getElementById('max-depth').value);
+                payload.max_pages = parseInt(document.getElementById('max-pages').value);
+                payload.output_format = document.getElementById('output-format').value;
+                payload.respect_robots = document.getElementById('respect-robots').checked;
+            }
+            
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+                submitBtn.disabled = true;
+            }
+            
+            // Submit to API
+            fetch('/api/scrape2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'completed') {
+                    // Handle immediate completion (for sync operations)
+                    showEnhancedResults(data);
+                } else if (data.task_id) {
+                    // Handle async operations with task tracking
+                    trackEnhancedTask(data.task_id);
+                } else {
+                    throw new Error(data.message || 'Unknown error occurred');
+                }
+            })
+            .catch(error => {
+                console.error('Enhanced scraping error:', error);
+                alert('Error: ' + error.message);
+            })
+            .finally(() => {
+                // Reset button
+                if (submitBtn) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+            } // End of fallback implementation
+        });
+    }
+    
+    // Show enhanced results
+    function showEnhancedResults(data) {
+        const resultsContainer = document.getElementById('results');
+        if (!resultsContainer) return;
+        
+        let resultsHtml = '<div class="alert alert-success">';
+        resultsHtml += `<h5><i class="fas fa-check-circle me-2"></i>${data.message}</h5>`;
+        
+        if (data.mode === 'smart_pdf') {
+            resultsHtml += `<p><strong>PDFs Found:</strong> ${data.pdfs_found}, <strong>PDFs Processed:</strong> ${data.pdfs_processed}</p>`;
+            
+            if (data.results && data.results.length > 0) {
+                resultsHtml += '<h6>Downloaded PDFs:</h6><ul>';
+                data.results.forEach(result => {
+                    resultsHtml += `<li><strong>${result.title || 'PDF Document'}</strong><br>`;
+                    resultsHtml += `<small>File: ${result.pdf_file}</small>`;
+                    if (result.json_file) {
+                        resultsHtml += `<br><small>JSON: ${result.json_file}</small>`;
+                    }
+                    resultsHtml += '</li>';
+                });
+                resultsHtml += '</ul>';
+            }
+        } else if (data.mode === 'full_website') {
+            resultsHtml += `<p><strong>Pages Crawled:</strong> ${data.pages_crawled}, <strong>PDFs Found:</strong> ${data.pdfs_found}</p>`;
+            resultsHtml += `<p><strong>Output Directory:</strong> ${data.output_directory}</p>`;
+            resultsHtml += `<p><strong>Output Format:</strong> ${data.output_format}</p>`;
+        }
+        
+        resultsHtml += '</div>';
+        resultsContainer.innerHTML = resultsHtml;
+        resultsContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Track async task progress
+    function trackEnhancedTask(taskId) {
+        const pollInterval = setInterval(() => {
+            fetch(`/api/scrape2/status/${taskId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'completed') {
+                        clearInterval(pollInterval);
+                        showEnhancedResults(data);
+                    } else if (data.status === 'error') {
+                        clearInterval(pollInterval);
+                        alert('Task failed: ' + (data.error || 'Unknown error'));
+                    }
+                    // Continue polling for 'processing' status
+                })
+                .catch(error => {
+                    console.error('Task polling error:', error);
+                    clearInterval(pollInterval);
+                });
+        }, 2000); // Poll every 2 seconds
+        
+        // Stop polling after 5 minutes
+        setTimeout(() => clearInterval(pollInterval), 300000);
+    }
+});
 </script>
 
 <!-- Add a hidden error container that we can use to show problems -->

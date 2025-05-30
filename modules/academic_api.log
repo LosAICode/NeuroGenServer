@@ -1,0 +1,196 @@
+2025-05-30 16:23:48,302 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-30 16:23:48,311 - web_scraper - INFO - Processing URL: https://arxiv.org/abs/2301.00001 with setting: pdf
+2025-05-30 16:23:48,313 - web_scraper - INFO - Ensured output directory exists: test_output
+2025-05-30 16:23:48,314 - web_scraper - INFO - PDF download mode for: https://arxiv.org/abs/2301.00001
+2025-05-30 16:23:48,314 - web_scraper - INFO - DOWNLOAD_DEBUG: Starting download of PDF: https://arxiv.org/abs/2301.00001 to test_output
+2025-05-30 16:23:48,315 - web_scraper - INFO - DOWNLOAD_DEBUG: Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:48,317 - web_scraper - INFO - DOWNLOAD_DEBUG: Ensured download directory exists: test_output
+2025-05-30 16:23:48,317 - web_scraper - INFO - DOWNLOAD_DEBUG: Generated URL hash: 34d3754dfd
+2025-05-30 16:23:48,318 - web_scraper - INFO - DOWNLOAD_DEBUG: Extracted filename: 2301.00001.pdf
+2025-05-30 16:23:48,319 - web_scraper - INFO - DOWNLOAD_DEBUG: Base name: 2301.00001, extension: .pdf
+2025-05-30 16:23:48,319 - web_scraper - INFO - DOWNLOAD_DEBUG: Final file path: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:48,324 - web_scraper - INFO - DOWNLOAD_DEBUG: Download attempt 1/5 for https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:48,324 - web_scraper - INFO - DOWNLOAD_DEBUG: Request headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'application/pdf,*/*', 'Connection': 'keep-alive', 'Accept-Encoding': 'identity', 'Cache-Control': 'no-cache, no-store'}
+2025-05-30 16:23:48,325 - web_scraper - INFO - DOWNLOAD_DEBUG: Sending GET request with timeout 60s
+2025-05-30 16:23:48,785 - web_scraper - INFO - DOWNLOAD_DEBUG: Response status code: 200
+2025-05-30 16:23:48,789 - web_scraper - INFO - DOWNLOAD_DEBUG: Content-Length: 765699
+2025-05-30 16:23:48,792 - web_scraper - INFO - DOWNLOAD_DEBUG: Content-Type: application/pdf
+2025-05-30 16:23:48,795 - web_scraper - INFO - DOWNLOAD_DEBUG: Starting to stream content to file: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:48,801 - web_scraper - WARNING - DOWNLOAD_DEBUG: Attempt 1/5 failed: argument must be an int, or have a fileno() method.
+2025-05-30 16:23:48,803 - web_scraper - WARNING - DOWNLOAD_DEBUG: Exception type: TypeError
+2025-05-30 16:23:48,820 - web_scraper - WARNING - DOWNLOAD_DEBUG: Traceback: Traceback (most recent call last):
+  File "/workspace/modules/web_scraper.py", line 909, in download_pdf
+    os.fsync(os.path.dirname(file_path))
+TypeError: argument must be an int, or have a fileno() method.
+
+2025-05-30 16:23:48,826 - web_scraper - INFO - DOWNLOAD_DEBUG: Retrying in 1.5 seconds...
+2025-05-30 16:23:50,327 - web_scraper - INFO - DOWNLOAD_DEBUG: Download attempt 2/5 for https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:50,328 - web_scraper - INFO - DOWNLOAD_DEBUG: Request headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'application/pdf,*/*', 'Connection': 'keep-alive', 'Accept-Encoding': 'identity', 'Cache-Control': 'no-cache, no-store'}
+2025-05-30 16:23:50,329 - web_scraper - INFO - DOWNLOAD_DEBUG: Sending GET request with timeout 60s
+2025-05-30 16:23:50,390 - web_scraper - INFO - DOWNLOAD_DEBUG: Response status code: 200
+2025-05-30 16:23:50,395 - web_scraper - INFO - DOWNLOAD_DEBUG: Content-Length: 765699
+2025-05-30 16:23:50,397 - web_scraper - INFO - DOWNLOAD_DEBUG: Content-Type: application/pdf
+2025-05-30 16:23:50,398 - web_scraper - INFO - DOWNLOAD_DEBUG: Using alternative in-memory download method on retry attempt 2
+2025-05-30 16:23:50,399 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 5% (40960/765699)
+2025-05-30 16:23:50,409 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 10% (81920/765699)
+2025-05-30 16:23:50,423 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 16% (122880/765699)
+2025-05-30 16:23:50,428 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 21% (163840/765699)
+2025-05-30 16:23:50,441 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 26% (204800/765699)
+2025-05-30 16:23:50,453 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 31% (237568/765699)
+2025-05-30 16:23:50,456 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 36% (278528/765699)
+2025-05-30 16:23:50,459 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 41% (319488/765699)
+2025-05-30 16:23:50,463 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 46% (352256/765699)
+2025-05-30 16:23:50,466 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 51% (393216/765699)
+2025-05-30 16:23:50,468 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 56% (434176/765699)
+2025-05-30 16:23:50,471 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 62% (475136/765699)
+2025-05-30 16:23:50,474 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 67% (516096/765699)
+2025-05-30 16:23:50,477 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 72% (557056/765699)
+2025-05-30 16:23:50,480 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 77% (589824/765699)
+2025-05-30 16:23:50,483 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 82% (630784/765699)
+2025-05-30 16:23:50,486 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 87% (671744/765699)
+2025-05-30 16:23:50,489 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 92% (704512/765699)
+2025-05-30 16:23:50,491 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 97% (745472/765699)
+2025-05-30 16:23:50,494 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 99% (761856/765699)
+2025-05-30 16:23:50,496 - web_scraper - INFO - DOWNLOAD_DEBUG: Download progress: 99% (765699/765699)
+2025-05-30 16:23:50,508 - web_scraper - INFO - DOWNLOAD_DEBUG: Alternative download method successful: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:50,511 - file_processor - WARNING - pdf_extractor document type detection failed: detect_document_type() takes 1 positional argument but 2 were given. Falling back to built-in method.
+2025-05-30 16:23:51,023 - web_scraper - INFO - Detected document type: general
+2025-05-30 16:23:51,024 - file_processor - INFO - Starting PDF processing: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:51,027 - file_processor - INFO - Using pdf_extractor for test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:51,177 - pdf_extractor - INFO - Detected document type: general for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:51,177 - pdf_extractor - INFO - Extracting text from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:53,006 - pdf_extractor - INFO - Successfully extracted text with pymupdf
+2025-05-30 16:23:53,007 - pdf_extractor - INFO - Extracting tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:53,011 - pdf_extractor - INFO - Attempting table extraction with PyMuPDF for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:54,922 - pdf_extractor - INFO - Starting JVM for tabula
+2025-05-30 16:23:54,925 - pdf_extractor - WARNING - Failed to start JVM: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:23:54,926 - pdf_extractor - INFO - Attempting table extraction with tabula for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:54,933 - pdf_extractor - WARNING - Tabula extraction failed for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:23:54,934 - pdf_extractor - INFO - No tables extracted from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf using available methods
+2025-05-30 16:23:54,935 - pdf_extractor - INFO - Extracted 0 tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:54,935 - pdf_extractor - INFO - Analyzing document structure for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:54,936 - pdf_extractor - INFO - Analyzing document structure...
+2025-05-30 16:23:54,976 - pdf_extractor - INFO - Document structure analysis complete. Identified 12 sections, 3 lists, 24 paragraphs.
+2025-05-30 16:23:54,977 - pdf_extractor - INFO - Creating chunks for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:54,978 - pdf_extractor - INFO - Full content too large (39943 chars), chunking entire document
+2025-05-30 16:23:54,979 - pdf_extractor - INFO - Split full content into 14 parts
+2025-05-30 16:23:54,981 - pdf_extractor - INFO - Created 40 chunks from document structure
+2025-05-30 16:23:54,982 - pdf_extractor - INFO - Created 40 chunks from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:55,017 - pdf_extractor - INFO - Successfully saved results to /workspace/modules/test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:23:55,018 - pdf_extractor - INFO - Saved processed PDF results to /workspace/modules/test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:23:55,095 - pdf_extractor - INFO - PDF processing completed successfully in 4.07s: /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:55,100 - file_processor - INFO - Successfully processed PDF with pdf_extractor: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:55,100 - file_processor - INFO - Applied enhanced output formatting to test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:55,120 - file_processor - INFO - Wrote enhanced output to test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:23:55,121 - web_scraper - WARNING - Enhanced PDF processing failed, falling back: name 'file_path' is not defined
+2025-05-30 16:23:55,133 - file_processor - INFO - Found 1 valid files in test_output (0.01s)
+2025-05-30 16:23:55,134 - file_processor - INFO - Using thread executor with max_workers=8
+2025-05-30 16:23:55,134 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-05-30 16:23:55,136 - file_processor - INFO - Processing PDF safely: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:55,368 - pdf_extractor - INFO - Detected document type: general for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:55,368 - pdf_extractor - INFO - Extracting text from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:57,264 - pdf_extractor - INFO - Successfully extracted text with pymupdf
+2025-05-30 16:23:57,264 - pdf_extractor - INFO - Extracting tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:57,268 - pdf_extractor - INFO - Attempting table extraction with PyMuPDF for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:58,961 - pdf_extractor - INFO - Starting JVM for tabula
+2025-05-30 16:23:58,962 - pdf_extractor - WARNING - Failed to start JVM: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:23:58,963 - pdf_extractor - INFO - Attempting table extraction with tabula for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:58,967 - pdf_extractor - WARNING - Tabula extraction failed for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:23:58,970 - pdf_extractor - INFO - No tables extracted from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf using available methods
+2025-05-30 16:23:58,969 - pdf_extractor - INFO - Extracted 0 tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:58,970 - pdf_extractor - INFO - Analyzing document structure for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:58,971 - pdf_extractor - INFO - Analyzing document structure...
+2025-05-30 16:23:59,021 - pdf_extractor - INFO - Document structure analysis complete. Identified 12 sections, 3 lists, 24 paragraphs.
+2025-05-30 16:23:59,022 - pdf_extractor - INFO - Creating chunks for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,023 - pdf_extractor - INFO - Full content too large (39943 chars), chunking entire document
+2025-05-30 16:23:59,025 - pdf_extractor - INFO - Split full content into 14 parts
+2025-05-30 16:23:59,028 - pdf_extractor - INFO - Created 40 chunks from document structure
+2025-05-30 16:23:59,029 - pdf_extractor - INFO - Created 40 chunks from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,054 - pdf_extractor - INFO - Successfully saved results to test_output/temp_2301.00001_34d3754dfd.json
+2025-05-30 16:23:59,055 - pdf_extractor - INFO - Saved processed PDF results to test_output/temp_2301.00001_34d3754dfd.json
+2025-05-30 16:23:59,155 - pdf_extractor - INFO - PDF processing completed successfully in 4.02s: /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,159 - file_processor - INFO - Applied enhanced formatting to test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,178 - file_processor - INFO - Wrote enhanced output to test_output/temp_2301.00001_34d3754dfd.json
+2025-05-30 16:23:59,429 - file_processor - INFO - Successfully processed PDF via pdf_extractor: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,434 - file_processor - INFO - Ensured output directory exists: test_output
+2025-05-30 16:23:59,458 - file_processor - INFO - Created JSON output at test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:23:59,458 - file_processor - INFO - Processing complete in 4.31s
+2025-05-30 16:23:59,459 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 40 chunks created
+2025-05-30 16:23:59,459 - file_processor - INFO - PDF Stats: 1 PDFs processed, 0 tables extracted, 0 references extracted, 0 OCR processed
+2025-05-30 16:23:59,461 - web_scraper - INFO - Processing URL: https://arxiv.org/pdf/2301.00001.pdf with setting: pdf
+2025-05-30 16:23:59,464 - web_scraper - INFO - Ensured output directory exists: test_output
+2025-05-30 16:23:59,465 - web_scraper - INFO - PDF download mode for: https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:59,466 - web_scraper - INFO - DOWNLOAD_DEBUG: Starting download of PDF: https://arxiv.org/pdf/2301.00001.pdf to test_output
+2025-05-30 16:23:59,468 - web_scraper - INFO - DOWNLOAD_DEBUG: Using original URL: https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:59,472 - web_scraper - INFO - DOWNLOAD_DEBUG: Ensured download directory exists: test_output
+2025-05-30 16:23:59,475 - web_scraper - INFO - DOWNLOAD_DEBUG: Generated URL hash: 34d3754dfd
+2025-05-30 16:23:59,477 - web_scraper - INFO - DOWNLOAD_DEBUG: Extracted filename: 2301.00001.pdf
+2025-05-30 16:23:59,479 - web_scraper - INFO - DOWNLOAD_DEBUG: Base name: 2301.00001, extension: .pdf
+2025-05-30 16:23:59,481 - web_scraper - INFO - DOWNLOAD_DEBUG: Final file path: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,486 - web_scraper - INFO - DOWNLOAD_DEBUG: PDF already exists: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,490 - file_processor - WARNING - pdf_extractor document type detection failed: detect_document_type() takes 1 positional argument but 2 were given. Falling back to built-in method.
+2025-05-30 16:23:59,897 - web_scraper - INFO - Detected document type: general
+2025-05-30 16:23:59,897 - file_processor - INFO - Starting PDF processing: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,900 - file_processor - INFO - Using pdf_extractor for test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:00,127 - pdf_extractor - INFO - Detected document type: general for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:00,127 - pdf_extractor - INFO - Extracting text from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:02,240 - pdf_extractor - INFO - Successfully extracted text with pymupdf
+2025-05-30 16:24:02,247 - pdf_extractor - INFO - Extracting tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:02,355 - pdf_extractor - INFO - Attempting table extraction with PyMuPDF for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,106 - pdf_extractor - INFO - Starting JVM for tabula
+2025-05-30 16:24:05,107 - pdf_extractor - WARNING - Failed to start JVM: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:24:05,107 - pdf_extractor - INFO - Attempting table extraction with tabula for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,111 - pdf_extractor - WARNING - Tabula extraction failed for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:24:05,112 - pdf_extractor - INFO - No tables extracted from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf using available methods
+2025-05-30 16:24:05,113 - pdf_extractor - INFO - Extracted 0 tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,115 - pdf_extractor - INFO - Analyzing document structure for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,116 - pdf_extractor - INFO - Analyzing document structure...
+2025-05-30 16:24:05,155 - pdf_extractor - INFO - Document structure analysis complete. Identified 12 sections, 3 lists, 24 paragraphs.
+2025-05-30 16:24:05,155 - pdf_extractor - INFO - Creating chunks for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,157 - pdf_extractor - INFO - Full content too large (39943 chars), chunking entire document
+2025-05-30 16:24:05,159 - pdf_extractor - INFO - Split full content into 14 parts
+2025-05-30 16:24:05,160 - pdf_extractor - INFO - Created 40 chunks from document structure
+2025-05-30 16:24:05,161 - pdf_extractor - INFO - Created 40 chunks from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,200 - pdf_extractor - INFO - Successfully saved results to /workspace/modules/test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:24:05,201 - pdf_extractor - INFO - Saved processed PDF results to /workspace/modules/test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:24:05,701 - pdf_extractor - WARNING - Timeout thread for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf did not terminate gracefully
+2025-05-30 16:24:05,709 - pdf_extractor - INFO - PDF processing completed successfully in 5.81s: /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,717 - file_processor - INFO - Successfully processed PDF with pdf_extractor: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,718 - file_processor - INFO - Applied enhanced output formatting to test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,752 - file_processor - INFO - Wrote enhanced output to test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:24:05,753 - web_scraper - WARNING - Enhanced PDF processing failed, falling back: name 'file_path' is not defined
+2025-05-30 16:24:05,768 - file_processor - INFO - Found 1 valid files in test_output (0.01s)
+2025-05-30 16:24:05,768 - file_processor - INFO - Using thread executor with max_workers=8
+2025-05-30 16:24:05,769 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-05-30 16:24:05,770 - file_processor - INFO - Processing PDF safely: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,913 - pdf_extractor - INFO - Detected document type: general for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:05,914 - pdf_extractor - INFO - Extracting text from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:07,795 - pdf_extractor - INFO - Successfully extracted text with pymupdf
+2025-05-30 16:24:07,796 - pdf_extractor - INFO - Extracting tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:07,799 - pdf_extractor - INFO - Attempting table extraction with PyMuPDF for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,649 - pdf_extractor - INFO - Starting JVM for tabula
+2025-05-30 16:24:09,649 - pdf_extractor - WARNING - Failed to start JVM: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:24:09,650 - pdf_extractor - INFO - Attempting table extraction with tabula for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,656 - pdf_extractor - WARNING - Tabula extraction failed for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf: No JVM shared library file (libjvm.so) found. Try setting up the JAVA_HOME environment variable properly.
+2025-05-30 16:24:09,656 - pdf_extractor - INFO - No tables extracted from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf using available methods
+2025-05-30 16:24:09,657 - pdf_extractor - INFO - Extracted 0 tables from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,657 - pdf_extractor - INFO - Analyzing document structure for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,660 - pdf_extractor - INFO - Analyzing document structure...
+2025-05-30 16:24:09,704 - pdf_extractor - INFO - Document structure analysis complete. Identified 12 sections, 3 lists, 24 paragraphs.
+2025-05-30 16:24:09,705 - pdf_extractor - INFO - Creating chunks for /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,706 - pdf_extractor - INFO - Full content too large (39943 chars), chunking entire document
+2025-05-30 16:24:09,708 - pdf_extractor - INFO - Split full content into 14 parts
+2025-05-30 16:24:09,710 - pdf_extractor - INFO - Created 40 chunks from document structure
+2025-05-30 16:24:09,711 - pdf_extractor - INFO - Created 40 chunks from /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,733 - pdf_extractor - INFO - Successfully saved results to test_output/temp_2301.00001_34d3754dfd.json
+2025-05-30 16:24:09,733 - pdf_extractor - INFO - Saved processed PDF results to test_output/temp_2301.00001_34d3754dfd.json
+2025-05-30 16:24:09,791 - pdf_extractor - INFO - PDF processing completed successfully in 4.02s: /workspace/modules/test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,795 - file_processor - INFO - Applied enhanced formatting to test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,824 - file_processor - INFO - Wrote enhanced output to test_output/temp_2301.00001_34d3754dfd.json
+2025-05-30 16:24:09,889 - file_processor - INFO - Successfully processed PDF via pdf_extractor: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:24:09,893 - file_processor - INFO - Ensured output directory exists: test_output
+2025-05-30 16:24:09,918 - file_processor - INFO - Created JSON output at test_output/2301.00001_34d3754dfd_processed.json
+2025-05-30 16:24:09,918 - file_processor - INFO - Processing complete in 4.14s
+2025-05-30 16:24:09,919 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 40 chunks created
+2025-05-30 16:24:09,919 - file_processor - INFO - PDF Stats: 1 PDFs processed, 0 tables extracted, 0 references extracted, 0 OCR processed
+2025-05-30 18:16:05,840 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows

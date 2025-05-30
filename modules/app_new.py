@@ -101,6 +101,10 @@ def create_app():
     app.limiter = limiter
     app.socketio = socketio
     
+    # Initialize SocketIO context helper for background threads
+    import socketio_context_helper
+    socketio_context_helper.set_app_context(app, socketio)
+    
     # Register error handlers
     register_error_handlers(app)
     

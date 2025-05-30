@@ -13,6 +13,9 @@ tabula-py>=2.2.0
 pytesseract>=0.3.8
 jpype1>=1.2.0
 python-magic>=0.4.0  # for MIME type detection
+lxml>=4.6.0  # for XML parsing (ArXiv feeds)
+trafilatura>=1.6.0  # for clean content extraction
+aiohttp>=3.8.0  # for async HTTP requests
 
 # For image processing
 Pillow>=8.0.0

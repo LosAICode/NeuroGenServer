@@ -13,10 +13,20 @@ import threading
 import tempfile
 import hashlib
 import requests
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Set
 from pathlib import Path
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.robotparser import RobotFileParser
+import re
+from collections import deque
+
+# Optional dependencies (graceful fallback if not available)
+try:
+    import trafilatura
+    TRAFILATURA_AVAILABLE = True
+except ImportError:
+    TRAFILATURA_AVAILABLE = False
 
 # Import necessary modules and utilities
 from blueprints.core.services import (
@@ -60,17 +70,648 @@ web_scraper_bp = Blueprint('web_scraper', __name__, url_prefix='/api')
 # Export the blueprint and utility functions
 __all__ = ['web_scraper_bp', 'emit_scraping_progress', 'emit_scraping_completed', 'emit_scraping_error']
 
+class EnhancedWebScraper:
+    """Enhanced Web Scraper with 2 powerful options integrated into main file"""
+    
+    def __init__(self):
+        self.crawl_config = {
+            'max_depth': 3,
+            'max_pages': 200,
+            'respect_robots': True,
+            'follow_redirects': True,
+            'concurrent_requests': 8,
+            'request_delay': 1000,  # milliseconds
+            'timeout': 30000,
+            'retry_attempts': 3,
+            'user_agent_rotation': True
+        }
+        
+        self.content_config = {
+            'extract_clean_content': True,
+            'remove_navigation': True,
+            'remove_ads': True,
+            'preserve_code_blocks': True,
+            'convert_to_markdown': True,
+            'extract_images': True,
+            'follow_internal_links': True
+        }
+        
+        # State management
+        self.visited_urls: Set[str] = set()
+        self.url_queue: deque = deque()
+        self.pdf_urls: List[Dict] = []
+        self.results: Dict = {}
+        self.errors: List[Dict] = []
+        
+    def detect_site_type(self, url: str, html: str) -> Dict[str, Any]:
+        """Detect if site is documentation, blog, news, etc."""
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        detection = {
+            'type': 'general',
+            'platform': 'unknown',
+            'features': []
+        }
+        
+        # Check for documentation patterns
+        if any(keyword in url.lower() for keyword in ['docs', 'documentation', 'api', 'guide']):
+            detection['type'] = 'documentation'
+            detection['features'].append('docs_url')
+            
+        # GitBook detection
+        if 'gitbook' in html.lower() or soup.find('meta', {'name': 'generator', 'content': lambda x: x and 'gitbook' in x.lower()}):
+            detection['platform'] = 'gitbook'
+            detection['features'].append('gitbook')
+            
+        # ReadTheDocs detection
+        if 'readthedocs' in url or soup.find('div', class_='rst-content'):
+            detection['platform'] = 'readthedocs'
+            detection['features'].append('sphinx')
+            
+        # Navigation patterns
+        if soup.find('nav') or soup.find('div', class_=re.compile(r'nav|sidebar|menu', re.I)):
+            detection['features'].append('navigation')
+            
+        # Table of contents
+        if soup.find('div', class_=re.compile(r'toc|table-of-contents', re.I)):
+            detection['features'].append('toc')
+            
+        return detection
+        
+    def extract_navigation_links(self, html: str, base_url: str) -> List[str]:
+        """Extract navigation and documentation links"""
+        soup = BeautifulSoup(html, 'html.parser')
+        links = []
+        
+        # Find navigation areas
+        nav_selectors = [
+            'nav a',
+            '.nav a', 
+            '.navbar a',
+            '.sidebar a',
+            '.menu a',
+            '.toc a',
+            '.table-of-contents a',
+            '[class*="nav"] a',
+            '[class*="menu"] a'
+        ]
+        
+        for selector in nav_selectors:
+            nav_links = soup.select(selector)
+            for link in nav_links:
+                href = link.get('href')
+                if href:
+                    absolute_url = urljoin(base_url, href)
+                    if self.is_same_domain(base_url, absolute_url):
+                        links.append(absolute_url)
+                        
+        # Also look for "next" and pagination links
+        pagination_links = soup.find_all('a', text=re.compile(r'next|continue|more', re.I))
+        for link in pagination_links:
+            href = link.get('href')
+            if href:
+                absolute_url = urljoin(base_url, href)
+                if self.is_same_domain(base_url, absolute_url):
+                    links.append(absolute_url)
+                    
+        return list(set(links))  # Remove duplicates
+        
+    def extract_clean_content(self, html: str, url: str) -> Dict[str, Any]:
+        """Extract clean content optimized for LLM training"""
+        try:
+            if TRAFILATURA_AVAILABLE:
+                # Use trafilatura for clean content extraction
+                extracted = trafilatura.extract(
+                    html,
+                    include_comments=False,
+                    include_tables=True,
+                    include_links=True,
+                    output_format='json',
+                    config=trafilatura.settings.use_config()
+                )
+                
+                if extracted:
+                    import json
+                    content_data = json.loads(extracted)
+                    
+                    return {
+                        'title': content_data.get('title', ''),
+                        'content': content_data.get('text', ''),
+                        'markdown': self.html_to_markdown(content_data.get('text', '')),
+                        'metadata': {
+                            'url': url,
+                            'extracted_at': time.time(),
+                            'word_count': len(content_data.get('text', '').split()),
+                            'language': content_data.get('language', 'en'),
+                            'extraction_method': 'trafilatura'
+                        }
+                    }
+            
+            # Fallback to BeautifulSoup if trafilatura not available
+            return self.extract_with_beautifulsoup(html, url)
+                
+        except Exception as e:
+            logger.warning(f"Content extraction failed for {url}: {e}")
+            return self.extract_with_beautifulsoup(html, url)
+            
+    def extract_with_beautifulsoup(self, html: str, url: str) -> Dict[str, Any]:
+        """Fallback content extraction with BeautifulSoup"""
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # Remove unwanted elements
+        for element in soup(['script', 'style', 'nav', 'header', 'footer', 'aside']):
+            element.decompose()
+            
+        # Find main content area
+        main_content = (
+            soup.find('main') or 
+            soup.find('article') or 
+            soup.find('div', class_=re.compile(r'content|main|body', re.I)) or
+            soup.find('body')
+        )
+        
+        if main_content:
+            # Get title
+            title = soup.find('title')
+            title_text = title.get_text().strip() if title else ''
+            
+            # Extract text content
+            content = main_content.get_text(separator='\n', strip=True)
+            
+            return {
+                'title': title_text,
+                'content': content,
+                'markdown': self.html_to_markdown(content),
+                'metadata': {
+                    'url': url,
+                    'extracted_at': time.time(),
+                    'word_count': len(content.split()),
+                    'extraction_method': 'beautifulsoup'
+                }
+            }
+        
+        return {
+            'title': '',
+            'content': '',
+            'markdown': '',
+            'metadata': {'url': url, 'error': 'No content found'}
+        }
+        
+    def html_to_markdown(self, text: str) -> str:
+        """Convert HTML text to clean markdown"""
+        markdown = text
+        
+        # Basic formatting preservation
+        markdown = re.sub(r'\n\s*\n\s*\n+', '\n\n', markdown)  # Normalize spacing
+        markdown = re.sub(r'^\s+', '', markdown, flags=re.MULTILINE)  # Remove leading spaces
+        
+        return markdown.strip()
+        
+    def is_same_domain(self, base_url: str, check_url: str) -> bool:
+        """Check if URLs are from the same domain"""
+        base_domain = urlparse(base_url).netloc.lower()
+        check_domain = urlparse(check_url).netloc.lower()
+        return base_domain == check_domain
+        
+    def discover_pdfs_on_page(self, html: str, base_url: str) -> List[Dict[str, str]]:
+        """Discover PDF links on a single page (depth 0)"""
+        soup = BeautifulSoup(html, 'html.parser')
+        pdf_links = []
+        
+        # Find all links
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            
+            # Check if it's a PDF link
+            if href.lower().endswith('.pdf') or 'pdf' in href.lower():
+                absolute_url = urljoin(base_url, href)
+                
+                # Get link text or title for metadata
+                title = (
+                    link.get_text(strip=True) or 
+                    link.get('title', '') or 
+                    os.path.basename(href)
+                )
+                
+                pdf_links.append({
+                    'url': absolute_url,
+                    'title': title,
+                    'found_on': base_url
+                })
+                
+        return pdf_links
+
+    def check_robots_txt(self, base_url: str) -> bool:
+        """Check if robots.txt allows crawling"""
+        try:
+            parsed_url = urlparse(base_url)
+            robots_url = f"{parsed_url.scheme}://{parsed_url.netloc}/robots.txt"
+            
+            rp = RobotFileParser()
+            rp.set_url(robots_url)
+            rp.read()
+            
+            return rp.can_fetch('*', base_url)
+        except Exception:
+            # If can't read robots.txt, assume allowed
+            return True
+
+def download_pdf_fixed(url: str, save_directory: str) -> Optional[str]:
+    """Fixed version of PDF download without os.fsync bug"""
+    try:
+        os.makedirs(save_directory, exist_ok=True)
+        
+        # Convert arXiv abstract URLs to PDF URLs
+        if 'arxiv.org/abs/' in url:
+            url = url.replace('/abs/', '/pdf/') + '.pdf'
+            logger.info(f"Converted arXiv abstract URL to PDF URL: {url}")
+        
+        # Generate filename
+        url_hash = hashlib.md5(url.encode()).hexdigest()[:10]
+        filename = f"{os.path.basename(urlparse(url).path) or 'document'}_{url_hash}.pdf"
+        if not filename.endswith('.pdf'):
+            filename += '.pdf'
+        
+        file_path = os.path.join(save_directory, filename)
+        
+        # Check if already exists
+        if os.path.exists(file_path):
+            logger.info(f"PDF already exists: {file_path}")
+            return file_path
+        
+        # Download with proper headers
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (compatible; Academic-Scraper/1.0)',
+            'Accept': 'application/pdf,*/*'
+        }
+        
+        response = requests.get(url, headers=headers, timeout=60, stream=True)
+        response.raise_for_status()
+        
+        # Write file in chunks without the fsync bug
+        with open(file_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        
+        logger.info(f"Successfully downloaded PDF: {file_path}")
+        return file_path
+        
+    except Exception as e:
+        logger.error(f"Error downloading PDF {url}: {e}")
+        return None
+
+def crawl_website_recursive(scraper: EnhancedWebScraper, start_url: str, 
+                          output_dir: str, output_format: str) -> Dict[str, Any]:
+    """Recursively crawl website and extract content"""
+    
+    scraper.url_queue.append((start_url, 0))  # (url, depth)
+    pages_crawled = 0
+    pdfs_found = 0
+    site_map = {}
+    
+    # Create output subdirectories
+    pages_dir = os.path.join(output_dir, "pages")
+    pdfs_dir = os.path.join(output_dir, "pdfs")
+    os.makedirs(pages_dir, exist_ok=True)
+    os.makedirs(pdfs_dir, exist_ok=True)
+    
+    while scraper.url_queue and pages_crawled < scraper.crawl_config['max_pages']:
+        current_url, depth = scraper.url_queue.popleft()
+        
+        # Skip if already visited or exceeded depth
+        if current_url in scraper.visited_urls or depth > scraper.crawl_config['max_depth']:
+            continue
+            
+        scraper.visited_urls.add(current_url)
+        
+        try:
+            logger.info(f"Crawling [{depth}]: {current_url}")
+            
+            response = requests.get(current_url, timeout=30)
+            response.raise_for_status()
+            
+            # Detect site type and extract content
+            site_info = scraper.detect_site_type(current_url, response.text)
+            content_data = scraper.extract_clean_content(response.text, current_url)
+            
+            # Save page content
+            page_filename = f"page_{pages_crawled:04d}_{sanitize_filename(urlparse(current_url).path or 'index')}"
+            
+            if output_format == "markdown":
+                page_file = os.path.join(pages_dir, f"{page_filename}.md")
+                with open(page_file, 'w', encoding='utf-8') as f:
+                    f.write(f"# {content_data['title']}\n\n")
+                    f.write(f"**URL:** {current_url}\n\n")
+                    f.write(content_data['markdown'])
+                    
+            elif output_format == "json":
+                page_file = os.path.join(pages_dir, f"{page_filename}.json")
+                with open(page_file, 'w', encoding='utf-8') as f:
+                    import json
+                    json.dump({
+                        'url': current_url,
+                        'title': content_data['title'],
+                        'content': content_data['content'],
+                        'markdown': content_data['markdown'],
+                        'site_info': site_info,
+                        'metadata': content_data['metadata']
+                    }, f, indent=2)
+            
+            # Discover PDFs on this page
+            page_pdfs = scraper.discover_pdfs_on_page(response.text, current_url)
+            for pdf_info in page_pdfs:
+                pdf_file = download_pdf_fixed(pdf_info['url'], pdfs_dir)
+                if pdf_file:
+                    pdfs_found += 1
+            
+            # Find more links to crawl (if not at max depth)
+            if depth < scraper.crawl_config['max_depth']:
+                nav_links = scraper.extract_navigation_links(response.text, current_url)
+                for link in nav_links:
+                    if link not in scraper.visited_urls:
+                        scraper.url_queue.append((link, depth + 1))
+            
+            # Update site map
+            site_map[current_url] = {
+                'depth': depth,
+                'title': content_data['title'],
+                'content_length': len(content_data['content']),
+                'site_type': site_info['type'],
+                'pdfs_found': len(page_pdfs)
+            }
+            
+            pages_crawled += 1
+            
+            # Polite delay
+            time.sleep(scraper.crawl_config['request_delay'] / 1000.0)
+            
+        except Exception as e:
+            logger.error(f"Error crawling {current_url}: {e}")
+            continue
+    
+    # Create summary
+    summary = {
+        'start_url': start_url,
+        'pages_crawled': pages_crawled,
+        'pdfs_found': pdfs_found,
+        'max_depth_reached': max(site_map[url]['depth'] for url in site_map) if site_map else 0,
+        'output_format': output_format,
+        'directories': {
+            'pages': pages_dir,
+            'pdfs': pdfs_dir
+        }
+    }
+    
+    # Save summary
+    summary_file = os.path.join(output_dir, "crawl_summary.json")
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        import json
+        json.dump(summary, f, indent=2)
+    
+    return {
+        'pages_crawled': pages_crawled,
+        'pdfs_found': pdfs_found,
+        'site_map': site_map,
+        'summary': summary
+    }
+
+def handle_enhanced_scraping(data: Dict[str, Any], scrape_mode: str) -> jsonify:
+    """
+    Handle the new 2-option enhanced scraping system
+    """
+    try:
+        # Use the local enhanced scraper class and functions
+        
+        url = data.get("url")
+        download_directory = data.get("download_directory")
+        
+        if not url or not download_directory:
+            return structured_error_response("MISSING_PARAMS", "URL and download directory required.", 400)
+        
+        # Ensure download directory exists
+        os.makedirs(download_directory, exist_ok=True)
+        task_id = str(uuid.uuid4())
+        
+        if scrape_mode == "smart_pdf":
+            return handle_smart_pdf_mode(data, task_id, url, download_directory)
+        elif scrape_mode == "full_website":
+            return handle_full_website_mode(data, task_id, url, download_directory)
+        else:
+            return structured_error_response("INVALID_MODE", f"Unknown scrape mode: {scrape_mode}", 400)
+            
+    except Exception as e:
+        logger.error(f"Enhanced scraping failed: {e}")
+        return structured_error_response("ENHANCED_SCRAPING_ERROR", f"Error: {str(e)}", 500)
+
+def handle_smart_pdf_mode(data: Dict[str, Any], task_id: str, url: str, download_directory: str) -> jsonify:
+    """Handle Smart PDF Discovery & Processing mode"""
+    # Use local classes and functions
+    
+    # Get PDF processing options
+    pdf_options = data.get("pdf_options", {})
+    process_pdfs = pdf_options.get("process_pdfs", True)
+    extract_tables = pdf_options.get("extract_tables", True)
+    use_ocr = pdf_options.get("use_ocr", True)
+    
+    scraper = EnhancedWebScraper()
+    
+    try:
+        # Check if URL is direct PDF
+        if url.lower().endswith('.pdf'):
+            logger.info(f"Direct PDF URL detected: {url}")
+            
+            # Download and process single PDF
+            pdf_file = download_pdf_fixed(url, download_directory)
+            
+            if pdf_file and os.path.exists(pdf_file):
+                # Process with Structify
+                if structify_module and process_pdfs:
+                    json_filename = f"{os.path.splitext(os.path.basename(pdf_file))[0]}_processed.json"
+                    json_path = os.path.join(download_directory, json_filename)
+                    
+                    # Use existing Structify integration
+                    result = structify_module.process_all_files(
+                        root_directory=os.path.dirname(pdf_file),
+                        output_file=json_path,
+                        file_filter=lambda f: f == pdf_file
+                    )
+                    
+                    return jsonify({
+                        "task_id": task_id,
+                        "status": "completed",
+                        "mode": "smart_pdf",
+                        "message": "Direct PDF downloaded and processed",
+                        "pdfs_found": 1,
+                        "pdfs_processed": 1,
+                        "results": [{
+                            "url": url,
+                            "pdf_file": pdf_file,
+                            "json_file": json_path
+                        }]
+                    })
+                else:
+                    return jsonify({
+                        "task_id": task_id,
+                        "status": "completed",
+                        "mode": "smart_pdf",
+                        "message": "Direct PDF downloaded (processing disabled)",
+                        "pdfs_found": 1,
+                        "pdfs_processed": 0,
+                        "results": [{"url": url, "pdf_file": pdf_file}]
+                    })
+        
+        else:
+            logger.info(f"HTML page detected, discovering PDFs: {url}")
+            
+            # Fetch the HTML page
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            
+            # Discover PDFs on this page (depth 0)
+            pdf_links = scraper.discover_pdfs_on_page(response.text, url)
+            
+            if not pdf_links:
+                return jsonify({
+                    "task_id": task_id,
+                    "status": "completed", 
+                    "mode": "smart_pdf",
+                    "message": "No PDFs found on page",
+                    "pdfs_found": 0,
+                    "pdfs_processed": 0
+                })
+            
+            # Download and process all discovered PDFs
+            processed_pdfs = []
+            for pdf_info in pdf_links:
+                try:
+                    pdf_file = download_pdf_fixed(pdf_info['url'], download_directory)
+                    
+                    if pdf_file and os.path.exists(pdf_file):
+                        result_info = {
+                            "url": pdf_info['url'],
+                            "title": pdf_info['title'],
+                            "pdf_file": pdf_file
+                        }
+                        
+                        # Process with Structify if enabled
+                        if structify_module and process_pdfs:
+                            json_filename = f"{os.path.splitext(os.path.basename(pdf_file))[0]}_processed.json"
+                            json_path = os.path.join(download_directory, json_filename)
+                            
+                            structify_module.process_all_files(
+                                root_directory=os.path.dirname(pdf_file),
+                                output_file=json_path,
+                                file_filter=lambda f: f == pdf_file
+                            )
+                            
+                            result_info["json_file"] = json_path
+                        
+                        processed_pdfs.append(result_info)
+                        
+                except Exception as e:
+                    logger.error(f"Error processing PDF {pdf_info['url']}: {e}")
+                    continue
+            
+            return jsonify({
+                "task_id": task_id,
+                "status": "completed",
+                "mode": "smart_pdf", 
+                "message": f"Discovered and processed {len(processed_pdfs)} PDFs from page",
+                "pdfs_found": len(pdf_links),
+                "pdfs_processed": len(processed_pdfs),
+                "results": processed_pdfs
+            })
+            
+    except Exception as e:
+        logger.error(f"Smart PDF mode failed: {e}")
+        return structured_error_response("SMART_PDF_ERROR", f"Error: {str(e)}", 500)
+
+def handle_full_website_mode(data: Dict[str, Any], task_id: str, url: str, download_directory: str) -> jsonify:
+    """Handle Full Website & Documentation Crawler mode"""
+    # Use local classes and functions
+    
+    # Get crawling options
+    max_depth = min(data.get("max_depth", 3), 10)  # Cap at 10 levels
+    max_pages = min(data.get("max_pages", 200), 1000)  # Cap at 1000 pages
+    respect_robots = data.get("respect_robots", True)
+    output_format = data.get("output_format", "markdown")  # markdown, html, json
+    
+    scraper = EnhancedWebScraper()
+    scraper.crawl_config['max_depth'] = max_depth
+    scraper.crawl_config['max_pages'] = max_pages
+    scraper.crawl_config['respect_robots'] = respect_robots
+    
+    try:
+        # Check robots.txt if requested
+        if respect_robots and not scraper.check_robots_txt(url):
+            return structured_error_response("ROBOTS_BLOCKED", "Crawling blocked by robots.txt", 403)
+        
+        # Start crawling
+        result = crawl_website_recursive(scraper, url, download_directory, output_format)
+        
+        return jsonify({
+            "task_id": task_id,
+            "status": "completed",
+            "mode": "full_website",
+            "message": f"Crawled {result['pages_crawled']} pages, found {result['pdfs_found']} PDFs",
+            "pages_crawled": result["pages_crawled"],
+            "pdfs_found": result["pdfs_found"],
+            "output_directory": download_directory,
+            "max_depth_reached": result["summary"]["max_depth_reached"],
+            "output_format": output_format,
+            "summary": result["summary"]
+        })
+        
+    except Exception as e:
+        logger.error(f"Full website mode failed: {e}")
+        return structured_error_response("FULL_WEBSITE_ERROR", f"Error: {str(e)}", 500)
+
+@web_scraper_bp.route('/health-enhanced', methods=['GET'])
+def health_check_enhanced():
+    """Health check for enhanced web scraper features"""
+    return jsonify({
+        "status": "healthy",
+        "version": "2.0_consolidated",
+        "features": {
+            "smart_pdf": "Smart PDF Discovery & Processing",
+            "full_website": "Full Website & Documentation Crawler"
+        },
+        "dependencies": {
+            "structify": structify_module is not None,
+            "trafilatura": TRAFILATURA_AVAILABLE,
+            "beautifulsoup": True,
+            "requests": True,
+            "urllib_robotparser": True
+        },
+        "legacy_compatibility": "Maintained for old 5-option system",
+        "endpoints": {
+            "enhanced": "/api/scrape2 (with scrape_mode parameter)",
+            "legacy": "/api/scrape2 (with urls parameter)",
+            "health": "/api/health-enhanced"
+        }
+    })
+
     
 @web_scraper_bp.route('/scrape2', methods=['POST'])
 def scrape2():
     """
-    Enhanced endpoint for web scraping with PDF download support
-    that fully integrates with the advanced frontend options.
+    Enhanced endpoint supporting 2 powerful scraping modes:
+    - smart_pdf: Smart PDF Discovery & Processing
+    - full_website: Full Website & Documentation Crawler
+    
+    Maintains backward compatibility with old 5-option system
     """
     data = request.get_json()
     if not data:
         return structured_error_response("NO_DATA", "No JSON data provided.", 400)
     
+    # Check for new 2-option system
+    scrape_mode = data.get("scrape_mode")
+    if scrape_mode in ["smart_pdf", "full_website"]:
+        return handle_enhanced_scraping(data, scrape_mode)
+    
+    # Legacy support for old 5-option system
     url_configs = data.get("urls")
     download_directory = data.get("download_directory")
     output_filename = data.get("outputFilename", "").strip()
@@ -732,260 +1373,6 @@ def process_url_with_settings(url, setting, keyword, output_folder):
             # For all other settings, use the process_url function (placeholder if web_scraper not available)
             return process_url(url, setting, keyword, output_folder)
 
-# This method is now part of the ScraperTask class in services.py
-# The standalone function below is kept for backward compatibility
-    try:
-        # Special handling for PDF setting
-        if setting == "pdf":
-            # Thread-safe update of PDF downloads list
-            with self.lock:
-                pdf_info = {
-                    "url": url,
-                    "status": "downloading",
-                    "message": "Starting download...",
-                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-                }
-                self.pdf_downloads.append(pdf_info)
-                pdf_index = len(self.pdf_downloads) - 1
-            
-            # Emit progress update with PDF download info
-            self.emit_progress(
-                progress=self.progress,
-                message=f"Downloading PDF from {url}",
-                stats=self.stats,
-                pdf_downloads=self.pdf_downloads
-            )
-            
-            # Set up retry mechanism for PDF downloads
-            max_retries = 2
-            result = None
-            
-            for attempt in range(max_retries + 1):
-                if self.is_cancelled:
-                    return {"status": "cancelled", "url": url}
-                    
-                try:
-                    # Use appropriate download function with timeout
-                    if web_scraper_available:
-                        pdf_file = web_scraper.download_pdf(url, save_path=output_folder)
-                    else:
-                        pdf_file = download_pdf(url, save_path=output_folder)
-                        
-                    if pdf_file and os.path.exists(pdf_file):
-                        # Update status to "processing"
-                        with self.lock:
-                            if pdf_index < len(self.pdf_downloads):
-                                self.pdf_downloads[pdf_index].update({
-                                    "status": "processing",
-                                    "message": "PDF downloaded, processing...",
-                                    "filePath": pdf_file
-                                })
-                        
-                        # Get filename and create JSON output path
-                        pdf_filename = os.path.basename(pdf_file)
-                        output_json_name = os.path.splitext(pdf_filename)[0] + "_processed"
-                        json_output = get_output_filepath(output_json_name, user_defined_dir=output_folder)
-                        
-                        # Check if task cancelled before processing
-                        if self.is_cancelled:
-                            return {"status": "cancelled", "url": url, "pdf_file": pdf_file}
-                            
-                        # First try using enhanced PDF processing if available
-                        if hasattr(structify_module, 'process_pdf'):
-                            try:
-                                # Detect document type to determine if OCR is needed
-                                doc_type = None
-                                if hasattr(structify_module, 'detect_document_type'):
-                                    try:
-                                        doc_type = structify_module.detect_document_type(pdf_file)
-                                        logger.info(f"Detected document type for {pdf_filename}: {doc_type}")
-                                    except Exception as type_err:
-                                        logger.warning(f"Error detecting document type: {type_err}")
-                                
-                                # Process PDF with enhanced capabilities
-                                pdf_result = structify_module.process_pdf(
-                                    pdf_path=pdf_file,
-                                    output_path=json_output,
-                                    max_chunk_size=4096,
-                                    extract_tables=True,
-                                    use_ocr=(doc_type == "scan"),  # Only use OCR for scanned documents
-                                    return_data=True
-                                )
-                                
-                                # Create successful result with enhanced metadata
-                                tables_count = 0
-                                references_count = 0
-                                
-                                if pdf_result:
-                                    if "tables" in pdf_result:
-                                        tables_count = len(pdf_result["tables"])
-                                    if "references" in pdf_result:
-                                        references_count = len(pdf_result["references"])
-                                
-                                result = {
-                                    "status": "PDF downloaded and processed with enhanced features",
-                                    "url": url,
-                                    "pdf_file": pdf_file,
-                                    "json_file": json_output,
-                                    "output_folder": output_folder,
-                                    "pdf_size": os.path.getsize(pdf_file) if os.path.exists(pdf_file) else 0,
-                                    "document_type": doc_type,
-                                    "tables_extracted": tables_count,
-                                    "references_extracted": references_count
-                                }
-                                
-                                logger.info(f"PDF processed with enhanced features. JSON at: {json_output}")
-                                break  # Success, exit retry loop
-                                
-                            except Exception as direct_err:
-                                logger.warning(f"Enhanced PDF processing failed, falling back: {direct_err}")
-                        
-                        # Fallback to standard processing using process_all_files
-                        structify_module.process_all_files(
-                            root_directory=os.path.dirname(pdf_file),
-                            output_file=json_output,
-                            max_chunk_size=4096,
-                            executor_type="thread",
-                            max_workers=None,
-                            stop_words=structify_module.DEFAULT_STOP_WORDS,
-                            use_cache=False,
-                            valid_extensions=[".pdf"],  # Only process PDFs
-                            ignore_dirs="venv,node_modules,.git,__pycache__,dist,build",
-                            stats_only=False,
-                            include_binary_detection=False,  # PDFs should not be detected as binary
-                            file_filter=lambda f: f == pdf_file  # Only process our specific PDF file
-                        )
-                        
-                        # Create standard result if we don't have an enhanced one yet
-                        if not result:
-                            result = {
-                                "status": "PDF downloaded and processed",
-                                "url": url,
-                                "pdf_file": pdf_file,
-                                "json_file": json_output,
-                                "output_folder": output_folder,
-                                "pdf_size": os.path.getsize(pdf_file) if os.path.exists(pdf_file) else 0
-                            }
-                        
-                        logger.info(f"PDF processing complete. JSON output at: {json_output}")
-                        break  # Success, exit retry loop
-                        
-                    else:
-                        # PDF download failed
-                        if attempt < max_retries:
-                            logger.warning(f"PDF download attempt {attempt+1} failed for {url}, retrying...")
-                            time.sleep(2)  # Small delay between retries
-                        else:
-                            result = {
-                                "status": "error",
-                                "url": url,
-                                "error": "Failed to download PDF after multiple attempts"
-                            }
-                            
-                except Exception as pdf_err:
-                    # Handle errors with retry logic
-                    if attempt < max_retries:
-                        logger.warning(f"PDF processing attempt {attempt+1} failed for {url}: {pdf_err}, retrying...")
-                        time.sleep(2)  # Small delay between retries
-                    else:
-                        logger.error(f"Error processing PDF from {url}: {pdf_err}")
-                        result = {
-                            "status": "error",
-                            "url": url,
-                            "error": str(pdf_err)
-                        }
-            
-            # If we still don't have a result after all retries
-            if result is None:
-                result = {
-                    "status": "error",
-                    "url": url,
-                    "error": "Failed to download or process PDF"
-                }
-            
-            # Thread-safe update of PDF status
-            with self.lock:
-                if pdf_index < len(self.pdf_downloads):
-                    if "error" in result:
-                        self.pdf_downloads[pdf_index].update({
-                            "status": "error",
-                            "message": result["error"],
-                            "error": result["error"],
-                            "completed_at": time.strftime("%Y-%m-%d %H:%M:%S")
-                        })
-                    else:
-                        self.pdf_downloads[pdf_index].update({
-                            "status": "success",
-                            "message": "Download and processing complete",
-                            "filePath": result.get("pdf_file", ""),
-                            "jsonFile": result.get("json_file", ""),
-                            "fileSize": result.get("pdf_size", 0),
-                            "documentType": result.get("document_type", ""),
-                            "tablesExtracted": result.get("tables_extracted", 0),
-                            "referencesExtracted": result.get("references_extracted", 0),
-                            "completed_at": time.strftime("%Y-%m-%d %H:%M:%S")
-                        })
-            
-            # Emit progress update with updated PDF download info
-            self.emit_progress(
-                progress=self.progress,
-                message=f"Processed {url}",
-                stats=self.stats,
-                pdf_downloads=self.pdf_downloads
-            )
-            
-            return result
-                
-        else:
-            # For non-PDF settings with improved error handling
-            max_retries = 1
-            for attempt in range(max_retries + 1):
-                if self.is_cancelled:
-                    return {"status": "cancelled", "url": url}
-                    
-                try:
-                    # Use appropriate processing function
-                    if web_scraper_available:
-                        result = web_scraper.process_url(url, setting, keyword, output_folder)
-                    else:
-                        result = process_url(url, setting, keyword, output_folder)
-                    
-                    return result
-                except Exception as e:
-                    if attempt < max_retries:
-                        logger.warning(f"URL processing attempt {attempt+1} failed: {e}, retrying...")
-                        time.sleep(1)
-                    else:
-                        logger.error(f"Error processing URL {url} (setting: {setting}): {e}")
-                        return {"error": str(e), "url": url, "setting": setting}
-            
-            # Should never reach here, but just in case
-            return {"error": "Processing failed after retries", "url": url}
-            
-    except Exception as e:
-        logger.error(f"Error processing URL {url}: {e}")
-        
-        # Thread-safe update of PDF status if this was a PDF
-        if setting == "pdf":
-            with self.lock:
-                pdf_index = next((i for i, pdf in enumerate(self.pdf_downloads) if pdf["url"] == url), None)
-                if pdf_index is not None:
-                    self.pdf_downloads[pdf_index].update({
-                        "status": "error",
-                        "message": str(e),
-                        "error": str(e),
-                        "completed_at": time.strftime("%Y-%m-%d %H:%M:%S")
-                    })
-            
-            # Emit progress update with updated PDF download info
-            self.emit_progress(
-                progress=self.progress,
-                message=f"Error processing {url}",
-                stats=self.stats,
-                pdf_downloads=self.pdf_downloads
-            )
-        
-        return {"error": str(e), "url": url}
 
 def emit_pdf_download_progress(task_id, url, progress, status, file_path=None, error=None, details=None):
     """Emit PDF download progress update"""

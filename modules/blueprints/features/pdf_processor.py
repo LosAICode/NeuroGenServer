@@ -872,14 +872,23 @@ def get_capabilities():
 # ----------------------------------------------------------------------------
 # Enhanced download_pdf Function
 # ----------------------------------------------------------------------------
-def enhanced_download_pdf(url: str, save_path: str = DEFAULT_OUTPUT_FOLDER) -> str:
+def enhanced_download_pdf(url: str, save_path: str = DEFAULT_OUTPUT_FOLDER, 
+                         task_id: Optional[str] = None, 
+                         progress_callback: Optional[callable] = None,
+                         timeout: int = 60,
+                         max_file_size_mb: int = 100,
+                         max_retries: int = 3) -> str:
     """
-    Download a PDF from the given URL using streaming to save memory.
-    Returns the local file path on success.
+    Centralized, enhanced PDF download function with all features consolidated.
     
     Args:
         url (str): The URL to download from
         save_path (str): Directory where the PDF will be saved
+        task_id (Optional[str]): Task ID for progress tracking
+        progress_callback (Optional[callable]): Callback function for progress updates
+        timeout (int): Download timeout in seconds (default: 60)
+        max_file_size_mb (int): Maximum file size in MB (default: 100)
+        max_retries (int): Maximum retry attempts (default: 3)
         
     Returns:
         str: The path to the downloaded PDF file
@@ -887,18 +896,26 @@ def enhanced_download_pdf(url: str, save_path: str = DEFAULT_OUTPUT_FOLDER) -> s
     Raises:
         ValueError: If the download fails
     """
-    # First try web_scraper's version if available
-    if 'download_pdf' in globals():
-        try:
-            return download_pdf(url, save_path)
-        except Exception as e:
-            logger.warning(f"Web scraper download_pdf failed: {e}. Trying fallback method.")
+    # Import requests here to ensure availability
+    try:
+        import requests
+        import hashlib
+    except ImportError:
+        raise ValueError("Required libraries (requests, hashlib) not available. Cannot download PDF.")
     
-    # Fallback implementation if web_scraper is not available
-    if not requests_available:
-        raise ValueError("Requests library not available. Cannot download PDF.")
+    logger.info(f"Starting enhanced PDF download: {url}")
+    if task_id:
+        logger.info(f"Task ID: {task_id}")
     
-    logger.info(f"Downloading PDF: {url}")
+    def call_progress(progress: float, message: str):
+        """Helper to call progress callback safely"""
+        if progress_callback:
+            try:
+                progress_callback(progress, message)
+            except Exception as e:
+                logger.debug(f"Progress callback error: {e}")
+    
+    call_progress(0, "Starting PDF download...")
     
     # Convert arXiv abstract links to PDF links if needed
     if "arxiv.org/abs/" in url:

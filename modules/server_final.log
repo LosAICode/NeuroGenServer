@@ -1,0 +1,188 @@
+2025-05-29 21:35:41,522 - app_new - INFO - Using static folder: /workspace/modules/static
+2025-05-29 21:35:41,526 - app_new - INFO - Using template folder: /workspace/modules/blueprints/templates
+Server initialized for eventlet.
+2025-05-29 21:35:41,648 - engineio.server - INFO - Server initialized for eventlet.
+2025-05-29 21:35:42,475 - blueprints.core.utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 21:35:42,912 - blueprints.core.http_client - INFO - HTTP session created with retry strategy
+2025-05-29 21:35:54,490 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-29 21:35:54,490 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-29 21:35:54,492 - file_processor - INFO - Started temp file cleanup service
+2025-05-29 21:35:54,492 - file_processor - INFO - Started temp file cleanup service
+🚀 Starting NeuroGen Server (Blueprint Architecture)
+==================================================
+📍 Server URL: http://127.0.0.1:5025
+🔧 Debug mode: True
+📁 Working directory: /workspace/modules
+==================================================
+2025-05-29 21:35:56,645 - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-29 21:35:56,645 - pdf_extractor - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-29 21:35:58,919 - INFO - PyPDF2 version 3.0.1 detected
+2025-05-29 21:35:58,919 - pdf_extractor - INFO - PyPDF2 version 3.0.1 detected
+2025-05-29 21:35:58,936 - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-29 21:35:58,936 - pdf_extractor - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-29 21:35:59,210 - INFO - Tabula detected for table extraction
+2025-05-29 21:35:59,210 - pdf_extractor - INFO - Tabula detected for table extraction
+2025-05-29 21:35:59,221 - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-29 21:35:59,221 - pdf_extractor - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-29 21:35:59,289 - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-29 21:35:59,289 - pdf_extractor - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-29 21:35:59,290 - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-29 21:35:59,290 - pdf_extractor - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-29 21:35:59,292 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-29 21:35:59,292 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-29 21:35:59,292 - INFO - Initializing PDF extractor module...
+2025-05-29 21:35:59,292 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-29 21:35:59,300 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 21:35:59,300 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 21:35:59,385 - pdf_output_enhancer - INFO - PDF Output Enhancer module imported. Call init_improved_output_format() to initialize.
+2025-05-29 21:35:59,402 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-29 21:35:59,402 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-29 21:35:59,408 - Structify - INFO - Successfully imported claude.py from Structify package
+2025-05-29 21:35:59,409 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-29 21:35:59,409 - blueprints.core.structify_integration - INFO - Set structify TEMP_OCR_DIR to: /workspace/modules/blueprints/core/../../temp
+2025-05-29 21:35:59,481 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-29 21:35:59,481 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-29 21:35:59,483 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-29 21:35:59,483 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-29 21:35:59,485 - blueprints.core.structify_integration - INFO - Initialized structify OCR environment
+2025-05-29 21:35:59,486 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-29 21:35:59,486 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-29 21:35:59,487 - blueprints.core.structify_integration - INFO - Patched pytesseract temp directory
+2025-05-29 21:35:59,489 - blueprints.core.structify_integration - INFO - Successfully loaded structify_module and components
+2025-05-29 21:35:59,572 - blueprints.core.ocr_config - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-29 21:35:59,595 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-29 21:35:59,600 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 21:35:59,602 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-29 21:35:59,626 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 21:35:59,642 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 21:35:59,690 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-29 21:35:59,691 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 21:35:59,691 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-29 21:35:59,708 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 21:35:59,709 - blueprints.core.ocr_config - INFO - Successfully imported pdf_extractor module
+2025-05-29 21:35:59,734 - INFO - Initializing PDF extractor module...
+2025-05-29 21:35:59,734 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-29 21:35:59,745 - blueprints.core.ocr_config - ERROR - Error initializing PDF extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-29 21:35:59,766 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 21:35:59,852 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 21:35:59,873 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-29 21:35:59,878 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-29 21:36:04,875 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-29 21:36:04,895 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-29 21:36:04,905 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 21:36:04,905 - blueprints.core.ocr_config - INFO - OCR environment set up with temp directory: /workspace/modules/temp
+2025-05-29 21:36:04,923 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-29 21:36:04,941 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-29 21:36:07,095 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-29 21:36:07,095 - blueprints.core.ocr_config - INFO - OCR handler initialized successfully
+2025-05-29 21:36:07,167 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-29 21:36:09,694 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-29 21:36:09,695 - INFO - Claude module is available for processing
+2025-05-29 21:36:09,695 - web_scraper - INFO - Claude module is available for processing
+2025-05-29 21:36:09,699 - INFO - PDF extractor module is available
+2025-05-29 21:36:09,699 - web_scraper - INFO - PDF extractor module is available
+2025-05-29 21:36:18,900 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-29 21:36:19,114 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-05-29 21:36:19,922 - app_new - INFO - All blueprints registered successfully
+2025-05-29 21:36:19,971 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-05-29 21:36:19,988 - app_new - INFO - NeuroGen Server application created successfully
+2025-05-29 21:36:20,025 - app_new - INFO - Starting NeuroGen Server on 127.0.0.1:5025
+2025-05-29 21:36:20,070 - app_new - INFO - Debug mode: True
+(75863) wsgi starting up on http://127.0.0.1:5025
+(75863) accepted ('127.0.0.1', 39892)
+127.0.0.1 - - [29/May/2025 21:37:06] "GET / HTTP/1.1" 200 75618 0.141509
+(75863) accepted ('127.0.0.1', 39898)
+127.0.0.1 - - [29/May/2025 21:37:06] "GET /api/routes HTTP/1.1" 404 262 0.000983
+(75863) accepted ('127.0.0.1', 39906)
+127.0.0.1 - - [29/May/2025 21:37:06] "GET /api/endpoints HTTP/1.1" 404 262 0.001194
+(75863) accepted ('127.0.0.1', 39912)
+127.0.0.1 - - [29/May/2025 21:37:06] "GET /api/docs HTTP/1.1" 404 262 0.000871
+(75863) accepted ('127.0.0.1', 39918)
+127.0.0.1 - - [29/May/2025 21:37:06] "GET /swagger HTTP/1.1" 404 262 0.001366
+(75863) accepted ('127.0.0.1', 39926)
+127.0.0.1 - - [29/May/2025 21:37:06] "GET /api/help HTTP/1.1" 404 262 0.000787
+(75863) accepted ('127.0.0.1', 39938)
+2025-05-29 21:37:06,907 - blueprints.features.web_scraper - INFO - Starting web scraping with 1 URLs to /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:37:06,907 - blueprints.features.web_scraper - INFO - Starting web scraping with 1 URLs to /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:37:06,920 - blueprints.features.web_scraper - INFO - Output JSON will be saved to: /workspace/modules/downloads/test_scraping_simple/test_simple_results.json
+2025-05-29 21:37:06,920 - blueprints.features.web_scraper - INFO - Output JSON will be saved to: /workspace/modules/downloads/test_scraping_simple/test_simple_results.json
+2025-05-29 21:37:07,007 - blueprints.features.web_scraper - INFO - PDF options: process=True, tables=True, ocr=True, structure=True, chunk_size=4096, max_downloads=10
+2025-05-29 21:37:07,007 - blueprints.features.web_scraper - INFO - PDF options: process=True, tables=True, ocr=True, structure=True, chunk_size=4096, max_downloads=10
+2025-05-29 21:37:07,086 - blueprints.core.services - INFO - BaseTask a55dc3a3-999c-4527-88f8-91201597ff62 (web_scraping) created.
+2025-05-29 21:37:07,161 - blueprints.core.services - INFO - ScraperTask a55dc3a3-999c-4527-88f8-91201597ff62 initialized with 2 concurrent downloads
+2025-05-29 21:37:07,192 - blueprints.core.services - INFO - Added task a55dc3a3-999c-4527-88f8-91201597ff62 to active tasks
+emitting event "progress_update" to all [/]
+2025-05-29 21:37:07,508 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-05-29 21:37:07,512 - blueprints.core.services - INFO - Task a55dc3a3-999c-4527-88f8-91201597ff62 (web_scraping) started processing.
+2025-05-29 21:37:07,512 - blueprints.core.services - ERROR - Error emitting task_started for a55dc3a3-999c-4527-88f8-91201597ff62: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-29 21:37:07,513 - blueprints.core.services - INFO - Task a55dc3a3-999c-4527-88f8-91201597ff62 (web_scraping) thread started.
+127.0.0.1 - - [29/May/2025 21:37:07] "POST /api/scrape2 HTTP/1.1" 200 416 0.622494
+2025-05-29 21:37:07,524 - blueprints.core.services - INFO - Task a55dc3a3-999c-4527-88f8-91201597ff62: Starting enhanced scraping of 1 URLs. Output dir: /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:37:07,528 - blueprints.core.services - INFO - Starting URL processing with 1 workers (0 PDFs)
+2025-05-29 21:37:07,678 - INFO - Processing URL: https://example.com with setting: text
+2025-05-29 21:37:07,678 - web_scraper - INFO - Processing URL: https://example.com with setting: text
+2025-05-29 21:37:07,688 - INFO - Ensured output directory exists: /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:37:07,688 - web_scraper - INFO - Ensured output directory exists: /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:37:07,689 - ERROR - Invalid setting: text
+2025-05-29 21:37:07,689 - web_scraper - ERROR - Invalid setting: text
+2025-05-29 21:37:07,717 - file_processor - INFO - Found 0 valid files in /workspace/modules/downloads/test_scraping_simple (0.03s)
+2025-05-29 21:37:07,717 - file_processor - INFO - Found 0 valid files in /workspace/modules/downloads/test_scraping_simple (0.03s)
+2025-05-29 21:37:07,727 - file_processor - WARNING - No files found in /workspace/modules/downloads/test_scraping_simple matching the provided criteria
+2025-05-29 21:37:07,727 - file_processor - WARNING - No files found in /workspace/modules/downloads/test_scraping_simple matching the provided criteria
+2025-05-29 21:37:07,729 - blueprints.core.services - INFO - Task a55dc3a3-999c-4527-88f8-91201597ff62 final processing completed successfully
+2025-05-29 21:37:07,729 - blueprints.core.services - ERROR - Error in enhanced scraping completion: name 'emit_enhanced_task_completion' is not defined
+2025-05-29 21:37:07,730 - blueprints.core.services - ERROR - Error emitting task_completed: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-29 21:37:07,733 - blueprints.core.services - INFO - Task a55dc3a3-999c-4527-88f8-91201597ff62 (web_scraping) completed in 0.65s.
+2025-05-29 21:37:07,733 - blueprints.core.services - ERROR - Error emitting task_completed for a55dc3a3-999c-4527-88f8-91201597ff62: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-29 21:37:07,734 - blueprints.core.services - INFO - Removed task a55dc3a3-999c-4527-88f8-91201597ff62 from active tasks
+(75863) accepted ('127.0.0.1', 39948)
+127.0.0.1 - - [29/May/2025 21:37:12] "GET /api/scrape2/status/a55dc3a3-999c-4527-88f8-91201597ff62 HTTP/1.1" 404 276 0.001580
+(75863) accepted ('127.0.0.1', 39950)
+127.0.0.1 - - [29/May/2025 21:37:12] "GET /api/task/status/a55dc3a3-999c-4527-88f8-91201597ff62 HTTP/1.1" 404 262 0.002072
+(75863) accepted ('127.0.0.1', 39952)
+127.0.0.1 - - [29/May/2025 21:37:12] "GET /api/scraper/status/a55dc3a3-999c-4527-88f8-91201597ff62 HTTP/1.1" 404 262 0.001021
+(75863) accepted ('127.0.0.1', 33632)
+127.0.0.1 - - [29/May/2025 21:40:34] "GET / HTTP/1.1" 200 75618 0.003611
+(75863) accepted ('127.0.0.1', 33638)
+127.0.0.1 - - [29/May/2025 21:40:34] "GET /api/routes HTTP/1.1" 404 262 0.000575
+(75863) accepted ('127.0.0.1', 33644)
+127.0.0.1 - - [29/May/2025 21:40:34] "GET /api/endpoints HTTP/1.1" 404 262 0.000580
+(75863) accepted ('127.0.0.1', 33650)
+127.0.0.1 - - [29/May/2025 21:40:34] "GET /api/docs HTTP/1.1" 404 262 0.000629
+(75863) accepted ('127.0.0.1', 33660)
+127.0.0.1 - - [29/May/2025 21:40:34] "GET /swagger HTTP/1.1" 404 262 0.000584
+(75863) accepted ('127.0.0.1', 33662)
+127.0.0.1 - - [29/May/2025 21:40:34] "GET /api/help HTTP/1.1" 404 262 0.000590
+(75863) accepted ('127.0.0.1', 33664)
+2025-05-29 21:40:34,261 - blueprints.features.web_scraper - INFO - Starting web scraping with 1 URLs to /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:40:34,261 - blueprints.features.web_scraper - INFO - Starting web scraping with 1 URLs to /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:40:34,261 - blueprints.features.web_scraper - INFO - Output JSON will be saved to: /workspace/modules/downloads/test_scraping_simple/test_simple_results.json
+2025-05-29 21:40:34,261 - blueprints.features.web_scraper - INFO - Output JSON will be saved to: /workspace/modules/downloads/test_scraping_simple/test_simple_results.json
+2025-05-29 21:40:34,262 - blueprints.features.web_scraper - INFO - PDF options: process=True, tables=True, ocr=True, structure=True, chunk_size=4096, max_downloads=10
+2025-05-29 21:40:34,262 - blueprints.features.web_scraper - INFO - PDF options: process=True, tables=True, ocr=True, structure=True, chunk_size=4096, max_downloads=10
+2025-05-29 21:40:34,263 - blueprints.core.services - INFO - BaseTask 7b65e9f9-0935-4d67-af67-36e8b778569c (web_scraping) created.
+2025-05-29 21:40:34,267 - blueprints.core.services - INFO - ScraperTask 7b65e9f9-0935-4d67-af67-36e8b778569c initialized with 2 concurrent downloads
+2025-05-29 21:40:34,268 - blueprints.core.services - INFO - Added task 7b65e9f9-0935-4d67-af67-36e8b778569c to active tasks
+2025-05-29 21:40:34,276 - blueprints.core.services - ERROR - Task 7b65e9f9-0935-4d67-af67-36e8b778569c (web_scraping) failed: Validation errors: URL config 0 has invalid setting: full. Details: {'stage_at_failure': 'validation'}
+emitting event "task_error" to all [/]
+2025-05-29 21:40:34,276 - socketio.server - INFO - emitting event "task_error" to all [/]
+2025-05-29 21:40:34,277 - blueprints.core.services - INFO - Removed task 7b65e9f9-0935-4d67-af67-36e8b778569c from active tasks
+127.0.0.1 - - [29/May/2025 21:40:34] "POST /api/scrape2 HTTP/1.1" 200 416 0.019783
+(75863) accepted ('127.0.0.1', 50538)
+127.0.0.1 - - [29/May/2025 21:40:39] "GET /api/scrape2/status/7b65e9f9-0935-4d67-af67-36e8b778569c HTTP/1.1" 404 276 0.001453
+(75863) accepted ('127.0.0.1', 50550)
+127.0.0.1 - - [29/May/2025 21:40:39] "GET /api/task/status/7b65e9f9-0935-4d67-af67-36e8b778569c HTTP/1.1" 404 262 0.000675
+(75863) accepted ('127.0.0.1', 50566)
+127.0.0.1 - - [29/May/2025 21:40:39] "GET /api/scraper/status/7b65e9f9-0935-4d67-af67-36e8b778569c HTTP/1.1" 404 262 0.000757

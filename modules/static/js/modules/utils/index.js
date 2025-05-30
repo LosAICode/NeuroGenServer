@@ -14,5 +14,15 @@ export * from './progressHandler.js';
 export * from './socketHandler.js';
 export * from './debugTools.js';
 
+// Create index object with all modules
+const index = {
+  fileHandler,
+  ui,
+  utils,
+  socketHandler,
+  progressHandler,
+  debugTools
+};
+
 // Export default module
 export default index;

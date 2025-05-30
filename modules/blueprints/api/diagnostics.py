@@ -319,7 +319,7 @@ def check_endpoints() -> Dict[str, Any]:
     endpoints = {
         'file_processor': '/api/process',
         'web_scraper': '/api/scrape2',
-        'academic_search': '/api/academic-search',
+        'academic_search': '/api/academic/search',
         'pdf_processor': '/api/pdf/process',
         'playlist_downloader': '/api/start-playlists'
     }
@@ -446,7 +446,7 @@ def test_endpoint_alignment() -> Dict[str, Any]:
     expected_endpoints = {
         'file_processor': '/api/process',
         'web_scraper': '/api/scrape2',
-        'academic_search': '/api/academic-search',
+        'academic_search': '/api/academic/search',
         'pdf_processor': '/api/pdf/process',
         'playlist_downloader': '/api/start-playlists',
         'health': '/api/health',

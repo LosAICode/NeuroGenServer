@@ -1,0 +1,11 @@
+{
+  "start_url": "https://docs.python.org/3/tutorial/",
+  "pages_crawled": 10,
+  "pdfs_found": 1,
+  "max_depth_reached": 2,
+  "output_format": "markdown",
+  "directories": {
+    "pages": "test_enhanced_output/full_website/pages",
+    "pdfs": "test_enhanced_output/full_website/pdfs"
+  }
+}

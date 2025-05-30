@@ -1,0 +1,382 @@
+2025-05-30 11:46:07,111 - app_new - INFO - Using static folder: /workspace/modules/static
+2025-05-30 11:46:07,112 - app_new - INFO - Using template folder: /workspace/modules/blueprints/templates
+Server initialized for eventlet.
+2025-05-30 11:46:07,139 - engineio.server - INFO - Server initialized for eventlet.
+2025-05-30 11:46:07,305 - blueprints.core.utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-30 11:46:07,387 - blueprints.core.http_client - INFO - HTTP session created with retry strategy
+2025-05-30 11:46:08,344 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-30 11:46:08,344 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-05-30 11:46:08,346 - file_processor - INFO - Started temp file cleanup service
+2025-05-30 11:46:08,346 - file_processor - INFO - Started temp file cleanup service
+🚀 Starting NeuroGen Server (Blueprint Architecture)
+==================================================
+📍 Server URL: http://127.0.0.1:5025
+🔧 Debug mode: False
+📁 Working directory: /workspace/modules
+==================================================
+2025-05-30 11:46:08,519 - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-30 11:46:08,519 - pdf_extractor - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-05-30 11:46:08,595 - INFO - PyPDF2 version 3.0.1 detected
+2025-05-30 11:46:08,595 - pdf_extractor - INFO - PyPDF2 version 3.0.1 detected
+2025-05-30 11:46:08,597 - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-30 11:46:08,597 - pdf_extractor - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-05-30 11:46:08,609 - INFO - Tabula detected for table extraction
+2025-05-30 11:46:08,609 - pdf_extractor - INFO - Tabula detected for table extraction
+2025-05-30 11:46:08,610 - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-30 11:46:08,610 - pdf_extractor - INFO - OCR available with Tesseract and PIL/Pillow
+2025-05-30 11:46:08,613 - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-30 11:46:08,613 - pdf_extractor - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-05-30 11:46:08,613 - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-30 11:46:08,613 - pdf_extractor - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-05-30 11:46:08,614 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-30 11:46:08,614 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-05-30 11:46:08,614 - INFO - Initializing PDF extractor module...
+2025-05-30 11:46:08,614 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-30 11:46:08,617 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-30 11:46:08,617 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-30 11:46:08,625 - pdf_output_enhancer - INFO - PDF Output Enhancer module imported. Call init_improved_output_format() to initialize.
+2025-05-30 11:46:08,625 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-30 11:46:08,625 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-05-30 11:46:08,627 - Structify - INFO - Successfully imported claude.py from Structify package
+2025-05-30 11:46:08,627 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-30 11:46:08,628 - blueprints.core.structify_integration - INFO - Set structify TEMP_OCR_DIR to: /workspace/modules/blueprints/core/../../temp
+2025-05-30 11:46:08,641 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-30 11:46:08,641 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-05-30 11:46:08,641 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-30 11:46:08,641 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-05-30 11:46:08,642 - blueprints.core.structify_integration - INFO - Initialized structify OCR environment
+2025-05-30 11:46:08,642 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-30 11:46:08,642 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-05-30 11:46:08,643 - blueprints.core.structify_integration - INFO - Patched pytesseract temp directory
+2025-05-30 11:46:08,643 - blueprints.core.structify_integration - INFO - Successfully loaded structify_module and components
+2025-05-30 11:46:08,655 - blueprints.core.ocr_config - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-05-30 11:46:08,660 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-30 11:46:08,660 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-30 11:46:08,661 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-30 11:46:08,667 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-30 11:46:08,676 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-30 11:46:08,681 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-05-30 11:46:08,681 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-30 11:46:08,682 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-05-30 11:46:08,687 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-30 11:46:08,688 - blueprints.core.ocr_config - INFO - Successfully imported pdf_extractor module
+2025-05-30 11:46:08,688 - INFO - Initializing PDF extractor module...
+2025-05-30 11:46:08,688 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-05-30 11:46:08,692 - blueprints.core.ocr_config - ERROR - Error initializing PDF extractor: name 'JAVA_AVAILABLE' is not defined
+2025-05-30 11:46:08,702 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-30 11:46:08,706 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-30 11:46:08,706 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-30 11:46:08,707 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-30 11:46:09,004 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-30 11:46:09,008 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-05-30 11:46:09,011 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-30 11:46:09,012 - blueprints.core.ocr_config - INFO - OCR environment set up with temp directory: /workspace/modules/temp
+2025-05-30 11:46:09,012 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-05-30 11:46:09,013 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-05-30 11:46:09,330 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-05-30 11:46:09,330 - blueprints.core.ocr_config - INFO - OCR handler initialized successfully
+2025-05-30 11:46:09,335 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-05-30 11:46:09,579 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-05-30 11:46:09,579 - INFO - Claude module is available for processing
+2025-05-30 11:46:09,579 - web_scraper - INFO - Claude module is available for processing
+2025-05-30 11:46:09,581 - INFO - PDF extractor module is available
+2025-05-30 11:46:09,581 - web_scraper - INFO - PDF extractor module is available
+2025-05-30 11:46:10,878 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-30 11:46:10,912 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-05-30 11:46:11,005 - app_new - INFO - All blueprints registered successfully
+2025-05-30 11:46:11,006 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-05-30 11:46:11,007 - app_new - INFO - NeuroGen Server application created successfully
+2025-05-30 11:46:11,008 - app_new - INFO - Starting NeuroGen Server on 127.0.0.1:5025
+2025-05-30 11:46:11,008 - app_new - INFO - Debug mode: False
+2025-05-30 11:50:38,293 - blueprints.features.academic_search - WARNING - Semantic Scholar rate limit hit, waiting...
+2025-05-30 11:50:40,491 - blueprints.features.academic_search - ERROR - Error searching Semantic Scholar: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=machine+learning+transformers&limit=5&fields=paperId%2Ctitle%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2CopenAccessPdf%2Ctldr%2CpublicationTypes%2Cjournal
+2025-05-30 11:50:44,074 - blueprints.features.academic_search - WARNING - Semantic Scholar rate limit hit, waiting...
+2025-05-30 11:50:44,324 - blueprints.features.academic_search - ERROR - Error searching ArXiv API: Couldn't find a tree builder with the features you requested: xml. Do you need to install a parser library?
+2025-05-30 11:50:44,325 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 11:50:44,325 - web_scraper - INFO - Fetching PDF links from: https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 11:50:45,188 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23417.pdf
+2025-05-30 11:50:45,188 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23417.pdf
+2025-05-30 11:50:45,189 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21720.pdf
+2025-05-30 11:50:45,189 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21720.pdf
+2025-05-30 11:50:45,191 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20304.pdf
+2025-05-30 11:50:45,191 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20304.pdf
+2025-05-30 11:50:45,192 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20273.pdf
+2025-05-30 11:50:45,192 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20273.pdf
+2025-05-30 11:50:45,193 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19212.pdf
+2025-05-30 11:50:45,193 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19212.pdf
+2025-05-30 11:50:45,194 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19045.pdf
+2025-05-30 11:50:45,194 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19045.pdf
+2025-05-30 11:50:45,195 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18596.pdf
+2025-05-30 11:50:45,195 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18596.pdf
+2025-05-30 11:50:45,197 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18523.pdf
+2025-05-30 11:50:45,197 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18523.pdf
+2025-05-30 11:50:45,199 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17165.pdf
+2025-05-30 11:50:45,199 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17165.pdf
+2025-05-30 11:50:45,201 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17065.pdf
+2025-05-30 11:50:45,201 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17065.pdf
+2025-05-30 11:50:45,203 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15851.pdf
+2025-05-30 11:50:45,203 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15851.pdf
+2025-05-30 11:50:45,205 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15173.pdf
+2025-05-30 11:50:45,205 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15173.pdf
+2025-05-30 11:50:45,208 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14758.pdf
+2025-05-30 11:50:45,208 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14758.pdf
+2025-05-30 11:50:45,212 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14206.pdf
+2025-05-30 11:50:45,212 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14206.pdf
+2025-05-30 11:50:45,214 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.13565.pdf
+2025-05-30 11:50:45,214 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.13565.pdf
+2025-05-30 11:50:45,215 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12718.pdf
+2025-05-30 11:50:45,215 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12718.pdf
+2025-05-30 11:50:45,217 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12229.pdf
+2025-05-30 11:50:45,217 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12229.pdf
+2025-05-30 11:50:45,219 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11946.pdf
+2025-05-30 11:50:45,219 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11946.pdf
+2025-05-30 11:50:45,220 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11454.pdf
+2025-05-30 11:50:45,220 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11454.pdf
+2025-05-30 11:50:45,221 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10603.pdf
+2025-05-30 11:50:45,221 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10603.pdf
+2025-05-30 11:50:45,222 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10050.pdf
+2025-05-30 11:50:45,222 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10050.pdf
+2025-05-30 11:50:45,223 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09646.pdf
+2025-05-30 11:50:45,223 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09646.pdf
+2025-05-30 11:50:45,224 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09576.pdf
+2025-05-30 11:50:45,224 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09576.pdf
+2025-05-30 11:50:45,224 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09056.pdf
+2025-05-30 11:50:45,224 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09056.pdf
+2025-05-30 11:50:45,225 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08854.pdf
+2025-05-30 11:50:45,225 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08854.pdf
+2025-05-30 11:50:45,227 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08202.pdf
+2025-05-30 11:50:45,227 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08202.pdf
+2025-05-30 11:50:45,228 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07772.pdf
+2025-05-30 11:50:45,228 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07772.pdf
+2025-05-30 11:50:45,229 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07005.pdf
+2025-05-30 11:50:45,229 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07005.pdf
+2025-05-30 11:50:45,230 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05523.pdf
+2025-05-30 11:50:45,230 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05523.pdf
+2025-05-30 11:50:45,231 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05516.pdf
+2025-05-30 11:50:45,231 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05516.pdf
+2025-05-30 11:50:45,231 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05197.pdf
+2025-05-30 11:50:45,231 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05197.pdf
+2025-05-30 11:50:45,232 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04966.pdf
+2025-05-30 11:50:45,232 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04966.pdf
+2025-05-30 11:50:45,233 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04769.pdf
+2025-05-30 11:50:45,233 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04769.pdf
+2025-05-30 11:50:45,234 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04673.pdf
+2025-05-30 11:50:45,234 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04673.pdf
+2025-05-30 11:50:45,235 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04654.pdf
+2025-05-30 11:50:45,235 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04654.pdf
+2025-05-30 11:50:45,236 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04570.pdf
+2025-05-30 11:50:45,236 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04570.pdf
+2025-05-30 11:50:45,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04352.pdf
+2025-05-30 11:50:45,237 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04352.pdf
+2025-05-30 11:50:45,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04104.pdf
+2025-05-30 11:50:45,237 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04104.pdf
+2025-05-30 11:50:45,238 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.03945.pdf
+2025-05-30 11:50:45,238 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.03945.pdf
+2025-05-30 11:50:45,239 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02945.pdf
+2025-05-30 11:50:45,239 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02945.pdf
+2025-05-30 11:50:45,240 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02856.pdf
+2025-05-30 11:50:45,240 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02856.pdf
+2025-05-30 11:50:45,241 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02230.pdf
+2025-05-30 11:50:45,241 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02230.pdf
+2025-05-30 11:50:45,242 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02198.pdf
+2025-05-30 11:50:45,242 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02198.pdf
+2025-05-30 11:50:45,243 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02174.pdf
+2025-05-30 11:50:45,243 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02174.pdf
+2025-05-30 11:50:45,244 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02062.pdf
+2025-05-30 11:50:45,244 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02062.pdf
+2025-05-30 11:50:45,244 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01542.pdf
+2025-05-30 11:50:45,244 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01542.pdf
+2025-05-30 11:50:45,245 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01514.pdf
+2025-05-30 11:50:45,245 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01514.pdf
+2025-05-30 11:50:45,246 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00841.pdf
+2025-05-30 11:50:45,246 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00841.pdf
+2025-05-30 11:50:45,247 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00339.pdf
+2025-05-30 11:50:45,247 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00339.pdf
+2025-05-30 11:50:45,248 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00204.pdf
+2025-05-30 11:50:45,248 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00204.pdf
+2025-05-30 11:50:45,261 - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 11:50:45,261 - web_scraper - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 11:50:46,263 - blueprints.features.academic_search - ERROR - Error searching Semantic Scholar: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=artificial+intelligence+ethics&limit=10&fields=paperId%2Ctitle%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2CopenAccessPdf%2Ctldr%2CpublicationTypes%2Cjournal
+2025-05-30 11:57:01,479 - blueprints.features.academic_search - WARNING - Semantic Scholar rate limit hit, waiting...
+2025-05-30 11:57:03,667 - blueprints.features.academic_search - ERROR - Error searching Semantic Scholar: 429 Client Error:  for url: https://api.semanticscholar.org/graph/v1/paper/search?query=machine+learning&limit=3&fields=paperId%2Ctitle%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2CopenAccessPdf%2Ctldr%2CpublicationTypes%2Cjournal
+2025-05-30 12:40:02,180 - blueprints.features.academic_search - ERROR - Error searching ArXiv API: Couldn't find a tree builder with the features you requested: xml. Do you need to install a parser library?
+2025-05-30 12:40:02,181 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=machine+learning&searchtype=all
+2025-05-30 12:40:02,181 - web_scraper - INFO - Fetching PDF links from: https://arxiv.org/search/?query=machine+learning&searchtype=all
+2025-05-30 12:40:03,265 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23765.pdf
+2025-05-30 12:40:03,265 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23765.pdf
+2025-05-30 12:40:03,269 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23761.pdf
+2025-05-30 12:40:03,269 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23761.pdf
+2025-05-30 12:40:03,271 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23760.pdf
+2025-05-30 12:40:03,271 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23760.pdf
+2025-05-30 12:40:03,271 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23759.pdf
+2025-05-30 12:40:03,271 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23759.pdf
+2025-05-30 12:40:03,272 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23751.pdf
+2025-05-30 12:40:03,272 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23751.pdf
+2025-05-30 12:40:03,273 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23749.pdf
+2025-05-30 12:40:03,273 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23749.pdf
+2025-05-30 12:40:03,274 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23747.pdf
+2025-05-30 12:40:03,274 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23747.pdf
+2025-05-30 12:40:03,274 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23745.pdf
+2025-05-30 12:40:03,274 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23745.pdf
+2025-05-30 12:40:03,275 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23737.pdf
+2025-05-30 12:40:03,275 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23737.pdf
+2025-05-30 12:40:03,276 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23732.pdf
+2025-05-30 12:40:03,276 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23732.pdf
+2025-05-30 12:40:03,277 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23725.pdf
+2025-05-30 12:40:03,277 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23725.pdf
+2025-05-30 12:40:03,278 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23724.pdf
+2025-05-30 12:40:03,278 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23724.pdf
+2025-05-30 12:40:03,279 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23723.pdf
+2025-05-30 12:40:03,279 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23723.pdf
+2025-05-30 12:40:03,280 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23721.pdf
+2025-05-30 12:40:03,280 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23721.pdf
+2025-05-30 12:40:03,281 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23720.pdf
+2025-05-30 12:40:03,281 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23720.pdf
+2025-05-30 12:40:03,281 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23719.pdf
+2025-05-30 12:40:03,281 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23719.pdf
+2025-05-30 12:40:03,282 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23709.pdf
+2025-05-30 12:40:03,282 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23709.pdf
+2025-05-30 12:40:03,283 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23706.pdf
+2025-05-30 12:40:03,283 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23706.pdf
+2025-05-30 12:40:03,284 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23705.pdf
+2025-05-30 12:40:03,284 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23705.pdf
+2025-05-30 12:40:03,285 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23702.pdf
+2025-05-30 12:40:03,285 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23702.pdf
+2025-05-30 12:40:03,286 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23700.pdf
+2025-05-30 12:40:03,286 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23700.pdf
+2025-05-30 12:40:03,286 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23696.pdf
+2025-05-30 12:40:03,286 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23696.pdf
+2025-05-30 12:40:03,287 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23692.pdf
+2025-05-30 12:40:03,287 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23692.pdf
+2025-05-30 12:40:03,287 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23683.pdf
+2025-05-30 12:40:03,287 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23683.pdf
+2025-05-30 12:40:03,288 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 12:40:03,288 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 12:40:03,288 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23673.pdf
+2025-05-30 12:40:03,288 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23673.pdf
+2025-05-30 12:40:03,289 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 12:40:03,289 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 12:40:03,290 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23666.pdf
+2025-05-30 12:40:03,290 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23666.pdf
+2025-05-30 12:40:03,290 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23663.pdf
+2025-05-30 12:40:03,290 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23663.pdf
+2025-05-30 12:40:03,291 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23658.pdf
+2025-05-30 12:40:03,291 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23658.pdf
+2025-05-30 12:40:03,291 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23657.pdf
+2025-05-30 12:40:03,291 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23657.pdf
+2025-05-30 12:40:03,292 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23653.pdf
+2025-05-30 12:40:03,292 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23653.pdf
+2025-05-30 12:40:03,293 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23652.pdf
+2025-05-30 12:40:03,293 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23652.pdf
+2025-05-30 12:40:03,296 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23651.pdf
+2025-05-30 12:40:03,296 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23651.pdf
+2025-05-30 12:40:03,298 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23648.pdf
+2025-05-30 12:40:03,298 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23648.pdf
+2025-05-30 12:40:03,300 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23646.pdf
+2025-05-30 12:40:03,300 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23646.pdf
+2025-05-30 12:40:03,301 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23640.pdf
+2025-05-30 12:40:03,301 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23640.pdf
+2025-05-30 12:40:03,302 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23637.pdf
+2025-05-30 12:40:03,302 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23637.pdf
+2025-05-30 12:40:03,303 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23634.pdf
+2025-05-30 12:40:03,303 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23634.pdf
+2025-05-30 12:40:03,304 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23627.pdf
+2025-05-30 12:40:03,304 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23627.pdf
+2025-05-30 12:40:03,306 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23625.pdf
+2025-05-30 12:40:03,306 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23625.pdf
+2025-05-30 12:40:03,307 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23620.pdf
+2025-05-30 12:40:03,307 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23620.pdf
+2025-05-30 12:40:03,308 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23619.pdf
+2025-05-30 12:40:03,308 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23619.pdf
+2025-05-30 12:40:03,309 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23617.pdf
+2025-05-30 12:40:03,309 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23617.pdf
+2025-05-30 12:40:03,309 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23615.pdf
+2025-05-30 12:40:03,309 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23615.pdf
+2025-05-30 12:40:03,312 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 12:40:03,312 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 12:40:03,313 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23609.pdf
+2025-05-30 12:40:03,313 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23609.pdf
+2025-05-30 12:40:03,314 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23607.pdf
+2025-05-30 12:40:03,314 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23607.pdf
+2025-05-30 12:40:03,314 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23606.pdf
+2025-05-30 12:40:03,314 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23606.pdf
+2025-05-30 12:40:03,315 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23599.pdf
+2025-05-30 12:40:03,315 - web_scraper - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23599.pdf
+2025-05-30 12:40:03,325 - INFO - Found 100 potential PDF links on https://arxiv.org/search/?query=machine+learning&searchtype=all
+2025-05-30 12:40:03,325 - web_scraper - INFO - Found 100 potential PDF links on https://arxiv.org/search/?query=machine+learning&searchtype=all
+Invalid session EdBrX6LvegTYUwmDAAAA (further occurrences of this error will be logged with level INFO)
+2025-05-30 15:29:17,808 - engineio.server - ERROR - Invalid session EdBrX6LvegTYUwmDAAAA (further occurrences of this error will be logged with level INFO)
+Invalid session EdBrX6LvegTYUwmDAAAA
+2025-05-30 15:29:18,155 - engineio.server - INFO - Invalid session EdBrX6LvegTYUwmDAAAA
+Invalid session Z_Knm7jEfOPwalRqAAAA
+2025-05-30 15:29:51,313 - engineio.server - INFO - Invalid session Z_Knm7jEfOPwalRqAAAA
+Invalid session Y0FHGqbioxcYQVXdAAAC
+2025-05-30 15:30:12,781 - engineio.server - INFO - Invalid session Y0FHGqbioxcYQVXdAAAC
+Invalid session QGV6VeUE08rThKrkAAAE
+2025-05-30 15:31:03,655 - engineio.server - INFO - Invalid session QGV6VeUE08rThKrkAAAE
+Invalid session 6K-hIO8_3wxI52tyAAAG
+2025-05-30 15:31:04,833 - engineio.server - INFO - Invalid session 6K-hIO8_3wxI52tyAAAG
+Invalid session DW0BDqYSbU_FNmldAAAI
+2025-05-30 15:31:30,874 - engineio.server - INFO - Invalid session DW0BDqYSbU_FNmldAAAI
+Invalid session 22E6s_Od6hYgPDaXAAAK
+2025-05-30 15:31:33,455 - engineio.server - INFO - Invalid session 22E6s_Od6hYgPDaXAAAK
+Invalid session -M1V7ZXXeXg6i6ecAAAM
+2025-05-30 15:31:36,384 - engineio.server - INFO - Invalid session -M1V7ZXXeXg6i6ecAAAM
+Invalid session CqirHMoRCXgMrgg3AAAO
+2025-05-30 15:31:38,493 - engineio.server - INFO - Invalid session CqirHMoRCXgMrgg3AAAO
+Invalid session QeMBXCWym_tcC164AAAQ
+2025-05-30 15:31:40,734 - engineio.server - INFO - Invalid session QeMBXCWym_tcC164AAAQ
+Invalid session XhdxWXAX7m5HB7y0AAAS
+2025-05-30 15:31:41,721 - engineio.server - INFO - Invalid session XhdxWXAX7m5HB7y0AAAS
+Invalid session C0tk1N38a4zyBoKnAAAU
+2025-05-30 15:31:43,288 - engineio.server - INFO - Invalid session C0tk1N38a4zyBoKnAAAU
+2025-05-30 17:30:23,533 - blueprints.core.utils - INFO - Created output directory: /workspace/modules/test_enhanced_output/legacy
+2025-05-30 17:30:23,592 - blueprints.features.web_scraper - INFO - Starting web scraping with 1 URLs to /workspace/modules/test_enhanced_output/legacy
+2025-05-30 17:30:23,592 - blueprints.features.web_scraper - INFO - Starting web scraping with 1 URLs to /workspace/modules/test_enhanced_output/legacy
+2025-05-30 17:30:23,599 - blueprints.features.web_scraper - INFO - Output JSON will be saved to: /workspace/modules/test_enhanced_output/legacy/legacy_test.json
+2025-05-30 17:30:23,599 - blueprints.features.web_scraper - INFO - Output JSON will be saved to: /workspace/modules/test_enhanced_output/legacy/legacy_test.json
+2025-05-30 17:30:23,602 - blueprints.features.web_scraper - INFO - PDF options: process=True, tables=True, ocr=True, structure=True, chunk_size=4096, max_downloads=10
+2025-05-30 17:30:23,602 - blueprints.features.web_scraper - INFO - PDF options: process=True, tables=True, ocr=True, structure=True, chunk_size=4096, max_downloads=10
+2025-05-30 17:30:23,621 - blueprints.core.services - INFO - BaseTask 6de3ba3f-db78-4511-8e43-0e2436c73d85 (web_scraping) created.
+2025-05-30 17:30:23,701 - blueprints.core.services - INFO - ScraperTask 6de3ba3f-db78-4511-8e43-0e2436c73d85 initialized with 2 concurrent downloads
+2025-05-30 17:30:23,702 - blueprints.core.services - INFO - Added task 6de3ba3f-db78-4511-8e43-0e2436c73d85 to active tasks
+emitting event "progress_update" to all [/]
+2025-05-30 17:30:23,749 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-05-30 17:30:23,773 - blueprints.core.services - INFO - Task 6de3ba3f-db78-4511-8e43-0e2436c73d85 (web_scraping) started processing.
+2025-05-30 17:30:23,776 - blueprints.core.services - ERROR - Error emitting task_started for 6de3ba3f-db78-4511-8e43-0e2436c73d85: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-30 17:30:23,779 - blueprints.core.services - INFO - Task 6de3ba3f-db78-4511-8e43-0e2436c73d85 (web_scraping) thread started.
+2025-05-30 17:30:23,793 - blueprints.core.services - INFO - Task 6de3ba3f-db78-4511-8e43-0e2436c73d85: Starting enhanced scraping of 1 URLs. Output dir: /workspace/modules/test_enhanced_output/legacy
+2025-05-30 17:30:23,796 - blueprints.core.services - INFO - Starting URL processing with 1 workers (1 PDFs)
+2025-05-30 17:30:40,836 - blueprints.core.services - ERROR - PDF download failed for https://arxiv.org/pdf/2301.00001.pdf after 4 attempts: enhanced_download_pdf() got an unexpected keyword argument 'task_id'
+2025-05-30 17:30:40,842 - blueprints.core.services - ERROR - Error emitting progress_update for 6de3ba3f-db78-4511-8e43-0e2436c73d85: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-30 17:30:40,849 - blueprints.core.services - ERROR - Error emitting progress_update for 6de3ba3f-db78-4511-8e43-0e2436c73d85: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-30 17:30:40,999 - file_processor - INFO - Found 0 valid files in /workspace/modules/test_enhanced_output/legacy (0.05s)
+2025-05-30 17:30:40,999 - file_processor - INFO - Found 0 valid files in /workspace/modules/test_enhanced_output/legacy (0.05s)
+2025-05-30 17:30:41,000 - file_processor - WARNING - No files found in /workspace/modules/test_enhanced_output/legacy matching the provided criteria
+2025-05-30 17:30:41,000 - file_processor - WARNING - No files found in /workspace/modules/test_enhanced_output/legacy matching the provided criteria
+2025-05-30 17:30:41,005 - blueprints.core.services - INFO - Task 6de3ba3f-db78-4511-8e43-0e2436c73d85 final processing completed successfully
+2025-05-30 17:30:41,007 - blueprints.core.services - ERROR - Error in enhanced scraping completion: name 'emit_enhanced_task_completion' is not defined
+2025-05-30 17:30:41,009 - blueprints.core.services - ERROR - Error emitting task_completed: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-30 17:30:41,010 - blueprints.core.services - INFO - Task 6de3ba3f-db78-4511-8e43-0e2436c73d85 (web_scraping) completed in 17.39s.
+2025-05-30 17:30:41,010 - blueprints.core.services - ERROR - Error emitting task_completed for 6de3ba3f-db78-4511-8e43-0e2436c73d85: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-05-30 17:30:41,013 - blueprints.core.services - INFO - Removed task 6de3ba3f-db78-4511-8e43-0e2436c73d85 from active tasks

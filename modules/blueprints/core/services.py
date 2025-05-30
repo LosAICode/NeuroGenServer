@@ -741,24 +741,24 @@ class BaseTask:
         }
 
     def emit_task_started(self):
-        """Emit a task started event via Socket.IO."""
+        """Emit a task started event via Socket.IO using safe context."""
         self.status = "processing"  # Official start of processing
         self.message = "Task processing started."
         self.progress = 0  # Reset progress at actual start
         logger.info(f"Task {self.task_id} ({self.task_type}) started processing.")
         try:
-            from flask import current_app
-            socketio = getattr(current_app, 'socketio', None)
-            if socketio:
-                socketio.emit("task_started", {
-                    "task_id": self.task_id,
-                    "task_type": self.task_type,
-                    "status": self.status,
-                    "message": self.message,
-                    "timestamp": time.time()
-                })
-            else:
-                logger.warning(f"SocketIO not available to emit task_started for {self.task_id}")
+            import socketio_context_helper
+            
+            # Use safe emit function
+            success = socketio_context_helper.emit_task_started_safe(
+                task_id=self.task_id,
+                task_type=self.task_type,
+                message=self.message
+            )
+            
+            if not success:
+                logger.warning(f"Failed to emit task_started for {self.task_id}")
+                
         except Exception as e:
             logger.error(f"Error emitting task_started for {self.task_id}: {e}")
 
@@ -817,16 +817,25 @@ class BaseTask:
         if details:
             payload["details"] = details
         
-        # Send event
+        # Send event using safe context
         try:
-            from flask import current_app
-            socketio = getattr(current_app, 'socketio', None)
-            if socketio:
-                socketio.emit("progress_update", payload)
+            import socketio_context_helper
+            
+            # Use safe emit function
+            success = socketio_context_helper.emit_progress_update_safe(
+                task_id=self.task_id,
+                progress=self.progress,
+                message=self.message,
+                details=payload.get("details"),
+                stats=serialized_stats
+            )
+            
+            if success:
                 self.last_emit_time = now
                 logger.debug(f"Progress emitted for {self.task_id}: {self.progress}% - {self.message}")
             else:
-                logger.warning(f"SocketIO not available to emit progress_update for {self.task_id}")
+                logger.warning(f"Failed to emit progress_update for {self.task_id}")
+                
         except Exception as e:
             logger.error(f"Error emitting progress_update for {self.task_id}: {e}")
 
@@ -1557,6 +1566,9 @@ class ProcessingTask(BaseTask):
 
     def _process_logic(self):
         """Enhanced process logic with comprehensive stats and corrected cancellation handling."""
+        # Import here to avoid circular import
+        from .structify_integration import structify_available, process_all_files
+        
         # Start enhanced monitoring systems
         self._start_memory_monitoring()
         
@@ -1698,13 +1710,13 @@ class ProcessingTask(BaseTask):
                 self.progress = 100
                 
                 try:
-                    # Try to use enhanced completion emission
-                    emit_enhanced_task_completion(
+                    # Use task completion emission
+                    emit_task_completion(
                         task_id=self.task_id,
                         task_type=self.task_type,
                         output_file=self.output_file,
                         stats=self.stats,
-                        performance_metrics=performance_metrics
+                        details={"performance_metrics": performance_metrics}
                     )
                     
                     # Add to task history
@@ -2861,7 +2873,7 @@ class ScraperTask(BaseTask):
             if not self.url_configs:
                 return {'valid': False, 'error': 'No URLs provided for scraping'}
             
-            valid_settings = {'pdf', 'text', 'html', 'extract'}
+            valid_settings = {'pdf', 'full', 'metadata', 'title', 'keyword'}
             validation_errors = []
             
             for i, config in enumerate(self.url_configs):
@@ -3108,8 +3120,15 @@ class ScraperTask(BaseTask):
 
     def _download_pdf_with_retries(self, url: str, output_folder: str) -> Optional[str]:
         """Download PDF with intelligent retry logic and performance tracking."""
-        # Import here to avoid circular import
-        from ..features.pdf_processor import enhanced_download_pdf
+        # Import centralized download function
+        try:
+            import sys
+            import os
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+            from centralized_download_pdf import enhanced_download_pdf
+        except ImportError:
+            # Fallback to local implementation
+            from ..features.pdf_processor import enhanced_download_pdf
         
         for attempt in range(self.max_retries + 1):
             try:
@@ -3126,14 +3145,15 @@ class ScraperTask(BaseTask):
                             download_progress=progress, download_speed=speed
                         )
                 
-                # Attempt download
+                # Attempt download with all enhanced features
                 pdf_file_path = enhanced_download_pdf(
-                    url,
+                    url=url,
                     save_path=output_folder,
                     task_id=self.task_id,
                     progress_callback=progress_callback,
-                    timeout=self.pdf_options.get('timeout_seconds', 300),
-                    max_file_size_mb=self.pdf_options.get('max_file_size_mb', 50)
+                    timeout=self.pdf_options.get('timeout_seconds', 60),
+                    max_file_size_mb=self.pdf_options.get('max_file_size_mb', 100),
+                    max_retries=3
                 )
                 
                 if pdf_file_path and os.path.exists(pdf_file_path):
@@ -3263,6 +3283,9 @@ class ScraperTask(BaseTask):
     def _execute_pdf_processing(self, pdf_file_path: str, json_output_path: str, 
                               apply_ocr: bool, doc_type: str) -> Optional[Dict[str, Any]]:
         """Execute PDF processing with the best available method."""
+        # Import here to avoid circular import
+        from .structify_integration import structify_module, process_all_files
+        
         if hasattr(structify_module, 'process_pdf'):
             # Use enhanced PDF processing
             result = structify_module.process_pdf(
@@ -3296,6 +3319,9 @@ class ScraperTask(BaseTask):
     def _process_non_pdf_url(self, url: str, setting: str, keyword: str, 
                            output_folder: str, url_result: Dict[str, Any]) -> Dict[str, Any]:
         """Process non-PDF URLs with retry logic."""
+        # Import here to avoid circular import
+        from ..features.web_scraper import process_url
+        
         for attempt in range(self.max_retries + 1):
             try:
                 if check_task_cancellation(self.task_id):
@@ -3507,6 +3533,9 @@ class ScraperTask(BaseTask):
 
     def _execute_final_processing_phase(self, processed_url_results: List[Dict[str, Any]]):
         """Execute final structify processing phase."""
+        # Import here to avoid circular import
+        from .structify_integration import structify_available, process_all_files
+        
         # Update stats for final phase
         self.stats = {**self.scraper_run_stats.to_dict(), **self.url_processing_summary}
         self.emit_progress_update(progress=90, message="URL processing complete. Starting final structify.")
@@ -3629,13 +3658,13 @@ class ScraperTask(BaseTask):
             scraping_stats.update(self._generate_scraping_insights())
             
             try:
-                # Use enhanced completion with comprehensive analytics
-                emit_enhanced_task_completion(
+                # Use task completion with comprehensive analytics
+                emit_task_completion(
                     task_id=self.task_id,
                     task_type="web_scraping",
                     output_file=self.output_file,
                     stats=scraping_stats,
-                    performance_metrics={
+                    details={
                         'total_duration': total_duration,
                         'download_performance': self._analyze_download_performance(),
                         'processing_stages': self._get_processing_stages_summary(),
@@ -4036,7 +4065,7 @@ def require_api_key(f):
 
 def emit_task_completion(task_id, task_type="generic", output_file=None, stats=None, details=None):
     """
-    Emit a task completion event via Socket.IO.
+    Emit a task completion event via Socket.IO using safe context.
     
     Args:
         task_id: Unique identifier for the task
@@ -4046,55 +4075,40 @@ def emit_task_completion(task_id, task_type="generic", output_file=None, stats=N
         details: Optional additional details
     """
     try:
-        from flask import current_app
-        socketio = getattr(current_app, 'socketio', None)
-        if not socketio:
-            logger.warning("SocketIO not available for task completion emission")
-            return
-            
-        payload = {
-            'task_id': task_id,
-            'task_type': task_type,
-            'status': 'completed',
-            'progress': 100,
-            'message': f"{task_type.replace('_', ' ').title()} completed successfully",
-            'timestamp': time.time()
-        }
+        import socketio_context_helper
         
-        # Include output file if provided
-        if output_file:
-            payload['output_file'] = output_file
-            
         # Process stats for serialization
+        processed_stats = None
         if stats:
             if hasattr(stats, 'to_dict') and callable(stats.to_dict):
-                payload['stats'] = stats.to_dict()
+                processed_stats = stats.to_dict()
             elif isinstance(stats, dict):
-                payload['stats'] = stats
+                processed_stats = stats
             else:
                 try:
-                    payload['stats'] = stats.__dict__ if hasattr(stats, '__dict__') else str(stats)
+                    processed_stats = stats.__dict__ if hasattr(stats, '__dict__') else str(stats)
                 except (AttributeError, TypeError):
-                    payload['stats'] = {'raw_stats': str(stats)}
-                    
-        # Include additional details
-        if details:
-            payload['details'] = details
+                    processed_stats = {'raw_stats': str(stats)}
+        
+        # Use safe emit function
+        success = socketio_context_helper.emit_task_completion_safe(
+            task_id=task_id,
+            task_type=task_type,
+            output_file=output_file,
+            stats=processed_stats,
+            details=details
+        )
+        
+        if not success:
+            logger.warning(f"Failed to emit task_completed for task {task_id}")
             
-        from flask import current_app
-        socketio = getattr(current_app, 'socketio', None)
-        if socketio:
-            socketio.emit('task_completed', payload)
-            logger.info(f"Emitted task_completed for task {task_id}")
-        else:
-            logger.warning(f"SocketIO not available to emit task_completed for task {task_id}")
     except Exception as e:
         logger.error(f"Error emitting task_completed: {e}")
 
 
 def emit_task_error(task_id, error_message, error_details=None, stats=None):
     """
-    Emit a task error event via Socket.IO.
+    Emit a task error event via Socket.IO using safe context.
     
     Args:
         task_id: Unique identifier for the task
@@ -4103,78 +4117,49 @@ def emit_task_error(task_id, error_message, error_details=None, stats=None):
         stats: Optional statistics at time of error
     """
     try:
-        from flask import current_app
-        socketio = getattr(current_app, 'socketio', None)
-        if not socketio:
-            logger.warning("SocketIO not available for task error emission")
-            return
-            
-        payload = {
-            'task_id': task_id,
-            'status': 'failed',
-            'error': error_message,
-            'timestamp': time.time()
-        }
+        import socketio_context_helper
         
-        # Include error details if provided
-        if error_details:
-            payload['error_details'] = error_details
+        # Use safe emit function
+        success = socketio_context_helper.emit_task_error_safe(
+            task_id=task_id,
+            error_message=error_message,
+            error_details=error_details
+        )
+        
+        if not success:
+            logger.warning(f"Failed to emit task_error for task {task_id}")
             
-        # Process stats for serialization
-        if stats:
-            if hasattr(stats, 'to_dict') and callable(stats.to_dict):
-                payload['stats'] = stats.to_dict()
-            elif isinstance(stats, dict):
-                payload['stats'] = stats
-            else:
-                try:
-                    payload['stats'] = stats.__dict__ if hasattr(stats, '__dict__') else str(stats)
-                except (AttributeError, TypeError):
-                    payload['stats'] = {'raw_stats': str(stats)}
-                    
-        if socketio:
-            socketio.emit('task_failed', payload)
-            logger.info(f"Emitted task_failed for task {task_id}")
-        else:
-            logger.warning(f"SocketIO not available to emit task_failed for task {task_id}")
     except Exception as e:
         logger.error(f"Error emitting task_error: {e}")
 
 
 def emit_task_cancelled(task_id, reason=None):
     """
-    Emit a task cancellation event via Socket.IO.
+    Emit a task cancellation event via Socket.IO using safe context.
     
     Args:
         task_id: Unique identifier for the task
         reason: Optional reason for cancellation
     """
     try:
-        from flask import current_app
-        socketio = getattr(current_app, 'socketio', None)
-        if not socketio:
-            logger.warning("SocketIO not available for task cancellation emission")
-            return
-            
-        payload = {
-            'task_id': task_id,
-            'status': 'cancelled',
-            'message': 'Task cancelled by user' if not reason else f"Task cancelled: {reason}",
-            'timestamp': time.time()
-        }
+        import socketio_context_helper
         
-        if socketio:
-            socketio.emit('task_cancelled', payload)
-            logger.info(f"Emitted task_cancelled for task {task_id}")
-        else:
-            logger.warning(f"SocketIO not available to emit task_cancelled for task {task_id}")
+        # Use safe emit function
+        success = socketio_context_helper.emit_task_cancelled_safe(
+            task_id=task_id,
+            reason=reason
+        )
+        
+        if not success:
+            logger.warning(f"Failed to emit task_cancelled for task {task_id}")
+            
     except Exception as e:
         logger.error(f"Error emitting task_cancelled: {e}")
 
 
 def emit_progress_update(task_id, progress, message=None, details=None):
     """
-    Emit a progress update event via Socket.IO.
+    Emit a progress update event via Socket.IO using safe context.
     
     Args:
         task_id: Unique identifier for the task
@@ -4183,27 +4168,19 @@ def emit_progress_update(task_id, progress, message=None, details=None):
         details: Optional additional details
     """
     try:
-        from flask import current_app
-        socketio = getattr(current_app, 'socketio', None)
-        if not socketio:
-            logger.warning("SocketIO not available for progress update emission")
-            return
-            
-        payload = {
-            'task_id': task_id,
-            'progress': progress,
-            'message': message or f"Progress: {progress}%",
-            'timestamp': time.time()
-        }
+        import socketio_context_helper
         
-        if details:
-            payload['details'] = details
+        # Use safe emit function
+        success = socketio_context_helper.emit_progress_update_safe(
+            task_id=task_id,
+            progress=progress,
+            message=message,
+            details=details
+        )
+        
+        if not success:
+            logger.warning(f"Failed to emit progress_update for task {task_id}")
             
-        if socketio:
-            socketio.emit('progress_update', payload)
-            logger.debug(f"Emitted progress_update for task {task_id}: {progress}%")
-        else:
-            logger.warning(f"SocketIO not available to emit progress_update for task {task_id}")
     except Exception as e:
         logger.error(f"Error emitting progress_update: {e}")
 

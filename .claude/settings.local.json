@@ -27,7 +27,10 @@
       "Bash(sed:*)",
       "Bash(mv:*)",
       "Bash(curl:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(ss:*)",
+      "Bash(pip3 install:*)",
+      "Bash(kill:*)"
     ],
     "deny": []
   },

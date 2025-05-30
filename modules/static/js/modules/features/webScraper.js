@@ -238,6 +238,17 @@ class WebScraper {
       'web-output-dir',
       'web-start-btn',
       
+      // Enhanced scraper elements
+      'scraper-form',
+      'scraper-mode',
+      'enhanced-scraper-url',
+      'download-folder-select',
+      'pdf-max-size',
+      'pdf-extract-tables',
+      'pdf-use-ocr',
+      'website-max-depth',
+      'website-max-pages',
+      
       // Academic search tab
       'academic-tab-content',
       'academic-query-input',
@@ -296,6 +307,17 @@ class WebScraper {
       const clickHandler = () => this.startWebScraping();
       webStartBtn.addEventListener('click', clickHandler);
       this.state.eventListeners.add(() => webStartBtn.removeEventListener('click', clickHandler));
+    }
+    
+    // Enhanced scraper form
+    const scraperForm = this.state.elements.get('scraper-form');
+    if (scraperForm) {
+      const submitHandler = (e) => {
+        e.preventDefault();
+        this.handleScrapingMode();
+      };
+      scraperForm.addEventListener('submit', submitHandler);
+      this.state.eventListeners.add(() => scraperForm.removeEventListener('submit', submitHandler));
     }
 
     // Academic search form
@@ -598,6 +620,93 @@ class WebScraper {
 
     } catch (error) {
       console.error('❌ Failed to start web scraping:', error);
+      this.handleTaskError({ error: error.message });
+    }
+  }
+
+  /**
+   * Handle the new 2-option scraping system
+   */
+  async handleScrapingMode() {
+    try {
+      const modeSelect = document.getElementById('scraper-mode');
+      const urlInput = document.getElementById('enhanced-scraper-url');
+      const outputDirInput = document.getElementById('download-folder-select');
+      
+      if (!urlInput?.value.trim()) {
+        this.showError('Please enter at least one URL');
+        return;
+      }
+
+      // Handle single URL from the enhanced form
+      const urlValue = urlInput.value.trim();
+      const urls = [urlValue]; // Single URL for enhanced scraper
+
+      const scrapeMode = modeSelect?.value || 'smart_pdf';
+      
+      // Build options based on mode
+      const options = {
+        urls,
+        scrape_mode: scrapeMode,
+        output_directory: outputDirInput?.value.trim() || null,
+        download_directory: outputDirInput?.value.trim() || null
+      };
+
+      if (scrapeMode === 'smart_pdf') {
+        // Smart PDF mode options
+        options.pdf_options = {
+          process_pdfs: true,
+          extract_tables: document.getElementById('pdf-extract-tables')?.checked || true,
+          use_ocr: document.getElementById('pdf-use-ocr')?.checked || false,
+          max_file_size_mb: parseInt(document.getElementById('pdf-max-size')?.value) || 100
+        };
+      } else if (scrapeMode === 'full_website') {
+        // Full website crawler options
+        options.crawl_config = {
+          max_depth: parseInt(document.getElementById('website-max-depth')?.value) || 3,
+          max_pages: parseInt(document.getElementById('website-max-pages')?.value) || 200,
+          respect_robots: true,
+          follow_redirects: true
+        };
+        options.output_format = 'markdown';
+      }
+
+      this.state.processingState = 'scraping';
+      this.updateUI();
+
+      // Use the scraping endpoint
+      const response = await fetch('/api/scrape2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': localStorage.getItem('api_key') || ''
+        },
+        body: JSON.stringify(options)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Store task information
+      this.state.currentTask = {
+        id: data.task_id,
+        type: 'web_scraping',
+        urls,
+        options,
+        startTime: Date.now(),
+        foundPdfs: new Map()
+      };
+
+      this.state.activeTasks.set(data.task_id, this.state.currentTask);
+
+      console.log(`🚀 Scraping started: ${data.task_id}`);
+      this.showInfo(`${scrapeMode === 'smart_pdf' ? 'Smart PDF Discovery' : 'Full Website Crawling'} started`);
+
+    } catch (error) {
+      console.error('❌ Failed to start scraping:', error);
       this.handleTaskError({ error: error.message });
     }
   }

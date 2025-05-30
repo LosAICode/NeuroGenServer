@@ -449,17 +449,4 @@ export const ENDPOINTS = {
   HEALTH: API_ENDPOINTS.SYSTEM.HEALTH
 };
 
-/**
- * Export Blueprint validation functions
- */
-export {
-  buildUrlWithQuery,
-  getBlueprintEndpoints,
-  getEndpointMethods,
-  requiresAuth,
-  supportsFileUpload,
-  getEndpointTimeout,
-  validateEndpoint,
-  sanitizePathForLinuxServer,
-  sanitizeFilenameForWindows
-};
+// Note: buildUrlWithQuery is already exported as a named export above

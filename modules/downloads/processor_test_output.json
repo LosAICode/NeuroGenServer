@@ -1,0 +1,73 @@
+{
+  "test.txt": {
+    "docs_data": [
+      {
+        "file_path": "/workspace/modules/downloads/processor_test/test.txt",
+        "relative_path": "test.txt",
+        "content": "This is a test file for processing.\nIt contains some sample text.\n",
+        "chunks": [
+          "This is a test file for processing.\nIt contains some sample text.\n"
+        ],
+        "metadata": {
+          "file_name": "test.txt",
+          "file_path": "/workspace/modules/downloads/processor_test/test.txt",
+          "file_size": 66,
+          "file_extension": ".txt",
+          "last_modified": "2025-05-30T08:18:45.248826",
+          "relative_path": "test.txt"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "test.txt",
+      "processed_date": "2025-05-30 08:18:45",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-30T08:18:45.622529",
+      "processing_time_seconds": 0.01048731803894043,
+      "total_time_seconds": 0.024080514907836914,
+      "discovery_time_seconds": 0.007510185241699219,
+      "total_files_processed": 1,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 1,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  }
+}

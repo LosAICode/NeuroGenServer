@@ -1871,3 +1871,810 @@ TypeError: argument must be an int, or have a fileno() method.
 2025-05-29 20:32:11,057 - INFO - PDF extractor module is available
 2025-05-29 21:29:10,828 - INFO - Claude module is available for processing
 2025-05-29 21:29:10,829 - INFO - PDF extractor module is available
+2025-05-29 21:36:09,695 - INFO - Claude module is available for processing
+2025-05-29 21:36:09,699 - INFO - PDF extractor module is available
+2025-05-29 21:37:07,678 - INFO - Processing URL: https://example.com with setting: text
+2025-05-29 21:37:07,688 - INFO - Ensured output directory exists: /workspace/modules/downloads/test_scraping_simple
+2025-05-29 21:37:07,689 - ERROR - Invalid setting: text
+2025-05-29 21:45:09,188 - INFO - Claude module is available for processing
+2025-05-29 21:45:09,189 - INFO - PDF extractor module is available
+2025-05-29 22:21:50,335 - INFO - Claude module is available for processing
+2025-05-29 22:21:50,346 - INFO - PDF extractor module is available
+2025-05-29 22:24:09,095 - INFO - Claude module is available for processing
+2025-05-29 22:24:09,096 - INFO - PDF extractor module is available
+2025-05-29 23:21:50,106 - INFO - Claude module is available for processing
+2025-05-29 23:21:50,106 - INFO - PDF extractor module is available
+2025-05-29 23:23:42,548 - INFO - Claude module is available for processing
+2025-05-29 23:23:42,548 - INFO - PDF extractor module is available
+2025-05-29 23:25:47,787 - INFO - Processing URL: https://httpbin.org/html with setting: title
+2025-05-29 23:25:47,790 - INFO - Ensured output directory exists: /workspace/modules/downloads/simple_test
+2025-05-29 23:25:47,790 - INFO - Title extraction mode for: https://httpbin.org/html
+2025-05-30 07:56:06,863 - INFO - Claude module is available for processing
+2025-05-30 07:56:06,864 - INFO - PDF extractor module is available
+2025-05-30 07:59:28,291 - INFO - Processing URL: https://httpbin.org/html with setting: title
+2025-05-30 07:59:28,295 - INFO - Ensured output directory exists: /workspace/modules/downloads/comprehensive_test
+2025-05-30 07:59:28,296 - INFO - Title extraction mode for: https://httpbin.org/html
+2025-05-30 08:01:13,051 - INFO - Processing URL: https://httpbin.org/html with setting: title
+2025-05-30 08:01:13,055 - INFO - Ensured output directory exists: /workspace/modules/downloads/comprehensive_test
+2025-05-30 08:01:13,056 - INFO - Title extraction mode for: https://httpbin.org/html
+2025-05-30 08:18:43,215 - INFO - Processing URL: https://httpbin.org/html with setting: full
+2025-05-30 08:18:43,219 - INFO - Ensured output directory exists: /workspace/modules/downloads/flow_test
+2025-05-30 08:18:43,219 - INFO - Full content extraction mode for: https://httpbin.org/html
+2025-05-30 08:18:43,220 - INFO - Extracting HTML text from: https://httpbin.org/html
+2025-05-30 08:18:44,596 - INFO - Extracted text length: 3594
+2025-05-30 08:18:44,610 - INFO - Content saved: /workspace/modules/downloads/flow_test/content_28f3848e8b.json
+2025-05-30 08:36:21,307 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=machine learning&searchtype=all
+2025-05-30 08:36:27,014 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23765.pdf
+2025-05-30 08:36:27,015 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23761.pdf
+2025-05-30 08:36:27,015 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23760.pdf
+2025-05-30 08:36:27,016 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23759.pdf
+2025-05-30 08:36:27,016 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23751.pdf
+2025-05-30 08:36:27,017 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23749.pdf
+2025-05-30 08:36:27,017 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23747.pdf
+2025-05-30 08:36:27,018 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23745.pdf
+2025-05-30 08:36:27,018 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23737.pdf
+2025-05-30 08:36:27,019 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23732.pdf
+2025-05-30 08:36:27,020 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23725.pdf
+2025-05-30 08:36:27,021 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23724.pdf
+2025-05-30 08:36:27,022 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23723.pdf
+2025-05-30 08:36:27,025 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23721.pdf
+2025-05-30 08:36:27,026 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23720.pdf
+2025-05-30 08:36:27,027 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23719.pdf
+2025-05-30 08:36:27,028 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23709.pdf
+2025-05-30 08:36:27,028 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23706.pdf
+2025-05-30 08:36:27,031 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23705.pdf
+2025-05-30 08:36:27,032 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23702.pdf
+2025-05-30 08:36:27,033 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23700.pdf
+2025-05-30 08:36:27,034 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23696.pdf
+2025-05-30 08:36:27,035 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23692.pdf
+2025-05-30 08:36:27,036 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23683.pdf
+2025-05-30 08:36:27,037 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 08:36:27,037 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23673.pdf
+2025-05-30 08:36:27,038 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 08:36:27,039 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23666.pdf
+2025-05-30 08:36:27,039 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23663.pdf
+2025-05-30 08:36:27,041 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23658.pdf
+2025-05-30 08:36:27,042 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23657.pdf
+2025-05-30 08:36:27,043 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23653.pdf
+2025-05-30 08:36:27,043 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23652.pdf
+2025-05-30 08:36:27,044 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23651.pdf
+2025-05-30 08:36:27,044 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23648.pdf
+2025-05-30 08:36:27,045 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23646.pdf
+2025-05-30 08:36:27,046 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23640.pdf
+2025-05-30 08:36:27,047 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23637.pdf
+2025-05-30 08:36:27,048 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23634.pdf
+2025-05-30 08:36:27,048 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23627.pdf
+2025-05-30 08:36:27,049 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23625.pdf
+2025-05-30 08:36:27,049 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23620.pdf
+2025-05-30 08:36:27,050 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23619.pdf
+2025-05-30 08:36:27,050 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23617.pdf
+2025-05-30 08:36:27,051 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23615.pdf
+2025-05-30 08:36:27,051 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 08:36:27,052 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23609.pdf
+2025-05-30 08:36:27,053 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23607.pdf
+2025-05-30 08:36:27,053 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23606.pdf
+2025-05-30 08:36:27,054 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23599.pdf
+2025-05-30 08:36:27,070 - INFO - Found 100 potential PDF links on https://arxiv.org/search/?query=machine learning&searchtype=all
+2025-05-30 08:40:09,512 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=machine learning&searchtype=all
+2025-05-30 08:40:10,270 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23765.pdf
+2025-05-30 08:40:10,272 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23761.pdf
+2025-05-30 08:40:10,273 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23760.pdf
+2025-05-30 08:40:10,273 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23759.pdf
+2025-05-30 08:40:10,275 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23751.pdf
+2025-05-30 08:40:10,276 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23749.pdf
+2025-05-30 08:40:10,277 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23747.pdf
+2025-05-30 08:40:10,277 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23745.pdf
+2025-05-30 08:40:10,279 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23737.pdf
+2025-05-30 08:40:10,280 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23732.pdf
+2025-05-30 08:40:10,282 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23725.pdf
+2025-05-30 08:40:10,283 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23724.pdf
+2025-05-30 08:40:10,285 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23723.pdf
+2025-05-30 08:40:10,286 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23721.pdf
+2025-05-30 08:40:10,289 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23720.pdf
+2025-05-30 08:40:10,290 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23719.pdf
+2025-05-30 08:40:10,291 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23709.pdf
+2025-05-30 08:40:10,292 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23706.pdf
+2025-05-30 08:40:10,293 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23705.pdf
+2025-05-30 08:40:10,294 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23702.pdf
+2025-05-30 08:40:10,295 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23700.pdf
+2025-05-30 08:40:10,296 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23696.pdf
+2025-05-30 08:40:10,298 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23692.pdf
+2025-05-30 08:40:10,300 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23683.pdf
+2025-05-30 08:40:10,301 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 08:40:10,302 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23673.pdf
+2025-05-30 08:40:10,303 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 08:40:10,305 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23666.pdf
+2025-05-30 08:40:10,306 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23663.pdf
+2025-05-30 08:40:10,307 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23658.pdf
+2025-05-30 08:40:10,308 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23657.pdf
+2025-05-30 08:40:10,309 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23653.pdf
+2025-05-30 08:40:10,310 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23652.pdf
+2025-05-30 08:40:10,311 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23651.pdf
+2025-05-30 08:40:10,312 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23648.pdf
+2025-05-30 08:40:10,313 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23646.pdf
+2025-05-30 08:40:10,315 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23640.pdf
+2025-05-30 08:40:10,316 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23637.pdf
+2025-05-30 08:40:10,316 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23634.pdf
+2025-05-30 08:40:10,317 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23627.pdf
+2025-05-30 08:40:10,318 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23625.pdf
+2025-05-30 08:40:10,318 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23620.pdf
+2025-05-30 08:40:10,319 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23619.pdf
+2025-05-30 08:40:10,320 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23617.pdf
+2025-05-30 08:40:10,320 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23615.pdf
+2025-05-30 08:40:10,321 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 08:40:10,322 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23609.pdf
+2025-05-30 08:40:10,323 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23607.pdf
+2025-05-30 08:40:10,323 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23606.pdf
+2025-05-30 08:40:10,324 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23599.pdf
+2025-05-30 08:40:10,336 - INFO - Found 100 potential PDF links on https://arxiv.org/search/?query=machine learning&searchtype=all
+2025-05-30 08:40:10,341 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=quantum computing&searchtype=all
+2025-05-30 08:40:11,126 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23699.pdf
+2025-05-30 08:40:11,127 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23674.pdf
+2025-05-30 08:40:11,129 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23622.pdf
+2025-05-30 08:40:11,131 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23567.pdf
+2025-05-30 08:40:11,132 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23373.pdf
+2025-05-30 08:40:11,134 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23366.pdf
+2025-05-30 08:40:11,135 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23256.pdf
+2025-05-30 08:40:11,140 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23232.pdf
+2025-05-30 08:40:11,141 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23217.pdf
+2025-05-30 08:40:11,142 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23074.pdf
+2025-05-30 08:40:11,143 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23066.pdf
+2025-05-30 08:40:11,144 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22932.pdf
+2025-05-30 08:40:11,145 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22924.pdf
+2025-05-30 08:40:11,146 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22902.pdf
+2025-05-30 08:40:11,147 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22886.pdf
+2025-05-30 08:40:11,149 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22883.pdf
+2025-05-30 08:40:11,151 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22837.pdf
+2025-05-30 08:40:11,152 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22816.pdf
+2025-05-30 08:40:11,153 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22773.pdf
+2025-05-30 08:40:11,155 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22743.pdf
+2025-05-30 08:40:11,156 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22721.pdf
+2025-05-30 08:40:11,157 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22715.pdf
+2025-05-30 08:40:11,158 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22644.pdf
+2025-05-30 08:40:11,159 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22629.pdf
+2025-05-30 08:40:11,160 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22576.pdf
+2025-05-30 08:40:11,161 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22575.pdf
+2025-05-30 08:40:11,161 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22533.pdf
+2025-05-30 08:40:11,163 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22502.pdf
+2025-05-30 08:40:11,164 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22454.pdf
+2025-05-30 08:40:11,166 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22419.pdf
+2025-05-30 08:40:11,167 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22405.pdf
+2025-05-30 08:40:11,168 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22402.pdf
+2025-05-30 08:40:11,169 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22390.pdf
+2025-05-30 08:40:11,171 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22217.pdf
+2025-05-30 08:40:11,172 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22171.pdf
+2025-05-30 08:40:11,174 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22144.pdf
+2025-05-30 08:40:11,175 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22060.pdf
+2025-05-30 08:40:11,176 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21621.pdf
+2025-05-30 08:40:11,176 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21618.pdf
+2025-05-30 08:40:11,177 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21606.pdf
+2025-05-30 08:40:11,178 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21308.pdf
+2025-05-30 08:40:11,178 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21284.pdf
+2025-05-30 08:40:11,179 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21243.pdf
+2025-05-30 08:40:11,180 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21240.pdf
+2025-05-30 08:40:11,180 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21221.pdf
+2025-05-30 08:40:11,183 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21168.pdf
+2025-05-30 08:40:11,184 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21166.pdf
+2025-05-30 08:40:11,185 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21048.pdf
+2025-05-30 08:40:11,186 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20863.pdf
+2025-05-30 08:40:11,187 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20804.pdf
+2025-05-30 08:40:11,200 - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=quantum computing&searchtype=all
+2025-05-30 08:40:11,204 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=neural networks&searchtype=all
+2025-05-30 08:40:12,075 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23744.pdf
+2025-05-30 08:40:12,076 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23737.pdf
+2025-05-30 08:40:12,077 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23735.pdf
+2025-05-30 08:40:12,078 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23728.pdf
+2025-05-30 08:40:12,080 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23721.pdf
+2025-05-30 08:40:12,081 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23716.pdf
+2025-05-30 08:40:12,083 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23702.pdf
+2025-05-30 08:40:12,084 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 08:40:12,085 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23669.pdf
+2025-05-30 08:40:12,087 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23663.pdf
+2025-05-30 08:40:12,088 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23655.pdf
+2025-05-30 08:40:12,089 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23652.pdf
+2025-05-30 08:40:12,090 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23640.pdf
+2025-05-30 08:40:12,091 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23615.pdf
+2025-05-30 08:40:12,092 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23599.pdf
+2025-05-30 08:40:12,097 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23592.pdf
+2025-05-30 08:40:12,098 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23569.pdf
+2025-05-30 08:40:12,101 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23553.pdf
+2025-05-30 08:40:12,102 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23543.pdf
+2025-05-30 08:40:12,103 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23503.pdf
+2025-05-30 08:40:12,105 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23489.pdf
+2025-05-30 08:40:12,107 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23425.pdf
+2025-05-30 08:40:12,108 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23398.pdf
+2025-05-30 08:40:12,109 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23371.pdf
+2025-05-30 08:40:12,111 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23369.pdf
+2025-05-30 08:40:12,112 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23355.pdf
+2025-05-30 08:40:12,113 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23313.pdf
+2025-05-30 08:40:12,114 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23303.pdf
+2025-05-30 08:40:12,115 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23301.pdf
+2025-05-30 08:40:12,116 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23198.pdf
+2025-05-30 08:40:12,118 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23190.pdf
+2025-05-30 08:40:12,119 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23185.pdf
+2025-05-30 08:40:12,120 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23180.pdf
+2025-05-30 08:40:12,121 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23161.pdf
+2025-05-30 08:40:12,122 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23117.pdf
+2025-05-30 08:40:12,124 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23116.pdf
+2025-05-30 08:40:12,125 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23106.pdf
+2025-05-30 08:40:12,127 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23098.pdf
+2025-05-30 08:40:12,128 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23097.pdf
+2025-05-30 08:40:12,129 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23086.pdf
+2025-05-30 08:40:12,131 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23084.pdf
+2025-05-30 08:40:12,132 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23069.pdf
+2025-05-30 08:40:12,134 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23064.pdf
+2025-05-30 08:40:12,135 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23040.pdf
+2025-05-30 08:40:12,136 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23034.pdf
+2025-05-30 08:40:12,138 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23032.pdf
+2025-05-30 08:40:12,140 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23014.pdf
+2025-05-30 08:40:12,145 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23002.pdf
+2025-05-30 08:40:12,146 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22997.pdf
+2025-05-30 08:40:12,148 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22994.pdf
+2025-05-30 08:40:12,163 - INFO - Found 101 potential PDF links on https://arxiv.org/search/?query=neural networks&searchtype=all
+2025-05-30 08:41:58,383 - INFO - Processing URL: https://example.com with setting: full
+2025-05-30 08:41:58,387 - INFO - Ensured output directory exists: /workspace/modules/downloads/web_test
+2025-05-30 08:41:58,388 - INFO - Full content extraction mode for: https://example.com
+2025-05-30 08:41:58,388 - INFO - Extracting HTML text from: https://example.com
+2025-05-30 08:41:58,392 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=test&searchtype=all
+2025-05-30 08:41:59,214 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23735.pdf
+2025-05-30 08:41:59,215 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23722.pdf
+2025-05-30 08:41:59,216 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23699.pdf
+2025-05-30 08:41:59,216 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23689.pdf
+2025-05-30 08:41:59,217 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23685.pdf
+2025-05-30 08:41:59,218 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 08:41:59,218 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23674.pdf
+2025-05-30 08:41:59,219 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23672.pdf
+2025-05-30 08:41:59,220 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 08:41:59,220 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23662.pdf
+2025-05-30 08:41:59,221 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23647.pdf
+2025-05-30 08:41:59,223 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23645.pdf
+2025-05-30 08:41:59,223 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 08:41:59,224 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23604.pdf
+2025-05-30 08:41:59,225 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23592.pdf
+2025-05-30 08:41:59,225 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23575.pdf
+2025-05-30 08:41:59,226 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23549.pdf
+2025-05-30 08:41:59,226 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23548.pdf
+2025-05-30 08:41:59,227 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23530.pdf
+2025-05-30 08:41:59,228 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23526.pdf
+2025-05-30 08:41:59,228 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23496.pdf
+2025-05-30 08:41:59,229 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23477.pdf
+2025-05-30 08:41:59,229 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23473.pdf
+2025-05-30 08:41:59,230 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23471.pdf
+2025-05-30 08:41:59,231 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23457.pdf
+2025-05-30 08:41:59,232 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23410.pdf
+2025-05-30 08:41:59,233 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23393.pdf
+2025-05-30 08:41:59,233 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23392.pdf
+2025-05-30 08:41:59,234 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23387.pdf
+2025-05-30 08:41:59,234 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23378.pdf
+2025-05-30 08:41:59,235 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23374.pdf
+2025-05-30 08:41:59,235 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23359.pdf
+2025-05-30 08:41:59,236 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23357.pdf
+2025-05-30 08:41:59,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23339.pdf
+2025-05-30 08:41:59,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23337.pdf
+2025-05-30 08:41:59,238 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23333.pdf
+2025-05-30 08:41:59,239 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23309.pdf
+2025-05-30 08:41:59,240 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23250.pdf
+2025-05-30 08:41:59,241 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23230.pdf
+2025-05-30 08:41:59,242 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23223.pdf
+2025-05-30 08:41:59,243 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23207.pdf
+2025-05-30 08:41:59,244 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23174.pdf
+2025-05-30 08:41:59,245 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23150.pdf
+2025-05-30 08:41:59,246 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23135.pdf
+2025-05-30 08:41:59,247 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23129.pdf
+2025-05-30 08:41:59,248 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23126.pdf
+2025-05-30 08:41:59,249 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23113.pdf
+2025-05-30 08:41:59,249 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23109.pdf
+2025-05-30 08:41:59,250 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23091.pdf
+2025-05-30 08:41:59,250 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23064.pdf
+2025-05-30 08:41:59,261 - INFO - Found 101 potential PDF links on https://arxiv.org/search/?query=test&searchtype=all
+2025-05-30 08:42:16,849 - ERROR - Error fetching HTML page: HTTPSConnectionPool(host='example.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f50321dfda0>: Failed to resolve 'example.com' ([Errno -2] No address found)"))
+2025-05-30 08:42:16,851 - ERROR - Error extracting full content from https://example.com: Failed to fetch https://example.com: HTTPSConnectionPool(host='example.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f50321dfda0>: Failed to resolve 'example.com' ([Errno -2] No address found)"))
+2025-05-30 08:46:00,466 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=quantum computing&searchtype=all
+2025-05-30 08:46:01,481 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23699.pdf
+2025-05-30 08:46:01,482 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23674.pdf
+2025-05-30 08:46:01,484 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23622.pdf
+2025-05-30 08:46:01,486 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23567.pdf
+2025-05-30 08:46:01,487 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23373.pdf
+2025-05-30 08:46:01,489 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23366.pdf
+2025-05-30 08:46:01,490 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23256.pdf
+2025-05-30 08:46:01,492 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23232.pdf
+2025-05-30 08:46:01,493 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23217.pdf
+2025-05-30 08:46:01,494 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23074.pdf
+2025-05-30 08:46:01,495 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23066.pdf
+2025-05-30 08:46:01,496 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22932.pdf
+2025-05-30 08:46:01,497 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22924.pdf
+2025-05-30 08:46:01,498 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22902.pdf
+2025-05-30 08:46:01,500 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22886.pdf
+2025-05-30 08:46:01,501 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22883.pdf
+2025-05-30 08:46:01,502 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22837.pdf
+2025-05-30 08:46:01,503 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22816.pdf
+2025-05-30 08:46:01,504 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22773.pdf
+2025-05-30 08:46:01,505 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22743.pdf
+2025-05-30 08:46:01,506 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22721.pdf
+2025-05-30 08:46:01,507 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22715.pdf
+2025-05-30 08:46:01,507 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22644.pdf
+2025-05-30 08:46:01,508 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22629.pdf
+2025-05-30 08:46:01,509 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22576.pdf
+2025-05-30 08:46:01,510 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22575.pdf
+2025-05-30 08:46:01,511 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22533.pdf
+2025-05-30 08:46:01,512 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22502.pdf
+2025-05-30 08:46:01,513 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22454.pdf
+2025-05-30 08:46:01,514 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22419.pdf
+2025-05-30 08:46:01,515 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22405.pdf
+2025-05-30 08:46:01,516 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22402.pdf
+2025-05-30 08:46:01,517 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22390.pdf
+2025-05-30 08:46:01,519 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22217.pdf
+2025-05-30 08:46:01,521 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22171.pdf
+2025-05-30 08:46:01,522 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22144.pdf
+2025-05-30 08:46:01,523 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22060.pdf
+2025-05-30 08:46:01,524 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21621.pdf
+2025-05-30 08:46:01,525 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21618.pdf
+2025-05-30 08:46:01,526 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21606.pdf
+2025-05-30 08:46:01,528 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21308.pdf
+2025-05-30 08:46:01,530 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21284.pdf
+2025-05-30 08:46:01,532 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21243.pdf
+2025-05-30 08:46:01,533 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21240.pdf
+2025-05-30 08:46:01,534 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21221.pdf
+2025-05-30 08:46:01,535 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21168.pdf
+2025-05-30 08:46:01,536 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21166.pdf
+2025-05-30 08:46:01,537 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21048.pdf
+2025-05-30 08:46:01,538 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20863.pdf
+2025-05-30 08:46:01,539 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20804.pdf
+2025-05-30 08:46:01,551 - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=quantum computing&searchtype=all
+2025-05-30 08:47:50,313 - INFO - Claude module is available for processing
+2025-05-30 08:47:50,314 - INFO - PDF extractor module is available
+2025-05-30 08:54:33,901 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=quantum computing&searchtype=all
+2025-05-30 08:54:34,984 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23699.pdf
+2025-05-30 08:54:35,017 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23674.pdf
+2025-05-30 08:54:35,018 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23622.pdf
+2025-05-30 08:54:35,019 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23567.pdf
+2025-05-30 08:54:35,020 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23373.pdf
+2025-05-30 08:54:35,020 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23366.pdf
+2025-05-30 08:54:35,021 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23256.pdf
+2025-05-30 08:54:35,022 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23232.pdf
+2025-05-30 08:54:35,024 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23217.pdf
+2025-05-30 08:54:35,025 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23074.pdf
+2025-05-30 08:54:35,029 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23066.pdf
+2025-05-30 08:54:35,030 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22932.pdf
+2025-05-30 08:54:35,032 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22924.pdf
+2025-05-30 08:54:35,033 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22902.pdf
+2025-05-30 08:54:35,034 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22886.pdf
+2025-05-30 08:54:35,035 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22883.pdf
+2025-05-30 08:54:35,039 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22837.pdf
+2025-05-30 08:54:35,040 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22816.pdf
+2025-05-30 08:54:35,041 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22773.pdf
+2025-05-30 08:54:35,042 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22743.pdf
+2025-05-30 08:54:35,046 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22721.pdf
+2025-05-30 08:54:35,048 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22715.pdf
+2025-05-30 08:54:35,055 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22644.pdf
+2025-05-30 08:54:35,058 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22629.pdf
+2025-05-30 08:54:35,065 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22576.pdf
+2025-05-30 08:54:35,073 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22575.pdf
+2025-05-30 08:54:35,074 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22533.pdf
+2025-05-30 08:54:35,075 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22502.pdf
+2025-05-30 08:54:35,078 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22454.pdf
+2025-05-30 08:54:35,080 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22419.pdf
+2025-05-30 08:54:35,082 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22405.pdf
+2025-05-30 08:54:35,084 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22402.pdf
+2025-05-30 08:54:35,084 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22390.pdf
+2025-05-30 08:54:35,088 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22217.pdf
+2025-05-30 08:54:35,089 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22171.pdf
+2025-05-30 08:54:35,090 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22144.pdf
+2025-05-30 08:54:35,091 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22060.pdf
+2025-05-30 08:54:35,092 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21621.pdf
+2025-05-30 08:54:35,094 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21618.pdf
+2025-05-30 08:54:35,095 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21606.pdf
+2025-05-30 08:54:35,096 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21308.pdf
+2025-05-30 08:54:35,098 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21284.pdf
+2025-05-30 08:54:35,099 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21243.pdf
+2025-05-30 08:54:35,100 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21240.pdf
+2025-05-30 08:54:35,101 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21221.pdf
+2025-05-30 08:54:35,102 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21168.pdf
+2025-05-30 08:54:35,104 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21166.pdf
+2025-05-30 08:54:35,106 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21048.pdf
+2025-05-30 08:54:35,107 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20863.pdf
+2025-05-30 08:54:35,110 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20804.pdf
+2025-05-30 08:54:35,132 - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=quantum computing&searchtype=all
+2025-05-30 08:54:38,151 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=artificial intelligence&searchtype=all
+2025-05-30 08:54:38,993 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23765.pdf
+2025-05-30 08:54:38,994 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23762.pdf
+2025-05-30 08:54:38,995 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23761.pdf
+2025-05-30 08:54:38,997 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23759.pdf
+2025-05-30 08:54:38,998 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23754.pdf
+2025-05-30 08:54:38,999 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23751.pdf
+2025-05-30 08:54:38,999 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23747.pdf
+2025-05-30 08:54:39,000 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23746.pdf
+2025-05-30 08:54:39,002 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23745.pdf
+2025-05-30 08:54:39,003 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23744.pdf
+2025-05-30 08:54:39,004 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23742.pdf
+2025-05-30 08:54:39,006 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23735.pdf
+2025-05-30 08:54:39,007 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23733.pdf
+2025-05-30 08:54:39,008 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23730.pdf
+2025-05-30 08:54:39,009 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23729.pdf
+2025-05-30 08:54:39,010 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23724.pdf
+2025-05-30 08:54:39,011 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23723.pdf
+2025-05-30 08:54:39,012 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23720.pdf
+2025-05-30 08:54:39,013 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23714.pdf
+2025-05-30 08:54:39,014 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23710.pdf
+2025-05-30 08:54:39,015 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23709.pdf
+2025-05-30 08:54:39,016 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23706.pdf
+2025-05-30 08:54:39,017 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23704.pdf
+2025-05-30 08:54:39,018 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23703.pdf
+2025-05-30 08:54:39,019 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23700.pdf
+2025-05-30 08:54:39,020 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23695.pdf
+2025-05-30 08:54:39,021 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23693.pdf
+2025-05-30 08:54:39,022 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23686.pdf
+2025-05-30 08:54:39,023 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 08:54:39,024 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23667.pdf
+2025-05-30 08:54:39,025 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23657.pdf
+2025-05-30 08:54:39,026 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23655.pdf
+2025-05-30 08:54:39,027 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23643.pdf
+2025-05-30 08:54:39,028 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23637.pdf
+2025-05-30 08:54:39,029 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23631.pdf
+2025-05-30 08:54:39,031 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23628.pdf
+2025-05-30 08:54:39,032 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23624.pdf
+2025-05-30 08:54:39,034 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23617.pdf
+2025-05-30 08:54:39,035 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 08:54:39,036 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23604.pdf
+2025-05-30 08:54:39,037 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23596.pdf
+2025-05-30 08:54:39,038 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23595.pdf
+2025-05-30 08:54:39,040 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23590.pdf
+2025-05-30 08:54:39,041 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23586.pdf
+2025-05-30 08:54:39,041 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23584.pdf
+2025-05-30 08:54:39,042 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23580.pdf
+2025-05-30 08:54:39,043 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23576.pdf
+2025-05-30 08:54:39,044 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23575.pdf
+2025-05-30 08:54:39,045 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23564.pdf
+2025-05-30 08:54:39,045 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23559.pdf
+2025-05-30 08:54:39,062 - INFO - Found 101 potential PDF links on https://arxiv.org/search/?query=artificial intelligence&searchtype=all
+2025-05-30 09:04:14,507 - INFO - Claude module is available for processing
+2025-05-30 09:04:14,508 - INFO - PDF extractor module is available
+2025-05-30 11:46:09,579 - INFO - Claude module is available for processing
+2025-05-30 11:46:09,581 - INFO - PDF extractor module is available
+2025-05-30 11:50:35,956 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=quantum+computing&searchtype=all
+2025-05-30 11:50:36,938 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23699.pdf
+2025-05-30 11:50:36,939 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23674.pdf
+2025-05-30 11:50:36,939 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23622.pdf
+2025-05-30 11:50:36,939 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23567.pdf
+2025-05-30 11:50:36,940 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23373.pdf
+2025-05-30 11:50:36,940 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23366.pdf
+2025-05-30 11:50:36,941 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23256.pdf
+2025-05-30 11:50:36,943 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23232.pdf
+2025-05-30 11:50:36,944 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23217.pdf
+2025-05-30 11:50:36,945 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23074.pdf
+2025-05-30 11:50:36,945 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23066.pdf
+2025-05-30 11:50:36,946 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22932.pdf
+2025-05-30 11:50:36,947 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22924.pdf
+2025-05-30 11:50:36,947 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22902.pdf
+2025-05-30 11:50:36,948 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22886.pdf
+2025-05-30 11:50:36,949 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22883.pdf
+2025-05-30 11:50:36,949 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22837.pdf
+2025-05-30 11:50:36,950 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22816.pdf
+2025-05-30 11:50:36,951 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22773.pdf
+2025-05-30 11:50:36,952 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22743.pdf
+2025-05-30 11:50:36,953 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22721.pdf
+2025-05-30 11:50:36,953 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22715.pdf
+2025-05-30 11:50:36,954 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22644.pdf
+2025-05-30 11:50:36,954 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22629.pdf
+2025-05-30 11:50:36,955 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22576.pdf
+2025-05-30 11:50:36,955 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22575.pdf
+2025-05-30 11:50:36,956 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22533.pdf
+2025-05-30 11:50:36,956 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22502.pdf
+2025-05-30 11:50:36,957 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22454.pdf
+2025-05-30 11:50:36,957 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22419.pdf
+2025-05-30 11:50:36,958 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22405.pdf
+2025-05-30 11:50:36,958 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22402.pdf
+2025-05-30 11:50:36,959 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22390.pdf
+2025-05-30 11:50:36,959 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22217.pdf
+2025-05-30 11:50:36,960 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22171.pdf
+2025-05-30 11:50:36,960 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22144.pdf
+2025-05-30 11:50:36,961 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.22060.pdf
+2025-05-30 11:50:36,961 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21621.pdf
+2025-05-30 11:50:36,962 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21618.pdf
+2025-05-30 11:50:36,962 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21606.pdf
+2025-05-30 11:50:36,963 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21308.pdf
+2025-05-30 11:50:36,963 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21284.pdf
+2025-05-30 11:50:36,965 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21243.pdf
+2025-05-30 11:50:36,965 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21240.pdf
+2025-05-30 11:50:36,966 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21221.pdf
+2025-05-30 11:50:36,966 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21168.pdf
+2025-05-30 11:50:36,967 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21166.pdf
+2025-05-30 11:50:36,968 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21048.pdf
+2025-05-30 11:50:36,968 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20863.pdf
+2025-05-30 11:50:36,969 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20804.pdf
+2025-05-30 11:50:36,981 - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=quantum+computing&searchtype=all
+2025-05-30 11:50:44,325 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 11:50:45,188 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23417.pdf
+2025-05-30 11:50:45,189 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21720.pdf
+2025-05-30 11:50:45,191 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20304.pdf
+2025-05-30 11:50:45,192 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20273.pdf
+2025-05-30 11:50:45,193 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19212.pdf
+2025-05-30 11:50:45,194 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19045.pdf
+2025-05-30 11:50:45,195 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18596.pdf
+2025-05-30 11:50:45,197 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18523.pdf
+2025-05-30 11:50:45,199 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17165.pdf
+2025-05-30 11:50:45,201 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17065.pdf
+2025-05-30 11:50:45,203 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15851.pdf
+2025-05-30 11:50:45,205 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15173.pdf
+2025-05-30 11:50:45,208 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14758.pdf
+2025-05-30 11:50:45,212 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14206.pdf
+2025-05-30 11:50:45,214 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.13565.pdf
+2025-05-30 11:50:45,215 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12718.pdf
+2025-05-30 11:50:45,217 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12229.pdf
+2025-05-30 11:50:45,219 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11946.pdf
+2025-05-30 11:50:45,220 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11454.pdf
+2025-05-30 11:50:45,221 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10603.pdf
+2025-05-30 11:50:45,222 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10050.pdf
+2025-05-30 11:50:45,223 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09646.pdf
+2025-05-30 11:50:45,224 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09576.pdf
+2025-05-30 11:50:45,224 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09056.pdf
+2025-05-30 11:50:45,225 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08854.pdf
+2025-05-30 11:50:45,227 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08202.pdf
+2025-05-30 11:50:45,228 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07772.pdf
+2025-05-30 11:50:45,229 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07005.pdf
+2025-05-30 11:50:45,230 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05523.pdf
+2025-05-30 11:50:45,231 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05516.pdf
+2025-05-30 11:50:45,231 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05197.pdf
+2025-05-30 11:50:45,232 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04966.pdf
+2025-05-30 11:50:45,233 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04769.pdf
+2025-05-30 11:50:45,234 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04673.pdf
+2025-05-30 11:50:45,235 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04654.pdf
+2025-05-30 11:50:45,236 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04570.pdf
+2025-05-30 11:50:45,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04352.pdf
+2025-05-30 11:50:45,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04104.pdf
+2025-05-30 11:50:45,238 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.03945.pdf
+2025-05-30 11:50:45,239 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02945.pdf
+2025-05-30 11:50:45,240 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02856.pdf
+2025-05-30 11:50:45,241 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02230.pdf
+2025-05-30 11:50:45,242 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02198.pdf
+2025-05-30 11:50:45,243 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02174.pdf
+2025-05-30 11:50:45,244 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02062.pdf
+2025-05-30 11:50:45,244 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01542.pdf
+2025-05-30 11:50:45,245 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01514.pdf
+2025-05-30 11:50:45,246 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00841.pdf
+2025-05-30 11:50:45,247 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00339.pdf
+2025-05-30 11:50:45,248 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00204.pdf
+2025-05-30 11:50:45,261 - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 11:57:59,452 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 11:58:00,231 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23417.pdf
+2025-05-30 11:58:00,232 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.21720.pdf
+2025-05-30 11:58:00,232 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20304.pdf
+2025-05-30 11:58:00,232 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.20273.pdf
+2025-05-30 11:58:00,233 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19212.pdf
+2025-05-30 11:58:00,234 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.19045.pdf
+2025-05-30 11:58:00,234 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18596.pdf
+2025-05-30 11:58:00,235 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.18523.pdf
+2025-05-30 11:58:00,236 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17165.pdf
+2025-05-30 11:58:00,236 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.17065.pdf
+2025-05-30 11:58:00,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15851.pdf
+2025-05-30 11:58:00,237 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.15173.pdf
+2025-05-30 11:58:00,238 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14758.pdf
+2025-05-30 11:58:00,238 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.14206.pdf
+2025-05-30 11:58:00,239 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.13565.pdf
+2025-05-30 11:58:00,239 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12718.pdf
+2025-05-30 11:58:00,239 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.12229.pdf
+2025-05-30 11:58:00,240 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11946.pdf
+2025-05-30 11:58:00,240 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.11454.pdf
+2025-05-30 11:58:00,241 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10603.pdf
+2025-05-30 11:58:00,241 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.10050.pdf
+2025-05-30 11:58:00,242 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09646.pdf
+2025-05-30 11:58:00,242 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09576.pdf
+2025-05-30 11:58:00,242 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.09056.pdf
+2025-05-30 11:58:00,243 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08854.pdf
+2025-05-30 11:58:00,243 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.08202.pdf
+2025-05-30 11:58:00,244 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07772.pdf
+2025-05-30 11:58:00,244 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.07005.pdf
+2025-05-30 11:58:00,245 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05523.pdf
+2025-05-30 11:58:00,245 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05516.pdf
+2025-05-30 11:58:00,246 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.05197.pdf
+2025-05-30 11:58:00,246 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04966.pdf
+2025-05-30 11:58:00,247 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04769.pdf
+2025-05-30 11:58:00,247 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04673.pdf
+2025-05-30 11:58:00,250 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04654.pdf
+2025-05-30 11:58:00,250 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04570.pdf
+2025-05-30 11:58:00,251 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04352.pdf
+2025-05-30 11:58:00,251 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.04104.pdf
+2025-05-30 11:58:00,252 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.03945.pdf
+2025-05-30 11:58:00,252 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02945.pdf
+2025-05-30 11:58:00,253 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02856.pdf
+2025-05-30 11:58:00,253 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02230.pdf
+2025-05-30 11:58:00,254 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02198.pdf
+2025-05-30 11:58:00,255 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02174.pdf
+2025-05-30 11:58:00,257 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.02062.pdf
+2025-05-30 11:58:00,258 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01542.pdf
+2025-05-30 11:58:00,258 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.01514.pdf
+2025-05-30 11:58:00,259 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00841.pdf
+2025-05-30 11:58:00,261 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00339.pdf
+2025-05-30 11:58:00,262 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.00204.pdf
+2025-05-30 11:58:00,274 - INFO - Found 102 potential PDF links on https://arxiv.org/search/?query=artificial+intelligence+ethics&searchtype=all
+2025-05-30 12:17:48,515 - INFO - Claude module is available for processing
+2025-05-30 12:17:48,517 - INFO - PDF extractor module is available
+2025-05-30 12:40:02,181 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=machine+learning&searchtype=all
+2025-05-30 12:40:03,265 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23765.pdf
+2025-05-30 12:40:03,269 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23761.pdf
+2025-05-30 12:40:03,271 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23760.pdf
+2025-05-30 12:40:03,271 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23759.pdf
+2025-05-30 12:40:03,272 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23751.pdf
+2025-05-30 12:40:03,273 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23749.pdf
+2025-05-30 12:40:03,274 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23747.pdf
+2025-05-30 12:40:03,274 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23745.pdf
+2025-05-30 12:40:03,275 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23737.pdf
+2025-05-30 12:40:03,276 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23732.pdf
+2025-05-30 12:40:03,277 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23725.pdf
+2025-05-30 12:40:03,278 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23724.pdf
+2025-05-30 12:40:03,279 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23723.pdf
+2025-05-30 12:40:03,280 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23721.pdf
+2025-05-30 12:40:03,281 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23720.pdf
+2025-05-30 12:40:03,281 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23719.pdf
+2025-05-30 12:40:03,282 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23709.pdf
+2025-05-30 12:40:03,283 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23706.pdf
+2025-05-30 12:40:03,284 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23705.pdf
+2025-05-30 12:40:03,285 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23702.pdf
+2025-05-30 12:40:03,286 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23700.pdf
+2025-05-30 12:40:03,286 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23696.pdf
+2025-05-30 12:40:03,287 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23692.pdf
+2025-05-30 12:40:03,287 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23683.pdf
+2025-05-30 12:40:03,288 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 12:40:03,288 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23673.pdf
+2025-05-30 12:40:03,289 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 12:40:03,290 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23666.pdf
+2025-05-30 12:40:03,290 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23663.pdf
+2025-05-30 12:40:03,291 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23658.pdf
+2025-05-30 12:40:03,291 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23657.pdf
+2025-05-30 12:40:03,292 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23653.pdf
+2025-05-30 12:40:03,293 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23652.pdf
+2025-05-30 12:40:03,296 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23651.pdf
+2025-05-30 12:40:03,298 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23648.pdf
+2025-05-30 12:40:03,300 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23646.pdf
+2025-05-30 12:40:03,301 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23640.pdf
+2025-05-30 12:40:03,302 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23637.pdf
+2025-05-30 12:40:03,303 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23634.pdf
+2025-05-30 12:40:03,304 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23627.pdf
+2025-05-30 12:40:03,306 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23625.pdf
+2025-05-30 12:40:03,307 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23620.pdf
+2025-05-30 12:40:03,308 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23619.pdf
+2025-05-30 12:40:03,309 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23617.pdf
+2025-05-30 12:40:03,309 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23615.pdf
+2025-05-30 12:40:03,312 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 12:40:03,313 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23609.pdf
+2025-05-30 12:40:03,314 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23607.pdf
+2025-05-30 12:40:03,314 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23606.pdf
+2025-05-30 12:40:03,315 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23599.pdf
+2025-05-30 12:40:03,325 - INFO - Found 100 potential PDF links on https://arxiv.org/search/?query=machine+learning&searchtype=all
+2025-05-30 12:43:48,280 - INFO - Fetching PDF links from: https://arxiv.org/search/?query=machine+learning&searchtype=all
+2025-05-30 12:43:49,425 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23765.pdf
+2025-05-30 12:43:49,425 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23761.pdf
+2025-05-30 12:43:49,426 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23760.pdf
+2025-05-30 12:43:49,426 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23759.pdf
+2025-05-30 12:43:49,426 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23751.pdf
+2025-05-30 12:43:49,427 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23749.pdf
+2025-05-30 12:43:49,427 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23747.pdf
+2025-05-30 12:43:49,427 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23745.pdf
+2025-05-30 12:43:49,428 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23737.pdf
+2025-05-30 12:43:49,428 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23732.pdf
+2025-05-30 12:43:49,428 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23725.pdf
+2025-05-30 12:43:49,429 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23724.pdf
+2025-05-30 12:43:49,429 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23723.pdf
+2025-05-30 12:43:49,430 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23721.pdf
+2025-05-30 12:43:49,430 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23720.pdf
+2025-05-30 12:43:49,430 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23719.pdf
+2025-05-30 12:43:49,430 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23709.pdf
+2025-05-30 12:43:49,431 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23706.pdf
+2025-05-30 12:43:49,431 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23705.pdf
+2025-05-30 12:43:49,431 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23702.pdf
+2025-05-30 12:43:49,432 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23700.pdf
+2025-05-30 12:43:49,432 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23696.pdf
+2025-05-30 12:43:49,432 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23692.pdf
+2025-05-30 12:43:49,433 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23683.pdf
+2025-05-30 12:43:49,433 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23681.pdf
+2025-05-30 12:43:49,433 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23673.pdf
+2025-05-30 12:43:49,434 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23671.pdf
+2025-05-30 12:43:49,434 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23666.pdf
+2025-05-30 12:43:49,434 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23663.pdf
+2025-05-30 12:43:49,435 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23658.pdf
+2025-05-30 12:43:49,436 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23657.pdf
+2025-05-30 12:43:49,436 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23653.pdf
+2025-05-30 12:43:49,437 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23652.pdf
+2025-05-30 12:43:49,437 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23651.pdf
+2025-05-30 12:43:49,437 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23648.pdf
+2025-05-30 12:43:49,438 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23646.pdf
+2025-05-30 12:43:49,440 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23640.pdf
+2025-05-30 12:43:49,440 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23637.pdf
+2025-05-30 12:43:49,440 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23634.pdf
+2025-05-30 12:43:49,441 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23627.pdf
+2025-05-30 12:43:49,441 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23625.pdf
+2025-05-30 12:43:49,441 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23620.pdf
+2025-05-30 12:43:49,442 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23619.pdf
+2025-05-30 12:43:49,442 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23617.pdf
+2025-05-30 12:43:49,442 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23615.pdf
+2025-05-30 12:43:49,443 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23614.pdf
+2025-05-30 12:43:49,443 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23609.pdf
+2025-05-30 12:43:49,445 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23607.pdf
+2025-05-30 12:43:49,446 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23606.pdf
+2025-05-30 12:43:49,447 - INFO - Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2505.23599.pdf
+2025-05-30 12:43:49,463 - INFO - Found 100 potential PDF links on https://arxiv.org/search/?query=machine+learning&searchtype=all
+2025-05-30 15:28:50,359 - INFO - Claude module is available for processing
+2025-05-30 15:28:50,360 - INFO - PDF extractor module is available
+2025-05-30 15:29:30,590 - INFO - Claude module is available for processing
+2025-05-30 15:29:30,604 - INFO - PDF extractor module is available
+2025-05-30 16:23:46,537 - INFO - Claude module is available for processing
+2025-05-30 16:23:46,538 - INFO - PDF extractor module is available
+2025-05-30 16:23:48,311 - INFO - Processing URL: https://arxiv.org/abs/2301.00001 with setting: pdf
+2025-05-30 16:23:48,313 - INFO - Ensured output directory exists: test_output
+2025-05-30 16:23:48,314 - INFO - PDF download mode for: https://arxiv.org/abs/2301.00001
+2025-05-30 16:23:48,314 - INFO - DOWNLOAD_DEBUG: Starting download of PDF: https://arxiv.org/abs/2301.00001 to test_output
+2025-05-30 16:23:48,315 - INFO - DOWNLOAD_DEBUG: Converted arXiv abstract URL to PDF URL: https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:48,317 - INFO - DOWNLOAD_DEBUG: Ensured download directory exists: test_output
+2025-05-30 16:23:48,317 - INFO - DOWNLOAD_DEBUG: Generated URL hash: 34d3754dfd
+2025-05-30 16:23:48,318 - INFO - DOWNLOAD_DEBUG: Extracted filename: 2301.00001.pdf
+2025-05-30 16:23:48,319 - INFO - DOWNLOAD_DEBUG: Base name: 2301.00001, extension: .pdf
+2025-05-30 16:23:48,319 - INFO - DOWNLOAD_DEBUG: Final file path: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:48,324 - INFO - DOWNLOAD_DEBUG: Download attempt 1/5 for https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:48,324 - INFO - DOWNLOAD_DEBUG: Request headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'application/pdf,*/*', 'Connection': 'keep-alive', 'Accept-Encoding': 'identity', 'Cache-Control': 'no-cache, no-store'}
+2025-05-30 16:23:48,325 - INFO - DOWNLOAD_DEBUG: Sending GET request with timeout 60s
+2025-05-30 16:23:48,785 - INFO - DOWNLOAD_DEBUG: Response status code: 200
+2025-05-30 16:23:48,789 - INFO - DOWNLOAD_DEBUG: Content-Length: 765699
+2025-05-30 16:23:48,792 - INFO - DOWNLOAD_DEBUG: Content-Type: application/pdf
+2025-05-30 16:23:48,795 - INFO - DOWNLOAD_DEBUG: Starting to stream content to file: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:48,801 - WARNING - DOWNLOAD_DEBUG: Attempt 1/5 failed: argument must be an int, or have a fileno() method.
+2025-05-30 16:23:48,803 - WARNING - DOWNLOAD_DEBUG: Exception type: TypeError
+2025-05-30 16:23:48,820 - WARNING - DOWNLOAD_DEBUG: Traceback: Traceback (most recent call last):
+  File "/workspace/modules/web_scraper.py", line 909, in download_pdf
+    os.fsync(os.path.dirname(file_path))
+TypeError: argument must be an int, or have a fileno() method.
+
+2025-05-30 16:23:48,826 - INFO - DOWNLOAD_DEBUG: Retrying in 1.5 seconds...
+2025-05-30 16:23:50,327 - INFO - DOWNLOAD_DEBUG: Download attempt 2/5 for https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:50,328 - INFO - DOWNLOAD_DEBUG: Request headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'application/pdf,*/*', 'Connection': 'keep-alive', 'Accept-Encoding': 'identity', 'Cache-Control': 'no-cache, no-store'}
+2025-05-30 16:23:50,329 - INFO - DOWNLOAD_DEBUG: Sending GET request with timeout 60s
+2025-05-30 16:23:50,390 - INFO - DOWNLOAD_DEBUG: Response status code: 200
+2025-05-30 16:23:50,395 - INFO - DOWNLOAD_DEBUG: Content-Length: 765699
+2025-05-30 16:23:50,397 - INFO - DOWNLOAD_DEBUG: Content-Type: application/pdf
+2025-05-30 16:23:50,398 - INFO - DOWNLOAD_DEBUG: Using alternative in-memory download method on retry attempt 2
+2025-05-30 16:23:50,399 - INFO - DOWNLOAD_DEBUG: Download progress: 5% (40960/765699)
+2025-05-30 16:23:50,409 - INFO - DOWNLOAD_DEBUG: Download progress: 10% (81920/765699)
+2025-05-30 16:23:50,423 - INFO - DOWNLOAD_DEBUG: Download progress: 16% (122880/765699)
+2025-05-30 16:23:50,428 - INFO - DOWNLOAD_DEBUG: Download progress: 21% (163840/765699)
+2025-05-30 16:23:50,441 - INFO - DOWNLOAD_DEBUG: Download progress: 26% (204800/765699)
+2025-05-30 16:23:50,453 - INFO - DOWNLOAD_DEBUG: Download progress: 31% (237568/765699)
+2025-05-30 16:23:50,456 - INFO - DOWNLOAD_DEBUG: Download progress: 36% (278528/765699)
+2025-05-30 16:23:50,459 - INFO - DOWNLOAD_DEBUG: Download progress: 41% (319488/765699)
+2025-05-30 16:23:50,463 - INFO - DOWNLOAD_DEBUG: Download progress: 46% (352256/765699)
+2025-05-30 16:23:50,466 - INFO - DOWNLOAD_DEBUG: Download progress: 51% (393216/765699)
+2025-05-30 16:23:50,468 - INFO - DOWNLOAD_DEBUG: Download progress: 56% (434176/765699)
+2025-05-30 16:23:50,471 - INFO - DOWNLOAD_DEBUG: Download progress: 62% (475136/765699)
+2025-05-30 16:23:50,474 - INFO - DOWNLOAD_DEBUG: Download progress: 67% (516096/765699)
+2025-05-30 16:23:50,477 - INFO - DOWNLOAD_DEBUG: Download progress: 72% (557056/765699)
+2025-05-30 16:23:50,480 - INFO - DOWNLOAD_DEBUG: Download progress: 77% (589824/765699)
+2025-05-30 16:23:50,483 - INFO - DOWNLOAD_DEBUG: Download progress: 82% (630784/765699)
+2025-05-30 16:23:50,486 - INFO - DOWNLOAD_DEBUG: Download progress: 87% (671744/765699)
+2025-05-30 16:23:50,489 - INFO - DOWNLOAD_DEBUG: Download progress: 92% (704512/765699)
+2025-05-30 16:23:50,491 - INFO - DOWNLOAD_DEBUG: Download progress: 97% (745472/765699)
+2025-05-30 16:23:50,494 - INFO - DOWNLOAD_DEBUG: Download progress: 99% (761856/765699)
+2025-05-30 16:23:50,496 - INFO - DOWNLOAD_DEBUG: Download progress: 99% (765699/765699)
+2025-05-30 16:23:50,508 - INFO - DOWNLOAD_DEBUG: Alternative download method successful: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:51,023 - INFO - Detected document type: general
+2025-05-30 16:23:55,121 - WARNING - Enhanced PDF processing failed, falling back: name 'file_path' is not defined
+2025-05-30 16:23:59,461 - INFO - Processing URL: https://arxiv.org/pdf/2301.00001.pdf with setting: pdf
+2025-05-30 16:23:59,464 - INFO - Ensured output directory exists: test_output
+2025-05-30 16:23:59,465 - INFO - PDF download mode for: https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:59,466 - INFO - DOWNLOAD_DEBUG: Starting download of PDF: https://arxiv.org/pdf/2301.00001.pdf to test_output
+2025-05-30 16:23:59,468 - INFO - DOWNLOAD_DEBUG: Using original URL: https://arxiv.org/pdf/2301.00001.pdf
+2025-05-30 16:23:59,472 - INFO - DOWNLOAD_DEBUG: Ensured download directory exists: test_output
+2025-05-30 16:23:59,475 - INFO - DOWNLOAD_DEBUG: Generated URL hash: 34d3754dfd
+2025-05-30 16:23:59,477 - INFO - DOWNLOAD_DEBUG: Extracted filename: 2301.00001.pdf
+2025-05-30 16:23:59,479 - INFO - DOWNLOAD_DEBUG: Base name: 2301.00001, extension: .pdf
+2025-05-30 16:23:59,481 - INFO - DOWNLOAD_DEBUG: Final file path: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,486 - INFO - DOWNLOAD_DEBUG: PDF already exists: test_output/2301.00001_34d3754dfd.pdf
+2025-05-30 16:23:59,897 - INFO - Detected document type: general
+2025-05-30 16:24:05,753 - WARNING - Enhanced PDF processing failed, falling back: name 'file_path' is not defined
+2025-05-30 17:32:07,763 - INFO - Claude module is available for processing
+2025-05-30 17:32:07,774 - INFO - PDF extractor module is available
+2025-05-30 17:48:26,057 - INFO - Claude module is available for processing
+2025-05-30 17:48:26,057 - INFO - PDF extractor module is available
+2025-05-30 18:16:03,046 - INFO - Claude module is available for processing
+2025-05-30 18:16:03,052 - INFO - PDF extractor module is available
+2025-05-30 18:22:18,008 - INFO - Claude module is available for processing
+2025-05-30 18:22:18,013 - INFO - PDF extractor module is available
+2025-05-30 18:36:56,665 - INFO - Claude module is available for processing
+2025-05-30 18:36:56,670 - INFO - PDF extractor module is available
