@@ -1,0 +1,1500 @@
+{
+  "validation_summary": {
+    "timestamp": "2025-05-31T03:55:11.894612",
+    "total_tests": 15,
+    "passed_tests": 10,
+    "success_rate": "66.7%",
+    "status": "NEEDS_ATTENTION"
+  },
+  "module_results": {
+    "web_scraper": {
+      "/api/health-enhanced": {
+        "success": true,
+        "result": {
+          "dependencies": {
+            "beautifulsoup": true,
+            "requests": true,
+            "structify": true,
+            "trafilatura": false,
+            "urllib_robotparser": true
+          },
+          "endpoints": {
+            "enhanced": "/api/scrape2 (with scrape_mode parameter)",
+            "health": "/api/health-enhanced",
+            "legacy": "/api/scrape2 (with urls parameter)"
+          },
+          "features": {
+            "full_website": "Full Website & Documentation Crawler",
+            "smart_pdf": "Smart PDF Discovery & Processing"
+          },
+          "legacy_compatibility": "Maintained for old 5-option system",
+          "status": "healthy",
+          "version": "2.0_consolidated"
+        }
+      },
+      "/api/scrape2": {
+        "success": false,
+        "result": {
+          "error": "Expected 200, got 400"
+        }
+      }
+    },
+    "pdf_downloader": {
+      "/api/pdf/health": {
+        "success": true,
+        "result": {
+          "endpoints": {
+            "batch_download": "/api/pdf/batch-download",
+            "cancel": "/api/pdf/cancel/<task_id>",
+            "download": "/api/pdf/download",
+            "health": "/api/pdf/health",
+            "status": "/api/pdf/status/<task_id>"
+          },
+          "features": {
+            "batch_download": true,
+            "centralized_download": true,
+            "progress_tracking": true,
+            "single_download": true,
+            "structify_integration": true
+          },
+          "module": "pdf_downloader",
+          "status": "healthy",
+          "version": "1.0.0"
+        }
+      },
+      "/api/pdf/download": {
+        "success": false,
+        "result": {
+          "error": "Expected 200, got 400"
+        }
+      }
+    },
+    "playlist_downloader": {
+      "/api/health": {
+        "success": true,
+        "result": {
+          "checks": {
+            "dependencies": {
+              "dependencies": {
+                "BeautifulSoup": {
+                  "critical": true,
+                  "status": "available"
+                },
+                "File type detection": {
+                  "critical": false,
+                  "status": "missing"
+                },
+                "Flask": {
+                  "critical": true,
+                  "status": "available"
+                },
+                "Flask-SocketIO": {
+                  "critical": true,
+                  "status": "available"
+                },
+                "Image processing": {
+                  "critical": false,
+                  "status": "missing"
+                },
+                "PDF processing": {
+                  "critical": false,
+                  "status": "available"
+                },
+                "Tesseract OCR": {
+                  "critical": false,
+                  "status": "available"
+                },
+                "requests": {
+                  "critical": true,
+                  "status": "available"
+                }
+              },
+              "status": "warning"
+            },
+            "endpoints": {
+              "endpoints": {
+                "academic_search": true,
+                "file_processor": true,
+                "pdf_processor": false,
+                "playlist_downloader": true,
+                "web_scraper": true
+              },
+              "status": "warning"
+            },
+            "file_system": {
+              "paths": {
+                "downloads": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                },
+                "static": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                },
+                "temp": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                },
+                "templates": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                }
+              },
+              "status": "healthy"
+            },
+            "modules": {
+              "failed": [],
+              "loaded": [
+                "blueprints.core.services",
+                "blueprints.core.utils",
+                "blueprints.core.config",
+                "blueprints.core.routes",
+                "blueprints.core.http_client",
+                "blueprints.core.structify_integration",
+                "blueprints.core.ocr_config",
+                "blueprints.features.file_processor",
+                "blueprints.features.web_scraper",
+                "blueprints.features.academic_search",
+                "blueprints.features.pdf_processor",
+                "blueprints.features.playlist_downloader",
+                "blueprints.features.web_crawler",
+                "blueprints.api.management",
+                "blueprints.api.analytics",
+                "blueprints.socketio_events"
+              ],
+              "status": "healthy",
+              "total": 16
+            }
+          },
+          "response_time_ms": 18,
+          "status": "warning",
+          "timestamp": "2025-05-31T03:55:11.850208",
+          "version": "3.1.0"
+        }
+      },
+      "/api/start-playlists": {
+        "success": false,
+        "result": {
+          "error": "Expected 200, got 500"
+        }
+      }
+    },
+    "file_processor": {
+      "/api/process": {
+        "success": false,
+        "result": {
+          "error": "Expected 200, got 400"
+        }
+      }
+    },
+    "academic_search": {
+      "/api/academic/health": {
+        "success": true,
+        "result": {
+          "status": "ok",
+          "timestamp": 1748678111.8838158,
+          "web_scraper_available": true
+        }
+      },
+      "/api/academic/search": {
+        "success": false,
+        "result": {
+          "error": "Expected 200, got 405"
+        }
+      }
+    },
+    "api_management": {
+      "/api/keys": {
+        "success": true,
+        "result": {
+          "keys": {
+            "d8f74c02...b153": {
+              "active": true,
+              "created": "2025-03-17T00:00:00.000000",
+              "description": "Initial master key created during setup",
+              "last_used": "2025-05-30T19:46:39.785239",
+              "name": "Master Key"
+            }
+          }
+        }
+      },
+      "/api/tasks/history": {
+        "success": true,
+        "result": {
+          "filters": {
+            "task_type": null
+          },
+          "history": [],
+          "pagination": {
+            "has_more": false,
+            "limit": 20,
+            "offset": 0,
+            "total": 0
+          }
+        }
+      },
+      "/api/tasks/analytics": {
+        "success": true,
+        "result": {
+          "analytics": {},
+          "message": "No task history available"
+        }
+      }
+    },
+    "system_health": {
+      "/health": {
+        "success": true,
+        "result": {
+          "service": "NeuroGen Server",
+          "status": "healthy",
+          "timestamp": 1748678111.5063758
+        }
+      },
+      "/api/health": {
+        "success": true,
+        "result": {
+          "checks": {
+            "dependencies": {
+              "dependencies": {
+                "BeautifulSoup": {
+                  "critical": true,
+                  "status": "available"
+                },
+                "File type detection": {
+                  "critical": false,
+                  "status": "missing"
+                },
+                "Flask": {
+                  "critical": true,
+                  "status": "available"
+                },
+                "Flask-SocketIO": {
+                  "critical": true,
+                  "status": "available"
+                },
+                "Image processing": {
+                  "critical": false,
+                  "status": "missing"
+                },
+                "PDF processing": {
+                  "critical": false,
+                  "status": "available"
+                },
+                "Tesseract OCR": {
+                  "critical": false,
+                  "status": "available"
+                },
+                "requests": {
+                  "critical": true,
+                  "status": "available"
+                }
+              },
+              "status": "warning"
+            },
+            "endpoints": {
+              "endpoints": {
+                "academic_search": true,
+                "file_processor": true,
+                "pdf_processor": false,
+                "playlist_downloader": true,
+                "web_scraper": true
+              },
+              "status": "warning"
+            },
+            "file_system": {
+              "paths": {
+                "downloads": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                },
+                "static": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                },
+                "temp": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                },
+                "templates": {
+                  "exists": true,
+                  "readable": true,
+                  "writable": true
+                }
+              },
+              "status": "healthy"
+            },
+            "modules": {
+              "failed": [],
+              "loaded": [
+                "blueprints.core.services",
+                "blueprints.core.utils",
+                "blueprints.core.config",
+                "blueprints.core.routes",
+                "blueprints.core.http_client",
+                "blueprints.core.structify_integration",
+                "blueprints.core.ocr_config",
+                "blueprints.features.file_processor",
+                "blueprints.features.web_scraper",
+                "blueprints.features.academic_search",
+                "blueprints.features.pdf_processor",
+                "blueprints.features.playlist_downloader",
+                "blueprints.features.web_crawler",
+                "blueprints.api.management",
+                "blueprints.api.analytics",
+                "blueprints.socketio_events"
+              ],
+              "status": "healthy",
+              "total": 16
+            }
+          },
+          "response_time_ms": 32,
+          "status": "warning",
+          "timestamp": "2025-05-31T03:55:11.508924",
+          "version": "3.1.0"
+        }
+      },
+      "/api/test-modules": {
+        "success": true,
+        "result": {
+          "backend": {
+            "modules": {
+              "api": {
+                "blueprints.api.analytics": {
+                  "attributes": [
+                    "Any",
+                    "Blueprint",
+                    "Dict",
+                    "List",
+                    "Optional",
+                    "Response",
+                    "active_tasks",
+                    "add_task_to_history",
+                    "analytics_bp",
+                    "analyze_file_processing",
+                    "analyze_file_types",
+                    "analyze_pdf_processing",
+                    "analyze_performance",
+                    "analyze_processing_consistency",
+                    "analyze_scraping_performance",
+                    "assess_quality_indicators",
+                    "calculate_completion_metrics",
+                    "calculate_efficiency_analysis",
+                    "calculate_efficiency_metrics",
+                    "calculate_overview_analytics",
+                    "calculate_performance_trends",
+                    "calculate_quality_metrics",
+                    "calculate_task_type_distribution",
+                    "datetime",
+                    "emit_enhanced_task_completion",
+                    "emit_task_completion",
+                    "enhance_processing_task_completion",
+                    "export_task_stats",
+                    "format_duration",
+                    "format_time_duration",
+                    "generate_headline_summary",
+                    "generate_highlights",
+                    "generate_improvement_areas",
+                    "generate_stats_summary",
+                    "generate_task_insights",
+                    "get_task",
+                    "get_task_analytics",
+                    "get_task_history",
+                    "get_task_stats",
+                    "json",
+                    "jsonify",
+                    "logger",
+                    "logging",
+                    "process_completion_stats",
+                    "request",
+                    "structured_error_response",
+                    "task_history",
+                    "task_history_lock",
+                    "tasks_lock",
+                    "threading",
+                    "time"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.api.analytics",
+                  "status": "loaded"
+                },
+                "blueprints.api.management": {
+                  "attributes": [
+                    "Blueprint",
+                    "active_tasks",
+                    "add_task",
+                    "add_task_to_history",
+                    "api_management_bp",
+                    "api_task_registry",
+                    "api_task_registry_lock",
+                    "calculate_efficiency_analysis",
+                    "calculate_overview_analytics",
+                    "calculate_performance_trends",
+                    "calculate_task_type_distribution",
+                    "cancel_task_api",
+                    "complete_task",
+                    "create_api_key",
+                    "current_app",
+                    "datetime",
+                    "emergency_stop",
+                    "export_task_stats",
+                    "format_duration",
+                    "generate_stats_summary",
+                    "get_task",
+                    "get_task_analytics",
+                    "get_task_history",
+                    "get_task_stats",
+                    "jsonify",
+                    "list_api_keys",
+                    "logger",
+                    "logging",
+                    "process_completion_stats",
+                    "register_task",
+                    "remove_task",
+                    "request",
+                    "revoke_api_key",
+                    "structured_error_response",
+                    "task_history",
+                    "task_history_lock",
+                    "task_registry",
+                    "tasks_lock",
+                    "threading",
+                    "time",
+                    "update_task_progress",
+                    "uuid"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.api.management",
+                  "status": "loaded"
+                }
+              },
+              "core": {
+                "blueprints.core.config": {
+                  "attributes": [
+                    "API_DEBUG",
+                    "API_HOST",
+                    "API_KEYS",
+                    "API_PORT",
+                    "API_URL",
+                    "AUTO_GC_THRESHOLD",
+                    "BASE_DIR",
+                    "CLEANUP_INTERVAL_MINUTES",
+                    "Config",
+                    "DEFAULT_CHUNK_OVERLAP",
+                    "DEFAULT_MAX_CHUNK_SIZE",
+                    "DEFAULT_MEMORY_LIMIT",
+                    "DEFAULT_NUM_THREADS",
+                    "DEFAULT_OUTPUT_FOLDER",
+                    "DEFAULT_OUTPUT_PATH",
+                    "DEFAULT_PROCESS_TIMEOUT",
+                    "DEFAULT_RATE_LIMITS",
+                    "DEFAULT_STOP_WORDS",
+                    "DEFAULT_VALID_EXTENSIONS",
+                    "ERROR_CODES",
+                    "FEATURES",
+                    "HTTP_BACKOFF_FACTOR",
+                    "HTTP_MAX_RETRIES",
+                    "HTTP_STATUS_FORCELIST",
+                    "HTTP_TIMEOUT",
+                    "IGNORE_DIRS",
+                    "LOG_DATE_FORMAT",
+                    "LOG_FORMAT",
+                    "MAX_FILE_SIZE",
+                    "MAX_UPLOAD_SIZE",
+                    "MEMORY_LIMIT_THRESHOLD",
+                    "MEMORY_WARNING_THRESHOLD",
+                    "PROGRESS_EMIT_THROTTLE",
+                    "PROGRESS_UPDATE_INTERVAL",
+                    "PROJECT_ROOT",
+                    "Path",
+                    "RESEARCH_DOMAINS",
+                    "TASK_STATUS",
+                    "TEMP_DIR",
+                    "TEMP_DIR_MAX_AGE_DAYS",
+                    "TEMP_FILE_MAX_AGE_MINUTES",
+                    "TESSDATA_DIR",
+                    "TESSDATA_URL",
+                    "TESSERACT_PATHS",
+                    "USER_AGENT",
+                    "YOUTUBE_API_KEY",
+                    "config",
+                    "get_config",
+                    "os"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.core.config",
+                  "status": "loaded"
+                },
+                "blueprints.core.http_client": {
+                  "attributes": [
+                    "Any",
+                    "Dict",
+                    "Optional",
+                    "create_session",
+                    "download_file",
+                    "get_session",
+                    "logger",
+                    "logging",
+                    "make_request",
+                    "test_connection"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.core.http_client",
+                  "status": "loaded"
+                },
+                "blueprints.core.ocr_config": {
+                  "attributes": [
+                    "Any",
+                    "Dict",
+                    "Optional",
+                    "TEMP_DIR",
+                    "TESSDATA_PREFIX",
+                    "configure_pytesseract",
+                    "download_tessdata",
+                    "ensure_temp_directory",
+                    "ensure_tessdata_exists",
+                    "ensure_tessdata_files",
+                    "initialize_pdf_extractor",
+                    "initialize_safe_ocr_handler",
+                    "logger",
+                    "logging",
+                    "ocr_config",
+                    "os",
+                    "pdf_extractor",
+                    "pdf_extractor_available",
+                    "pikepdf_available",
+                    "pytesseract_available",
+                    "setup_ocr_environment",
+                    "shutil",
+                    "stat",
+                    "sys"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.core.ocr_config",
+                  "status": "loaded"
+                },
+                "blueprints.core.routes": {
+                  "attributes": [
+                    "Blueprint",
+                    "core_bp",
+                    "current_app",
+                    "datetime",
+                    "debug_static_info",
+                    "diagnostics",
+                    "endpoint_dashboard",
+                    "health",
+                    "home",
+                    "internal_server_error",
+                    "jsonify",
+                    "key_manager",
+                    "logger",
+                    "logging",
+                    "module_diagnostics_complete",
+                    "os",
+                    "render_template",
+                    "request",
+                    "request_entity_too_large",
+                    "shutdown_server",
+                    "sys",
+                    "test_modules",
+                    "threading",
+                    "time"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.core.routes",
+                  "status": "loaded"
+                },
+                "blueprints.core.services": {
+                  "attributes": [
+                    "ABC",
+                    "API_DEBUG",
+                    "API_HOST",
+                    "API_KEYS",
+                    "API_PORT",
+                    "API_URL",
+                    "Any",
+                    "ApiKeyManager",
+                    "BaseTask",
+                    "Config",
+                    "CustomFileStats",
+                    "DEFAULT_CHUNK_OVERLAP",
+                    "DEFAULT_MAX_CHUNK_SIZE",
+                    "DEFAULT_MEMORY_LIMIT",
+                    "DEFAULT_NUM_THREADS",
+                    "DEFAULT_OUTPUT_FOLDER",
+                    "DEFAULT_OUTPUT_PATH",
+                    "DEFAULT_PROCESS_TIMEOUT",
+                    "DEFAULT_STOP_WORDS",
+                    "DEFAULT_VALID_EXTENSIONS",
+                    "Dict",
+                    "ERROR_CODES",
+                    "FEATURES",
+                    "Limiter",
+                    "List",
+                    "MAX_FILE_SIZE",
+                    "MAX_UPLOAD_SIZE",
+                    "Optional",
+                    "PlaylistTask",
+                    "ProcessingTask",
+                    "RESEARCH_DOMAINS",
+                    "ScraperTask",
+                    "Set",
+                    "TASK_STATUS",
+                    "TEMP_DIR",
+                    "ThreadPoolExecutor",
+                    "Union",
+                    "abstractmethod",
+                    "active_tasks",
+                    "add_task",
+                    "as_completed",
+                    "check_task_cancellation",
+                    "datetime",
+                    "emit_progress_update",
+                    "emit_task_cancelled",
+                    "emit_task_completion",
+                    "emit_task_error",
+                    "get_output_filepath",
+                    "get_task",
+                    "json",
+                    "jsonify",
+                    "logger",
+                    "logging",
+                    "os",
+                    "remove_task",
+                    "request",
+                    "require_api_key",
+                    "structured_error_response",
+                    "tasks_lock",
+                    "threading",
+                    "time",
+                    "traceback",
+                    "uuid",
+                    "wraps"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.core.services",
+                  "status": "loaded"
+                },
+                "blueprints.core.structify_integration": {
+                  "attributes": [
+                    "Any",
+                    "Dict",
+                    "FileStats",
+                    "Optional",
+                    "initialize_structify",
+                    "logger",
+                    "logging",
+                    "os",
+                    "process_all_files",
+                    "process_file",
+                    "structify_available",
+                    "structify_module"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.core.structify_integration",
+                  "status": "loaded"
+                },
+                "blueprints.core.utils": {
+                  "attributes": [
+                    "Any",
+                    "List",
+                    "Optional",
+                    "Path",
+                    "Tuple",
+                    "cleanup_temp_files",
+                    "detect_common_path_from_files",
+                    "ensure_temp_directory",
+                    "format_time_duration",
+                    "get_output_filepath",
+                    "logger",
+                    "logging",
+                    "magic_available",
+                    "normalize_path",
+                    "os",
+                    "re",
+                    "resolve_output_path",
+                    "safe_split",
+                    "sanitize_filename",
+                    "setup_logging",
+                    "start_periodic_cleanup",
+                    "structured_error_response",
+                    "time"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.core.utils",
+                  "status": "loaded"
+                }
+              },
+              "features": {
+                "blueprints.features.academic_search": {
+                  "attributes": [
+                    "AcademicResearchAssistant",
+                    "AcademicSearchConfig",
+                    "BeautifulSoup",
+                    "Blueprint",
+                    "CitationNetworkVisualizer",
+                    "DEFAULT_OUTPUT_FOLDER",
+                    "Dict",
+                    "List",
+                    "Optional",
+                    "RedisCache",
+                    "RedisRateLimiter",
+                    "ThreadPoolExecutor",
+                    "academic_analyze_paper",
+                    "academic_api",
+                    "academic_api_available",
+                    "academic_bulk_download",
+                    "academic_config",
+                    "academic_download_paper",
+                    "academic_extract_from_url",
+                    "academic_health_check",
+                    "academic_multi_source_search",
+                    "academic_paper_citations",
+                    "academic_paper_details",
+                    "academic_paper_recommendations",
+                    "academic_search",
+                    "academic_search_bp",
+                    "add_to_cache",
+                    "as_completed",
+                    "bulk_download_papers",
+                    "citation_visualizer_available",
+                    "current_app",
+                    "details_cache",
+                    "download_pdf",
+                    "format_search_results",
+                    "get_from_cache",
+                    "get_limiter",
+                    "get_paper_citations",
+                    "get_paper_details",
+                    "get_require_api_key",
+                    "init_blueprint",
+                    "json",
+                    "jsonify",
+                    "limiter",
+                    "logger",
+                    "logging",
+                    "os",
+                    "quote_plus",
+                    "re",
+                    "recommend_related_papers",
+                    "reconstruct_openalex_abstract",
+                    "redis_available",
+                    "request",
+                    "requests",
+                    "require_api_key",
+                    "research_assistant_available",
+                    "search_academic_source",
+                    "search_arxiv",
+                    "search_arxiv_fallback",
+                    "search_cache",
+                    "search_openalex",
+                    "search_semantic_scholar",
+                    "search_semantic_scholar_fallback",
+                    "sys",
+                    "time",
+                    "urlencode",
+                    "urljoin",
+                    "uuid",
+                    "web_scraper",
+                    "web_scraper_available",
+                    "wraps"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.features.academic_search",
+                  "status": "loaded"
+                },
+                "blueprints.features.file_processor": {
+                  "attributes": [
+                    "Any",
+                    "Blueprint",
+                    "CACHE_FILE",
+                    "Callable",
+                    "DEFAULT_CHUNK_OVERLAP",
+                    "DEFAULT_MAX_CHUNK_SIZE",
+                    "DEFAULT_MEMORY_LIMIT",
+                    "DEFAULT_OUTPUT_FOLDER",
+                    "DEFAULT_PROCESS_TIMEOUT",
+                    "DEFAULT_STOP_WORDS",
+                    "DEFAULT_VALID_EXTENSIONS",
+                    "Dict",
+                    "FileStats",
+                    "List",
+                    "MAX_FILE_SIZE",
+                    "Optional",
+                    "Path",
+                    "ProcessPoolExecutor",
+                    "ProcessingTask",
+                    "Set",
+                    "ThreadPoolExecutor",
+                    "add_task",
+                    "as_completed",
+                    "complete_task",
+                    "create_directory",
+                    "current_app",
+                    "datetime",
+                    "detect_path",
+                    "download_file",
+                    "download_result",
+                    "emit",
+                    "emit_progress_update",
+                    "emit_task_completion",
+                    "emit_task_error",
+                    "ensure_temp_directory",
+                    "file_processor_bp",
+                    "format_time_duration",
+                    "get_output_filepath",
+                    "get_task",
+                    "json",
+                    "jsonify",
+                    "logger",
+                    "logging",
+                    "open_arbitrary_file",
+                    "open_result_file",
+                    "os",
+                    "process_all_files",
+                    "re",
+                    "register_task",
+                    "request",
+                    "resolve_output_path",
+                    "sanitize_filename",
+                    "send_file",
+                    "start_file_processing_task",
+                    "start_processing",
+                    "structured_error_response",
+                    "task_registry",
+                    "task_status",
+                    "tempfile",
+                    "threading",
+                    "time",
+                    "update_task_progress",
+                    "uuid",
+                    "verify_path"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.features.file_processor",
+                  "status": "loaded"
+                },
+                "blueprints.features.pdf_processor": {
+                  "attributes": [
+                    "Any",
+                    "Blueprint",
+                    "DEFAULT_OUTPUT_FOLDER",
+                    "Dict",
+                    "List",
+                    "Optional",
+                    "ProcessingTask",
+                    "active_tasks",
+                    "add_task",
+                    "analyze_pdf_endpoint",
+                    "analyze_pdf_structure",
+                    "attempt_pdf_repair",
+                    "batch_process_pdfs_endpoint",
+                    "cancel_pdf_task",
+                    "current_app",
+                    "detect_pdf_type",
+                    "download_pdf",
+                    "enhanced_download_pdf",
+                    "ensure_temp_directory",
+                    "extract_pdf_preview",
+                    "extract_pdf_tables",
+                    "get_capabilities",
+                    "get_limiter",
+                    "get_output_filepath",
+                    "get_pdf_capabilities",
+                    "get_task",
+                    "handle_pdf_processing_error",
+                    "init_blueprint",
+                    "jsonify",
+                    "limiter",
+                    "logger",
+                    "logging",
+                    "os",
+                    "pdf_extractor",
+                    "pdf_extractor_available",
+                    "pdf_processing_status",
+                    "pdf_processor_bp",
+                    "process_file",
+                    "process_pdf_endpoint",
+                    "process_pdf_with_reduced_memory",
+                    "remove_task",
+                    "request",
+                    "require_api_key",
+                    "sanitize_filename",
+                    "save_processing_result",
+                    "secure_filename",
+                    "send_file",
+                    "structify_available",
+                    "structify_module",
+                    "structured_error_response",
+                    "sys",
+                    "tasks_lock",
+                    "threading",
+                    "time",
+                    "traceback",
+                    "uuid",
+                    "validate_pdf",
+                    "validate_pdf_file"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.features.pdf_processor",
+                  "status": "loaded"
+                },
+                "blueprints.features.playlist_downloader": {
+                  "attributes": [
+                    "Blueprint",
+                    "PlaylistTask",
+                    "ProcessingTask",
+                    "YOUTUBE_API_KEY",
+                    "active_tasks",
+                    "add_task",
+                    "cancel_playlists",
+                    "emit",
+                    "emit_download_completed",
+                    "emit_download_error",
+                    "emit_download_progress",
+                    "ensure_temp_directory",
+                    "format_output_path",
+                    "get_output_filepath",
+                    "get_task",
+                    "jsonify",
+                    "logger",
+                    "logging",
+                    "normalize_path",
+                    "os",
+                    "playlist_downloader_bp",
+                    "remove_task",
+                    "request",
+                    "sanitize_filename",
+                    "start_playlists",
+                    "structured_error_response",
+                    "tasks_lock",
+                    "time",
+                    "uuid"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.features.playlist_downloader",
+                  "status": "loaded"
+                },
+                "blueprints.features.web_crawler": {
+                  "attributes": [
+                    "BeautifulSoup",
+                    "Callable",
+                    "Dict",
+                    "List",
+                    "Optional",
+                    "RobotFileParser",
+                    "Set",
+                    "ThreadPoolExecutor",
+                    "WebCrawler",
+                    "as_completed",
+                    "crawl_website",
+                    "deque",
+                    "hashlib",
+                    "logger",
+                    "logging",
+                    "requests",
+                    "threading",
+                    "time",
+                    "urljoin",
+                    "urlparse",
+                    "urlunparse"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.features.web_crawler",
+                  "status": "loaded"
+                },
+                "blueprints.features.web_scraper": {
+                  "attributes": [
+                    "Any",
+                    "BeautifulSoup",
+                    "Blueprint",
+                    "DEFAULT_OUTPUT_FOLDER",
+                    "Dict",
+                    "EnhancedWebScraper",
+                    "List",
+                    "Optional",
+                    "Path",
+                    "RobotFileParser",
+                    "ScraperTask",
+                    "Set",
+                    "TRAFILATURA_AVAILABLE",
+                    "abort",
+                    "add_task",
+                    "analyze_pdf_structure",
+                    "api_download_pdf",
+                    "cancel_scrape2",
+                    "crawl_website_recursive",
+                    "deque",
+                    "download_file_attachment",
+                    "download_pdf",
+                    "download_pdf_file",
+                    "download_pdf_fixed",
+                    "emit",
+                    "emit_pdf_download_progress",
+                    "emit_scraping_completed",
+                    "emit_scraping_error",
+                    "emit_scraping_progress",
+                    "emit_task_error",
+                    "fetch_pdf_links",
+                    "get_output_filepath",
+                    "get_task",
+                    "handle_enhanced_scraping",
+                    "handle_full_website_mode",
+                    "handle_smart_pdf_mode",
+                    "handler",
+                    "hashlib",
+                    "health_check_enhanced",
+                    "jsonify",
+                    "logger",
+                    "logging",
+                    "magic_available",
+                    "os",
+                    "process_url",
+                    "process_url_with_settings",
+                    "re",
+                    "remove_task",
+                    "request",
+                    "requests",
+                    "sanitize_filename",
+                    "scrape2",
+                    "scrape2_status",
+                    "scrape_and_download_pdfs",
+                    "send_from_directory",
+                    "structify_module",
+                    "structured_error_response",
+                    "tempfile",
+                    "threading",
+                    "time",
+                    "urljoin",
+                    "urlparse",
+                    "urlunparse",
+                    "uuid",
+                    "web_scraper",
+                    "web_scraper_available",
+                    "web_scraper_bp"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": true,
+                  "name": "blueprints.features.web_scraper",
+                  "status": "loaded"
+                }
+              },
+              "socketio": {
+                "blueprints.socketio_events": {
+                  "attributes": [
+                    "Any",
+                    "Dict",
+                    "Optional",
+                    "api_task_registry",
+                    "cancel_task_unified",
+                    "complete_task",
+                    "current_app",
+                    "emit",
+                    "emit_cancellation_event",
+                    "emit_progress_update",
+                    "emit_task_cancelled",
+                    "emit_task_completed",
+                    "emit_task_completion",
+                    "emit_task_error",
+                    "emit_task_started",
+                    "force_cancel_all_tasks",
+                    "get_socketio",
+                    "get_task",
+                    "get_task_status",
+                    "join_room",
+                    "leave_room",
+                    "logger",
+                    "logging",
+                    "mark_task_cancelled",
+                    "pdf_extractor",
+                    "pdf_extractor_available",
+                    "register_socketio_events",
+                    "register_task",
+                    "request",
+                    "safe_emit",
+                    "structify_available",
+                    "structify_module",
+                    "tasks_lock",
+                    "threading",
+                    "time",
+                    "update_task_progress",
+                    "uuid",
+                    "validate_pdf"
+                  ],
+                  "endpoints": [],
+                  "error": null,
+                  "has_blueprint": false,
+                  "name": "blueprints.socketio_events",
+                  "status": "loaded"
+                }
+              }
+            },
+            "summary": {
+              "failed": 0,
+              "loaded": 16,
+              "total": 16,
+              "warnings": 0
+            }
+          },
+          "frontend": {
+            "modules": {
+              "config": {
+                "constants.js": {
+                  "exists": true,
+                  "path": "static/js/modules/config/constants.js",
+                  "size": 16185,
+                  "status": "loaded"
+                },
+                "endpoints.js": {
+                  "exists": true,
+                  "path": "static/js/modules/config/endpoints.js",
+                  "size": 13890,
+                  "status": "loaded"
+                },
+                "socketEvents.js": {
+                  "exists": true,
+                  "path": "static/js/modules/config/socketEvents.js",
+                  "size": 15663,
+                  "status": "loaded"
+                }
+              },
+              "core": {
+                "app.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/app.js",
+                  "size": 13968,
+                  "status": "loaded"
+                },
+                "domUtils.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/domUtils.js",
+                  "size": 5387,
+                  "status": "loaded"
+                },
+                "errorHandler.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/errorHandler.js",
+                  "size": 23584,
+                  "status": "loaded"
+                },
+                "eventManager.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/eventManager.js",
+                  "size": 23291,
+                  "status": "loaded"
+                },
+                "healthMonitor.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/healthMonitor.js",
+                  "size": 13030,
+                  "status": "loaded"
+                },
+                "moduleImports.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/moduleImports.js",
+                  "size": 6596,
+                  "status": "loaded"
+                },
+                "moduleLoader.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/moduleLoader.js",
+                  "size": 123596,
+                  "status": "loaded"
+                },
+                "stateManager.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/stateManager.js",
+                  "size": 49285,
+                  "status": "loaded"
+                },
+                "themeManager.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/themeManager.js",
+                  "size": 36779,
+                  "status": "loaded"
+                },
+                "uiRegistry.js": {
+                  "exists": true,
+                  "path": "static/js/modules/core/uiRegistry.js",
+                  "size": 16064,
+                  "status": "loaded"
+                }
+              },
+              "features": {
+                "academicSearch.js": {
+                  "exists": true,
+                  "path": "static/js/modules/features/academicSearch.js",
+                  "size": 48220,
+                  "status": "loaded"
+                },
+                "fileProcessor.js": {
+                  "exists": true,
+                  "path": "static/js/modules/features/fileProcessor.js",
+                  "size": 18729,
+                  "status": "loaded"
+                },
+                "historyManager.js": {
+                  "exists": true,
+                  "path": "static/js/modules/features/historyManager.js",
+                  "size": 72521,
+                  "status": "loaded"
+                },
+                "pdfProcessor.js": {
+                  "exists": true,
+                  "path": "static/js/modules/features/pdfProcessor.js",
+                  "size": 57950,
+                  "status": "loaded"
+                },
+                "playlistDownloader.js": {
+                  "exists": true,
+                  "path": "static/js/modules/features/playlistDownloader.js",
+                  "size": 116281,
+                  "status": "loaded"
+                },
+                "webScraper.js": {
+                  "exists": true,
+                  "path": "static/js/modules/features/webScraper.js",
+                  "size": 63273,
+                  "status": "loaded"
+                }
+              },
+              "services": {
+                "blueprintApi.js": {
+                  "exists": true,
+                  "path": "static/js/modules/services/blueprintApi.js",
+                  "size": 19899,
+                  "status": "loaded"
+                }
+              },
+              "utils": {
+                "fileHandler.js": {
+                  "exists": true,
+                  "path": "static/js/modules/utils/fileHandler.js",
+                  "size": 19952,
+                  "status": "loaded"
+                },
+                "moduleDiagnostics.js": {
+                  "exists": true,
+                  "path": "static/js/modules/utils/moduleDiagnostics.js",
+                  "size": 26610,
+                  "status": "loaded"
+                },
+                "progressHandler.js": {
+                  "exists": true,
+                  "path": "static/js/modules/utils/progressHandler.js",
+                  "size": 82318,
+                  "status": "loaded"
+                },
+                "socketHandler.js": {
+                  "exists": true,
+                  "path": "static/js/modules/utils/socketHandler.js",
+                  "size": 59779,
+                  "status": "loaded"
+                },
+                "systemHealth.js": {
+                  "exists": true,
+                  "path": "static/js/modules/utils/systemHealth.js",
+                  "size": 8756,
+                  "status": "loaded"
+                },
+                "ui.js": {
+                  "exists": true,
+                  "path": "static/js/modules/utils/ui.js",
+                  "size": 53976,
+                  "status": "loaded"
+                },
+                "utils.js": {
+                  "exists": true,
+                  "path": "static/js/modules/utils/utils.js",
+                  "size": 15784,
+                  "status": "loaded"
+                }
+              }
+            },
+            "summary": {
+              "failed": 0,
+              "loaded": 27,
+              "total": 27,
+              "warnings": 0
+            }
+          },
+          "integration": {
+            "endpoint_alignment": {
+              "academic_search": {
+                "endpoint": "/api/academic/search",
+                "exists": true,
+                "methods": [
+                  "GET",
+                  "HEAD",
+                  "OPTIONS"
+                ],
+                "status": "aligned"
+              },
+              "diagnostics": {
+                "endpoint": "/api/test-modules",
+                "exists": true,
+                "methods": [
+                  "GET",
+                  "HEAD",
+                  "OPTIONS"
+                ],
+                "status": "aligned"
+              },
+              "file_processor": {
+                "endpoint": "/api/process",
+                "exists": true,
+                "methods": [
+                  "POST",
+                  "OPTIONS"
+                ],
+                "status": "aligned"
+              },
+              "health": {
+                "endpoint": "/api/health",
+                "exists": true,
+                "methods": [
+                  "GET",
+                  "HEAD",
+                  "OPTIONS"
+                ],
+                "status": "aligned"
+              },
+              "pdf_processor": {
+                "endpoint": "/api/pdf/process",
+                "exists": false,
+                "methods": [],
+                "status": "missing"
+              },
+              "playlist_downloader": {
+                "endpoint": "/api/start-playlists",
+                "exists": true,
+                "methods": [
+                  "POST",
+                  "OPTIONS"
+                ],
+                "status": "aligned"
+              },
+              "web_scraper": {
+                "endpoint": "/api/scrape2",
+                "exists": true,
+                "methods": [
+                  "POST",
+                  "OPTIONS"
+                ],
+                "status": "aligned"
+              }
+            },
+            "health_status": {
+              "endpoints_available": 77,
+              "last_check": "2025-05-31T03:55:11.795736",
+              "memory_usage": "normal",
+              "modules_failed": 0,
+              "modules_loaded": 16,
+              "overall_status": "healthy",
+              "socket_connected": false
+            },
+            "socket_connectivity": {
+              "available": true,
+              "events": {
+                "pdf_download_progress": true,
+                "pdf_found": true,
+                "task_completed": true,
+                "task_error": true,
+                "task_progress": true,
+                "task_started": true
+              },
+              "status": "healthy"
+            }
+          },
+          "system_health": "healthy",
+          "timestamp": "2025-05-31T03:55:11.543371",
+          "version": "3.1.0"
+        }
+      }
+    }
+  },
+  "frontend_backend_alignment": {
+    "web_scraper": {
+      "frontend_endpoints": [
+        "/api/scrape2",
+        "/api/health-enhanced"
+      ],
+      "backend_status": "aligned",
+      "optimization_level": "v3.1.0"
+    },
+    "pdf_downloader": {
+      "frontend_endpoints": [
+        "/api/pdf/download",
+        "/api/pdf/health"
+      ],
+      "backend_status": "aligned",
+      "optimization_level": "v3.0.0"
+    },
+    "playlist_downloader": {
+      "frontend_endpoints": [
+        "/api/start-playlists",
+        "/api/cancel-playlists/:taskId"
+      ],
+      "backend_status": "aligned",
+      "optimization_level": "v3.1.0"
+    },
+    "file_processor": {
+      "frontend_endpoints": [
+        "/api/process",
+        "/api/status/:taskId"
+      ],
+      "backend_status": "aligned",
+      "optimization_level": "v2.0.0"
+    },
+    "academic_search": {
+      "frontend_endpoints": [
+        "/api/academic/search",
+        "/api/academic/health"
+      ],
+      "backend_status": "aligned",
+      "optimization_level": "v2.0.0"
+    }
+  },
+  "optimization_status": {
+    "web_scraper": "\u2705 Optimized v3.1.0",
+    "pdf_downloader": "\u2705 Optimized v3.0.0",
+    "playlist_downloader": "\u2705 Optimized v3.1.0",
+    "file_processor": "\ud83d\udfe1 Ready for optimization",
+    "academic_search": "\ud83d\udfe1 Ready for optimization"
+  }
+}

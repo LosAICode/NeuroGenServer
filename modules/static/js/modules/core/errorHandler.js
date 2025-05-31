@@ -1,17 +1,71 @@
 /**
- * Error Handler Module
+ * NeuroGen Server - Enhanced Error Handler Module v4.0
  * 
- * Centralizes error handling and provides UI feedback for errors.
- * Logs errors and shows appropriate error messages to the user.
+ * Advanced error handling optimized for the new Blueprint architecture.
+ * Centralizes error handling with Blueprint context awareness and
+ * integrated health monitoring.
  * 
- * Features:
+ * NEW v4.0 Features:
+ * - Configuration-driven error messages from centralized constants
+ * - Enhanced 4-method notification system (Toast + Console + System + Error)
+ * - Backend connectivity testing with health checks
+ * - ES6 module imports with centralized configuration
+ * - Blueprint-specific error categorization and context
+ * - Integrated with systemHealth.js monitoring
+ * - Cross-platform error handling
+ * 
+ * Legacy Features (Enhanced):
  * - Structured error categorization
  * - Graceful UI error presentation
  * - Detailed error logging
  * - Comprehensive error history management
  * - API error handling utilities
  * - Stack trace parsing and visualization
+ * 
+ * @module core/errorHandler
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
+
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, ERROR_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
+
+// Global configuration for error handler
+const ERROR_HANDLER_CONFIG = {
+  endpoints: {
+    health: API_ENDPOINTS.SYSTEM?.HEALTH || '/api/health',
+    errorReporting: API_ENDPOINTS.SYSTEM?.ERROR_REPORTING || '/api/errors',
+    ...API_ENDPOINTS
+  },
+  api: API_CONFIG,
+  constants: ERROR_CONFIG || {
+    MAX_ERROR_HISTORY: 50,
+    LOG_TO_CONSOLE: true,
+    SAVE_TO_LOCAL_STORAGE: true,
+    EMIT_EVENTS: true,
+    SHOW_NOTIFICATIONS: true
+  },
+  events: {
+    ...TASK_EVENTS,
+    error_occurred: 'error_occurred',
+    error_resolved: 'error_resolved',
+    critical_error: 'critical_error'
+  }
+};
+
+// Module state
+const errorState = {
+  initialized: false,
+  backendConnected: false,
+  lastHealthCheck: null,
+  errorCounts: {
+    total: 0,
+    byType: {},
+    byModule: {},
+    critical: 0
+  }
+};
 
 // Import dependencies without circular references
 let ui = null;
@@ -66,53 +120,74 @@ const errorHandler = {
   // Store error history
   errorHistory: [],
   
-  // Initialization state
-  initialized: false,
+  // Module state
+  state: errorState,
   
-  // Configuration options
+  // Configuration from centralized config (v4.0)
   config: {
-    logToConsole: true,
-    saveToLocalStorage: true,
-    emitEvents: true,
-    showNotifications: true,
-    detailedLogForTypes: ['NETWORK', 'SERVER', 'PROCESSING'],
+    logToConsole: ERROR_HANDLER_CONFIG.constants.LOG_TO_CONSOLE,
+    saveToLocalStorage: ERROR_HANDLER_CONFIG.constants.SAVE_TO_LOCAL_STORAGE,
+    emitEvents: ERROR_HANDLER_CONFIG.constants.EMIT_EVENTS,
+    showNotifications: ERROR_HANDLER_CONFIG.constants.SHOW_NOTIFICATIONS,
+    detailedLogForTypes: ['NETWORK', 'SERVER', 'PROCESSING', 'BLUEPRINT'],
     debug: false
   },
   
   /**
-   * Initialize the error handler
+   * Initialize the error handler with v4.0 enhancements
    * @param {Object} options - Configuration options
-   * @returns {boolean} - Success state
+   * @returns {Promise<boolean>} - Success state
    */
-  initialize(options = {}) {
-    if (this.initialized) {
-      console.log("Error handler already initialized");
+  async initialize(options = {}) {
+    if (this.state.initialized) {
+      this.showNotification("Error handler already initialized", 'warning', 'Error Handler');
       return true;
     }
     
-    // Merge options with defaults
-    this.config = {
-      ...this.config,
-      ...options
-    };
-    
-    // Enable debug mode on localhost
-    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-      this.config.debug = true;
+    try {
+      this.showNotification('Initializing Error Handler v4.0', 'info', 'Error Handler');
+      
+      // Test backend connectivity on initialization
+      const connectivityResult = await this.testBackendConnectivity();
+      if (!connectivityResult.overall) {
+        console.warn('Error Handler: Backend connectivity test failed, continuing with limited functionality');
+      }
+      
+      // Merge options with defaults
+      this.config = {
+        ...this.config,
+        ...options
+      };
+      
+      // Enable debug mode on localhost
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        this.config.debug = true;
+      }
+      
+      // Try to load UI module dynamically to avoid circular references
+      await this.loadUiModule();
+      
+      // Set up global error handler
+      this.setupGlobalErrorHandler();
+      
+      // Load error history from localStorage if available
+      this.loadErrorHistory();
+      
+      // Initialize error tracking
+      this.state.errorCounts = {
+        total: 0,
+        byType: {},
+        byModule: {},
+        critical: 0
+      };
+      
+      this.state.initialized = true;
+      this.showNotification('Error Handler v4.0 initialized successfully', 'success', 'Error Handler');
+      return true;
+    } catch (error) {
+      this.showNotification(`Error Handler initialization failed: ${error.message}`, 'error', 'Error Handler');
+      return false;
     }
-    
-    // Try to load UI module dynamically to avoid circular references
-    this.loadUiModule();
-    
-    // Set up global error handler
-    this.setupGlobalErrorHandler();
-    
-    // Load error history from localStorage if available
-    this.loadErrorHistory();
-    
-    this.initialized = true;
-    console.log("Error handler initialized");
-    return true;
   },
   
   /**
@@ -737,6 +812,194 @@ const errorHandler = {
     }
     
     return userMessage;
+  },
+
+  /**
+   * Enhanced notification system with 4-method delivery (v4.0)
+   * @param {string} message - Notification message
+   * @param {string} type - Notification type (info, success, warning, error)
+   * @param {string} title - Notification title
+   */
+  showNotification(message, type = 'error', title = 'Error Handler') {
+    // Method 1: Toast notifications
+    if (window.NeuroGen?.ui?.showToast) {
+      window.NeuroGen.ui.showToast(title, message, type);
+    }
+    
+    // Method 2: Console logging with styling
+    const styles = {
+      error: 'color: #dc3545; font-weight: bold;',
+      warning: 'color: #fd7e14; font-weight: bold;',
+      success: 'color: #198754; font-weight: bold;',
+      info: 'color: #0d6efd;'
+    };
+    console.log(`%c[${title}] ${message}`, styles[type] || styles.error);
+    
+    // Method 3: System notification (if available)
+    if (window.NeuroGen?.notificationHandler) {
+      window.NeuroGen.notificationHandler.show({
+        title, message, type, module: 'errorHandler'
+      });
+    }
+    
+    // Method 4: Error reporting to centralized handler (recursive prevention)
+    if (type === 'error' && window.NeuroGen?.errorHandler && window.NeuroGen.errorHandler !== this) {
+      window.NeuroGen.errorHandler.logError({
+        module: 'errorHandler', message, severity: type
+      });
+    }
+  },
+
+  /**
+   * Test backend connectivity for error handler (v4.0)
+   * @returns {Promise<Object>} Backend connectivity status
+   */
+  async testBackendConnectivity() {
+    const results = {
+      overall: false,
+      details: {},
+      timestamp: new Date().toISOString(),
+      errors: []
+    };
+
+    try {
+      // Test main health endpoint
+      const healthResponse = await fetch(ERROR_HANDLER_CONFIG.endpoints.health, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      results.details.health = {
+        status: healthResponse.status,
+        ok: healthResponse.ok,
+        endpoint: ERROR_HANDLER_CONFIG.endpoints.health
+      };
+
+      if (healthResponse.ok) {
+        // Test error reporting endpoint if available
+        if (ERROR_HANDLER_CONFIG.endpoints.errorReporting) {
+          try {
+            const errorResponse = await fetch(ERROR_HANDLER_CONFIG.endpoints.errorReporting, {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json' }
+            });
+            results.details.errorReporting = {
+              status: errorResponse.status,
+              ok: errorResponse.status < 500,
+              endpoint: ERROR_HANDLER_CONFIG.endpoints.errorReporting
+            };
+          } catch (error) {
+            results.details.errorReporting = {
+              error: error.message,
+              endpoint: ERROR_HANDLER_CONFIG.endpoints.errorReporting
+            };
+          }
+        }
+        
+        results.overall = true;
+        this.state.backendConnected = true;
+        this.state.lastHealthCheck = new Date().toISOString();
+        this.showNotification('Backend connectivity verified', 'success', 'Error Handler');
+      } else {
+        throw new Error(`Health endpoint returned ${healthResponse.status}`);
+      }
+
+    } catch (error) {
+      results.errors.push({
+        endpoint: ERROR_HANDLER_CONFIG.endpoints.health,
+        error: error.message
+      });
+      this.state.backendConnected = false;
+      this.showNotification(`Backend connectivity failed: ${error.message}`, 'error', 'Error Handler');
+    }
+
+    return results;
+  },
+
+  /**
+   * Get error handler health status (v4.0)
+   * @returns {Object} Health status information
+   */
+  getHealthStatus() {
+    return {
+      module: 'errorHandler',
+      version: '4.0.0',
+      status: this.state.initialized ? 'healthy' : 'initializing',
+      features: {
+        configurationDriven: true,
+        enhancedNotifications: true,
+        backendConnectivity: true,
+        blueprintErrorHandling: true,
+        stackTraceAnalysis: true,
+        errorCategorization: true
+      },
+      configuration: {
+        endpoints: ERROR_HANDLER_CONFIG.endpoints,
+        constants: ERROR_HANDLER_CONFIG.constants,
+        eventsConfigured: Object.keys(ERROR_HANDLER_CONFIG.events).length,
+        errorTypes: Object.keys(this.ERROR_TYPES).length
+      },
+      statistics: {
+        totalErrors: this.state.errorCounts.total,
+        criticalErrors: this.state.errorCounts.critical,
+        errorsByType: this.state.errorCounts.byType,
+        errorsByModule: this.state.errorCounts.byModule,
+        errorHistoryLength: this.errorHistory.length,
+        lastHealthCheck: this.state.lastHealthCheck,
+        backendConnected: this.state.backendConnected
+      }
+    };
+  },
+
+  /**
+   * Enhanced error handling for Blueprint modules (v4.0)
+   * @param {Error} error - Error object
+   * @param {string} module - Module name
+   * @param {Object} context - Blueprint context
+   */
+  handleBlueprintError(error, module, context = {}) {
+    // Increment error counts
+    this.state.errorCounts.total++;
+    this.state.errorCounts.byModule[module] = (this.state.errorCounts.byModule[module] || 0) + 1;
+    
+    // Determine error type based on Blueprint context
+    let errorType = 'UNKNOWN';
+    if (context.endpoint) {
+      errorType = 'NETWORK';
+    } else if (context.blueprint) {
+      errorType = 'BLUEPRINT';
+    } else if (context.module) {
+      errorType = 'MODULE_LOADING';
+    }
+    
+    this.state.errorCounts.byType[errorType] = (this.state.errorCounts.byType[errorType] || 0) + 1;
+    
+    // Handle error with enhanced context
+    this.handleError(error, errorType, true, {
+      ...context,
+      blueprintModule: module,
+      timestamp: new Date().toISOString(),
+      version: '4.0.0'
+    });
+    
+    // Report to systemHealth if available
+    if (window.NeuroGen?.systemHealth) {
+      window.NeuroGen.systemHealth.updateStatus('error', `${module}: ${error.message}`, {
+        module,
+        error: error.message,
+        context
+      });
+    }
+    
+    // Emit Blueprint error event
+    if (window.NeuroGen?.eventRegistry) {
+      window.NeuroGen.eventRegistry.emit(ERROR_HANDLER_CONFIG.events.error_occurred, {
+        error: error.message,
+        module,
+        context,
+        timestamp: new Date().toISOString()
+      });
+    }
   }
 };
 
@@ -758,3 +1021,9 @@ export const getRecentErrors = errorHandler.getRecentErrors.bind(errorHandler);
 export const clearErrorHistory = errorHandler.clearErrorHistory.bind(errorHandler);
 export const getErrorStatsByType = errorHandler.getErrorStatsByType.bind(errorHandler);
 export const createUserFriendlyMessage = errorHandler.createUserFriendlyMessage.bind(errorHandler);
+
+// v4.0 Enhanced exports
+export const showNotification = errorHandler.showNotification.bind(errorHandler);
+export const testBackendConnectivity = errorHandler.testBackendConnectivity.bind(errorHandler);
+export const getHealthStatus = errorHandler.getHealthStatus.bind(errorHandler);
+export const handleBlueprintError = errorHandler.handleBlueprintError.bind(errorHandler);

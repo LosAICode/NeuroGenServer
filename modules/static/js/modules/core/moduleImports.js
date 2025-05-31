@@ -224,3 +224,6 @@ if (typeof window !== 'undefined') {
     MODULE_REGISTRY
   };
 }
+
+// Export the MODULE_REGISTRY and other functions
+export { MODULE_REGISTRY, loadModule, loadModules, ModuleImporter, createStandardImports };

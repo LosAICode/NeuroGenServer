@@ -10,6 +10,7 @@ import logging
 import threading
 import time
 import traceback
+import re
 from datetime import datetime
 from functools import wraps
 from flask import request, jsonify
@@ -1977,7 +1978,7 @@ class PlaylistTask(BaseTask):
         # Playlist configuration
         self.playlists = []
         self.playlist_url = playlist_url
-        self.api_key = YOUTUBE_API_KEY
+        self.api_key = os.getenv('YOUTUBE_API_KEY', '')
         self.root_directory = output_dir or os.path.join(DEFAULT_OUTPUT_FOLDER, "playlists")
         self.output_file = None
         self.include_audio = include_audio

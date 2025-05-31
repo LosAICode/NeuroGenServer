@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test MODULE_REGISTRY Fix</title>
+</head>
+<body>
+    <h1>Testing MODULE_REGISTRY Fix</h1>
+    <div id="test-results"></div>
+    
+    <script type="module">
+        console.log('🧪 Testing MODULE_REGISTRY fix...');
+        
+        const resultsDiv = document.getElementById('test-results');
+        
+        try {
+            // Import health monitor
+            const healthMonitor = await import('/static/js/modules/core/healthMonitor.js');
+            console.log('✅ Successfully imported healthMonitor:', healthMonitor);
+            
+            // Initialize health monitor
+            if (healthMonitor.default) {
+                await healthMonitor.default.init();
+                console.log('✅ Health Monitor initialized successfully');
+                resultsDiv.innerHTML = '<p style="color: green;">✅ MODULE_REGISTRY fix successful - Health Monitor loaded without errors!</p>';
+            } else {
+                throw new Error('Health monitor default export not found');
+            }
+            
+        } catch (error) {
+            console.error('❌ MODULE_REGISTRY test failed:', error);
+            resultsDiv.innerHTML = `<p style="color: red;">❌ MODULE_REGISTRY fix failed: ${error.message}</p>`;
+        }
+    </script>
+</body>
+</html>

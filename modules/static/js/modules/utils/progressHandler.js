@@ -1,10 +1,20 @@
 /**
- * NeuroGen Server - Enhanced Progress Handler Module
+ * NeuroGen Server - Enhanced Progress Handler Module v4.0
  * 
- * Provides robust functionality for tracking and displaying task progress.
- * Works with Socket.IO events to update progress bars and status messages.
+ * Global progress tracking system optimized for the new Blueprint architecture.
+ * Provides robust functionality for tracking and displaying task progress across
+ * all modules with centralized configuration and enhanced error handling.
  * 
- * Key improvements:
+ * NEW v4.0 Features:
+ * - Configuration-driven architecture using centralized endpoints
+ * - Enhanced 4-method notification system (Toast + Console + System + Error)
+ * - Backend connectivity testing with health checks
+ * - ES6 module imports with centralized configuration
+ * - Optimized for Blueprint architecture integration
+ * - Cross-module progress coordination
+ * - Enhanced SocketIO event handling with TASK_EVENTS
+ * 
+ * Legacy Features (Enhanced):
  * 1. Fixed progress bar "stuck at 99%" issue - Force to 100% on completion
  * 2. Fixed progress bar "stuck at 5%" issue - Incremental progress for early stages
  * 3. Better integration with Socket.IO events including new PDF-specific events
@@ -21,10 +31,33 @@
  * 14. Latency tracking for improved performance metrics
  * 15. Enhanced PDF-specific event handling
  * 
- * @module progressHandler
+ * @module utils/progressHandler
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
 
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, SOCKET_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
 import { getElement, getElements, getUIElements } from './domUtils.js';
+
+// Global configuration for progress handling
+const PROGRESS_CONFIG = {
+  endpoints: {
+    health: API_ENDPOINTS.SYSTEM?.HEALTH || '/api/health',
+    status: '/api/status',
+    cancel: '/api/cancel_task'
+  },
+  api: API_CONFIG,
+  socket: SOCKET_CONFIG,
+  events: {
+    ...TASK_EVENTS,
+    progress: SOCKET_EVENTS.PROGRESS_UPDATE || 'progress_update',
+    complete: SOCKET_EVENTS.TASK_COMPLETE || 'task_completed',
+    error: SOCKET_EVENTS.TASK_ERROR || 'task_error',
+    cancel: SOCKET_EVENTS.TASK_CANCEL || 'task_cancelled'
+  }
+};
 
 // Registry of active progress trackers
 const activeTrackers = new Map();
@@ -707,7 +740,118 @@ function cleanupEventListeners(taskId) {
 }
 
 /**
- * Initialize progress handler
+ * Enhanced notification system with 4-method delivery
+ * @param {string} message - Notification message
+ * @param {string} type - Type of notification (info, success, warning, error)
+ * @param {string} title - Notification title
+ */
+function showNotification(message, type = 'info', title = 'Progress Handler') {
+  // Method 1: Toast notifications
+  if (window.NeuroGen?.ui?.showToast) {
+    window.NeuroGen.ui.showToast(title, message, type);
+  }
+  
+  // Method 2: Console logging with styling
+  const styles = {
+    error: 'color: #dc3545; font-weight: bold;',
+    warning: 'color: #fd7e14; font-weight: bold;',
+    success: 'color: #198754; font-weight: bold;',
+    info: 'color: #0d6efd;'
+  };
+  console.log(`%c[${title}] ${message}`, styles[type] || styles.info);
+  
+  // Method 3: System notification (if available)
+  if (window.NeuroGen?.notificationHandler) {
+    window.NeuroGen.notificationHandler.show({
+      title, message, type, module: 'progressHandler'
+    });
+  }
+  
+  // Method 4: Error reporting to centralized handler
+  if (type === 'error' && window.NeuroGen?.errorHandler) {
+    window.NeuroGen.errorHandler.logError({
+      module: 'progressHandler', message, severity: type
+    });
+  }
+}
+
+/**
+ * Test backend connectivity for progress handler
+ * @returns {Promise<Object>} Backend connectivity status
+ */
+async function testBackendConnectivity() {
+  const results = {
+    overall: false,
+    details: {},
+    timestamp: new Date().toISOString(),
+    errors: []
+  };
+
+  try {
+    // Test main health endpoint
+    const healthResponse = await fetch(PROGRESS_CONFIG.endpoints.health, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    results.details.health = {
+      status: healthResponse.status,
+      ok: healthResponse.ok,
+      endpoint: PROGRESS_CONFIG.endpoints.health
+    };
+
+    if (healthResponse.ok) {
+      results.overall = true;
+      showNotification('Backend connectivity verified', 'success', 'Progress Handler');
+    } else {
+      throw new Error(`Health endpoint returned ${healthResponse.status}`);
+    }
+
+  } catch (error) {
+    results.errors.push({
+      endpoint: PROGRESS_CONFIG.endpoints.health,
+      error: error.message
+    });
+    showNotification(`Backend connectivity failed: ${error.message}`, 'error', 'Progress Handler');
+  }
+
+  return results;
+}
+
+/**
+ * Get progress handler health status
+ * @returns {Object} Health status information
+ */
+function getHealthStatus() {
+  return {
+    module: 'progressHandler',
+    version: '4.0.0',
+    status: state.initialized ? 'healthy' : 'initializing',
+    features: {
+      configurationDriven: true,
+      enhancedNotifications: true,
+      backendConnectivity: true,
+      taskTracking: true,
+      socketIntegration: true
+    },
+    configuration: {
+      endpoints: PROGRESS_CONFIG.endpoints,
+      eventsConfigured: Object.keys(PROGRESS_CONFIG.events).length,
+      apiConfigAvailable: !!PROGRESS_CONFIG.api,
+      socketConfigAvailable: !!PROGRESS_CONFIG.socket
+    },
+    statistics: {
+      activeTasks: state.activeTasks.size,
+      completedTasks: state.completedTasks.length,
+      failedTasks: state.failedTasks.length,
+      activeTrackers: activeTrackers.size,
+      connected: state.connectionState.connected
+    }
+  };
+}
+
+/**
+ * Initialize progress handler with enhanced Blueprint architecture integration
  * @param {Object} options - Global configuration options
  * @returns {Object} Progress handler API
  */
@@ -716,6 +860,15 @@ function initProgressHandler(options = {}) {
   
   // Initialize the module state if not already initialized
   if (!state.initialized) {
+    showNotification('Initializing Progress Handler v4.0', 'info', 'Progress Handler');
+    
+    // Test backend connectivity on initialization
+    testBackendConnectivity().then(result => {
+      if (result.overall) {
+        showNotification('Backend connectivity verified', 'success', 'Progress Handler');
+      }
+    });
+    
     // Add global styles for progress animations
     addProgressStyles();
     
@@ -732,6 +885,8 @@ function initProgressHandler(options = {}) {
     
     // Mark as initialized
     state.initialized = true;
+    
+    showNotification('Progress Handler v4.0 initialized successfully', 'success', 'Progress Handler');
   }
   
   return {
@@ -799,7 +954,11 @@ function initProgressHandler(options = {}) {
       }
     },
     // Add cancelTracking function
-    cancelTracking
+    cancelTracking,
+    // New v4.0 methods for Blueprint architecture integration
+    showNotification,
+    testBackendConnectivity,
+    getHealthStatus
   };
 }
 
@@ -2637,5 +2796,9 @@ export {
  calculateETA,
  formatBytes,
  updateStatsDisplay,
- cancelTracking
+ cancelTracking,
+ // New v4.0 exports
+ showNotification,
+ testBackendConnectivity,
+ getHealthStatus
 };

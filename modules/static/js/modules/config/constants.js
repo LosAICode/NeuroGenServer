@@ -454,6 +454,47 @@ const CONSTANTS = Object.freeze({
   ANALYTICS_EVENTS: Object.freeze(ANALYTICS_EVENTS)
 });
 
+// Error Handler Configuration (v4.0 Blueprint Module)
+const ERROR_CONFIG = {
+  MAX_ERROR_HISTORY: 50,
+  LOG_TO_CONSOLE: true,
+  SAVE_TO_LOCAL_STORAGE: true,
+  EMIT_EVENTS: true,
+  SHOW_NOTIFICATIONS: true,
+  detailedLogForTypes: ['NETWORK', 'SERVER', 'PROCESSING', 'BLUEPRINT'],
+  debug: BASE_CONFIG.DEBUG_MODE
+};
+
+// App Module Configuration (v4.0 Blueprint Module)
+const APP_CONFIG = {
+  DEBUG: BASE_CONFIG.DEBUG_MODE,
+  DEFAULT_THEME: 'light',
+  VERSION: '4.0.0',
+  INIT_TIMEOUT: 10000,
+  MODULE_LOAD_TIMEOUT: 5000,
+  CORE_MODULES: [
+    '/static/js/modules/core/errorHandler.js',
+    '/static/js/modules/core/uiRegistry.js',
+    '/static/js/modules/core/stateManager.js',
+    '/static/js/modules/core/eventRegistry.js',
+    '/static/js/modules/core/eventManager.js',
+    '/static/js/modules/core/themeManager.js',
+    '/static/js/modules/core/healthMonitor.js'
+  ]
+};
+
+// Debug Tools Configuration (v4.0 Blueprint Module)
+const DEBUG_CONFIG = {
+  enabled: BASE_CONFIG.DEBUG_MODE,
+  logLevel: 'debug',
+  persistLogs: false,
+  maxLogEntries: 1000,
+  enablePerformanceMonitoring: BASE_CONFIG.DEVELOPMENT,
+  enableMemoryTracking: BASE_CONFIG.DEVELOPMENT,
+  showDetailedErrors: BASE_CONFIG.DEBUG_MODE,
+  enableDiagnostics: true
+};
+
 // Export the frozen constants
 export { CONSTANTS };
 
@@ -473,5 +514,8 @@ export {
   ERROR_MESSAGES,
   SUCCESS_MESSAGES,
   KEYBOARD_SHORTCUTS,
-  ANALYTICS_EVENTS
+  ANALYTICS_EVENTS,
+  ERROR_CONFIG,
+  APP_CONFIG,
+  DEBUG_CONFIG
 };

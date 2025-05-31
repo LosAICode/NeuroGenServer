@@ -1,17 +1,35 @@
 /**
- * PDF Processor Module
+ * PDF Processor Module - Optimized Blueprint Implementation v4.0
  * 
- * Handles PDF file processing, extraction, and analysis.
- * Provides features for text extraction, table detection, and structure analysis.
+ * Advanced PDF processing module optimized for the new Blueprint architecture.
+ * Features configuration-driven architecture, enhanced error handling, and
+ * comprehensive integration with the centralized progress tracking system.
  * 
- * Features:
+ * NEW v4.0 Features:
+ * - Configuration-driven architecture using centralized endpoints
+ * - Enhanced 4-method notification system (Toast + Console + System + Error)
+ * - Backend connectivity testing with health checks
+ * - ES6 module imports with centralized configuration
+ * - Optimized for Blueprint architecture integration
+ * - Enhanced progressHandler v4.0 integration
+ * - Advanced error handling and recovery mechanisms
+ * 
+ * Legacy Features (Enhanced):
  * - PDF text extraction with page information
  * - Table detection and parsing
  * - Document structure analysis
  * - Document type classification
  * - Memory-efficient processing for large PDFs
  * - Optical Character Recognition (OCR) for scanned documents
+ * 
+ * @module features/pdfProcessor
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
+
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, SOCKET_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
 
 import uiRegistry from '../core/uiRegistry.js';
 import errorHandler from '../core/errorHandler.js';
@@ -20,6 +38,15 @@ import stateManager from '../core/stateManager.js';
 import utils from '../utils/utils.js';
 import fileHandler from '../utils/fileHandler.js';
 import progressHandler from '../utils/progressHandler.js';
+
+// Configuration shorthand
+const PDF_PROCESSOR_CONFIG = {
+  endpoints: API_ENDPOINTS.PDF_PROCESSOR,
+  blueprint: BLUEPRINT_ROUTES.pdf_processor,
+  constants: CONSTANTS.PDF_PROCESSOR || {},
+  api: API_CONFIG,
+  socket: SOCKET_CONFIG
+};
 
 /**
  * PDF Processor for handling PDF file operations
@@ -30,15 +57,17 @@ const pdfProcessor = {
   isProcessing: false,
   currentFile: null,
   processingMode: 'normal', // 'normal', 'memory-efficient', 'ocr'
+  backendConnected: false,
+  lastHealthCheck: null,
   
   // Processing options
   config: {
-    chunkSize: 4096,
-    allowOcr: true,
-    extractTables: true,
-    extractImages: false,
-    maxPagesToProcess: 1000,  // Safeguard for extremely large docs
-    useWorkers: true,
+    chunkSize: PDF_PROCESSOR_CONFIG.constants.CHUNK_SIZE || 4096,
+    allowOcr: PDF_PROCESSOR_CONFIG.constants.ALLOW_OCR !== false,
+    extractTables: PDF_PROCESSOR_CONFIG.constants.EXTRACT_TABLES !== false,
+    extractImages: PDF_PROCESSOR_CONFIG.constants.EXTRACT_IMAGES || false,
+    maxPagesToProcess: PDF_PROCESSOR_CONFIG.constants.MAX_PAGES || 1000,
+    useWorkers: PDF_PROCESSOR_CONFIG.constants.USE_WORKERS !== false,
     debug: false
   },
   
@@ -50,21 +79,171 @@ const pdfProcessor = {
     includePunctuations: true,
     includeLineBreaks: true
   },
+
+  /**
+   * Enhanced notification system with 4-method delivery
+   * @param {string} message - Notification message
+   * @param {string} type - Type of notification (info, success, warning, error)
+   * @param {string} title - Notification title
+   */
+  showNotification(message, type = 'info', title = 'PDF Processor') {
+    // Method 1: Toast notifications
+    if (window.NeuroGen?.ui?.showToast) {
+      window.NeuroGen.ui.showToast(title, message, type);
+    }
+    
+    // Method 2: Console logging with styling
+    const styles = {
+      error: 'color: #dc3545; font-weight: bold;',
+      warning: 'color: #fd7e14; font-weight: bold;',
+      success: 'color: #198754; font-weight: bold;',
+      info: 'color: #0d6efd;'
+    };
+    console.log(`%c[${title}] ${message}`, styles[type] || styles.info);
+    
+    // Method 3: System notification (if available)
+    if (window.NeuroGen?.notificationHandler) {
+      window.NeuroGen.notificationHandler.show({
+        title, message, type, module: 'pdfProcessor'
+      });
+    }
+    
+    // Method 4: Error reporting to centralized handler
+    if (type === 'error' && window.NeuroGen?.errorHandler) {
+      window.NeuroGen.errorHandler.logError({
+        module: 'pdfProcessor', message, severity: type
+      });
+    }
+  },
+
+  /**
+   * Test backend connectivity for PDF processor
+   * @returns {Promise<Object>} Backend connectivity status
+   */
+  async testBackendConnectivity() {
+    const results = {
+      overall: false,
+      details: {},
+      timestamp: new Date().toISOString(),
+      errors: []
+    };
+
+    try {
+      // Test PDF processor health endpoint
+      const healthResponse = await fetch(PDF_PROCESSOR_CONFIG.endpoints?.HEALTH || '/api/pdf/health', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      results.details.health = {
+        status: healthResponse.status,
+        ok: healthResponse.ok,
+        endpoint: PDF_PROCESSOR_CONFIG.endpoints?.HEALTH || '/api/pdf/health'
+      };
+
+      if (healthResponse.ok) {
+        // Test PDF processor process endpoint (if available)
+        if (PDF_PROCESSOR_CONFIG.endpoints?.PROCESS) {
+          const testResponse = await fetch(PDF_PROCESSOR_CONFIG.endpoints.PROCESS, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              file_path: '/tmp/connectivity_test.pdf',
+              action: 'validate'
+            })
+          });
+
+          results.details.process = {
+            status: testResponse.status,
+            ok: testResponse.ok,
+            endpoint: PDF_PROCESSOR_CONFIG.endpoints.PROCESS
+          };
+        }
+
+        results.overall = true;
+        this.backendConnected = true;
+        this.lastHealthCheck = new Date();
+        this.showNotification('Backend connectivity verified', 'success', 'PDF Processor');
+      }
+
+      if (!results.overall && !PDF_PROCESSOR_CONFIG.endpoints?.PROCESS) {
+        // If only health endpoint is available and it works, consider it successful
+        results.overall = healthResponse.ok;
+        this.backendConnected = healthResponse.ok;
+        this.lastHealthCheck = new Date();
+        if (healthResponse.ok) {
+          this.showNotification('Backend connectivity verified', 'success', 'PDF Processor');
+        }
+      }
+
+      if (!results.overall) {
+        throw new Error(`Health endpoint returned ${healthResponse.status}`);
+      }
+
+    } catch (error) {
+      results.errors.push({
+        endpoint: PDF_PROCESSOR_CONFIG.endpoints?.HEALTH || '/api/pdf/health',
+        error: error.message
+      });
+      this.backendConnected = false;
+      this.showNotification(`Backend connectivity failed: ${error.message}`, 'error', 'PDF Processor');
+    }
+
+    return results;
+  },
+
+  /**
+   * Get PDF processor health status
+   * @returns {Object} Health status information
+   */
+  getHealthStatus() {
+    return {
+      module: 'pdfProcessor',
+      version: '4.0.0',
+      status: this.initialized ? 'healthy' : 'initializing',
+      features: {
+        configurationDriven: true,
+        enhancedNotifications: true,
+        backendConnectivity: true,
+        pdfProcessing: true,
+        ocrSupport: this.config.allowOcr,
+        tableExtraction: this.config.extractTables
+      },
+      configuration: {
+        endpoints: PDF_PROCESSOR_CONFIG.endpoints,
+        chunkSize: this.config.chunkSize,
+        maxPages: this.config.maxPagesToProcess,
+        allowOcr: this.config.allowOcr,
+        extractTables: this.config.extractTables
+      },
+      state: {
+        initialized: this.initialized,
+        isProcessing: this.isProcessing,
+        currentFile: this.currentFile,
+        processingMode: this.processingMode,
+        backendConnected: this.backendConnected,
+        lastHealthCheck: this.lastHealthCheck
+      }
+    };
+  },
   
   /**
-   * Initialize the PDF processor
+   * Initialize the PDF processor with enhanced Blueprint architecture integration
    * @param {Object} options - Configuration options
-   * @returns {boolean} - Success state
+   * @returns {Promise<boolean>} - Success state
    */
-  initialize(options = {}) {
+  async initialize(options = {}) {
     try {
       // Don't initialize twice
       if (this.initialized) {
-        console.log("PDF processor already initialized");
+        this.showNotification("PDF processor already initialized", 'info', 'PDF Processor');
         return true;
       }
       
-      console.log("Initializing PDF processor...");
+      this.showNotification('Initializing PDF Processor v4.0', 'info', 'PDF Processor');
+      
+      // Test backend connectivity on initialization
+      await this.testBackendConnectivity();
       
       // Merge configuration options
       this.config = {
@@ -81,10 +260,10 @@ const pdfProcessor = {
       this.registerEvents();
       
       this.initialized = true;
-      console.log("PDF processor initialized successfully");
+      this.showNotification('PDF Processor v4.0 initialized successfully', 'success', 'PDF Processor');
       return true;
     } catch (error) {
-      console.error("Error initializing PDF processor:", error);
+      this.showNotification(`PDF Processor initialization failed: ${error.message}`, 'error', 'PDF Processor');
       errorHandler.handleError(error, 'PDF_PROCESSOR');
       return false;
     }

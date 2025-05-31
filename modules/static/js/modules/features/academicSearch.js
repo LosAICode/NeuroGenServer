@@ -1,18 +1,34 @@
 /**
- * Academic Search Module
+ * Academic Search Module - Optimized Blueprint Implementation v4.0
  * 
- * Provides academic paper search, retrieval, and citation analysis functionality.
- * Integrates with backend academic API endpoints and provides UI for research tasks.
+ * Advanced academic paper search, retrieval, and citation analysis module
+ * optimized for the new Blueprint architecture. Features configuration-driven
+ * architecture, enhanced error handling, and comprehensive integration.
  * 
- * Features:
+ * NEW v4.0 Features:
+ * - Configuration-driven architecture using centralized endpoints
+ * - Enhanced 4-method notification system (Toast + Console + System + Error)
+ * - Backend connectivity testing with health checks
+ * - ES6 module imports with centralized configuration
+ * - Optimized for Blueprint architecture integration
+ * - Enhanced progressHandler v4.0 integration
+ * - Advanced error handling and recovery mechanisms
+ * 
+ * Legacy Features (Enhanced):
  * - Search across multiple academic sources (arXiv, Semantic Scholar, etc.)
  * - Paper details and metadata retrieval
  * - PDF download and management
  * - Citation network visualization
  * - Related paper recommendations
  * 
- * Fixed version with proper imports and no function redeclarations
+ * @module features/academicSearch
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
+
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, SOCKET_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
 
 // Import from core modules with proper destructuring
 import { registerEvents } from '../core/eventManager.js';
@@ -29,6 +45,15 @@ import { generateId } from '../utils/utils.js';
 
 // Import progress handler utilities - only include what we actually use
 import { trackProgress } from '../utils/progressHandler.js';
+
+// Configuration shorthand
+const ACADEMIC_SEARCH_CONFIG = {
+  endpoints: API_ENDPOINTS.ACADEMIC_SEARCH,
+  blueprint: BLUEPRINT_ROUTES.academic_search,
+  constants: CONSTANTS.ACADEMIC_SEARCH || {},
+  api: API_CONFIG,
+  socket: SOCKET_CONFIG
+};
 
 /**
  * Academic Search class for handling academic search and paper management
@@ -53,11 +78,144 @@ class AcademicSearch {
             lastSearch: null,
             now: () => Date.now(),
             currentSpinner: null, // Track current loading spinner
-            from: (timestamp) => new Date(timestamp)
+            from: (timestamp) => new Date(timestamp),
+            backendConnected: false,
+            lastHealthCheck: null
         };
         
         // Initialize the module
         this.initialize();
+    }
+    
+    /**
+     * Enhanced notification system with 4-method delivery
+     * @param {string} message - Notification message
+     * @param {string} type - Type of notification (info, success, warning, error)
+     * @param {string} title - Notification title
+     */
+    showNotification(message, type = 'info', title = 'Academic Search') {
+        // Method 1: Toast notifications
+        if (window.NeuroGen?.ui?.showToast) {
+            window.NeuroGen.ui.showToast(title, message, type);
+        }
+        
+        // Method 2: Console logging with styling
+        const styles = {
+            error: 'color: #dc3545; font-weight: bold;',
+            warning: 'color: #fd7e14; font-weight: bold;',
+            success: 'color: #198754; font-weight: bold;',
+            info: 'color: #0d6efd;'
+        };
+        console.log(`%c[${title}] ${message}`, styles[type] || styles.info);
+        
+        // Method 3: System notification (if available)
+        if (window.NeuroGen?.notificationHandler) {
+            window.NeuroGen.notificationHandler.show({
+                title, message, type, module: 'academicSearch'
+            });
+        }
+        
+        // Method 4: Error reporting to centralized handler
+        if (type === 'error' && window.NeuroGen?.errorHandler) {
+            window.NeuroGen.errorHandler.logError({
+                module: 'academicSearch', message, severity: type
+            });
+        }
+    }
+
+    /**
+     * Test backend connectivity for academic search
+     * @returns {Promise<Object>} Backend connectivity status
+     */
+    async testBackendConnectivity() {
+        const results = {
+            overall: false,
+            details: {},
+            timestamp: new Date().toISOString(),
+            errors: []
+        };
+
+        try {
+            // Test academic search health endpoint
+            const healthResponse = await fetch(ACADEMIC_SEARCH_CONFIG.endpoints?.HEALTH || '/api/academic/health', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            results.details.health = {
+                status: healthResponse.status,
+                ok: healthResponse.ok,
+                endpoint: ACADEMIC_SEARCH_CONFIG.endpoints?.HEALTH || '/api/academic/health'
+            };
+
+            if (healthResponse.ok) {
+                // Test academic search endpoint with a simple query
+                const testResponse = await fetch(`${ACADEMIC_SEARCH_CONFIG.endpoints?.SEARCH || '/api/academic/search'}?query=test`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                results.details.search = {
+                    status: testResponse.status,
+                    ok: testResponse.ok,
+                    endpoint: ACADEMIC_SEARCH_CONFIG.endpoints?.SEARCH || '/api/academic/search'
+                };
+
+                if (testResponse.ok || testResponse.status === 400) { // 400 might be expected for empty query
+                    results.overall = true;
+                    this.state.backendConnected = true;
+                    this.state.lastHealthCheck = new Date();
+                    this.showNotification('Backend connectivity verified', 'success', 'Academic Search');
+                }
+            }
+
+            if (!results.overall) {
+                throw new Error(`Health endpoint returned ${healthResponse.status}`);
+            }
+
+        } catch (error) {
+            results.errors.push({
+                endpoint: ACADEMIC_SEARCH_CONFIG.endpoints?.HEALTH || '/api/academic/health',
+                error: error.message
+            });
+            this.state.backendConnected = false;
+            this.showNotification(`Backend connectivity failed: ${error.message}`, 'error', 'Academic Search');
+        }
+
+        return results;
+    }
+
+    /**
+     * Get academic search health status
+     * @returns {Object} Health status information
+     */
+    getHealthStatus() {
+        return {
+            module: 'academicSearch',
+            version: '4.0.0',
+            status: this.state.initialized ? 'healthy' : 'initializing',
+            features: {
+                configurationDriven: true,
+                enhancedNotifications: true,
+                backendConnectivity: true,
+                paperSearch: true,
+                pdfDownloading: true,
+                citationAnalysis: true
+            },
+            configuration: {
+                endpoints: ACADEMIC_SEARCH_CONFIG.endpoints,
+                searchSources: ACADEMIC_SEARCH_CONFIG.constants.SEARCH_SOURCES?.length || 0,
+                maxResults: ACADEMIC_SEARCH_CONFIG.constants.MAX_RESULTS || 50
+            },
+            state: {
+                initialized: this.state.initialized,
+                searchResults: this.searchResults.length,
+                downloadQueue: this.downloadQueue.size,
+                activeSearches: this.activeSearches.size,
+                backendConnected: this.state.backendConnected,
+                lastHealthCheck: this.state.lastHealthCheck
+            }
+        };
     }
     
     /**
@@ -82,19 +240,30 @@ class AcademicSearch {
     }
 
     /**
-     * Initialize the academic search module
-     * @returns {boolean} Success status
+     * Initialize the academic search module with enhanced Blueprint architecture integration
+     * @returns {Promise<boolean>} Success status
      */
-    initialize() {
-        console.log("Initializing Academic Search module");
-        this.registerUIElements();
-        this.setupEventListeners();
-        
-        // Load previous state if available
-        this.loadSavedState();
-        
-        this.state.initialized = true;
-        return true;
+    async initialize() {
+        try {
+            this.showNotification('Initializing Academic Search v4.0', 'info', 'Academic Search');
+            
+            // Test backend connectivity on initialization
+            await this.testBackendConnectivity();
+            
+            this.registerUIElements();
+            this.setupEventListeners();
+            
+            // Load previous state if available
+            this.loadSavedState();
+            
+            this.state.initialized = true;
+            this.showNotification('Academic Search v4.0 initialized successfully', 'success', 'Academic Search');
+            return true;
+            
+        } catch (error) {
+            this.showNotification(`Academic Search initialization failed: ${error.message}`, 'error', 'Academic Search');
+            return false;
+        }
     }
 
     /**

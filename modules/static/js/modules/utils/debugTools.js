@@ -1,20 +1,56 @@
 /**
- * Debug Tools Module
+ * NeuroGen Server - Enhanced Debug Tools Module v4.0
  * 
- * Provides debugging utilities for development and troubleshooting.
+ * Advanced debugging utilities optimized for the new Blueprint architecture.
+ * Provides comprehensive debugging, performance monitoring, and diagnostic
+ * capabilities with centralized configuration and health integration.
+ * 
+ * NEW v4.0 Features:
+ * - Configuration-driven architecture using centralized endpoints
+ * - Enhanced 4-method notification system integration
+ * - Backend connectivity testing for debug endpoints
+ * - ES6 module imports with centralized configuration
+ * - Integrated with systemHealth.js monitoring
+ * - Performance profiling with Blueprint architecture awareness
+ * - Advanced error tracking and reporting
  * 
  * @module utils/debugTools
- * @version 3.0.0
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
 
-/**
- * Debug configuration
- */
-const DEBUG_CONFIG = {
-  enabled: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
-  logLevel: 'debug', // 'error', 'warn', 'info', 'debug'
-  persistLogs: false,
-  maxLogEntries: 1000
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, DEBUG_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
+
+// Global configuration for debug tools
+const DEBUG_TOOLS_CONFIG = {
+  endpoints: {
+    health: API_ENDPOINTS.SYSTEM?.HEALTH || '/api/health',
+    debug: API_ENDPOINTS.SYSTEM?.DEBUG || '/api/debug',
+    diagnostics: API_ENDPOINTS.SYSTEM?.DIAGNOSTICS || '/api/test-modules'
+  },
+  api: API_CONFIG,
+  constants: DEBUG_CONFIG || {
+    enabled: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
+    logLevel: 'debug', // 'error', 'warn', 'info', 'debug'
+    persistLogs: false,
+    maxLogEntries: 1000,
+    performanceThreshold: 100 // ms
+  },
+  events: {
+    ...TASK_EVENTS,
+    debug_event: 'debug_event_logged',
+    performance_warning: 'performance_warning'
+  }
+};
+
+// Module state
+const debugState = {
+  initialized: false,
+  backendConnected: false,
+  performanceTracking: new Map(),
+  lastHealthCheck: null
 };
 
 /**
@@ -40,7 +76,7 @@ class DebugLogger {
     this.logs.push(entry);
     
     // Trim logs if exceeded max
-    if (this.logs.length > DEBUG_CONFIG.maxLogEntries) {
+    if (this.logs.length > DEBUG_TOOLS_CONFIG.constants.maxLogEntries) {
       this.logs.shift();
     }
 
@@ -51,14 +87,14 @@ class DebugLogger {
     this.notifyListeners(entry);
 
     // Persist if enabled
-    if (DEBUG_CONFIG.persistLogs) {
+    if (DEBUG_TOOLS_CONFIG.constants.persistLogs) {
       this.persistLog(entry);
     }
   }
 
   shouldLog(level) {
     const levels = ['error', 'warn', 'info', 'debug'];
-    const currentLevelIndex = levels.indexOf(DEBUG_CONFIG.logLevel);
+    const currentLevelIndex = levels.indexOf(DEBUG_TOOLS_CONFIG.constants.logLevel);
     const messageLevelIndex = levels.indexOf(level);
     return messageLevelIndex <= currentLevelIndex;
   }
@@ -143,7 +179,7 @@ class DebugLogger {
   exportLogs() {
     const data = {
       logs: this.logs,
-      config: DEBUG_CONFIG,
+      config: DEBUG_TOOLS_CONFIG.constants,
       exportTime: new Date().toISOString(),
       userAgent: navigator.userAgent,
       location: window.location.href
@@ -170,7 +206,7 @@ class PerformanceProfiler {
 
   mark(name) {
     this.marks.set(name, performance.now());
-    if (DEBUG_CONFIG.enabled) {
+    if (DEBUG_TOOLS_CONFIG.constants.enabled) {
       console.log(`⏱️ Performance mark: ${name}`);
     }
   }
@@ -187,7 +223,7 @@ class PerformanceProfiler {
     const duration = end - start;
     this.measures.set(name, { duration, start, end });
     
-    if (DEBUG_CONFIG.enabled) {
+    if (DEBUG_TOOLS_CONFIG.constants.enabled) {
       console.log(`⏱️ Performance measure '${name}': ${duration.toFixed(2)}ms`);
     }
     
@@ -309,7 +345,7 @@ class NetworkInspector {
         request.duration = endTime - startTime;
         request.response = response;
         
-        if (DEBUG_CONFIG.enabled) {
+        if (DEBUG_TOOLS_CONFIG.constants.enabled) {
           console.log(`🌐 ${request.method} ${request.url} - ${response.status} (${request.duration.toFixed(2)}ms)`);
         }
         
@@ -319,7 +355,7 @@ class NetworkInspector {
         request.error = error.message;
         request.duration = performance.now() - startTime;
         
-        if (DEBUG_CONFIG.enabled) {
+        if (DEBUG_TOOLS_CONFIG.constants.enabled) {
           console.error(`🌐 ${request.method} ${request.url} - Failed (${request.duration.toFixed(2)}ms)`, error);
         }
         
@@ -354,14 +390,14 @@ class NetworkInspector {
 // Create singleton instances
 const logger = new DebugLogger();
 const profiler = new PerformanceProfiler();
-const networkInspector = DEBUG_CONFIG.enabled ? new NetworkInspector() : null;
+const networkInspector = DEBUG_TOOLS_CONFIG.constants.enabled ? new NetworkInspector() : null;
 
 /**
  * Debug tools public API
  */
 const debugTools = {
   // Configuration
-  config: DEBUG_CONFIG,
+  config: DEBUG_TOOLS_CONFIG.constants,
   
   // Logging
   log: (message, data) => logger.log('debug', message, data),
@@ -393,18 +429,18 @@ const debugTools = {
   
   // Utility methods
   enable: () => {
-    DEBUG_CONFIG.enabled = true;
+    DEBUG_TOOLS_CONFIG.constants.enabled = true;
     localStorage.setItem('neurogen_debug_enabled', 'true');
   },
   
   disable: () => {
-    DEBUG_CONFIG.enabled = false;
+    DEBUG_TOOLS_CONFIG.constants.enabled = false;
     localStorage.removeItem('neurogen_debug_enabled');
   },
   
   setLogLevel: (level) => {
     if (['error', 'warn', 'info', 'debug'].includes(level)) {
-      DEBUG_CONFIG.logLevel = level;
+      DEBUG_TOOLS_CONFIG.constants.logLevel = level;
       localStorage.setItem('neurogen_debug_level', level);
     }
   },
@@ -441,17 +477,178 @@ const debugTools = {
       totalJSHeapSize: (performance.memory.totalJSHeapSize / 1048576).toFixed(2) + ' MB',
       jsHeapSizeLimit: (performance.memory.jsHeapSizeLimit / 1048576).toFixed(2) + ' MB'
     };
+  },
+
+  /**
+   * Enhanced notification system with 4-method delivery (v4.0)
+   * @param {string} message - Notification message
+   * @param {string} type - Notification type (info, success, warning, error)
+   * @param {string} title - Notification title
+   */
+  showNotification(message, type = 'info', title = 'Debug Tools') {
+    // Method 1: Toast notifications
+    if (window.NeuroGen?.ui?.showToast) {
+      window.NeuroGen.ui.showToast(title, message, type);
+    }
+    
+    // Method 2: Console logging with styling
+    const styles = {
+      error: 'color: #dc3545; font-weight: bold;',
+      warning: 'color: #fd7e14; font-weight: bold;',
+      success: 'color: #198754; font-weight: bold;',
+      info: 'color: #0d6efd;'
+    };
+    console.log(`%c[${title}] ${message}`, styles[type] || styles.info);
+    
+    // Method 3: System notification (if available)
+    if (window.NeuroGen?.notificationHandler) {
+      window.NeuroGen.notificationHandler.show({
+        title, message, type, module: 'debugTools'
+      });
+    }
+    
+    // Method 4: Error reporting to centralized handler
+    if (type === 'error' && window.NeuroGen?.errorHandler) {
+      window.NeuroGen.errorHandler.logError({
+        module: 'debugTools', message, severity: type
+      });
+    }
+  },
+
+  /**
+   * Test backend connectivity for debug tools (v4.0)
+   * @returns {Promise<Object>} Backend connectivity status
+   */
+  async testBackendConnectivity() {
+    const results = {
+      overall: false,
+      details: {},
+      timestamp: new Date().toISOString(),
+      errors: []
+    };
+
+    try {
+      // Test main health endpoint
+      const healthResponse = await fetch(DEBUG_TOOLS_CONFIG.endpoints.health, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      results.details.health = {
+        status: healthResponse.status,
+        ok: healthResponse.ok,
+        endpoint: DEBUG_TOOLS_CONFIG.endpoints.health
+      };
+
+      if (healthResponse.ok) {
+        // Test diagnostics endpoint
+        try {
+          const diagResponse = await fetch(DEBUG_TOOLS_CONFIG.endpoints.diagnostics, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          results.details.diagnostics = {
+            status: diagResponse.status,
+            ok: diagResponse.status < 500,
+            endpoint: DEBUG_TOOLS_CONFIG.endpoints.diagnostics
+          };
+        } catch (error) {
+          results.details.diagnostics = {
+            error: error.message,
+            endpoint: DEBUG_TOOLS_CONFIG.endpoints.diagnostics
+          };
+        }
+        
+        results.overall = true;
+        debugState.backendConnected = true;
+        debugState.lastHealthCheck = new Date().toISOString();
+        this.showNotification('Backend connectivity verified', 'success', 'Debug Tools');
+      } else {
+        throw new Error(`Health endpoint returned ${healthResponse.status}`);
+      }
+
+    } catch (error) {
+      results.errors.push({
+        endpoint: DEBUG_TOOLS_CONFIG.endpoints.health,
+        error: error.message
+      });
+      debugState.backendConnected = false;
+      this.showNotification(`Backend connectivity failed: ${error.message}`, 'error', 'Debug Tools');
+    }
+
+    return results;
+  },
+
+  /**
+   * Get debug tools health status (v4.0)
+   * @returns {Object} Health status information
+   */
+  getHealthStatus() {
+    return {
+      module: 'debugTools',
+      version: '4.0.0',
+      status: debugState.initialized ? 'healthy' : 'initializing',
+      features: {
+        configurationDriven: true,
+        enhancedNotifications: true,
+        backendConnectivity: true,
+        performanceProfiler: true,
+        networkInspector: !!networkInspector,
+        moduleInspector: true,
+        memoryProfiler: !!performance.memory
+      },
+      configuration: {
+        endpoints: DEBUG_TOOLS_CONFIG.endpoints,
+        constants: DEBUG_TOOLS_CONFIG.constants,
+        eventsConfigured: Object.keys(DEBUG_TOOLS_CONFIG.events).length
+      },
+      statistics: {
+        logsCount: logger.logs.length,
+        performanceMarks: profiler.marks.size,
+        performanceMeasures: profiler.measures.size,
+        networkRequests: networkInspector?.requests.length || 0,
+        lastHealthCheck: debugState.lastHealthCheck,
+        backendConnected: debugState.backendConnected
+      }
+    };
+  },
+
+  /**
+   * Initialize debug tools with v4.0 enhancements
+   * @returns {Promise<boolean>} Success status
+   */
+  async initialize() {
+    if (debugState.initialized) {
+      this.showNotification('Debug tools already initialized', 'warning', 'Debug Tools');
+      return true;
+    }
+
+    try {
+      this.showNotification('Initializing Debug Tools v4.0', 'info', 'Debug Tools');
+      
+      // Test backend connectivity if enabled
+      if (DEBUG_TOOLS_CONFIG.constants.enabled) {
+        await this.testBackendConnectivity();
+      }
+      
+      debugState.initialized = true;
+      this.showNotification('Debug Tools v4.0 initialized successfully', 'success', 'Debug Tools');
+      return true;
+    } catch (error) {
+      this.showNotification(`Debug Tools initialization failed: ${error.message}`, 'error', 'Debug Tools');
+      return false;
+    }
   }
 };
 
 // Check for stored debug settings
 if (localStorage.getItem('neurogen_debug_enabled') === 'true') {
-  DEBUG_CONFIG.enabled = true;
+  DEBUG_TOOLS_CONFIG.constants.enabled = true;
 }
 
 const storedLogLevel = localStorage.getItem('neurogen_debug_level');
 if (storedLogLevel) {
-  DEBUG_CONFIG.logLevel = storedLogLevel;
+  DEBUG_TOOLS_CONFIG.constants.logLevel = storedLogLevel;
 }
 
 // Export debug tools
@@ -460,8 +657,14 @@ export default debugTools;
 // Also export individual classes for advanced usage
 export { DebugLogger, PerformanceProfiler, ModuleInspector, NetworkInspector };
 
+// v4.0 Enhanced exports
+export const showNotification = debugTools.showNotification.bind(debugTools);
+export const testBackendConnectivity = debugTools.testBackendConnectivity.bind(debugTools);
+export const getHealthStatus = debugTools.getHealthStatus.bind(debugTools);
+export const initialize = debugTools.initialize.bind(debugTools);
+
 // Expose to window in debug mode
-if (DEBUG_CONFIG.enabled && typeof window !== 'undefined') {
+if (DEBUG_TOOLS_CONFIG.constants.enabled && typeof window !== 'undefined') {
   window.debugTools = debugTools;
   console.log('🔧 Debug tools enabled. Access via window.debugTools');
 }

@@ -8,6 +8,22 @@
  * @module core/healthMonitor
  */
 
+// Import dependencies with fallback for legacy compatibility
+let MODULE_REGISTRY, loadModule;
+
+// Dynamic import function for compatibility
+async function initializeModuleSystem() {
+  try {
+    const moduleImports = await import('./moduleImports.js');
+    MODULE_REGISTRY = moduleImports.MODULE_REGISTRY;
+    loadModule = moduleImports.loadModule;
+    return true;
+  } catch (error) {
+    console.warn('🔄 HealthMonitor: Using legacy compatibility mode (MODULE_REGISTRY not available)');
+    return false;
+  }
+}
+
 /**
  * Health Monitor Class - Centralized System v3.1
  */
@@ -37,6 +53,9 @@ class HealthMonitor {
   async init() {
     console.log('🏥 Initializing Health Monitor...');
     
+    // Initialize module system (with fallback for legacy)
+    await initializeModuleSystem();
+    
     // Create health indicator UI
     this.createHealthIndicator();
     
@@ -49,6 +68,7 @@ class HealthMonitor {
     // Set up event listeners
     this.setupEventListeners();
     
+    this.state.isInitialized = true;
     console.log('✅ Health Monitor initialized');
   }
 
@@ -135,13 +155,32 @@ class HealthMonitor {
       moduleStatus.total++;
       
       try {
-        // Check if module is in registry
+        // Check if MODULE_REGISTRY is available (compatibility with legacy loading)
+        if (typeof MODULE_REGISTRY === 'undefined') {
+          // Fallback: Check if module exists in window.NeuroGen.modules or window object
+          const module = window.NeuroGen?.modules?.[moduleName] || 
+                        window.moduleInstances?.[moduleName] || 
+                        window[moduleName];
+          
+          if (module) {
+            moduleStatus.loaded++;
+            this.state.modules.set(moduleName, {
+              status: 'loaded',
+              module: module
+            });
+          } else {
+            moduleStatus.warnings.push(`${moduleName} not found (legacy mode)`);
+          }
+          continue;
+        }
+        
+        // Check if module is in registry (new system)
         if (!MODULE_REGISTRY[moduleName]) {
           moduleStatus.warnings.push(`${moduleName} not in registry`);
           continue;
         }
         
-        // Try to load module
+        // Try to load module using new system
         const module = await loadModule(moduleName);
         if (module) {
           moduleStatus.loaded++;

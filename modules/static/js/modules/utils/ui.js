@@ -1,23 +1,53 @@
 /**
- * Core UI Module
+ * NeuroGen Server - Enhanced UI Module v4.0
  * 
- * Provides basic UI functionality used by core modules,
- * especially the error handler.
- * Enhanced with performance optimizations, improved error handling,
- * and additional utility features.
+ * Core UI module optimized for the new Blueprint architecture.
+ * Provides comprehensive UI functionality with centralized configuration,
+ * enhanced error handling, and integrated health monitoring.
  * 
- * @module ui
- * @version 1.2.1
+ * NEW v4.0 Features:
+ * - Configuration-driven architecture using centralized endpoints
+ * - Enhanced 4-method notification system (Toast + Console + System + Error)
+ * - Backend connectivity testing with health checks
+ * - ES6 module imports with centralized configuration
+ * - Optimized for Blueprint architecture integration
+ * - Cross-platform UI consistency
+ * - Enhanced accessibility and performance
+ * 
+ * @module utils/ui
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
+
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, UI_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
 import { updateUIBridge } from '../core/module-bridge.js';
-// Import only the DOM utilities we actually use to avoid unused declaration warnings
 import { 
     getElement as domGetElement, 
     toggleElementVisibility as domToggleElementVisibility
   } from './domUtils.js';
-  
-// Import only the specific functions we need from uiRegistry to avoid circular dependencies
 import { registerElement } from '../core/uiRegistry.js';
+
+// Global configuration for UI module
+const UI_MODULE_CONFIG = {
+  endpoints: {
+    health: API_ENDPOINTS.SYSTEM?.HEALTH || '/api/health',
+    ...API_ENDPOINTS
+  },
+  api: API_CONFIG,
+  constants: UI_CONFIG || {
+    MAX_TOASTS: 5,
+    DEFAULT_TOAST_DURATION: 5000,
+    ANIMATION_DURATION: 300,
+    DEFAULT_POSITION: 'bottom-right'
+  },
+  events: {
+    ...TASK_EVENTS,
+    ui_ready: 'ui_module_ready',
+    theme_change: 'theme_changed'
+  }
+};
   
 /**
  * Module state using a simple object for state management
@@ -59,7 +89,13 @@ const ui = {
     }
     
     try {
-      console.log("Initializing Core UI module...");
+      this.showNotification('Initializing UI Module v4.0', 'info', 'UI Module');
+      
+      // Test backend connectivity on initialization
+      const connectivityResult = await this.testBackendConnectivity();
+      if (!connectivityResult.overall) {
+        console.warn('UI Module: Backend connectivity test failed, continuing with limited functionality');
+      }
       
       // Extract options with defaults
       const {
@@ -92,7 +128,7 @@ const ui = {
       // Mark as initialized
       state.initialized = true;
       
-      console.log("Core UI module initialized successfully");
+      this.showNotification('UI Module v4.0 initialized successfully', 'success', 'UI Module');
       return true;
     } catch (error) {
       console.error("Error initializing Core UI module:", error);
@@ -1639,6 +1675,115 @@ const ui = {
         timestamp: new Date().toISOString()
       });
     }
+  },
+
+  /**
+   * Enhanced notification system with 4-method delivery (v4.0)
+   * @param {string} message - Notification message
+   * @param {string} type - Notification type (info, success, warning, error)
+   * @param {string} title - Notification title
+   */
+  showNotification(message, type = 'info', title = 'UI Module') {
+    // Method 1: Toast notifications
+    this.showToast(title, message, type);
+    
+    // Method 2: Console logging with styling
+    const styles = {
+      error: 'color: #dc3545; font-weight: bold;',
+      warning: 'color: #fd7e14; font-weight: bold;',
+      success: 'color: #198754; font-weight: bold;',
+      info: 'color: #0d6efd;'
+    };
+    console.log(`%c[${title}] ${message}`, styles[type] || styles.info);
+    
+    // Method 3: System notification (if available)
+    if (window.NeuroGen?.notificationHandler) {
+      window.NeuroGen.notificationHandler.show({
+        title, message, type, module: 'ui'
+      });
+    }
+    
+    // Method 4: Error reporting to centralized handler
+    if (type === 'error' && window.NeuroGen?.errorHandler) {
+      window.NeuroGen.errorHandler.logError({
+        module: 'ui', message, severity: type
+      });
+    }
+  },
+
+  /**
+   * Test backend connectivity for UI module (v4.0)
+   * @returns {Promise<Object>} Backend connectivity status
+   */
+  async testBackendConnectivity() {
+    const results = {
+      overall: false,
+      details: {},
+      timestamp: new Date().toISOString(),
+      errors: []
+    };
+
+    try {
+      // Test main health endpoint
+      const healthResponse = await fetch(UI_MODULE_CONFIG.endpoints.health, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      results.details.health = {
+        status: healthResponse.status,
+        ok: healthResponse.ok,
+        endpoint: UI_MODULE_CONFIG.endpoints.health
+      };
+
+      if (healthResponse.ok) {
+        results.overall = true;
+        this.showNotification('Backend connectivity verified', 'success', 'UI Module');
+      } else {
+        throw new Error(`Health endpoint returned ${healthResponse.status}`);
+      }
+
+    } catch (error) {
+      results.errors.push({
+        endpoint: UI_MODULE_CONFIG.endpoints.health,
+        error: error.message
+      });
+      this.showNotification(`Backend connectivity failed: ${error.message}`, 'error', 'UI Module');
+    }
+
+    return results;
+  },
+
+  /**
+   * Get UI module health status (v4.0)
+   * @returns {Object} Health status information
+   */
+  getHealthStatus() {
+    const state = getState();
+    
+    return {
+      module: 'ui',
+      version: '4.0.0',
+      status: state.initialized ? 'healthy' : 'initializing',
+      features: {
+        configurationDriven: true,
+        enhancedNotifications: true,
+        backendConnectivity: true,
+        toastSystem: true,
+        modalSystem: true,
+        themeObserver: !!state.themeObserver
+      },
+      configuration: {
+        endpoints: UI_MODULE_CONFIG.endpoints,
+        constants: UI_MODULE_CONFIG.constants,
+        eventsConfigured: Object.keys(UI_MODULE_CONFIG.events).length
+      },
+      statistics: {
+        activeModals: state.modalInstances.size,
+        eventListeners: state.eventListeners.size,
+        toastContainer: !!state.toastContainer
+      }
+    };
   }
 };
 
@@ -1664,3 +1809,8 @@ export const toggleClass = ui.toggleClass.bind(ui);
 export const findElement = ui.findElement.bind(ui);
 export const findElements = ui.findElements.bind(ui);
 export const createProgressBar = ui.createProgressBar.bind(ui);
+
+// v4.0 Enhanced exports
+export const showNotification = ui.showNotification.bind(ui);
+export const testBackendConnectivity = ui.testBackendConnectivity.bind(ui);
+export const getHealthStatus = ui.getHealthStatus.bind(ui);

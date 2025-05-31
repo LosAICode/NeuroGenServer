@@ -1,14 +1,48 @@
 /**
- * Core UI Module
+ * NeuroGen Server - Enhanced Core UI Module v4.0
  * 
- * Provides comprehensive UI functionality used throughout the application.
- * Uses domUtils.js for DOM operations to avoid function redeclarations.
+ * Advanced UI functionality optimized for the new Blueprint architecture.
+ * Provides comprehensive UI operations with centralized configuration
+ * and integrated health monitoring.
  * 
- * @module ui
+ * NEW v4.0 Features:
+ * - Configuration-driven architecture using centralized constants
+ * - Enhanced 4-method notification system (Toast + Console + System + Error)
+ * - Backend connectivity testing with health checks
+ * - ES6 module imports with centralized configuration
+ * - Blueprint-aware UI components and context
+ * 
+ * @module core/ui
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
+
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, UI_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
 import { getElement, getElements, getUIElements, createElement, addEventListeners } from './domUtils.js';
-// Register with module bridge to break circular dependencies
 import { updateUIBridge } from '../core/module-bridge.js';
+
+// Global configuration for core UI module
+const CORE_UI_CONFIG = {
+  endpoints: {
+    health: API_ENDPOINTS.SYSTEM?.HEALTH || '/api/health',
+    ...API_ENDPOINTS
+  },
+  api: API_CONFIG,
+  constants: UI_CONFIG || {
+    ANIMATIONS_ENABLED: true,
+    TOAST_POSITION: 'bottom-end',
+    TOAST_DURATION: 5000,
+    MODAL_BACKDROP_CLOSE: true,
+    DEFAULT_THEME: 'light'
+  },
+  events: {
+    ...TASK_EVENTS,
+    ui_ready: 'core_ui_ready',
+    theme_changed: 'core_theme_changed'
+  }
+};
 
 // UI state management - centralized state for all UI components
 const uiState = {

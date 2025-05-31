@@ -1,10 +1,17 @@
 /**
- * Enhanced Module Diagnostics Tool
+ * Enhanced Module Diagnostics Tool v4.0
  * 
  * Advanced diagnostics for module loading issues in the NeuroGen Server.
- * Provides detailed error tracking, performance monitoring, and visual reporting.
+ * Now integrated with systemHealth.js for unified health monitoring.
  * 
- * Features:
+ * v4.0 Integration Features:
+ * - Integrated with systemHealth.js (no conflicts)
+ * - Reports diagnostics through unified health system
+ * - Enhanced error tracking with centralized reporting
+ * - Performance monitoring with Blueprint architecture awareness
+ * - Coordinated with other v4.0 utility modules
+ * 
+ * Legacy Features (Enhanced):
  * - Real-time module load monitoring with error locations
  * - Circular dependency detection and visualization
  * - Performance profiling for each module
@@ -12,7 +19,20 @@
  * - Visual diagnostic dashboard
  * - Export diagnostic reports
  * - Auto-fix suggestions for common issues
+ * 
+ * @module utils/moduleDiagnostics
+ * @version 4.0.0 - Blueprint Architecture Integration
  */
+
+// Import systemHealth for integration
+let systemHealthMonitor = null;
+try {
+  import('./systemHealth.js').then(module => {
+    systemHealthMonitor = module.default;
+  });
+} catch (error) {
+  console.warn('SystemHealth integration not available:', error.message);
+}
 
 // Module loading status tracking
 const moduleTracker = {
@@ -37,6 +57,49 @@ const originalConsole = {
 const VERBOSE_LOGGING = true;
 
 /**
+ * Report diagnostic events to systemHealth (v4.0 integration)
+ * @param {string} type - Event type (info, warning, error)
+ * @param {string} message - Event message
+ * @param {Object} details - Additional details
+ */
+function reportToSystemHealth(type, message, details = {}) {
+  // Report to systemHealth if available
+  if (systemHealthMonitor && typeof systemHealthMonitor.updateStatus === 'function') {
+    systemHealthMonitor.updateStatus(type, `Module Diagnostics: ${message}`, details);
+  }
+  
+  // Also report to any other v4.0 modules
+  if (window.NeuroGen?.errorHandler && type === 'error') {
+    window.NeuroGen.errorHandler.logError({
+      module: 'moduleDiagnostics',
+      message,
+      details,
+      severity: type
+    });
+  }
+}
+
+/**
+ * Enhanced error logging with systemHealth integration
+ * @param {string} level - Log level
+ * @param {string} message - Log message
+ * @param {Object} data - Additional data
+ */
+function enhancedLog(level, message, data = {}) {
+  // Original console output
+  originalConsole[level](message, data);
+  
+  // Report to systemHealth based on level
+  if (level === 'error') {
+    reportToSystemHealth('error', message, data);
+  } else if (level === 'warn') {
+    reportToSystemHealth('warning', message, data);
+  } else if (level === 'info') {
+    reportToSystemHealth('info', message, data);
+  }
+}
+
+/**
  * Enhanced module loader that tracks loading status
  * @param {string} modulePath - Path to the module
  * @param {boolean} retry - Whether this is a retry attempt
@@ -52,7 +115,7 @@ export async function loadModuleWithDiagnostics(modulePath, retry = false) {
   
   // Check if already loading (potential circular dependency)
   if (moduleTracker.loadingModules.has(modulePath)) {
-    originalConsole.warn(`⚠️ Circular dependency detected: ${modulePath}`);
+    enhancedLog('warn', `⚠️ Circular dependency detected: ${modulePath}`, { modulePath, type: 'circular_dependency' });
     moduleTracker.circularDependencies.add(modulePath);
     
     // Return a proxy for circular dependency resolution

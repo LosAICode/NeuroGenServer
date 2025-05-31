@@ -1,72 +1,145 @@
 /**
- * NeuroGen Server - Main Application Module
+ * NeuroGen Server - Enhanced Main Application Module v4.0
  * 
- * Manages application initialization, module loading, and core functionality.
- * This is the central orchestration module that coordinates all other components.
+ * Central orchestration module optimized for the new Blueprint architecture.
+ * Manages application initialization, module loading, and core functionality
+ * with centralized configuration and integrated health monitoring.
+ * 
+ * NEW v4.0 Features:
+ * - Configuration-driven architecture using centralized endpoints
+ * - Enhanced 4-method notification system (Toast + Console + System + Error)
+ * - Backend connectivity testing with health checks
+ * - ES6 module imports with centralized configuration
+ * - Optimized for Blueprint architecture integration
+ * - Cross-module coordination and health monitoring
+ * - Enhanced error handling and recovery
+ * 
+ * @module core/app
+ * @version 4.0.0 - Blueprint Architecture Optimization
  */
 
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, APP_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
+
+// Global configuration for app module
+const APP_MODULE_CONFIG = {
+  endpoints: {
+    health: API_ENDPOINTS.SYSTEM?.HEALTH || '/api/health',
+    moduleTest: API_ENDPOINTS.SYSTEM?.MODULE_TEST || '/api/test-modules',
+    ...API_ENDPOINTS
+  },
+  api: API_CONFIG,
+  constants: APP_CONFIG || {
+    DEBUG: true,
+    DEFAULT_THEME: 'light',
+    VERSION: '4.0.0',
+    INIT_TIMEOUT: 10000,
+    MODULE_LOAD_TIMEOUT: 5000
+  },
+  events: {
+    ...TASK_EVENTS,
+    app_ready: 'app_module_ready',
+    modules_loaded: 'core_modules_loaded',
+    features_loaded: 'feature_modules_loaded'
+  }
+};
+
+// Module state
+const appState = {
+  initialized: false,
+  backendConnected: false,
+  coreModulesLoaded: false,
+  featureModulesLoaded: false,
+  lastHealthCheck: null,
+  loadingStats: {
+    coreModules: { loaded: 0, total: 0, failed: [] },
+    featureModules: { loaded: 0, total: 0, failed: [] },
+    utilityModules: { loaded: 0, total: 0, failed: [] }
+  }
+};
+
 /**
- * Main Application Module
+ * Main Application Module v4.0
  */
 const app = {
-  // Configuration and state
-  config: {
-    debug: true,
-    defaultTheme: 'light',
-    version: '1.0.0'
-  },
+  // Configuration from centralized config
+  config: APP_MODULE_CONFIG.constants,
   
   // Loaded modules
   core: {},
   features: {},
   utils: {},
   
-  // Initialization status
-  initialized: false,
+  // Module state
+  state: appState,
   
   /**
-   * Initialize the application
+   * Initialize the application with v4.0 enhancements
    * @param {Object} options - Initialization options
    * @returns {Promise<boolean>} - Success status
    */
   async initialize(options = {}) {
-    if (this.initialized) {
-      console.warn('App already initialized');
+    if (this.state.initialized) {
+      this.showNotification('App already initialized', 'warning', 'Application');
       return true;
     }
     
     try {
-      console.log('Initializing application...');
+      this.showNotification('Initializing Application v4.0', 'info', 'Application');
+      
+      // Test backend connectivity on initialization
+      const connectivityResult = await this.testBackendConnectivity();
+      if (!connectivityResult.overall) {
+        console.warn('Application: Backend connectivity test failed, continuing with limited functionality');
+      }
       
       // Merge options with default config
       this.config = { ...this.config, ...options };
       
-      // Load core modules
+      // Load core modules with progress tracking
       await this.loadCoreModules();
       
-      // Load and initialize features
+      // Load and initialize features with progress tracking
       await this.loadFeatureModules();
       
-      // Load utilities in background
+      // Load utilities in background with progress tracking
       this.loadUtilityModules();
       
       // Apply theme settings
       if (this.core.themeManager) {
-        this.core.themeManager.setTheme(this.config.defaultTheme);
+        await this.core.themeManager.setTheme(this.config.DEFAULT_THEME || this.config.defaultTheme);
+      }
+      
+      // Initialize health monitoring
+      if (this.core.healthMonitor) {
+        this.core.healthMonitor.initialize();
       }
       
       // Mark as initialized
-      this.initialized = true;
+      this.state.initialized = true;
       
-      console.log('Application initialized successfully');
+      // Emit app ready event
+      if (window.NeuroGen?.eventRegistry) {
+        window.NeuroGen.eventRegistry.emit(APP_MODULE_CONFIG.events.app_ready, {
+          modules: this.getModuleStats(),
+          config: this.config,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      this.showNotification('Application v4.0 initialized successfully', 'success', 'Application');
       return true;
     } catch (error) {
-      console.error('Error initializing app:', error);
+      this.showNotification(`Application initialization failed: ${error.message}`, 'error', 'Application');
       
-      // Try to use error handler if available
+      // Enhanced error handling
       if (this.core.errorHandler) {
         this.core.errorHandler.handleError(error, 'MODULE', true, {
-          details: 'Error occurred during application initialization'
+          details: 'Error occurred during application initialization',
+          config: this.config,
+          state: this.state
         });
       }
       
@@ -82,15 +155,18 @@ const app = {
     try {
       console.log('Loading core modules...');
       
-      // These modules will be dynamically imported
-      const coreModules = [
+      // Core modules from centralized configuration
+      const coreModules = APP_MODULE_CONFIG.constants.CORE_MODULES || [
         '/static/js/modules/core/errorHandler.js',
         '/static/js/modules/core/uiRegistry.js',
         '/static/js/modules/core/stateManager.js',
         '/static/js/modules/core/eventRegistry.js',
         '/static/js/modules/core/eventManager.js',
-        '/static/js/modules/core/themeManager.js'
+        '/static/js/modules/core/themeManager.js',
+        '/static/js/modules/core/healthMonitor.js'
       ];
+      
+      this.state.loadingStats.coreModules.total = coreModules.length;
       
       const loadedModules = {};
       
@@ -418,6 +494,162 @@ const app = {
         module.config.debug = enabled;
       }
     });
+  },
+
+  /**
+   * Enhanced notification system with 4-method delivery (v4.0)
+   * @param {string} message - Notification message
+   * @param {string} type - Notification type (info, success, warning, error)
+   * @param {string} title - Notification title
+   */
+  showNotification(message, type = 'info', title = 'Application') {
+    // Method 1: Toast notifications
+    if (window.NeuroGen?.ui?.showToast) {
+      window.NeuroGen.ui.showToast(title, message, type);
+    }
+    
+    // Method 2: Console logging with styling
+    const styles = {
+      error: 'color: #dc3545; font-weight: bold;',
+      warning: 'color: #fd7e14; font-weight: bold;',
+      success: 'color: #198754; font-weight: bold;',
+      info: 'color: #0d6efd;'
+    };
+    console.log(`%c[${title}] ${message}`, styles[type] || styles.info);
+    
+    // Method 3: System notification (if available)
+    if (window.NeuroGen?.notificationHandler) {
+      window.NeuroGen.notificationHandler.show({
+        title, message, type, module: 'app'
+      });
+    }
+    
+    // Method 4: Error reporting to centralized handler
+    if (type === 'error' && window.NeuroGen?.errorHandler) {
+      window.NeuroGen.errorHandler.logError({
+        module: 'app', message, severity: type
+      });
+    }
+  },
+
+  /**
+   * Test backend connectivity for app module (v4.0)
+   * @returns {Promise<Object>} Backend connectivity status
+   */
+  async testBackendConnectivity() {
+    const results = {
+      overall: false,
+      details: {},
+      timestamp: new Date().toISOString(),
+      errors: []
+    };
+
+    try {
+      // Test main health endpoint
+      const healthResponse = await fetch(APP_MODULE_CONFIG.endpoints.health, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      results.details.health = {
+        status: healthResponse.status,
+        ok: healthResponse.ok,
+        endpoint: APP_MODULE_CONFIG.endpoints.health
+      };
+
+      if (healthResponse.ok) {
+        // Test module test endpoint
+        try {
+          const moduleTestResponse = await fetch(APP_MODULE_CONFIG.endpoints.moduleTest, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          results.details.moduleTest = {
+            status: moduleTestResponse.status,
+            ok: moduleTestResponse.status < 500,
+            endpoint: APP_MODULE_CONFIG.endpoints.moduleTest
+          };
+        } catch (error) {
+          results.details.moduleTest = {
+            error: error.message,
+            endpoint: APP_MODULE_CONFIG.endpoints.moduleTest
+          };
+        }
+        
+        results.overall = true;
+        this.state.backendConnected = true;
+        this.state.lastHealthCheck = new Date().toISOString();
+        this.showNotification('Backend connectivity verified', 'success', 'Application');
+      } else {
+        throw new Error(`Health endpoint returned ${healthResponse.status}`);
+      }
+
+    } catch (error) {
+      results.errors.push({
+        endpoint: APP_MODULE_CONFIG.endpoints.health,
+        error: error.message
+      });
+      this.state.backendConnected = false;
+      this.showNotification(`Backend connectivity failed: ${error.message}`, 'error', 'Application');
+    }
+
+    return results;
+  },
+
+  /**
+   * Get application health status (v4.0)
+   * @returns {Object} Health status information
+   */
+  getHealthStatus() {
+    return {
+      module: 'app',
+      version: '4.0.0',
+      status: this.state.initialized ? 'healthy' : 'initializing',
+      features: {
+        configurationDriven: true,
+        enhancedNotifications: true,
+        backendConnectivity: true,
+        moduleLoading: true,
+        themeManagement: true,
+        stateManagement: true
+      },
+      configuration: {
+        endpoints: APP_MODULE_CONFIG.endpoints,
+        constants: APP_MODULE_CONFIG.constants,
+        eventsConfigured: Object.keys(APP_MODULE_CONFIG.events).length
+      },
+      statistics: {
+        coreModulesLoaded: this.state.loadingStats.coreModules.loaded,
+        featureModulesLoaded: this.state.loadingStats.featureModules.loaded,
+        utilityModulesLoaded: this.state.loadingStats.utilityModules.loaded,
+        totalModules: Object.keys({...this.core, ...this.features, ...this.utils}).length,
+        lastHealthCheck: this.state.lastHealthCheck,
+        backendConnected: this.state.backendConnected
+      }
+    };
+  },
+
+  /**
+   * Get module loading statistics (v4.0)
+   * @returns {Object} Module statistics
+   */
+  getModuleStats() {
+    return {
+      core: {
+        loaded: Object.keys(this.core).length,
+        modules: Object.keys(this.core)
+      },
+      features: {
+        loaded: Object.keys(this.features).length,
+        modules: Object.keys(this.features)
+      },
+      utils: {
+        loaded: Object.keys(this.utils).length,
+        modules: Object.keys(this.utils)
+      },
+      total: Object.keys({...this.core, ...this.features, ...this.utils}).length,
+      loadingStats: this.state.loadingStats
+    };
   }
 };
 
@@ -433,3 +665,9 @@ export const showError = app.showError.bind(app);
 export const showSuccess = app.showSuccess.bind(app);
 export const getVersion = app.getVersion.bind(app);
 export const setDebugMode = app.setDebugMode.bind(app);
+
+// v4.0 Enhanced exports
+export const showNotification = app.showNotification.bind(app);
+export const testBackendConnectivity = app.testBackendConnectivity.bind(app);
+export const getHealthStatus = app.getHealthStatus.bind(app);
+export const getModuleStats = app.getModuleStats.bind(app);

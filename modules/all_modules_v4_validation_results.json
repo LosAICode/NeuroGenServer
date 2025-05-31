@@ -1,0 +1,640 @@
+{
+  "overall": true,
+  "modules": {
+    "progressHandler": {
+      "name": "Progress Handler v4.0",
+      "health": {
+        "module": "progressHandler",
+        "name": "Progress Handler v4.0",
+        "endpoints": {
+          "/api/health": {
+            "status": 200,
+            "ok": true,
+            "response_time": 0.054654,
+            "data": {
+              "checks": {
+                "dependencies": {
+                  "dependencies": {
+                    "BeautifulSoup": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "File type detection": {
+                      "critical": false,
+                      "status": "missing"
+                    },
+                    "Flask": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "Flask-SocketIO": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "Image processing": {
+                      "critical": false,
+                      "status": "missing"
+                    },
+                    "PDF processing": {
+                      "critical": false,
+                      "status": "available"
+                    },
+                    "Tesseract OCR": {
+                      "critical": false,
+                      "status": "available"
+                    },
+                    "requests": {
+                      "critical": true,
+                      "status": "available"
+                    }
+                  },
+                  "status": "warning"
+                },
+                "endpoints": {
+                  "endpoints": {
+                    "academic_search": true,
+                    "file_processor": true,
+                    "pdf_processor": false,
+                    "playlist_downloader": true,
+                    "web_scraper": true
+                  },
+                  "status": "warning"
+                },
+                "file_system": {
+                  "paths": {
+                    "downloads": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "static": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "temp": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "templates": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    }
+                  },
+                  "status": "healthy"
+                },
+                "modules": {
+                  "failed": [],
+                  "loaded": [
+                    "blueprints.core.services",
+                    "blueprints.core.utils",
+                    "blueprints.core.config",
+                    "blueprints.core.routes",
+                    "blueprints.core.http_client",
+                    "blueprints.core.structify_integration",
+                    "blueprints.core.ocr_config",
+                    "blueprints.features.file_processor",
+                    "blueprints.features.web_scraper",
+                    "blueprints.features.academic_search",
+                    "blueprints.features.pdf_processor",
+                    "blueprints.features.playlist_downloader",
+                    "blueprints.features.web_crawler",
+                    "blueprints.api.management",
+                    "blueprints.api.analytics",
+                    "blueprints.socketio_events"
+                  ],
+                  "status": "healthy",
+                  "total": 16
+                }
+              },
+              "response_time_ms": 50,
+              "status": "warning",
+              "timestamp": "2025-05-31T04:33:30.023666",
+              "version": "3.1.0"
+            }
+          }
+        },
+        "connectivity": true,
+        "errors": []
+      },
+      "functionality": {
+        "module": "progressHandler",
+        "functionality": {},
+        "working": false,
+        "errors": []
+      },
+      "overall_status": "partial"
+    },
+    "fileProcessor": {
+      "name": "File Processor v4.0",
+      "health": {
+        "module": "fileProcessor",
+        "name": "File Processor v4.0",
+        "endpoints": {
+          "/api/health": {
+            "status": 200,
+            "ok": true,
+            "response_time": 0.032071,
+            "data": {
+              "checks": {
+                "dependencies": {
+                  "dependencies": {
+                    "BeautifulSoup": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "File type detection": {
+                      "critical": false,
+                      "status": "missing"
+                    },
+                    "Flask": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "Flask-SocketIO": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "Image processing": {
+                      "critical": false,
+                      "status": "missing"
+                    },
+                    "PDF processing": {
+                      "critical": false,
+                      "status": "available"
+                    },
+                    "Tesseract OCR": {
+                      "critical": false,
+                      "status": "available"
+                    },
+                    "requests": {
+                      "critical": true,
+                      "status": "available"
+                    }
+                  },
+                  "status": "warning"
+                },
+                "endpoints": {
+                  "endpoints": {
+                    "academic_search": true,
+                    "file_processor": true,
+                    "pdf_processor": false,
+                    "playlist_downloader": true,
+                    "web_scraper": true
+                  },
+                  "status": "warning"
+                },
+                "file_system": {
+                  "paths": {
+                    "downloads": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "static": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "temp": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "templates": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    }
+                  },
+                  "status": "healthy"
+                },
+                "modules": {
+                  "failed": [],
+                  "loaded": [
+                    "blueprints.core.services",
+                    "blueprints.core.utils",
+                    "blueprints.core.config",
+                    "blueprints.core.routes",
+                    "blueprints.core.http_client",
+                    "blueprints.core.structify_integration",
+                    "blueprints.core.ocr_config",
+                    "blueprints.features.file_processor",
+                    "blueprints.features.web_scraper",
+                    "blueprints.features.academic_search",
+                    "blueprints.features.pdf_processor",
+                    "blueprints.features.playlist_downloader",
+                    "blueprints.features.web_crawler",
+                    "blueprints.api.management",
+                    "blueprints.api.analytics",
+                    "blueprints.socketio_events"
+                  ],
+                  "status": "healthy",
+                  "total": 16
+                }
+              },
+              "response_time_ms": 29,
+              "status": "warning",
+              "timestamp": "2025-05-31T04:33:30.080448",
+              "version": "3.1.0"
+            }
+          },
+          "/api/process": {
+            "status": 405,
+            "ok": false,
+            "response_time": 0.060374
+          }
+        },
+        "connectivity": true,
+        "errors": []
+      },
+      "functionality": {
+        "module": "fileProcessor",
+        "functionality": {
+          "/api/process": {
+            "status": 200,
+            "ok": true,
+            "response_time": 0.037958,
+            "data": {
+              "input_dir": "/tmp/test",
+              "message": "Processing started",
+              "output_file": "/workspace/modules/downloads/test.json",
+              "status": "processing",
+              "task_id": "dbdc3cc1-b204-4df5-a53a-d76e3436cb5e"
+            }
+          }
+        },
+        "working": true,
+        "errors": []
+      },
+      "overall_status": "working"
+    },
+    "academicSearch": {
+      "name": "Academic Search v4.0",
+      "health": {
+        "module": "academicSearch",
+        "name": "Academic Search v4.0",
+        "endpoints": {
+          "/api/academic/health": {
+            "status": 200,
+            "ok": true,
+            "response_time": 0.009602,
+            "data": {
+              "status": "ok",
+              "timestamp": 1748680410.220851,
+              "web_scraper_available": true
+            }
+          },
+          "/api/academic/search": {
+            "status": 400,
+            "ok": false,
+            "response_time": 0.029597
+          }
+        },
+        "connectivity": true,
+        "errors": []
+      },
+      "functionality": {
+        "module": "academicSearch",
+        "functionality": {
+          "/api/academic/search": {
+            "status": 200,
+            "ok": true,
+            "response_time": 3.696737,
+            "data": {
+              "results": [
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:69b5bfa3",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23735.pdf",
+                  "source": "arxiv",
+                  "title": "arXiv:2505.23735"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:ad125ba2",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23735",
+                  "source": "arxiv",
+                  "title": "pdf"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:df052b07",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23722.pdf",
+                  "source": "arxiv",
+                  "title": "arXiv:2505.23722"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:00da317e",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23722",
+                  "source": "arxiv",
+                  "title": "pdf"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:4039d923",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23699.pdf",
+                  "source": "arxiv",
+                  "title": "arXiv:2505.23699"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:edacb90a",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23699",
+                  "source": "arxiv",
+                  "title": "pdf"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:b2cb67fc",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23689.pdf",
+                  "source": "arxiv",
+                  "title": "arXiv:2505.23689"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:478a6184",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23689",
+                  "source": "arxiv",
+                  "title": "pdf"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:a5ba8233",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23685.pdf",
+                  "source": "arxiv",
+                  "title": "arXiv:2505.23685"
+                },
+                {
+                  "abstract": "",
+                  "authors": [],
+                  "id": "arxiv:8dca9929",
+                  "pdf_url": "https://arxiv.org/pdf/2505.23685",
+                  "source": "arxiv",
+                  "title": "pdf"
+                }
+              ],
+              "total_results": 10
+            }
+          }
+        },
+        "working": false,
+        "errors": []
+      },
+      "overall_status": "partial"
+    },
+    "pdfProcessor": {
+      "name": "PDF Processor v4.0",
+      "health": {
+        "module": "pdfProcessor",
+        "name": "PDF Processor v4.0",
+        "endpoints": {
+          "/api/pdf/health": {
+            "status": 200,
+            "ok": true,
+            "response_time": 0.002573,
+            "data": {
+              "endpoints": {
+                "batch_download": "/api/pdf/batch-download",
+                "cancel": "/api/pdf/cancel/<task_id>",
+                "download": "/api/pdf/download",
+                "health": "/api/pdf/health",
+                "status": "/api/pdf/status/<task_id>"
+              },
+              "features": {
+                "batch_download": true,
+                "centralized_download": true,
+                "progress_tracking": true,
+                "single_download": true,
+                "structify_integration": true
+              },
+              "module": "pdf_downloader",
+              "status": "healthy",
+              "version": "1.0.0"
+            }
+          }
+        },
+        "connectivity": true,
+        "errors": []
+      },
+      "functionality": {
+        "module": "pdfProcessor",
+        "functionality": {},
+        "working": false,
+        "errors": []
+      },
+      "overall_status": "partial"
+    },
+    "webScraper": {
+      "name": "Web Scraper v3.1.0 (Already Optimized)",
+      "health": {
+        "module": "webScraper",
+        "name": "Web Scraper v3.1.0 (Already Optimized)",
+        "endpoints": {
+          "/api/health-enhanced": {
+            "status": 200,
+            "ok": true,
+            "response_time": 0.003396,
+            "data": {
+              "dependencies": {
+                "beautifulsoup": true,
+                "requests": true,
+                "structify": true,
+                "trafilatura": false,
+                "urllib_robotparser": true
+              },
+              "endpoints": {
+                "enhanced": "/api/scrape2 (with scrape_mode parameter)",
+                "health": "/api/health-enhanced",
+                "legacy": "/api/scrape2 (with urls parameter)"
+              },
+              "features": {
+                "full_website": "Full Website & Documentation Crawler",
+                "smart_pdf": "Smart PDF Discovery & Processing"
+              },
+              "legacy_compatibility": "Maintained for old 5-option system",
+              "status": "healthy",
+              "version": "2.0_consolidated"
+            }
+          },
+          "/api/scrape2": {
+            "status": 405,
+            "ok": false,
+            "response_time": 0.003381
+          }
+        },
+        "connectivity": true,
+        "errors": []
+      },
+      "functionality": {
+        "module": "webScraper",
+        "functionality": {
+          "/api/scrape2": {
+            "status": 400,
+            "ok": true,
+            "response_time": 0.003159
+          }
+        },
+        "working": true,
+        "errors": []
+      },
+      "overall_status": "working"
+    },
+    "playlistDownloader": {
+      "name": "Playlist Downloader v3.1.0 (Already Optimized)",
+      "health": {
+        "module": "playlistDownloader",
+        "name": "Playlist Downloader v3.1.0 (Already Optimized)",
+        "endpoints": {
+          "/api/health": {
+            "status": 200,
+            "ok": true,
+            "response_time": 0.027653,
+            "data": {
+              "checks": {
+                "dependencies": {
+                  "dependencies": {
+                    "BeautifulSoup": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "File type detection": {
+                      "critical": false,
+                      "status": "missing"
+                    },
+                    "Flask": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "Flask-SocketIO": {
+                      "critical": true,
+                      "status": "available"
+                    },
+                    "Image processing": {
+                      "critical": false,
+                      "status": "missing"
+                    },
+                    "PDF processing": {
+                      "critical": false,
+                      "status": "available"
+                    },
+                    "Tesseract OCR": {
+                      "critical": false,
+                      "status": "available"
+                    },
+                    "requests": {
+                      "critical": true,
+                      "status": "available"
+                    }
+                  },
+                  "status": "warning"
+                },
+                "endpoints": {
+                  "endpoints": {
+                    "academic_search": true,
+                    "file_processor": true,
+                    "pdf_processor": false,
+                    "playlist_downloader": true,
+                    "web_scraper": true
+                  },
+                  "status": "warning"
+                },
+                "file_system": {
+                  "paths": {
+                    "downloads": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "static": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "temp": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    },
+                    "templates": {
+                      "exists": true,
+                      "readable": true,
+                      "writable": true
+                    }
+                  },
+                  "status": "healthy"
+                },
+                "modules": {
+                  "failed": [],
+                  "loaded": [
+                    "blueprints.core.services",
+                    "blueprints.core.utils",
+                    "blueprints.core.config",
+                    "blueprints.core.routes",
+                    "blueprints.core.http_client",
+                    "blueprints.core.structify_integration",
+                    "blueprints.core.ocr_config",
+                    "blueprints.features.file_processor",
+                    "blueprints.features.web_scraper",
+                    "blueprints.features.academic_search",
+                    "blueprints.features.pdf_processor",
+                    "blueprints.features.playlist_downloader",
+                    "blueprints.features.web_crawler",
+                    "blueprints.api.management",
+                    "blueprints.api.analytics",
+                    "blueprints.socketio_events"
+                  ],
+                  "status": "healthy",
+                  "total": 16
+                }
+              },
+              "response_time_ms": 18,
+              "status": "warning",
+              "timestamp": "2025-05-31T04:33:33.975009",
+              "version": "3.1.0"
+            }
+          },
+          "/api/start-playlists": {
+            "status": 405,
+            "ok": false,
+            "response_time": 0.002444
+          }
+        },
+        "connectivity": true,
+        "errors": []
+      },
+      "functionality": {
+        "module": "playlistDownloader",
+        "functionality": {
+          "/api/start-playlists": {
+            "status": 400,
+            "ok": true,
+            "response_time": 0.002416
+          }
+        },
+        "working": true,
+        "errors": []
+      },
+      "overall_status": "working"
+    }
+  },
+  "summary": {
+    "successful_modules": 6,
+    "total_modules": 6,
+    "success_rate": 100.0,
+    "status": "PASSED"
+  },
+  "errors": []
+}

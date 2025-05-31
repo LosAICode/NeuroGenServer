@@ -21,15 +21,16 @@ export const API_ENDPOINTS = Object.freeze({
     DETECT_PATH: '/api/detect-path',
     VERIFY_PATH: '/api/verify-path',
     CREATE_DIRECTORY: '/api/create-directory',
-    OPEN_FILE: '/api/open-file'
+    OPEN_FILE: '/api/open-file',
+    GET_OUTPUT_FILEPATH: '/api/get-output-filepath'
   },
 
   // Playlist Processing Endpoints (features/playlist_downloader.py)
   PLAYLIST: {
     START: '/api/start-playlists',
     CANCEL: '/api/cancel-playlists/:taskId',
-    // Note: Status uses general task status endpoint
-    STATUS: '/api/status/:taskId'
+    STATUS: '/api/status/:taskId',
+    HEALTH: '/api/health'
   },
 
   // Web Scraping Endpoints (features/web_scraper.py)

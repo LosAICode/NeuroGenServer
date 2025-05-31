@@ -1241,17 +1241,19 @@ function ensureFormHandlersWork() {
   try {
     console.log('🔧 Ensuring form handlers are properly set up...');
     
-    // Fix File Processor form
+    // Fix File Processor form - try to use the proper module first
     const processForm = document.getElementById('process-form');
     if (processForm && !processForm._enhancedHandler) {
-      const fileProcessor = window.moduleInstances?.fileProcessor || window.fileProcessor;
-      if (fileProcessor && typeof fileProcessor.handleFileSubmit === 'function') {
+      const fileProcessor = window.fileProcessor || window.moduleInstances?.fileProcessor;
+      if (fileProcessor && typeof fileProcessor.handleFormSubmit === 'function') {
         processForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          fileProcessor.handleFileSubmit(e);
+          fileProcessor.handleFormSubmit(e);
         });
         processForm._enhancedHandler = true;
-        console.log('✅ File Processor form handler ensured');
+        console.log('✅ File Processor form handler ensured (using proper module)');
+      } else {
+        console.warn('⚠️ File Processor module not available yet, will be handled by module auto-initialization');
       }
     }
     
@@ -2287,11 +2289,15 @@ window.taskManager = taskManager;
 // Application Startup and Timeout Protection
 // --------------------------------------------------------------------------
 
-// Initialize when DOM is ready
+// Immediate File Processor fix - run as early as possible
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(ensureFormHandlersWork, 100);
+    initializeApp();
+  });
 } else {
-  // DOM already loaded, initialize immediately
+  // DOM already loaded, fix forms immediately then initialize
+  setTimeout(ensureFormHandlersWork, 50);
   setTimeout(initializeApp, 100);
 }
 

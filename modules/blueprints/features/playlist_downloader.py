@@ -5,6 +5,7 @@ Handles YouTube playlist downloading functionality
 
 from flask import Blueprint, request, jsonify
 from flask_socketio import emit
+from werkzeug.utils import secure_filename
 import logging
 import uuid
 import time
