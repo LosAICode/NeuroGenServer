@@ -99,14 +99,14 @@
     },
     "pdfProcessor": {
       "extract": {
-        "exists": true,
+        "exists": false,
         "methods": [
           "POST"
         ],
         "url": "/api/pdf/extract"
       },
       "process": {
-        "exists": true,
+        "exists": false,
         "methods": [
           "POST"
         ],
@@ -169,198 +169,198 @@
   },
   "issues": [
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/app.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\app.js",
       "module": "core/app.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/domUtils.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\domUtils.js",
       "module": "core/domUtils.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/errorHandler.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\errorHandler.js",
       "module": "core/errorHandler.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventManager.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\eventManager.js",
       "module": "core/eventManager.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/eventRegistry.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\eventRegistry.js",
       "module": "core/eventRegistry.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/index.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\index.js",
       "module": "core/index.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/module-bridge.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\module-bridge.js",
       "module": "core/module-bridge.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/moduleLoader.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\moduleLoader.js",
       "module": "core/moduleLoader.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/stateManager.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\stateManager.js",
       "module": "core/stateManager.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/themeManager.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\themeManager.js",
       "module": "core/themeManager.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/ui.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\ui.js",
       "module": "core/ui.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/core/uiRegistry.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\core\\uiRegistry.js",
       "module": "core/uiRegistry.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/debugTools.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\debugTools.js",
       "module": "utils/debugTools.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/domUtils.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\domUtils.js",
       "module": "utils/domUtils.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/errorHandler.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\errorHandler.js",
       "module": "utils/errorHandler.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/fileHandler.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\fileHandler.js",
       "module": "utils/fileHandler.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/index.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\index.js",
       "module": "utils/index.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/moduleDiagnostics.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\moduleDiagnostics.js",
       "module": "utils/moduleDiagnostics.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/progressHandler.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\progressHandler.js",
       "module": "utils/progressHandler.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/safeFileProcessor.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\safeFileProcessor.js",
       "module": "utils/safeFileProcessor.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/socketHandler.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\socketHandler.js",
       "module": "utils/socketHandler.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/systemHealth.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\systemHealth.js",
       "module": "utils/systemHealth.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/ui.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\ui.js",
       "module": "utils/ui.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/utils/utils.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\utils\\utils.js",
       "module": "utils/utils.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicApiClient.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\academicApiClient.js",
       "module": "features/academicApiClient.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicScraper.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\academicScraper.js",
       "module": "features/academicScraper.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/academicSearch.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\academicSearch.js",
       "module": "features/academicSearch.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/dragDropHandler.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\dragDropHandler.js",
       "module": "features/dragDropHandler.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/fileProcessor.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\fileProcessor.js",
       "module": "features/fileProcessor.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/helpMode.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\helpMode.js",
       "module": "features/helpMode.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/historyManager.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\historyManager.js",
       "module": "features/historyManager.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/keyboardShortcuts.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\keyboardShortcuts.js",
       "module": "features/keyboardShortcuts.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/pdfProcessor.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\pdfProcessor.js",
       "module": "features/pdfProcessor.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/performanceOptimizer.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\performanceOptimizer.js",
       "module": "features/performanceOptimizer.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/playlistDownloader.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\playlistDownloader.js",
       "module": "features/playlistDownloader.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/safeFileProcessor.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\safeFileProcessor.js",
       "module": "features/safeFileProcessor.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/webScraper.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\webScraper.js",
       "module": "features/webScraper.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
-      "message": "Module file not found at /workspace/modules/blueprints/static/js/modules/features/webScraperUtils.js",
+      "message": "Module file not found at C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\modules\\features\\webScraperUtils.js",
       "module": "features/webScraperUtils.js",
       "type": "MODULE_NOT_FOUND"
     },
     {
       "file": "index.js",
-      "message": "Critical file missing: /workspace/modules/blueprints/static/js/index.js",
+      "message": "Critical file missing: C:\\Users\\Los\\Documents\\GitHub\\NeuroGenServer\\NeuroGenServer\\modules\\blueprints\\static\\js\\index.js",
       "type": "CRITICAL_FILE_MISSING"
     },
     {
@@ -376,6 +376,16 @@
     {
       "endpoint": "webScraper.results",
       "message": "API endpoint not found: /api/scrape/results/<task_id>",
+      "type": "ENDPOINT_MISSING"
+    },
+    {
+      "endpoint": "pdfProcessor.process",
+      "message": "API endpoint not found: /api/pdf/process",
+      "type": "ENDPOINT_MISSING"
+    },
+    {
+      "endpoint": "pdfProcessor.extract",
+      "message": "API endpoint not found: /api/pdf/extract",
       "type": "ENDPOINT_MISSING"
     }
   ],
@@ -798,27 +808,27 @@
     },
     {
       "action": "Verify backend routes are properly defined",
-      "message": "Found 3 missing API endpoints",
+      "message": "Found 5 missing API endpoints",
       "priority": "MEDIUM"
     }
   ],
   "server": {
     "port": 5025,
-    "pythonVersion": "3.12.3 (main, Feb  4 2025, 14:48:35) [GCC 13.3.0]",
+    "pythonVersion": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
     "running": true,
     "version": "1.2.3"
   },
   "summary": {
-    "checkedEndpoints": 19,
+    "checkedEndpoints": 17,
     "foundModules": 0,
     "health": "CRITICAL",
-    "issueCount": 42,
-    "missingEndpoints": 3,
+    "issueCount": 44,
+    "missingEndpoints": 5,
     "missingModules": 38,
     "totalEndpoints": 22,
     "totalExpectedModules": 38
   },
-  "timestamp": "2025-05-29T15:23:49.036520",
-  "generatedAt": "2025-05-29T19:25:02.467Z",
+  "timestamp": "2025-05-31T12:37:50.196512",
+  "generatedAt": "2025-05-31T16:38:06.463Z",
   "reportType": "NeuroGen Module Diagnostics Report"
 }

@@ -882,12 +882,20 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            from flask import current_app
-            socketio = getattr(current_app, 'socketio', None)
-            if socketio:
-                socketio.emit("task_error", payload)
-            else:
-                logger.warning(f"SocketIO not available to emit task_error for {self.task_id}")
+            import socketio_context_helper
+            
+            # Use safe emit function
+            success = socketio_context_helper.emit_task_error_safe(
+                task_id=self.task_id,
+                task_type=self.task_type,
+                error_message=self.error_message,
+                error_details=self.error_details,
+                stats=serialized_stats
+            )
+            
+            if not success:
+                logger.warning(f"Failed to emit task_error for {self.task_id}")
+                
         except Exception as e:
             logger.error(f"Error emitting task_error for {self.task_id}: {e}")
         
@@ -930,12 +938,20 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            from flask import current_app
-            socketio = getattr(current_app, 'socketio', None)
-            if socketio:
-                socketio.emit("task_completed", payload)
-            else:
-                logger.warning(f"SocketIO not available to emit task_completed for {self.task_id}")
+            import socketio_context_helper
+            
+            # Use safe emit function
+            success = socketio_context_helper.emit_task_completion_safe(
+                task_id=self.task_id,
+                task_type=self.task_type,
+                output_file=payload.get("output_file"),
+                stats=payload.get("stats"),
+                details=payload.get("details")
+            )
+            
+            if not success:
+                logger.warning(f"Failed to emit task_completed for {self.task_id}")
+                
         except Exception as e:
             logger.error(f"Error emitting task_completed for {self.task_id}: {e}")
 
@@ -981,13 +997,20 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            from flask import current_app
-            socketio = getattr(current_app, 'socketio', None)
-            if socketio:
-                socketio.emit("task_cancelled", payload)
+            import socketio_context_helper
+            
+            # Use safe emit function
+            success = socketio_context_helper.emit_task_cancelled_safe(
+                task_id=self.task_id,
+                task_type=self.task_type,
+                reason=payload.get("reason", "Task cancelled")
+            )
+            
+            if success:
                 logger.info(f"Emitted task_cancelled for {self.task_id}")
             else:
-                logger.warning(f"SocketIO not available to emit task_cancelled for {self.task_id}")
+                logger.warning(f"Failed to emit task_cancelled for {self.task_id}")
+                
         except Exception as e:
             logger.error(f"Error emitting task_cancelled for {self.task_id}: {e}")
         

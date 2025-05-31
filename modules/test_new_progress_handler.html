@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test New ProgressHandler v5.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>ProgressHandler v5.0 Test</h1>
+        
+        <!-- File Processing Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>File Processing Test</h3>
+            </div>
+            <div class="card-body">
+                <form id="process-form">
+                    <div class="mb-3">
+                        <label for="input-dir" class="form-label">Input Directory</label>
+                        <input type="text" class="form-control" id="input-dir" placeholder="/tmp/test" value="/tmp/test" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="output-file" class="form-label">Output File</label>
+                        <input type="text" class="form-control" id="output-file" placeholder="test_output.json" value="test_output.json" required>
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <i class="fas fa-play me-2"></i> Start Processing
+                    </button>
+                    <button type="button" id="cancel-btn" class="btn btn-warning ms-2" style="display: none;">
+                        <i class="fas fa-stop me-2"></i> Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Progress Container -->
+        <div id="progress-container" class="card mb-4" style="display: none;">
+            <div class="card-header">
+                <h5>Progress</h5>
+            </div>
+            <div class="card-body">
+                <div class="progress mb-3">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        0%
+                    </div>
+                </div>
+                <div id="progress-status" class="mb-2">Ready to start...</div>
+                <div id="progress-stats" class="text-muted small" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="result-container" style="display: none;"></div>
+
+        <!-- Debug Info -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Debug Information</h5>
+            </div>
+            <div class="card-body">
+                <div id="debug-info">
+                    <p><strong>Socket Status:</strong> <span id="socket-status">Connecting...</span></p>
+                    <p><strong>Progress Handler:</strong> <span id="progress-handler-status">Loading...</span></p>
+                    <p><strong>File Processor:</strong> <span id="file-processor-status">Loading...</span></p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="showDebugInfo()">Refresh Status</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Initialize socket connection
+        window.socket = io('http://localhost:5025');
+        
+        window.socket.on('connect', () => {
+            console.log('Socket connected');
+            document.getElementById('socket-status').textContent = 'Connected ✅';
+        });
+        
+        window.socket.on('disconnect', () => {
+            console.log('Socket disconnected');
+            document.getElementById('socket-status').textContent = 'Disconnected ❌';
+        });
+
+        // Import and initialize modules
+        async function initializeModules() {
+            try {
+                // Import configuration modules
+                const { TASK_EVENTS } = await import('./static/js/modules/config/socketEvents.js');
+                window.TASK_EVENTS = TASK_EVENTS;
+                
+                // Import and initialize progress handler
+                const progressModule = await import('./static/js/modules/utils/progressHandler.js');
+                await progressModule.default();
+                window.progressHandler = progressModule;
+                document.getElementById('progress-handler-status').textContent = 'Initialized ✅';
+                
+                // Import and initialize file processor
+                const fileProcessor = await import('./static/js/modules/features/fileProcessor.js');
+                await fileProcessor.default.init();
+                window.fileProcessor = fileProcessor.default;
+                document.getElementById('file-processor-status').textContent = 'Initialized ✅';
+                
+                console.log('All modules initialized successfully');
+                
+            } catch (error) {
+                console.error('Module initialization failed:', error);
+                document.getElementById('progress-handler-status').textContent = 'Failed ❌';
+                document.getElementById('file-processor-status').textContent = 'Failed ❌';
+            }
+        }
+
+        // Test progress handler directly
+        window.testProgressHandler = async function() {
+            const testTaskId = 'test-task-' + Date.now();
+            console.log('Testing progress handler with task:', testTaskId);
+            
+            // Start tracking
+            const tracker = window.progressHandler.trackProgress(testTaskId, {
+                targetElement: 'progress-container',
+                taskType: 'test_processing'
+            });
+            
+            // Simulate progress updates
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                
+                // Emit mock progress event
+                window.socket.emit('progress_update', {
+                    task_id: testTaskId,
+                    progress: progress,
+                    message: `Test processing... ${progress}%`,
+                    stats: {
+                        files_processed: Math.floor(progress / 10),
+                        total_files: 10,
+                        elapsed_time: progress / 10
+                    }
+                });
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    // Emit completion
+                    setTimeout(() => {
+                        window.socket.emit('task_completed', {
+                            task_id: testTaskId,
+                            message: 'Test completed!',
+                            output_file: 'test_complete.json'
+                        });
+                    }, 500);
+                }
+            }, 1000);
+            
+            return tracker;
+        };
+
+        // Debug info function
+        window.showDebugInfo = function() {
+            console.log('=== DEBUG INFO ===');
+            console.log('Socket:', window.socket?.connected);
+            console.log('Progress Handler:', window.progressHandler?.getHealthStatus());
+            console.log('File Processor:', window.fileProcessor?.getHealthStatus());
+        };
+
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeModules);
+    </script>
+
+    <script>
+        // Add test button
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            const testButton = document.createElement('button');
+            testButton.className = 'btn btn-info mb-3';
+            testButton.innerHTML = '<i class="fas fa-test me-2"></i> Test Progress Handler Directly';
+            testButton.onclick = () => window.testProgressHandler();
+            container.insertBefore(testButton, container.firstChild.nextSibling);
+        });
+    </script>
+</body>
+</html>

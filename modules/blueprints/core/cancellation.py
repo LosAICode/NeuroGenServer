@@ -12,11 +12,13 @@ from typing import Dict, Any, Tuple, Optional
 from .services import (
     active_tasks,
     tasks_lock,
-    socketio,
     emit_task_completion,
     emit_task_error,
     emit_task_cancelled
 )
+
+# Import socketio context helper for proper emission
+from socketio_context_helper import emit_with_context
 
 logger = logging.getLogger(__name__)
 
@@ -405,7 +407,7 @@ def force_cancel_all_tasks():
     
     # Also emit a global cancellation event
     try:
-        socketio.emit('all_tasks_cancelled', {
+        emit_with_context('all_tasks_cancelled', {
             'reason': 'Force cancellation due to system issue',
             'count': cancelled_count,
             'timestamp': time.time()
@@ -479,7 +481,7 @@ def emit_cancellation_event(task_id: str, task_type: str, reason: str = "Task ca
         # Emit task-specific cancellation events
         if task_type == 'file_processing':
             try:
-                socketio.emit('file_processing_cancelled', {
+                emit_with_context('file_processing_cancelled', {
                     'task_id': task_id,
                     'reason': reason,
                     'timestamp': time.time()
@@ -489,7 +491,7 @@ def emit_cancellation_event(task_id: str, task_type: str, reason: str = "Task ca
                 
         elif task_type == 'playlist_download':
             try:
-                socketio.emit('playlist_cancelled', {
+                emit_with_context('playlist_cancelled', {
                     'taskId': task_id,  # Note: Frontend expects camelCase
                     'reason': reason,
                     'timestamp': time.time()
@@ -499,7 +501,7 @@ def emit_cancellation_event(task_id: str, task_type: str, reason: str = "Task ca
                 
         elif task_type == 'web_scraping':
             try:
-                socketio.emit('scraping_cancelled', {
+                emit_with_context('scraping_cancelled', {
                     'task_id': task_id,
                     'reason': reason,
                     'timestamp': time.time()
@@ -509,7 +511,7 @@ def emit_cancellation_event(task_id: str, task_type: str, reason: str = "Task ca
                 
         elif task_type == 'pdf_processing':
             try:
-                socketio.emit('pdf_processing_cancelled', {
+                emit_with_context('pdf_processing_cancelled', {
                     'task_id': task_id,
                     'reason': reason,
                     'timestamp': time.time()
@@ -519,7 +521,7 @@ def emit_cancellation_event(task_id: str, task_type: str, reason: str = "Task ca
                 
         elif task_type == 'batch_processing':
             try:
-                socketio.emit('batch_processing_cancelled', {
+                emit_with_context('batch_processing_cancelled', {
                     'task_id': task_id,
                     'reason': reason,
                     'timestamp': time.time()

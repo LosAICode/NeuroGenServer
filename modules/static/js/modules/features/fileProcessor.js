@@ -99,7 +99,13 @@ async function initializeImports() {
 }
 
 // Configuration shorthand (will be initialized after imports)
-let FILE_PROCESSOR_CONFIG = {};
+let FILE_PROCESSOR_CONFIG = {
+  constants: {},
+  endpoints: {},
+  blueprint: '',
+  api: {},
+  socket: {}
+};
 
 /**
  * File Processor Class - Clean Blueprint Implementation
@@ -117,11 +123,12 @@ class FileProcessor {
       lastHealthCheck: null
     };
     
+    // Initialize config with safe defaults - will be properly set in init()
     this.config = {
-      supportedFormats: FILE_PROCESSOR_CONFIG.constants.ALLOWED_EXTENSIONS || CONSTANTS.ALLOWED_EXTENSIONS,
-      maxFileSize: FILE_PROCESSOR_CONFIG.constants.MAX_FILE_SIZE || CONSTANTS.MAX_FILE_SIZE,
-      maxBatchSize: FILE_PROCESSOR_CONFIG.constants.MAX_BATCH_SIZE || CONSTANTS.MAX_BATCH_SIZE,
-      chunkSize: FILE_PROCESSOR_CONFIG.constants.CHUNK_SIZE || CONSTANTS.CHUNK_SIZE
+      supportedFormats: ['.txt', '.md', '.json', '.xml', '.html', '.csv'],
+      maxFileSize: 50 * 1024 * 1024, // 50MB default
+      maxBatchSize: 100,
+      chunkSize: 1024 * 1024 // 1MB chunks
     };
   }
 
@@ -283,15 +290,23 @@ class FileProcessor {
       
       // Initialize configuration after imports
       FILE_PROCESSOR_CONFIG = {
-        endpoints: API_ENDPOINTS?.FILE_PROCESSOR || {
+        endpoints: API_ENDPOINTS?.FILE_PROCESSING || {
           PROCESS: '/api/process',
           HEALTH: '/api/health',
           CANCEL: '/api/cancel/:taskId'
         },
         blueprint: BLUEPRINT_ROUTES?.file_processor || '/api',
-        constants: CONSTANTS?.FILE_PROCESSOR || {},
+        constants: CONSTANTS?.FILE_PROCESSOR || CONSTANTS || {},
         api: API_CONFIG || { API_TIMEOUT: 30000 },
         socket: SOCKET_CONFIG || {}
+      };
+      
+      // Update config with actual values after imports
+      this.config = {
+        supportedFormats: FILE_PROCESSOR_CONFIG.constants.ALLOWED_EXTENSIONS || CONSTANTS?.ALLOWED_EXTENSIONS || this.config.supportedFormats,
+        maxFileSize: FILE_PROCESSOR_CONFIG.constants.MAX_FILE_SIZE || CONSTANTS?.MAX_FILE_SIZE || this.config.maxFileSize,
+        maxBatchSize: FILE_PROCESSOR_CONFIG.constants.MAX_BATCH_SIZE || CONSTANTS?.MAX_BATCH_SIZE || this.config.maxBatchSize,
+        chunkSize: FILE_PROCESSOR_CONFIG.constants.CHUNK_SIZE || CONSTANTS?.CHUNK_SIZE || this.config.chunkSize
       };
       
       this.showNotification('Initializing File Processor v4.0', 'info', 'File Processor');
@@ -414,8 +429,14 @@ class FileProcessor {
   setupSocketHandlers() {
     if (!window.socket) return;
 
+    console.log('📡 [FileProcessor] Setting up socket handlers...', {
+      events: TASK_EVENTS,
+      socketReady: !!window.socket.connected
+    });
+
     // Task started
     const taskStartedHandler = (data) => {
+      console.log('📡 [FileProcessor] Task started event:', data);
       if (data.task_id === this.state.currentTask?.id) {
         this.handleTaskStarted(data);
       }
@@ -425,8 +446,17 @@ class FileProcessor {
 
     // Progress updates
     const progressHandler = (data) => {
+      console.log('📡 [FileProcessor] Progress event received:', data);
+      console.log('📡 [FileProcessor] Task comparison:', {
+        received: data.task_id,
+        current: this.state.currentTask?.id,
+        match: data.task_id === this.state.currentTask?.id
+      });
+      
       if (data.task_id === this.state.currentTask?.id) {
         this.handleProgressUpdate(data);
+      } else {
+        console.log('📡 [FileProcessor] Progress event ignored - task ID mismatch');
       }
     };
     window.socket.on(TASK_EVENTS.PROGRESS, progressHandler);
@@ -652,11 +682,56 @@ class FileProcessor {
       };
 
       console.log(`📁 File processing started: ${response.task_id}`);
+      console.log(`📁 Socket connected: ${!!window.socket?.connected}, Current task stored:`, this.state.currentTask);
+      
+      // Start progress tracking using existing progressHandler
+      await this.initializeProgressTracking(response.task_id);
+      
       this.showInfo(`Processing started for: ${inputDir}`);
 
     } catch (error) {
       console.error('❌ Failed to start processing:', error);
       this.handleTaskError({ error: error.message });
+    }
+  }
+
+
+  /**
+   * Initialize progress tracking using new SocketIO-aligned progressHandler v5.0
+   */
+  async initializeProgressTracking(taskId) {
+    try {
+      console.log(`📊 [FileProcessor] Initializing progress tracking for: ${taskId}`);
+      
+      // Import new progressHandler v5.0
+      const progressHandlerModule = await import('../utils/progressHandler.js');
+      const { trackProgress } = progressHandlerModule;
+      
+      // Initialize the progress handler if needed
+      if (typeof progressHandlerModule.default === 'function' && !window.progressHandlerInitialized) {
+        await progressHandlerModule.default();
+        window.progressHandlerInitialized = true;
+      }
+      
+      // Start tracking this specific task with v5.0 API
+      if (trackProgress) {
+        console.log(`📊 [FileProcessor] Starting progress tracking with v5.0...`);
+        const tracker = trackProgress(taskId, {
+          targetElement: 'progress-container',
+          taskType: 'file_processing',
+          elementPrefix: '' // Use default element IDs
+        });
+        
+        // Store tracker for cleanup
+        this.state.progressTracker = tracker;
+      }
+      
+      console.log(`📊 [FileProcessor] Progress tracking v5.0 initialized`);
+      
+    } catch (error) {
+      console.error('❌ Failed to initialize progress tracking:', error);
+      this.showNotification(`Progress tracking failed: ${error.message}`, 'warning');
+      // Continue without progress tracking
     }
   }
 
@@ -687,6 +762,8 @@ class FileProcessor {
    * Handle progress update
    */
   handleProgressUpdate(data) {
+    console.log(`📊 [FileProcessor] Progress update received:`, data);
+    
     const progress = Math.min(100, Math.max(0, data.progress || 0));
     const message = data.message || `Processing... ${progress.toFixed(1)}%`;
     
@@ -910,6 +987,11 @@ class FileProcessor {
     // Cancel any ongoing task
     if (this.state.currentTask) {
       this.cancelProcessing();
+    }
+
+    // Cleanup progress tracker
+    if (this.state.progressTracker?.stop) {
+      this.state.progressTracker.stop();
     }
 
     this.state.isInitialized = false;

@@ -30,7 +30,8 @@
       "Bash(cp:*)",
       "Bash(ss:*)",
       "Bash(pip3 install:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(/usr/bin/rg:*)"
     ],
     "deny": []
   },
