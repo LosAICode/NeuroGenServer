@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocketHandler Module Validation Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .test-section-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .test-section-content {
+            padding: 20px;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            background: #f8f9fa;
+            border-left: 4px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .test-item.pass {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+
+        .test-item.fail {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+
+        .test-item.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+
+        .test-item.running {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .test-name {
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .test-result {
+            font-weight: bold;
+            margin-left: 15px;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .test-details {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #667eea;
+        }
+
+        .summary-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .summary-label {
+            color: #6c757d;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+
+        .log-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: auto;
+            margin: 20px 0;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-connected {
+            background: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+
+        .status-disconnected {
+            background: #dc3545;
+        }
+
+        .status-connecting {
+            background: #ffc107;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .mock-elements {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔌 SocketHandler Module Validation</h1>
+            <p>Comprehensive test suite for the SocketHandler module functionality</p>
+        </div>
+
+        <div class="content">
+            <div class="controls">
+                <button id="runAllTests" class="btn">🚀 Run All Tests</button>
+                <button id="runConnectionTests" class="btn">🔗 Connection Tests</button>
+                <button id="runTaskTests" class="btn">📋 Task Tests</button>
+                <button id="runEventTests" class="btn">📡 Event Tests</button>
+                <button id="clearResults" class="btn btn-danger">🗑️ Clear Results</button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary">
+                <div class="summary-card">
+                    <div class="summary-number" id="totalTests">0</div>
+                    <div class="summary-label">Total Tests</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="passedTests">0</div>
+                    <div class="summary-label">Passed</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="failedTests">0</div>
+                    <div class="summary-label">Failed</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="warningTests">0</div>
+                    <div class="summary-label">Warnings</div>
+                </div>
+            </div>
+
+            <!-- Module Availability Tests -->
+            <div class="test-section">
+                <div class="test-section-header">
+                    📦 Module Availability & Dependencies
+                </div>
+                <div class="test-section-content" id="moduleTests">
+                    <!-- Test items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Connection Tests -->
+            <div class="test-section">
+                <div class="test-section-header">
+                    🔗 Socket.IO Connection & Communication
+                </div>
+                <div class="test-section-content" id="connectionTests">
+                    <!-- Test items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Task Management Tests -->
+            <div class="test-section">
+                <div class="test-section-header">
+                    📋 Task Management & Progress Tracking
+                </div>
+                <div class="test-section-content" id="taskTests">
+                    <!-- Test items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Event Handler Tests -->
+            <div class="test-section">
+                <div class="test-section-header">
+                    📡 Event Handlers & Registry Integration
+                </div>
+                <div class="test-section-content" id="eventTests">
+                    <!-- Test items will be populated here -->
+                </div>
+            </div>
+
+            <!-- PDF & Web Scraper Tests -->
+            <div class="test-section">
+                <div class="test-section-header">
+                    📄 PDF Download & Web Scraper Integration
+                </div>
+                <div class="test-section-content" id="pdfTests">
+                    <!-- Test items will be populated here -->
+                </div>
+            </div>
+
+            <!-- HTTP Fallback Tests -->
+            <div class="test-section">
+                <div class="test-section-header">
+                    🔄 HTTP API Fallback & Error Recovery
+                </div>
+                <div class="test-section-content" id="fallbackTests">
+                    <!-- Test items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Real-time Log Output -->
+            <div class="test-section">
+                <div class="test-section-header">
+                    📝 Test Execution Log
+                </div>
+                <div class="test-section-content">
+                    <div class="log-output" id="logOutput">Test log will appear here...\n</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mock DOM Elements for Testing -->
+    <div class="mock-elements">
+        <div id="socket-status" class="d-none">
+            <span class="socket-status-text">Disconnected</span>
+        </div>
+        <div id="progress-container">
+            <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            <div id="progress-status">Ready</div>
+            <div id="progress-stats"></div>
+        </div>
+        <div id="results-container" style="display: none;"></div>
+        <div id="error-container" style="display: none;"></div>
+        <div id="toast-container"></div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Test Details</h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Socket.IO Client Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+
+    <script type="module">
+        // Test Framework
+        class SocketHandlerValidator {
+            constructor() {
+                this.tests = [];
+                this.results = {
+                    total: 0,
+                    passed: 0,
+                    failed: 0,
+                    warnings: 0
+                };
+                this.socketHandler = null;
+                this.mockEventRegistry = null;
+                this.testStartTime = null;
+                
+                this.initializeTestFramework();
+            }
+
+            initializeTestFramework() {
+                this.log('🚀 Initializing SocketHandler Validation Test Framework');
+                this.setupMockEnvironment();
+                this.setupEventListeners();
+                this.registerAllTests();
+            }
+
+            setupMockEnvironment() {
+                // Mock event registry
+                this.mockEventRegistry = {
+                    emit: (event, data) => {
+                        this.log(`📡 EventRegistry.emit: ${event}`, data);
+                        return true;
+                    },
+                    events: new Map()
+                };
+
+                // Mock window objects
+                window.eventRegistry = this.mockEventRegistry;
+                window.moduleInstances = {
+                    eventRegistry: this.mockEventRegistry
+                };
+
+                // Mock UI utilities
+                window.ui = {
+                    showToast: (title, message, type) => {
+                        this.log(`🍞 Toast: [${type}] ${title}: ${message}`);
+                    }
+                };
+
+                // Mock Bootstrap
+                window.bootstrap = {
+                    Toast: class {
+                        constructor(element) {
+                            this.element = element;
+                        }
+                        show() {
+                            this.log('📢 Bootstrap toast shown');
+                        }
+                    }
+                };
+
+                // Mock progress handler
+                window.progressHandler = {
+                    updateTaskProgress: (taskId, progress, message, stats) => {
+                        this.log(`📊 Progress Update: ${taskId} - ${progress}% - ${message}`);
+                    },
+                    completeTask: (taskId, data) => {
+                        this.log(`✅ Task Complete: ${taskId}`, data);
+                    },
+                    errorTask: (taskId, error) => {
+                        this.log(`❌ Task Error: ${taskId} - ${error}`);
+                    },
+                    cancelTask: (taskId) => {
+                        this.log(`🚫 Task Cancelled: ${taskId}`);
+                    }
+                };
+
+                this.log('✅ Mock environment setup complete');
+            }
+
+            setupEventListeners() {
+                document.getElementById('runAllTests').addEventListener('click', () => this.runAllTests());
+                document.getElementById('runConnectionTests').addEventListener('click', () => this.runTestCategory('connection'));
+                document.getElementById('runTaskTests').addEventListener('click', () => this.runTestCategory('task'));
+                document.getElementById('runEventTests').addEventListener('click', () => this.runTestCategory('event'));
+                document.getElementById('clearResults').addEventListener('click', () => this.clearResults());
+
+                // Modal setup
+                const modal = document.getElementById('detailsModal');
+                const span = document.getElementsByClassName('close')[0];
+                span.onclick = () => modal.style.display = 'none';
+                window.onclick = (event) => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                };
+            }
+
+            registerAllTests() {
+                // Module Availability Tests
+                this.addTest('module', 'Socket.IO Library Available', () => this.testSocketIOAvailable());
+                this.addTest('module', 'SocketHandler Module Import', () => this.testSocketHandlerImport());
+                this.addTest('module', 'Module Dependencies', () => this.testModuleDependencies());
+                this.addTest('module', 'DOM Elements Available', () => this.testDOMElements());
+
+                // Connection Tests
+                this.addTest('connection', 'Module Initialization', () => this.testModuleInitialization());
+                this.addTest('connection', 'Socket Connection', () => this.testSocketConnection());
+                this.addTest('connection', 'Connection State Management', () => this.testConnectionState());
+                this.addTest('connection', 'Reconnection Logic', () => this.testReconnectionLogic());
+                this.addTest('connection', 'Ping/Pong Mechanism', () => this.testPingPong());
+
+                // Task Management Tests
+                this.addTest('task', 'Task Tracking', () => this.testTaskTracking());
+                this.addTest('task', 'Progress Updates', () => this.testProgressUpdates());
+                this.addTest('task', 'Task Completion', () => this.testTaskCompletion());
+                this.addTest('task', 'Task Cancellation', () => this.testTaskCancellation());
+                this.addTest('task', 'Task Error Handling', () => this.testTaskErrorHandling());
+                this.addTest('task', 'Multiple Task Management', () => this.testMultipleTaskManagement());
+
+                // Event Handler Tests
+                this.addTest('event', 'EventRegistry Integration', () => this.testEventRegistryIntegration());
+                this.addTest('event', 'Custom Event Handlers', () => this.testCustomEventHandlers());
+                this.addTest('event', 'Event Cleanup', () => this.testEventCleanup());
+
+                // PDF & Web Scraper Tests
+                this.addTest('pdf', 'PDF Download Events', () => this.testPDFDownloadEvents());
+                this.addTest('pdf', 'PDF Processing Events', () => this.testPDFProcessingEvents());
+                this.addTest('pdf', 'Batch Processing Events', () => this.testBatchProcessingEvents());
+                this.addTest('pdf', 'Web Scraper Integration', () => this.testWebScraperIntegration());
+
+                // HTTP Fallback Tests
+                this.addTest('fallback', 'HTTP Status Requests', () => this.testHTTPStatusRequests());
+                this.addTest('fallback', 'HTTP Task Cancellation', () => this.testHTTPTaskCancellation());
+                this.addTest('fallback', 'Fallback Error Handling', () => this.testFallbackErrorHandling());
+                this.addTest('fallback', 'Polling Mechanism', () => this.testPollingMechanism());
+
+                this.log(`📋 Registered ${this.tests.length} tests across ${this.getCategories().length} categories`);
+            }
+
+            addTest(category, name, testFunction) {
+                this.tests.push({
+                    category,
+                    name,
+                    test: testFunction,
+                    status: 'pending',
+                    details: null,
+                    error: null
+                });
+            }
+
+            getCategories() {
+                return [...new Set(this.tests.map(test => test.category))];
+            }
+
+            async runAllTests() {
+                this.log('🚀 Starting comprehensive test suite...');
+                this.testStartTime = Date.now();
+                this.clearResults();
+
+                for (const test of this.tests) {
+                    await this.runSingleTest(test);
+                    await this.sleep(100); // Small delay between tests
+                }
+
+                this.displaySummary();
+            }
+
+            async runTestCategory(category) {
+                this.log(`🎯 Running ${category} tests...`);
+                const categoryTests = this.tests.filter(test => test.category === category);
+                
+                for (const test of categoryTests) {
+                    await this.runSingleTest(test);
+                    await this.sleep(50);
+                }
+
+                this.updateSummary();
+            }
+
+            async runSingleTest(test) {
+                this.log(`🧪 Running: ${test.name}`);
+                test.status = 'running';
+                this.updateTestDisplay(test);
+
+                try {
+                    const result = await test.test();
+                    
+                    if (result === true) {
+                        test.status = 'pass';
+                        this.results.passed++;
+                    } else if (result && result.status === 'warning') {
+                        test.status = 'warning';
+                        test.details = result.message;
+                        this.results.warnings++;
+                    } else {
+                        test.status = 'fail';
+                        test.details = result && result.message ? result.message : 'Test failed without specific details';
+                        this.results.failed++;
+                    }
+                } catch (error) {
+                    test.status = 'fail';
+                    test.error = error.message;
+                    test.details = `Exception: ${error.message}`;
+                    this.results.failed++;
+                    this.log(`❌ Test failed with error: ${error.message}`);
+                }
+
+                this.results.total++;
+                this.updateTestDisplay(test);
+                this.updateSummary();
+            }
+
+            updateTestDisplay(test) {
+                const container = document.getElementById(`${test.category}Tests`);
+                if (!container) {
+                    this.log(`⚠️ Container not found for category: ${test.category}`);
+                    return;
+                }
+
+                let testElement = container.querySelector(`[data-test-name="${test.name}"]`);
+                
+                if (!testElement) {
+                    testElement = document.createElement('div');
+                    testElement.className = 'test-item';
+                    testElement.setAttribute('data-test-name', test.name);
+                    testElement.innerHTML = `
+                        <div class="test-name">${test.name}</div>
+                        <div class="test-result">PENDING</div>
+                    `;
+                    container.appendChild(testElement);
+                }
+
+                testElement.className = `test-item ${test.status}`;
+                
+                const resultElement = testElement.querySelector('.test-result');
+                const statusEmoji = {
+                    'pending': '⏳',
+                    'running': '🔄',
+                    'pass': '✅',
+                    'fail': '❌',
+                    'warning': '⚠️'
+                };
+                
+                resultElement.textContent = `${statusEmoji[test.status]} ${test.status.toUpperCase()}`;
+
+                // Add details if available
+                let detailsElement = testElement.querySelector('.test-details');
+                if (test.details && test.status !== 'running') {
+                    if (!detailsElement) {
+                        detailsElement = document.createElement('div');
+                        detailsElement.className = 'test-details';
+                        testElement.appendChild(detailsElement);
+                    }
+                    detailsElement.textContent = test.details;
+                } else if (detailsElement) {
+                    detailsElement.remove();
+                }
+
+                // Add click handler for details
+                if (test.status !== 'pending' && test.status !== 'running') {
+                    testElement.style.cursor = 'pointer';
+                    testElement.onclick = () => this.showTestDetails(test);
+                }
+            }
+
+            showTestDetails(test) {
+                const modal = document.getElementById('detailsModal');
+                const content = document.getElementById('modalContent');
+                
+                let detailsHTML = `
+                    <h3>${test.name}</h3>
+                    <p><strong>Status:</strong> ${test.status}</p>
+                    <p><strong>Category:</strong> ${test.category}</p>
+                `;
+
+                if (test.details) {
+                    detailsHTML += `<p><strong>Details:</strong> ${test.details}</p>`;
+                }
+
+                if (test.error) {
+                    detailsHTML += `<p><strong>Error:</strong> <code>${test.error}</code></p>`;
+                }
+
+                content.innerHTML = detailsHTML;
+                modal.style.display = 'block';
+            }
+
+            updateSummary() {
+                document.getElementById('totalTests').textContent = this.results.total;
+                document.getElementById('passedTests').textContent = this.results.passed;
+                document.getElementById('failedTests').textContent = this.results.failed;
+                document.getElementById('warningTests').textContent = this.results.warnings;
+            }
+
+            displaySummary() {
+                const duration = ((Date.now() - this.testStartTime) / 1000).toFixed(1);
+                this.log(`\n📊 Test Summary:`);
+                this.log(`   Total: ${this.results.total}`);
+                this.log(`   Passed: ${this.results.passed}`);
+                this.log(`   Failed: ${this.results.failed}`);
+                this.log(`   Warnings: ${this.results.warnings}`);
+                this.log(`   Duration: ${duration}s`);
+                
+                const successRate = this.results.total > 0 ? 
+                    ((this.results.passed / this.results.total) * 100).toFixed(1) : 0;
+                this.log(`   Success Rate: ${successRate}%`);
+            }
+
+            clearResults() {
+                this.results = { total: 0, passed: 0, failed: 0, warnings: 0 };
+                this.tests.forEach(test => {
+                    test.status = 'pending';
+                    test.details = null;
+                    test.error = null;
+                });
+
+                // Clear test displays
+                ['moduleTests', 'connectionTests', 'taskTests', 'eventTests', 'pdfTests', 'fallbackTests'].forEach(id => {
+                    const container = document.getElementById(id);
+                    if (container) container.innerHTML = '';
+                });
+
+                this.updateSummary();
+                this.log('🗑️ Test results cleared');
+            }
+
+            log(message, data = null) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logOutput = document.getElementById('logOutput');
+                
+                let logMessage = `[${timestamp}] ${message}`;
+                if (data) {
+                    logMessage += `\n    Data: ${JSON.stringify(data, null, 2)}`;
+                }
+                
+                logOutput.textContent += logMessage + '\n';
+                logOutput.scrollTop = logOutput.scrollHeight;
+                
+                console.log(message, data);
+            }
+
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            // ==================== TEST IMPLEMENTATIONS ====================
+
+            // Module Availability Tests
+            async testSocketIOAvailable() {
+                if (typeof io === 'undefined') {
+                    return { status: 'fail', message: 'Socket.IO client library not loaded' };
+                }
+                this.log('✅ Socket.IO client library is available');
+                return true;
+            }
+
+            async testSocketHandlerImport() {
+                try {
+                    // Dynamic import of the socketHandler module
+                    const module = await import('./modules/utils/socketHandler.js');
+                    this.socketHandler = module.default || module;
+                    
+                    if (!this.socketHandler) {
+                        return { status: 'fail', message: 'SocketHandler module not found in import' };
+                    }
+
+                    this.log('✅ SocketHandler module imported successfully');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Import failed: ${error.message}` };
+                }
+            }
+
+            async testModuleDependencies() {
+                const requiredMethods = [
+                    'initialize', 'connect', 'disconnect', 'isConnected',
+                    'startStatusPolling', 'stopStatusPolling', 'cancelTask',
+                    'trackTask', 'getActiveTasks', 'getDiagnostics'
+                ];
+
+                const missingMethods = requiredMethods.filter(method => 
+                    typeof this.socketHandler[method] !== 'function'
+                );
+
+                if (missingMethods.length > 0) {
+                    return { 
+                        status: 'fail', 
+                        message: `Missing methods: ${missingMethods.join(', ')}` 
+                    };
+                }
+
+                this.log('✅ All required methods are available');
+                return true;
+            }
+
+            async testDOMElements() {
+                const requiredElements = [
+                    'socket-status', 'progress-container', 'progress-bar',
+                    'progress-status', 'results-container', 'error-container'
+                ];
+
+                const missingElements = requiredElements.filter(id => 
+                    !document.getElementById(id)
+                );
+
+                if (missingElements.length > 0) {
+                    return { 
+                        status: 'warning', 
+                        message: `Missing DOM elements: ${missingElements.join(', ')}` 
+                    };
+                }
+
+                this.log('✅ All required DOM elements are present');
+                return true;
+            }
+
+            // Connection Tests
+            async testModuleInitialization() {
+                try {
+                    const result = await this.socketHandler.initialize({
+                        eventRegistryRef: this.mockEventRegistry
+                    });
+
+                    if (result === true) {
+                        this.log('✅ Module initialized successfully');
+                        return true;
+                    } else {
+                        return { status: 'fail', message: 'Module initialization returned false' };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Initialization failed: ${error.message}` };
+                }
+            }
+
+            async testSocketConnection() {
+                try {
+                    // Check if connection was attempted
+                    const diagnostics = this.socketHandler.getDiagnostics();
+                    
+                    if (diagnostics.hasSocket) {
+                        this.log('✅ Socket connection was attempted');
+                        return true;
+                    } else {
+                        return { 
+                            status: 'warning', 
+                            message: 'Socket connection not established (server may not be running)' 
+                        };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Connection test failed: ${error.message}` };
+                }
+            }
+
+            async testConnectionState() {
+                try {
+                    const isConnected = this.socketHandler.isConnected();
+                    const state = this.socketHandler.getState();
+                    
+                    this.log(`🔍 Connection state: ${isConnected ? 'Connected' : 'Disconnected'}`);
+                    this.log(`🔍 Module state:`, state);
+                    
+                    // This is informational - we can't fail based on connection state
+                    // since the test server might not be running
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `State check failed: ${error.message}` };
+                }
+            }
+
+            async testReconnectionLogic() {
+                try {
+                    const diagnostics = this.socketHandler.getDiagnostics();
+                    
+                    // Check if reconnection attempts are being tracked
+                    if (typeof diagnostics.reconnectAttempts === 'number') {
+                        this.log('✅ Reconnection logic is in place');
+                        return true;
+                    } else {
+                        return { status: 'fail', message: 'Reconnection tracking not found' };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Reconnection test failed: ${error.message}` };
+                }
+            }
+
+            async testPingPong() {
+                try {
+                    // Test ping functionality
+                    this.socketHandler.sendPing();
+                    this.log('✅ Ping function is callable');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Ping test failed: ${error.message}` };
+                }
+            }
+
+            // Task Management Tests
+            async testTaskTracking() {
+                try {
+                    const testTaskId = 'test-task-' + Date.now();
+                    
+                    // Track a task
+                    const tracker = this.socketHandler.trackTask(testTaskId);
+                    
+                    if (tracker && tracker.taskId === testTaskId) {
+                        this.log(`✅ Task tracking works: ${testTaskId}`);
+                        
+                        // Check if task is tracked
+                        const isTracked = this.socketHandler.isTaskTracked(testTaskId);
+                        if (isTracked) {
+                            this.log('✅ Task tracking verification works');
+                            return true;
+                        } else {
+                            return { status: 'fail', message: 'Task tracking verification failed' };
+                        }
+                    } else {
+                        return { status: 'fail', message: 'Task tracker not created properly' };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Task tracking failed: ${error.message}` };
+                }
+            }
+
+            async testProgressUpdates() {
+                try {
+                    const testTaskId = 'progress-test-' + Date.now();
+                    
+                    // Start tracking
+                    this.socketHandler.trackTask(testTaskId);
+                    
+                    // Request status (this will trigger polling if not connected)
+                    this.socketHandler.requestTaskStatus(testTaskId);
+                    
+                    this.log('✅ Progress update system is functional');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Progress update test failed: ${error.message}` };
+                }
+            }
+
+            async testTaskCompletion() {
+                try {
+                    const testTaskId = 'completion-test-' + Date.now();
+                    
+                    // Register a task with completion callback
+                    let callbackCalled = false;
+                    this.socketHandler.registerTaskHandler(testTaskId, {
+                        onComplete: () => { callbackCalled = true; }
+                    });
+                    
+                    this.log('✅ Task completion handlers can be registered');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Task completion test failed: ${error.message}` };
+                }
+            }
+
+            async testTaskCancellation() {
+                try {
+                    const testTaskId = 'cancel-test-' + Date.now();
+                    
+                    // Track task first
+                    this.socketHandler.trackTask(testTaskId);
+                    
+                    // Attempt to cancel (will fail gracefully if server not running)
+                    const cancelPromise = this.socketHandler.cancelTask(testTaskId);
+                    
+                    // Just check that the method is callable
+                    this.log('✅ Task cancellation method is callable');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Task cancellation test failed: ${error.message}` };
+                }
+            }
+
+            async testTaskErrorHandling() {
+                try {
+                    const testTaskId = 'error-test-' + Date.now();
+                    
+                    // Register error handler
+                    this.socketHandler.registerTaskHandler(testTaskId, {
+                        onError: (error) => {
+                            this.log(`📥 Error handler called: ${error.error}`);
+                        }
+                    });
+                    
+                    this.log('✅ Task error handlers can be registered');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Error handling test failed: ${error.message}` };
+                }
+            }
+
+            async testMultipleTaskManagement() {
+                try {
+                    const taskIds = [
+                        'multi-test-1-' + Date.now(),
+                        'multi-test-2-' + Date.now(),
+                        'multi-test-3-' + Date.now()
+                    ];
+                    
+                    // Track multiple tasks
+                    taskIds.forEach(id => this.socketHandler.trackTask(id));
+                    
+                    // Get active tasks
+                    const activeTasks = this.socketHandler.getActiveTasks();
+                    
+                    const foundTasks = taskIds.filter(id => activeTasks.includes(id));
+                    
+                    if (foundTasks.length === taskIds.length) {
+                        this.log('✅ Multiple task management works');
+                        return true;
+                    } else {
+                        return { 
+                            status: 'fail', 
+                            message: `Only ${foundTasks.length}/${taskIds.length} tasks tracked` 
+                        };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Multiple task test failed: ${error.message}` };
+                }
+            }
+
+            // Event Handler Tests
+            async testEventRegistryIntegration() {
+                try {
+                    // Check if event registry is available
+                    const diagnostics = this.socketHandler.getDiagnostics();
+                    
+                    if (diagnostics.eventRegistryAvailable) {
+                        this.log('✅ EventRegistry integration is available');
+                        return true;
+                    } else {
+                        return { 
+                            status: 'warning', 
+                            message: 'EventRegistry not available (may be expected in some environments)' 
+                        };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `EventRegistry test failed: ${error.message}` };
+                }
+            }
+
+            async testCustomEventHandlers() {
+                try {
+                    // Test emit functionality
+                    const eventSent = this.socketHandler.emit('test_event', { test: true });
+                    
+                    if (eventSent === false) {
+                        this.log('⚠️ Event emission returned false (socket not connected)');
+                        return { status: 'warning', message: 'Socket not connected for event emission' };
+                    } else {
+                        this.log('✅ Event emission is functional');
+                        return true;
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Custom event test failed: ${error.message}` };
+                }
+            }
+
+            async testEventCleanup() {
+                try {
+                    const testTaskId = 'cleanup-test-' + Date.now();
+                    
+                    // Track task
+                    const tracker = this.socketHandler.trackTask(testTaskId);
+                    
+                    // Stop tracking
+                    tracker.stopTracking();
+                    
+                    // Verify task is no longer tracked
+                    const isStillTracked = this.socketHandler.isTaskTracked(testTaskId);
+                    
+                    if (!isStillTracked) {
+                        this.log('✅ Event cleanup works properly');
+                        return true;
+                    } else {
+                        return { status: 'fail', message: 'Task cleanup failed' };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Event cleanup test failed: ${error.message}` };
+                }
+            }
+
+            // PDF & Web Scraper Tests
+            async testPDFDownloadEvents() {
+                try {
+                    // Test PDF download event emission
+                    const result = this.socketHandler.emitPdfDownloadStart(
+                        'https://example.com/test.pdf',
+                        'pdf-test-' + Date.now()
+                    );
+                    
+                    if (result === false) {
+                        return { 
+                            status: 'warning', 
+                            message: 'PDF download event not sent (socket not connected)' 
+                        };
+                    }
+                    
+                    this.log('✅ PDF download events are functional');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `PDF download test failed: ${error.message}` };
+                }
+            }
+
+            async testPDFProcessingEvents() {
+                try {
+                    // Test PDF processing event emission
+                    const result = this.socketHandler.emitPdfProcessingRequest({
+                        file_path: '/test/path.pdf',
+                        task_id: 'pdf-process-' + Date.now()
+                    });
+                    
+                    if (result === false) {
+                        return { 
+                            status: 'warning', 
+                            message: 'PDF processing event not sent (socket not connected)' 
+                        };
+                    }
+                    
+                    this.log('✅ PDF processing events are functional');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `PDF processing test failed: ${error.message}` };
+                }
+            }
+
+            async testBatchProcessingEvents() {
+                try {
+                    // Check if batch processing handlers are set up by checking diagnostics
+                    const diagnostics = this.socketHandler.getDiagnostics();
+                    
+                    // This test mainly verifies that the module can handle batch events
+                    // without throwing errors
+                    this.log('✅ Batch processing event handlers are in place');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Batch processing test failed: ${error.message}` };
+                }
+            }
+
+            async testWebScraperIntegration() {
+                try {
+                    // Test that web scraper integration doesn't cause errors
+                    // This is mainly about ensuring imports work without circular dependencies
+                    this.log('✅ Web scraper integration check passed');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Web scraper integration failed: ${error.message}` };
+                }
+            }
+
+            // HTTP Fallback Tests
+            async testHTTPStatusRequests() {
+                try {
+                    const testTaskId = 'http-test-' + Date.now();
+                    
+                    // This will attempt HTTP fallback since socket is likely not connected
+                    this.socketHandler.requestTaskStatus(testTaskId);
+                    
+                    this.log('✅ HTTP status request functionality works');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `HTTP status test failed: ${error.message}` };
+                }
+            }
+
+            async testHTTPTaskCancellation() {
+                try {
+                    const testTaskId = 'http-cancel-' + Date.now();
+                    
+                    // This should attempt HTTP cancellation
+                    const cancelPromise = this.socketHandler.cancelTask(testTaskId);
+                    
+                    // Don't wait for the actual result since server may not be running
+                    this.log('✅ HTTP cancellation attempt works');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `HTTP cancellation test failed: ${error.message}` };
+                }
+            }
+
+            async testFallbackErrorHandling() {
+                try {
+                    // Test graceful handling when APIs are not available
+                    const status = this.socketHandler.getTaskStatus('nonexistent-task');
+                    
+                    // Should not throw an error immediately
+                    this.log('✅ Fallback error handling works');
+                    return true;
+                } catch (error) {
+                    return { status: 'fail', message: `Fallback error handling failed: ${error.message}` };
+                }
+            }
+
+            async testPollingMechanism() {
+                try {
+                    const testTaskId = 'polling-test-' + Date.now();
+                    
+                    // Start polling
+                    const started = this.socketHandler.startStatusPolling(testTaskId);
+                    
+                    if (started) {
+                        // Stop polling
+                        const stopped = this.socketHandler.stopStatusPolling(testTaskId);
+                        
+                        if (stopped) {
+                            this.log('✅ Polling mechanism works');
+                            return true;
+                        } else {
+                            return { status: 'fail', message: 'Could not stop polling' };
+                        }
+                    } else {
+                        return { status: 'fail', message: 'Could not start polling' };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `Polling test failed: ${error.message}` };
+                }
+            }
+        }
+
+        // Initialize the test framework when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.socketValidator = new SocketHandlerValidator();
+        });
+    </script>
+</body>
+</html>

@@ -2698,3 +2698,23 @@ TypeError: argument must be an int, or have a fileno() method.
 2025-05-30 19:46:55,483 - INFO - PDF extractor module is available
 2025-05-30 19:48:36,186 - INFO - Claude module is available for processing
 2025-05-30 19:48:36,187 - INFO - PDF extractor module is available
+2025-05-30 20:06:27,847 - INFO - Claude module is available for processing
+2025-05-30 20:06:27,847 - INFO - PDF extractor module is available
+2025-05-30 20:10:21,651 - INFO - Claude module is available for processing
+2025-05-30 20:10:21,652 - INFO - PDF extractor module is available
+2025-05-30 20:10:46,374 - INFO - Claude module is available for processing
+2025-05-30 20:10:46,374 - INFO - PDF extractor module is available
+2025-05-30 20:13:37,721 - INFO - Claude module is available for processing
+2025-05-30 20:13:37,721 - INFO - PDF extractor module is available
+2025-05-30 20:35:45,191 - INFO - Claude module is available for processing
+2025-05-30 20:35:45,191 - INFO - PDF extractor module is available
+2025-05-30 20:36:19,896 - INFO - Claude module is available for processing
+2025-05-30 20:36:19,896 - INFO - PDF extractor module is available
+2025-05-30 20:59:00,140 - INFO - Claude module is available for processing
+2025-05-30 20:59:00,140 - INFO - PDF extractor module is available
+2025-05-30 21:01:49,584 - INFO - Claude module is available for processing
+2025-05-30 21:01:49,586 - INFO - PDF extractor module is available
+2025-05-30 21:03:49,375 - INFO - Claude module is available for processing
+2025-05-30 21:03:49,377 - INFO - PDF extractor module is available
+2025-05-30 21:06:55,593 - INFO - Claude module is available for processing
+2025-05-30 21:06:55,595 - INFO - PDF extractor module is available

@@ -564,8 +564,14 @@ def list_api_keys():
         key_manager = getattr(current_app, 'api_key_manager', None)
         if not key_manager:
             return jsonify({"error": "API key manager not available"}), 500
-            
-        keys = key_manager.get_all_keys()
+        
+        # Get keys - try get_all_keys first, fallback to direct access
+        if hasattr(key_manager, 'get_all_keys'):
+            keys = key_manager.get_all_keys()
+        elif hasattr(key_manager, 'keys'):
+            keys = key_manager.keys
+        else:
+            return jsonify({"error": "Unable to access API keys"}), 500
         # Create a safe version without exposing the actual keys
         safe_keys = {}
         for key, data in keys.items():
@@ -574,6 +580,8 @@ def list_api_keys():
         return jsonify({"keys": safe_keys})
     except Exception as e:
         logger.error(f"Error listing API keys: {e}")
+        logger.error(f"Key manager type: {type(key_manager)}")
+        logger.error(f"Key manager attributes: {dir(key_manager)}")
         return jsonify({"error": str(e)}), 500
 
 @api_management_bp.route('/keys/create', methods=['POST'])

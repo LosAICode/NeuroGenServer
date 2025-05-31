@@ -196,3 +196,5 @@ TypeError: argument must be an int, or have a fileno() method.
 2025-05-30 18:16:05,840 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
 2025-05-30 18:54:13,544 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
 2025-05-30 19:17:39,516 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-30 20:10:22,791 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-05-30 20:13:38,727 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows

@@ -596,3 +596,7 @@ Traceback (most recent call last):
                            ^^^^^^^^^^^^
 AttributeError: 'ApiKeyManager' object has no attribute 'get_key_info'
 2025-05-30 19:46:39,802 - blueprints.core.routes - ERROR - Internal server error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+2025-05-30 20:09:00,272 - blueprints.api.management - ERROR - Error listing API keys: 'ApiKeyManager' object has no attribute 'get_all_keys'
+2025-05-30 21:02:08,595 - blueprints.api.management - ERROR - Error listing API keys: 'ApiKeyManager' object has no attribute 'get_all_keys'
+2025-05-30 21:03:47,493 - blueprints.api.management - ERROR - Error listing API keys: 'ApiKeyManager' object has no attribute 'get_all_keys'
+2025-05-30 21:06:02,473 - blueprints.api.management - ERROR - Error listing API keys: 'ApiKeyManager' object has no attribute 'get_all_keys'

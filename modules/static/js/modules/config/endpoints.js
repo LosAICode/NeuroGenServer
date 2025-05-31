@@ -34,10 +34,12 @@ export const API_ENDPOINTS = Object.freeze({
 
   // Web Scraping Endpoints (features/web_scraper.py)
   WEB_SCRAPER: {
-    SCRAPE: '/api/scrape',
-    STATUS: '/api/scrape/status/:taskId',
-    CANCEL: '/api/scrape/cancel/:taskId',
-    RESULTS: '/api/scrape/results/:taskId'
+    SCRAPE: '/api/scrape2',
+    STATUS: '/api/scrape2/status/:taskId',
+    CANCEL: '/api/scrape2/cancel/:taskId',
+    HEALTH: '/api/health-enhanced',
+    DOWNLOAD_PDF: '/api/download-pdf',
+    DOWNLOAD_FILE: '/api/download-file/:filePath'
   },
 
   // Academic Search Endpoints (features/academic_search.py)
@@ -48,10 +50,21 @@ export const API_ENDPOINTS = Object.freeze({
   },
 
   // PDF Processing Endpoints (features/pdf_processor.py)
-  PDF: {
-    PROCESS: '/api/pdf/process',
+  PDF_PROCESSOR: {
+    PROCESS: '/api/pdf-process/process',
+    STATUS: '/api/pdf-process/status/:taskId',
+    EXTRACT: '/api/pdf-process/extract',
+    CAPABILITIES: '/api/pdf-process/capabilities',
+    ANALYZE: '/api/pdf-process/analyze'
+  },
+
+  // PDF Downloader Endpoints (features/pdf_downloader.py)
+  PDF_DOWNLOADER: {
+    DOWNLOAD: '/api/pdf/download',
+    BATCH_DOWNLOAD: '/api/pdf/batch-download',
     STATUS: '/api/pdf/status/:taskId',
-    EXTRACT: '/api/pdf/extract'
+    CANCEL: '/api/pdf/cancel/:taskId',
+    HEALTH: '/api/pdf/health'
   },
 
   // Task Management Endpoints (api/management.py)
@@ -123,10 +136,12 @@ export const BLUEPRINT_ROUTES = Object.freeze({
     blueprint_name: 'web_scraper',
     url_prefix: '/api',
     methods: {
-      '/api/scrape': ['POST'],
-      '/api/scrape/status/:taskId': ['GET'],
-      '/api/scrape/cancel/:taskId': ['POST'],
-      '/api/scrape/results/:taskId': ['GET']
+      '/api/scrape2': ['POST'],
+      '/api/scrape2/status/:taskId': ['GET'],
+      '/api/scrape2/cancel/:taskId': ['POST'],
+      '/api/health-enhanced': ['GET'],
+      '/api/download-pdf': ['POST'],
+      '/api/download-file/:filePath': ['GET']
     }
   },
 
@@ -144,13 +159,29 @@ export const BLUEPRINT_ROUTES = Object.freeze({
 
   // PDF Processor Blueprint
   pdf_processor: {
-    endpoints: API_ENDPOINTS.PDF,
+    endpoints: API_ENDPOINTS.PDF_PROCESSOR,
     blueprint_name: 'pdf_processor',
-    url_prefix: '/api',
+    url_prefix: '/api/pdf-process',
     methods: {
-      '/api/pdf/process': ['POST'],
+      '/api/pdf-process/process': ['POST'],
+      '/api/pdf-process/status/:taskId': ['GET'],
+      '/api/pdf-process/extract': ['POST'],
+      '/api/pdf-process/capabilities': ['GET'],
+      '/api/pdf-process/analyze': ['POST']
+    }
+  },
+
+  // PDF Downloader Blueprint
+  pdf_downloader: {
+    endpoints: API_ENDPOINTS.PDF_DOWNLOADER,
+    blueprint_name: 'pdf_downloader',
+    url_prefix: '/api/pdf',
+    methods: {
+      '/api/pdf/download': ['POST'],
+      '/api/pdf/batch-download': ['POST'],
       '/api/pdf/status/:taskId': ['GET'],
-      '/api/pdf/extract': ['POST']
+      '/api/pdf/cancel/:taskId': ['POST'],
+      '/api/pdf/health': ['GET']
     }
   },
 
@@ -439,6 +470,8 @@ export const ENDPOINTS = {
   SCRAPE: API_ENDPOINTS.WEB_SCRAPER.SCRAPE,
   SCRAPE_STATUS: API_ENDPOINTS.WEB_SCRAPER.STATUS,
   SCRAPE_CANCEL: API_ENDPOINTS.WEB_SCRAPER.CANCEL,
+  SCRAPE_HEALTH: API_ENDPOINTS.WEB_SCRAPER.HEALTH,
+  SCRAPE_DOWNLOAD_PDF: API_ENDPOINTS.WEB_SCRAPER.DOWNLOAD_PDF,
   
   // Academic
   ACADEMIC_SEARCH: API_ENDPOINTS.ACADEMIC.SEARCH,

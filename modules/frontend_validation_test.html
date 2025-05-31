@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Validation Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .pass { color: green; }
+        .fail { color: red; }
+        .warn { color: orange; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+        #results { background: #f5f5f5; padding: 10px; border-radius: 5px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Frontend Validation Test</h1>
+    
+    <div class="test-section">
+        <h2>Web Scraper Tab Test</h2>
+        <button onclick="testWebScraperButton()">Test Enhanced Scrape Button</button>
+        <button onclick="testScraperMode()">Test Scraper Mode Switch</button>
+        <button onclick="testScraperForm()">Test Scraper Form Validation</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>PDF Downloader Tab Test</h2>
+        <button onclick="testPDFSingleDownload()">Test Single PDF Download</button>
+        <button onclick="testPDFBatchDownload()">Test Batch PDF Download</button>
+        <button onclick="testPDFQueueManagement()">Test Queue Management</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>API Integration Test</h2>
+        <button onclick="testAPIEndpoints()">Test API Endpoints</button>
+        <button onclick="testSocketConnection()">Test Socket.IO Connection</button>
+        <button onclick="testProgressTracking()">Test Progress Tracking</button>
+    </div>
+    
+    <div id="results">
+        <h3>Test Results</h3>
+        <div id="test-output"></div>
+    </div>
+
+    <script>
+        let testResults = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toISOString();
+            const className = type === 'pass' ? 'pass' : type === 'fail' ? 'fail' : type === 'warn' ? 'warn' : '';
+            testResults.push(`<div class="${className}">[${timestamp}] ${message}</div>`);
+            updateResults();
+        }
+        
+        function updateResults() {
+            document.getElementById('test-output').innerHTML = testResults.join('');
+        }
+        
+        // Test Web Scraper Enhanced Button
+        async function testWebScraperButton() {
+            log('Testing Web Scraper Enhanced Button...', 'info');
+            
+            try {
+                // Check if elements exist
+                const scraperTab = document.getElementById('scraper-tab');
+                const enhancedScraperUrl = document.getElementById('enhanced-scraper-url');
+                const scraperMode = document.getElementById('scraper-mode');
+                const enhancedScrapeBtn = document.getElementById('enhanced-scrape-btn');
+                
+                if (!scraperTab) {
+                    log('❌ Scraper tab not found', 'fail');
+                    return;
+                }
+                
+                if (!enhancedScraperUrl) {
+                    log('❌ Enhanced scraper URL input not found', 'fail');
+                    return;
+                }
+                
+                if (!scraperMode) {
+                    log('❌ Scraper mode select not found', 'fail');
+                    return;
+                }
+                
+                if (!enhancedScrapeBtn) {
+                    log('❌ Enhanced scrape button not found', 'fail');
+                    return;
+                }
+                
+                log('✅ All Web Scraper elements found', 'pass');
+                
+                // Test form validation
+                enhancedScraperUrl.value = '';
+                enhancedScrapeBtn.click();
+                
+                // Check if webScraper module is loaded
+                if (window.NeuroGen?.modules?.webScraper) {
+                    log('✅ WebScraper module loaded', 'pass');
+                } else {
+                    log('❌ WebScraper module not found', 'fail');
+                }
+                
+            } catch (error) {
+                log(`❌ Web Scraper test error: ${error.message}`, 'fail');
+            }
+        }
+        
+        // Test Scraper Mode Switch
+        function testScraperMode() {
+            log('Testing Scraper Mode Switch...', 'info');
+            
+            try {
+                const scraperMode = document.getElementById('scraper-mode');
+                const smartPdfInfo = document.getElementById('smart-pdf-info');
+                const fullWebsiteInfo = document.getElementById('full-website-info');
+                
+                if (scraperMode && smartPdfInfo && fullWebsiteInfo) {
+                    // Test smart_pdf mode
+                    scraperMode.value = 'smart_pdf';
+                    scraperMode.dispatchEvent(new Event('change'));
+                    
+                    if (!smartPdfInfo.classList.contains('d-none')) {
+                        log('✅ Smart PDF mode info shows correctly', 'pass');
+                    } else {
+                        log('❌ Smart PDF mode info not showing', 'fail');
+                    }
+                    
+                    // Test full_website mode  
+                    scraperMode.value = 'full_website';
+                    scraperMode.dispatchEvent(new Event('change'));
+                    
+                    if (!fullWebsiteInfo.classList.contains('d-none')) {
+                        log('✅ Full website mode info shows correctly', 'pass');
+                    } else {
+                        log('❌ Full website mode info not showing', 'fail');
+                    }
+                } else {
+                    log('❌ Scraper mode elements missing', 'fail');
+                }
+            } catch (error) {
+                log(`❌ Scraper mode test error: ${error.message}`, 'fail');
+            }
+        }
+        
+        // Test PDF Single Download
+        async function testPDFSingleDownload() {
+            log('Testing PDF Single Download...', 'info');
+            
+            try {
+                const pdfSingleForm = document.getElementById('pdf-single-form');
+                const pdfSingleUrlInput = document.getElementById('pdf-single-url-input');
+                const pdfSingleDownloadBtn = document.getElementById('pdf-single-download-btn');
+                
+                if (!pdfSingleForm) {
+                    log('❌ PDF single form not found', 'fail');
+                    return;
+                }
+                
+                if (!pdfSingleUrlInput) {
+                    log('❌ PDF single URL input not found', 'fail');
+                    return;
+                }
+                
+                if (!pdfSingleDownloadBtn) {
+                    log('❌ PDF single download button not found', 'fail');
+                    return;
+                }
+                
+                log('✅ All PDF Single Download elements found', 'pass');
+                
+                // Check if pdfDownloader module is loaded
+                if (window.NeuroGen?.modules?.pdfDownloader) {
+                    log('✅ PDFDownloader module loaded', 'pass');
+                } else {
+                    log('❌ PDFDownloader module not found', 'fail');
+                }
+                
+                // Test form validation
+                pdfSingleUrlInput.value = '';
+                pdfSingleDownloadBtn.click();
+                
+            } catch (error) {
+                log(`❌ PDF Single Download test error: ${error.message}`, 'fail');
+            }
+        }
+        
+        // Test PDF Batch Download
+        async function testPDFBatchDownload() {
+            log('Testing PDF Batch Download...', 'info');
+            
+            try {
+                const pdfBatchForm = document.getElementById('pdf-batch-form');
+                const pdfBatchUrlsInput = document.getElementById('pdf-batch-urls-input');
+                const pdfBatchDownloadBtn = document.getElementById('pdf-batch-download-btn');
+                
+                if (!pdfBatchForm) {
+                    log('❌ PDF batch form not found', 'fail');
+                    return;
+                }
+                
+                if (!pdfBatchUrlsInput) {
+                    log('❌ PDF batch URLs input not found', 'fail');
+                    return;
+                }
+                
+                if (!pdfBatchDownloadBtn) {
+                    log('❌ PDF batch download button not found', 'fail');
+                    return;
+                }
+                
+                log('✅ All PDF Batch Download elements found', 'pass');
+                
+                // Test form validation
+                pdfBatchUrlsInput.value = '';
+                pdfBatchDownloadBtn.click();
+                
+            } catch (error) {
+                log(`❌ PDF Batch Download test error: ${error.message}`, 'fail');
+            }
+        }
+        
+        // Test API Endpoints
+        async function testAPIEndpoints() {
+            log('Testing API Endpoints...', 'info');
+            
+            try {
+                // Test PDF health endpoint
+                const pdfHealthResponse = await fetch('/api/pdf/health');
+                if (pdfHealthResponse.ok) {
+                    log('✅ PDF health endpoint accessible', 'pass');
+                } else {
+                    log(`❌ PDF health endpoint failed: ${pdfHealthResponse.status}`, 'fail');
+                }
+                
+                // Test web scraper health endpoint
+                const webHealthResponse = await fetch('/api/health-enhanced');
+                if (webHealthResponse.ok) {
+                    log('✅ Web scraper health endpoint accessible', 'pass');
+                } else {
+                    log(`❌ Web scraper health endpoint failed: ${webHealthResponse.status}`, 'fail');
+                }
+                
+            } catch (error) {
+                log(`❌ API endpoint test error: ${error.message}`, 'fail');
+            }
+        }
+        
+        // Test Socket.IO Connection
+        function testSocketConnection() {
+            log('Testing Socket.IO Connection...', 'info');
+            
+            try {
+                if (window.socket) {
+                    if (window.socket.connected) {
+                        log('✅ Socket.IO connected', 'pass');
+                    } else {
+                        log('⚠️ Socket.IO not connected', 'warn');
+                    }
+                } else {
+                    log('❌ Socket.IO not available', 'fail');
+                }
+            } catch (error) {
+                log(`❌ Socket connection test error: ${error.message}`, 'fail');
+            }
+        }
+        
+        // Test Progress Tracking
+        function testProgressTracking() {
+            log('Testing Progress Tracking...', 'info');
+            
+            try {
+                // Check if progress handler module exists
+                if (window.NeuroGen?.modules?.progressHandler) {
+                    log('✅ Progress handler module loaded', 'pass');
+                } else {
+                    log('❌ Progress handler module not found', 'fail');
+                }
+                
+                // Check for progress elements
+                const progressElements = [
+                    'pdf-queue-total',
+                    'pdf-downloading-total', 
+                    'pdf-completed-total',
+                    'pdf-failed-total'
+                ];
+                
+                let elementsFound = 0;
+                progressElements.forEach(id => {
+                    if (document.getElementById(id)) {
+                        elementsFound++;
+                    }
+                });
+                
+                if (elementsFound === progressElements.length) {
+                    log('✅ All progress tracking elements found', 'pass');
+                } else {
+                    log(`⚠️ Only ${elementsFound}/${progressElements.length} progress elements found`, 'warn');
+                }
+                
+            } catch (error) {
+                log(`❌ Progress tracking test error: ${error.message}`, 'fail');
+            }
+        }
+        
+        // Run basic tests on page load
+        window.addEventListener('load', () => {
+            log('Frontend Validation Test Started', 'info');
+            
+            // Check if running in the main application
+            if (window.location.pathname === '/') {
+                log('⚠️ Running in main application context', 'warn');
+            } else {
+                log('ℹ️ Running as standalone test', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

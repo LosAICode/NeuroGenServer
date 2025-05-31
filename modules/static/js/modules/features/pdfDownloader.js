@@ -15,46 +15,41 @@
  * @version 1.0.0
  */
 
-// Import dependencies using window fallbacks
-let blueprintApi, ACADEMIC_ENDPOINTS, PDF_ENDPOINTS;
-let TASK_EVENTS, ACADEMIC_EVENTS;
-let CONSTANTS;
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, SOCKET_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
 
-// Initialize imports when module loads
+// PDF Downloader specific configuration from centralized config
+const PDF_DOWNLOADER_CONFIG = {
+  endpoints: API_ENDPOINTS.PDF_DOWNLOADER,
+  blueprint: BLUEPRINT_ROUTES.pdf_downloader,
+  timeout: API_CONFIG.BLUEPRINT_TIMEOUTS?.pdf_downloader || API_CONFIG.API_TIMEOUT,
+  retryAttempts: API_CONFIG.API_RETRY_ATTEMPTS,
+  retryDelay: API_CONFIG.API_RETRY_DELAY
+};
+
+const ACADEMIC_CONFIG = {
+  endpoints: API_ENDPOINTS.ACADEMIC,
+  blueprint: BLUEPRINT_ROUTES.academic_search
+};
+
+// Initialize module with config
+let blueprintApi, moduleImports;
 async function initializeImports() {
-  // Check if modules are available via window first
-  if (window.NeuroGen?.modules) {
-    // Use window modules if available
-    blueprintApi = window.NeuroGen.modules.blueprintApi || window.blueprintApi;
+  try {
+    // Import core modules
+    blueprintApi = window.NeuroGen?.modules?.blueprintApi;
+    moduleImports = window.NeuroGen?.modules?.moduleImports;
     
-    // Get config from window if available
-    const config = window.NeuroGen.config || {};
-    ACADEMIC_ENDPOINTS = config.ACADEMIC_ENDPOINTS || {
-      SEARCH: '/api/academic-search',
-      PAPER: '/api/academic-search/paper',
-      DOWNLOAD: '/api/academic-search/download'
-    };
-    PDF_ENDPOINTS = config.PDF_ENDPOINTS || {
-      PROCESS: '/api/pdf/process',
-      DOWNLOAD: '/api/download-pdf'
-    };
+    if (!blueprintApi) {
+      console.warn('Blueprint API not available, using fetch fallback');
+    }
     
-    // Socket events
-    TASK_EVENTS = config.TASK_EVENTS || {
-      STARTED: 'task_started',
-      PROGRESS: 'progress_update', 
-      COMPLETED: 'task_completed',
-      ERROR: 'task_failed',
-      CANCELLED: 'task_cancelled'
-    };
-    
-    ACADEMIC_EVENTS = config.ACADEMIC_EVENTS || {
-      PAPER_FOUND: 'paper_found',
-      SEARCH_COMPLETE: 'search_complete',
-      PDF_DOWNLOADED: 'pdf_downloaded'
-    };
-    
-    CONSTANTS = config.CONSTANTS || {};
+    return true;
+  } catch (error) {
+    console.error('Error initializing PDF downloader imports:', error);
+    return false;
   }
 }
 
@@ -73,11 +68,15 @@ class PDFDownloader {
       processingState: 'idle'
     };
     
+    // Use centralized configuration
     this.config = {
-      maxResultsPerSource: 10,
-      defaultSources: ['arxiv', 'semantic_scholar'],
-      downloadConcurrency: 3,
-      retryAttempts: 3
+      maxResultsPerSource: CONSTANTS.SEARCH?.MAX_RESULTS_PER_SOURCE || 10,
+      defaultSources: CONSTANTS.ACADEMIC?.DEFAULT_SOURCES || ['arxiv', 'semantic_scholar'],
+      downloadConcurrency: API_CONFIG.API_CONCURRENT_REQUESTS || 3,
+      retryAttempts: PDF_DOWNLOADER_CONFIG.retryAttempts,
+      timeout: PDF_DOWNLOADER_CONFIG.timeout,
+      endpoints: PDF_DOWNLOADER_CONFIG.endpoints,
+      academicEndpoints: ACADEMIC_CONFIG.endpoints
     };
   }
 
@@ -89,7 +88,13 @@ class PDFDownloader {
       console.log('🔍 Initializing PDF Downloader module...');
       
       // Initialize imports
-      await initializeImports();
+      const importSuccess = await initializeImports();
+      if (!importSuccess) {
+        console.warn('Some imports failed, continuing with fallbacks');
+      }
+      
+      // Test backend connectivity
+      await this.testBackendConnectivity();
       
       // Cache DOM elements
       this.cacheElements();
@@ -118,6 +123,35 @@ class PDFDownloader {
   }
 
   /**
+   * Test backend connectivity using health endpoint
+   */
+  async testBackendConnectivity() {
+    try {
+      console.log('🔍 Testing PDF Downloader backend connectivity...');
+      
+      const response = await fetch(this.config.endpoints.HEALTH, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': localStorage.getItem('api_key') || ''
+        },
+        timeout: 5000
+      });
+      
+      if (response.ok) {
+        const healthData = await response.json();
+        console.log('✅ PDF Downloader backend is healthy:', healthData);
+        return true;
+      } else {
+        console.warn('⚠️ PDF Downloader backend health check failed:', response.status);
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ PDF Downloader backend connectivity test failed:', error);
+      return false;
+    }
+  }
+
+  /**
    * Cache DOM elements for efficient access
    */
   cacheElements() {
@@ -130,19 +164,44 @@ class PDFDownloader {
       'academic-results-container',
       'academic-results-list',
       
-      // PDF selection elements
+      // PDF downloader tab elements
+      'pdf-single-form',
+      'pdf-single-url-input',
+      'pdf-single-filename',
+      'pdf-single-output-dir',
+      'pdf-single-browse-btn',
+      'pdf-single-download-btn',
+      
+      // Batch download elements
+      'pdf-batch-form',
+      'pdf-batch-urls-input',
+      'pdf-batch-output-dir',
+      'pdf-batch-browse-btn',
+      'pdf-batch-download-btn',
+      'pdf-concurrent-downloads',
+      
+      // Queue management elements
+      'pdf-clear-queue-btn',
+      'pdf-cancel-all-btn',
+      'pdf-queue-total',
+      'pdf-downloading-total',
+      'pdf-completed-total',
+      'pdf-failed-total',
+      
+      // Processing options
+      'pdf-process-structify',
+      'pdf-extract-tables',
+      'pdf-use-ocr',
+      
+      // Legacy elements (for backwards compatibility)
       'pdf-select-all-btn',
       'pdf-select-none-btn',
       'pdf-download-selected-btn',
       'selected-pdfs-count',
-      
-      // Download queue elements
       'download-queue-container',
       'download-queue-list',
       'queue-clear-btn',
       'queue-download-all-btn',
-      
-      // Progress elements
       'pdf-download-progress',
       'current-download-status'
     ];
@@ -159,6 +218,81 @@ class PDFDownloader {
    * Setup event handlers for PDF downloader functionality
    */
   setupEventHandlers() {
+    // Single PDF download form
+    const singleForm = this.state.elements.get('pdf-single-form');
+    if (singleForm) {
+      const submitHandler = (e) => {
+        e.preventDefault();
+        this.handleSingleDownload();
+      };
+      singleForm.addEventListener('submit', submitHandler);
+      this.state.eventListeners.add(() => singleForm.removeEventListener('submit', submitHandler));
+    }
+
+    // Single PDF download button
+    const singleDownloadBtn = this.state.elements.get('pdf-single-download-btn');
+    if (singleDownloadBtn) {
+      const clickHandler = (e) => {
+        e.preventDefault();
+        this.handleSingleDownload();
+      };
+      singleDownloadBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => singleDownloadBtn.removeEventListener('click', clickHandler));
+    }
+
+    // Batch PDF download form
+    const batchForm = this.state.elements.get('pdf-batch-form');
+    if (batchForm) {
+      const submitHandler = (e) => {
+        e.preventDefault();
+        this.handleBatchDownload();
+      };
+      batchForm.addEventListener('submit', submitHandler);
+      this.state.eventListeners.add(() => batchForm.removeEventListener('submit', submitHandler));
+    }
+
+    // Batch PDF download button
+    const batchDownloadBtn = this.state.elements.get('pdf-batch-download-btn');
+    if (batchDownloadBtn) {
+      const clickHandler = (e) => {
+        e.preventDefault();
+        this.handleBatchDownload();
+      };
+      batchDownloadBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => batchDownloadBtn.removeEventListener('click', clickHandler));
+    }
+
+    // Browse buttons
+    const singleBrowseBtn = this.state.elements.get('pdf-single-browse-btn');
+    if (singleBrowseBtn) {
+      const clickHandler = () => this.browseDirectory('single');
+      singleBrowseBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => singleBrowseBtn.removeEventListener('click', clickHandler));
+    }
+
+    const batchBrowseBtn = this.state.elements.get('pdf-batch-browse-btn');
+    if (batchBrowseBtn) {
+      const clickHandler = () => this.browseDirectory('batch');
+      batchBrowseBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => batchBrowseBtn.removeEventListener('click', clickHandler));
+    }
+
+    // Clear queue button
+    const clearQueueBtn = this.state.elements.get('pdf-clear-queue-btn');
+    if (clearQueueBtn) {
+      const clickHandler = () => this.clearDownloadQueue();
+      clearQueueBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => clearQueueBtn.removeEventListener('click', clickHandler));
+    }
+
+    // Cancel all button
+    const cancelAllBtn = this.state.elements.get('pdf-cancel-all-btn');
+    if (cancelAllBtn) {
+      const clickHandler = () => this.cancelAllDownloads();
+      cancelAllBtn.addEventListener('click', clickHandler);
+      this.state.eventListeners.add(() => cancelAllBtn.removeEventListener('click', clickHandler));
+    }
+
     // Academic search button
     const searchBtn = this.state.elements.get('academic-search-btn');
     if (searchBtn) {
@@ -167,7 +301,7 @@ class PDFDownloader {
       this.state.eventListeners.add(() => searchBtn.removeEventListener('click', clickHandler));
     }
 
-    // PDF selection buttons
+    // Legacy PDF selection buttons (for backwards compatibility)
     const selectAllBtn = this.state.elements.get('pdf-select-all-btn');
     if (selectAllBtn) {
       const clickHandler = () => this.selectAllPdfs();
@@ -188,14 +322,6 @@ class PDFDownloader {
       downloadSelectedBtn.addEventListener('click', clickHandler);
       this.state.eventListeners.add(() => downloadSelectedBtn.removeEventListener('click', clickHandler));
     }
-
-    // Queue management buttons
-    const clearQueueBtn = this.state.elements.get('queue-clear-btn');
-    if (clearQueueBtn) {
-      const clickHandler = () => this.clearDownloadQueue();
-      clearQueueBtn.addEventListener('click', clickHandler);
-      this.state.eventListeners.add(() => clearQueueBtn.removeEventListener('click', clearQueueBtn));
-    }
   }
 
   /**
@@ -207,33 +333,9 @@ class PDFDownloader {
       return;
     }
 
-    // Academic search events
-    const paperFoundHandler = (data) => {
-      if (this.isMySearch(data.search_id)) {
-        this.handlePaperFound(data);
-      }
-    };
-    window.socket.on(ACADEMIC_EVENTS.PAPER_FOUND, paperFoundHandler);
-    this.state.socketListeners.add(() => window.socket.off(ACADEMIC_EVENTS.PAPER_FOUND, paperFoundHandler));
+    console.log('📡 Setting up PDF Downloader SocketIO listeners...');
 
-    const searchCompleteHandler = (data) => {
-      if (this.isMySearch(data.search_id)) {
-        this.handleSearchComplete(data);
-      }
-    };
-    window.socket.on(ACADEMIC_EVENTS.SEARCH_COMPLETE, searchCompleteHandler);
-    this.state.socketListeners.add(() => window.socket.off(ACADEMIC_EVENTS.SEARCH_COMPLETE, searchCompleteHandler));
-
-    // PDF download events
-    const pdfDownloadedHandler = (data) => {
-      if (this.isMyTask(data.task_id)) {
-        this.handlePdfDownloaded(data);
-      }
-    };
-    window.socket.on(ACADEMIC_EVENTS.PDF_DOWNLOADED, pdfDownloadedHandler);
-    this.state.socketListeners.add(() => window.socket.off(ACADEMIC_EVENTS.PDF_DOWNLOADED, pdfDownloadedHandler));
-
-    // General task events
+    // Task progress events using centralized config
     const progressHandler = (data) => {
       if (this.isMyTask(data.task_id)) {
         this.handleDownloadProgress(data);
@@ -241,6 +343,44 @@ class PDFDownloader {
     };
     window.socket.on(TASK_EVENTS.PROGRESS, progressHandler);
     this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.PROGRESS, progressHandler));
+
+    // Task completion events
+    const completedHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleTaskCompleted(data);
+      }
+    };
+    window.socket.on(TASK_EVENTS.COMPLETED, completedHandler);
+    this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.COMPLETED, completedHandler));
+
+    // Task error events
+    const errorHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleTaskError(data);
+      }
+    };
+    window.socket.on(TASK_EVENTS.ERROR, errorHandler);
+    this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.ERROR, errorHandler));
+
+    // Task cancelled events
+    const cancelledHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handleTaskCancelled(data);
+      }
+    };
+    window.socket.on(TASK_EVENTS.CANCELLED, cancelledHandler);
+    this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.CANCELLED, cancelledHandler));
+
+    // PDF-specific events
+    const pdfProgressHandler = (data) => {
+      if (this.isMyTask(data.task_id)) {
+        this.handlePdfDownloadProgress(data);
+      }
+    };
+    window.socket.on('pdf_download_progress', pdfProgressHandler);
+    this.state.socketListeners.add(() => window.socket.off('pdf_download_progress', pdfProgressHandler));
+
+    console.log('✅ PDF Downloader SocketIO listeners configured');
   }
 
   /**
@@ -267,8 +407,8 @@ class PDFDownloader {
       // Clear previous results
       this.clearSearchResults();
 
-      // Start academic search
-      const response = await fetch(ACADEMIC_ENDPOINTS.SEARCH, {
+      // Start academic search using centralized config
+      const response = await fetch(ACADEMIC_CONFIG.endpoints.SEARCH, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -308,7 +448,71 @@ class PDFDownloader {
   }
 
   /**
-   * Handle paper found event from backend
+   * Handle PDF download progress events
+   */
+  handlePdfDownloadProgress(data) {
+    console.log('📄 PDF download progress:', data);
+    
+    if (data.task_id && this.state.downloadQueue.has(data.task_id)) {
+      const download = this.state.downloadQueue.get(data.task_id);
+      download.progress = data.progress || 0;
+      download.message = data.message || 'Downloading...';
+      
+      this.updateQueueUI();
+      this.showInfo(`${data.message || 'Download progress'}: ${data.progress || 0}%`);
+    }
+  }
+
+  /**
+   * Handle task completion events
+   */
+  handleTaskCompleted(data) {
+    console.log('✅ Task completed:', data);
+    
+    if (data.task_id && this.state.downloadQueue.has(data.task_id)) {
+      const download = this.state.downloadQueue.get(data.task_id);
+      download.status = 'completed';
+      download.progress = 100;
+      download.file_path = data.file_path;
+      
+      this.updateQueueUI();
+      this.showSuccess(`Download completed: ${data.file_path || 'PDF downloaded successfully'}`);
+    }
+  }
+
+  /**
+   * Handle task error events
+   */
+  handleTaskError(data) {
+    console.error('❌ Task error:', data);
+    
+    if (data.task_id && this.state.downloadQueue.has(data.task_id)) {
+      const download = this.state.downloadQueue.get(data.task_id);
+      download.status = 'failed';
+      download.error = data.error || 'Download failed';
+      
+      this.updateQueueUI();
+      this.showError(`Download failed: ${data.error || 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Handle task cancellation events
+   */
+  handleTaskCancelled(data) {
+    console.log('🚫 Task cancelled:', data);
+    
+    if (data.task_id && this.state.downloadQueue.has(data.task_id)) {
+      const download = this.state.downloadQueue.get(data.task_id);
+      download.status = 'cancelled';
+      
+      this.updateQueueUI();
+      this.showInfo(`Download cancelled: ${data.task_id}`);
+    }
+  }
+
+  /**
+   * Handle paper found event from backend (for academic search)
    */
   handlePaperFound(data) {
     const paper = data.paper;
@@ -504,7 +708,7 @@ class PDFDownloader {
       this.state.activeDownloads.set(paper.id, paper);
       this.updateQueueUI();
 
-      const response = await fetch(PDF_ENDPOINTS.DOWNLOAD, {
+      const response = await fetch(PDF_DOWNLOADER_CONFIG.endpoints.DOWNLOAD, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -543,6 +747,312 @@ class PDFDownloader {
       // Process next items in queue
       setTimeout(() => this.processDownloadQueue(), 100);
     }
+  }
+
+  /**
+   * Handle single PDF download
+   */
+  async handleSingleDownload() {
+    try {
+      console.log('🔍 Starting single PDF download...');
+      
+      const urlInput = this.state.elements.get('pdf-single-url-input');
+      const filenameInput = this.state.elements.get('pdf-single-filename');
+      const outputDirInput = this.state.elements.get('pdf-single-output-dir');
+      
+      if (!urlInput?.value?.trim()) {
+        this.showError('Please enter a PDF URL');
+        return;
+      }
+      
+      const url = urlInput.value.trim();
+      const customFilename = filenameInput?.value?.trim();
+      const outputDir = outputDirInput?.value?.trim();
+      
+      // Get processing options
+      const processStructify = this.state.elements.get('pdf-process-structify')?.checked || false;
+      const extractTables = this.state.elements.get('pdf-extract-tables')?.checked || false;
+      const useOcr = this.state.elements.get('pdf-use-ocr')?.checked || false;
+      
+      // Prepare request data
+      const requestData = {
+        url: url,
+        output_folder: outputDir || undefined,
+        options: {
+          process_with_structify: processStructify,
+          extract_tables: extractTables,
+          use_ocr: useOcr
+        }
+      };
+      
+      if (customFilename) {
+        requestData.filename = customFilename;
+      }
+      
+      // Call PDF download API using centralized config
+      const response = await fetch(PDF_DOWNLOADER_CONFIG.endpoints.DOWNLOAD, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': localStorage.getItem('api_key') || ''
+        },
+        body: JSON.stringify(requestData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      this.showSuccess(`PDF download started: ${data.task_id}`);
+      this.updateQueueUI();
+      
+      // Clear form
+      urlInput.value = '';
+      if (filenameInput) filenameInput.value = '';
+      
+    } catch (error) {
+      console.error('❌ Single PDF download failed:', error);
+      this.showError(`Download failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Handle batch PDF download
+   */
+  async handleBatchDownload() {
+    try {
+      console.log('🔍 Starting batch PDF download...');
+      
+      const urlsInput = this.state.elements.get('pdf-batch-urls-input');
+      const outputDirInput = this.state.elements.get('pdf-batch-output-dir');
+      const concurrentSelect = this.state.elements.get('pdf-concurrent-downloads');
+      
+      if (!urlsInput?.value?.trim()) {
+        this.showError('Please enter PDF URLs (one per line)');
+        return;
+      }
+      
+      // Parse URLs
+      const urls = urlsInput.value.trim()
+        .split('\n')
+        .map(url => url.trim())
+        .filter(url => url.length > 0);
+      
+      if (urls.length === 0) {
+        this.showError('No valid URLs found');
+        return;
+      }
+      
+      const outputDir = outputDirInput?.value?.trim();
+      const concurrentDownloads = parseInt(concurrentSelect?.value || '3');
+      
+      // Get processing options
+      const processStructify = this.state.elements.get('pdf-process-structify')?.checked || false;
+      const extractTables = this.state.elements.get('pdf-extract-tables')?.checked || false;
+      const useOcr = this.state.elements.get('pdf-use-ocr')?.checked || false;
+      
+      // Prepare request data
+      const requestData = {
+        urls: urls,
+        output_folder: outputDir || undefined,
+        options: {
+          concurrent_downloads: concurrentDownloads,
+          process_with_structify: processStructify,
+          extract_tables: extractTables,
+          use_ocr: useOcr
+        }
+      };
+      
+      // Call batch PDF download API using centralized config
+      const response = await fetch(PDF_DOWNLOADER_CONFIG.endpoints.BATCH_DOWNLOAD, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': localStorage.getItem('api_key') || ''
+        },
+        body: JSON.stringify(requestData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      this.showSuccess(`Batch download started: ${urls.length} PDFs queued (Task: ${data.task_id})`);
+      this.updateQueueUI();
+      
+      // Clear form
+      urlsInput.value = '';
+      
+    } catch (error) {
+      console.error('❌ Batch PDF download failed:', error);
+      this.showError(`Batch download failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Browse for directory
+   */
+  async browseDirectory(type) {
+    try {
+      // Use file input dialog for directory selection
+      const dirInput = document.createElement('input');
+      dirInput.type = 'file';
+      dirInput.webkitdirectory = true;
+      dirInput.style.display = 'none';
+      
+      dirInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          const path = e.target.files[0].webkitRelativePath;
+          const dirPath = path.substring(0, path.lastIndexOf('/'));
+          
+          if (type === 'single') {
+            const outputDirInput = this.state.elements.get('pdf-single-output-dir');
+            if (outputDirInput) outputDirInput.value = dirPath;
+          } else if (type === 'batch') {
+            const outputDirInput = this.state.elements.get('pdf-batch-output-dir');
+            if (outputDirInput) outputDirInput.value = dirPath;
+          }
+        }
+      });
+      
+      document.body.appendChild(dirInput);
+      dirInput.click();
+      document.body.removeChild(dirInput);
+      
+    } catch (error) {
+      console.error('❌ Directory browse failed:', error);
+      this.showError('Directory selection failed');
+    }
+  }
+
+  /**
+   * Clear download queue
+   */
+  clearDownloadQueue() {
+    this.state.downloadQueue.clear();
+    this.state.selectedPdfs.clear();
+    this.updateQueueUI();
+    this.showSuccess('Download queue cleared');
+  }
+
+  /**
+   * Cancel all downloads
+   */
+  async cancelAllDownloads() {
+    try {
+      const activeIds = Array.from(this.state.activeDownloads.keys());
+      
+      for (const id of activeIds) {
+        const download = this.state.activeDownloads.get(id);
+        if (download?.task_id) {
+          // Use centralized config for cancel endpoint
+          const cancelUrl = PDF_DOWNLOADER_CONFIG.endpoints.CANCEL.replace(':taskId', download.task_id);
+          await fetch(cancelUrl, {
+            method: 'POST',
+            headers: { 'X-API-Key': localStorage.getItem('api_key') || '' }
+          });
+        }
+      }
+      
+      this.state.activeDownloads.clear();
+      this.updateQueueUI();
+      this.showSuccess('All downloads cancelled');
+      
+    } catch (error) {
+      console.error('❌ Cancel all failed:', error);
+      this.showError('Failed to cancel all downloads');
+    }
+  }
+
+  /**
+   * Show success message with enhanced notification system
+   */
+  showSuccess(message) {
+    console.log('✅ PDF Downloader Success:', message);
+    
+    // Use multiple notification methods for better user experience
+    if (window.NeuroGen?.modules?.progressHandler?.showSuccess) {
+      window.NeuroGen.modules.progressHandler.showSuccess(message);
+    }
+    
+    // Use UI module if available
+    if (window.NeuroGen?.modules?.ui?.showToast) {
+      window.NeuroGen.modules.ui.showToast('PDF Download', message, 'success');
+    }
+    
+    // Emit custom event for other modules
+    if (window.NeuroGen?.modules?.eventManager?.emit) {
+      window.NeuroGen.modules.eventManager.emit('pdf.download.success', { message });
+    }
+  }
+
+  /**
+   * Show error message with enhanced notification system
+   */
+  showError(message) {
+    console.error('❌ PDF Downloader Error:', message);
+    
+    // Use multiple notification methods for better user experience
+    if (window.NeuroGen?.modules?.progressHandler?.showError) {
+      window.NeuroGen.modules.progressHandler.showError(message);
+    }
+    
+    // Use UI module if available
+    if (window.NeuroGen?.modules?.ui?.showToast) {
+      window.NeuroGen.modules.ui.showToast('PDF Download Error', message, 'error');
+    }
+    
+    // Emit custom event for other modules
+    if (window.NeuroGen?.modules?.eventManager?.emit) {
+      window.NeuroGen.modules.eventManager.emit('pdf.download.error', { message });
+    }
+  }
+
+  /**
+   * Show info message with enhanced notification system
+   */
+  showInfo(message) {
+    console.log('ℹ️ PDF Downloader Info:', message);
+    
+    // Use multiple notification methods
+    if (window.NeuroGen?.modules?.ui?.showToast) {
+      window.NeuroGen.modules.ui.showToast('PDF Download', message, 'info');
+    }
+    
+    // Emit custom event for other modules
+    if (window.NeuroGen?.modules?.eventManager?.emit) {
+      window.NeuroGen.modules.eventManager.emit('pdf.download.info', { message });
+    }
+  }
+
+  /**
+   * Update queue UI displays
+   */
+  updateQueueUI() {
+    // Update counters
+    const queueTotal = this.state.elements.get('pdf-queue-total');
+    const downloadingTotal = this.state.elements.get('pdf-downloading-total');
+    const completedTotal = this.state.elements.get('pdf-completed-total');
+    const failedTotal = this.state.elements.get('pdf-failed-total');
+    
+    if (queueTotal) queueTotal.textContent = this.state.downloadQueue.size;
+    if (downloadingTotal) downloadingTotal.textContent = this.state.activeDownloads.size;
+    
+    // Count completed and failed from download queue
+    let completed = 0, failed = 0;
+    this.state.downloadQueue.forEach(item => {
+      if (item.status === 'completed') completed++;
+      if (item.status === 'failed') failed++;
+    });
+    
+    if (completedTotal) completedTotal.textContent = completed;
+    if (failedTotal) failedTotal.textContent = failed;
   }
 
   /**
@@ -657,7 +1167,47 @@ class PDFDownloader {
 
   showInfo(message) {
     console.log('ℹ️ PDF Downloader Info:', message);
-    // You can add UI notification here
+    
+    // Use enhanced notification system
+    if (window.NeuroGen?.modules?.ui?.showToast) {
+      window.NeuroGen.modules.ui.showToast('PDF Download', message, 'info');
+    }
+  }
+
+  /**
+   * Get health status of the PDF downloader module
+   * @returns {Object} - Health status information
+   */
+  async getHealthStatus() {
+    const status = {
+      module: 'pdfDownloader',
+      initialized: this.state.isInitialized,
+      backend_connected: false,
+      config_loaded: !!this.config.endpoints,
+      socket_connected: !!window.socket?.connected,
+      active_downloads: this.state.activeDownloads.size,
+      queued_downloads: this.state.downloadQueue.size,
+      endpoints: this.config.endpoints,
+      version: '2.0.0_optimized'
+    };
+    
+    // Test backend connectivity
+    try {
+      const response = await fetch(this.config.endpoints.HEALTH, {
+        method: 'GET',
+        headers: { 'X-API-Key': localStorage.getItem('api_key') || '' },
+        timeout: 3000
+      });
+      status.backend_connected = response.ok;
+      if (response.ok) {
+        const healthData = await response.json();
+        status.backend_info = healthData;
+      }
+    } catch (error) {
+      status.backend_error = error.message;
+    }
+    
+    return status;
   }
 
   /**

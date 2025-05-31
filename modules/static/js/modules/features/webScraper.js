@@ -1,111 +1,34 @@
 /**
- * Web Scraper Module - Complete Blueprint Implementation
+ * Web Scraper Module - Optimized Blueprint Implementation
  * 
  * Advanced web scraping module with recursive crawling, academic search integration,
- * PDF processing, and comprehensive download management. Built from ground up for
- * Flask Blueprint backend architecture with no legacy code or patches.
+ * PDF processing, and comprehensive download management. Fully optimized with
+ * centralized configuration and enhanced error handling.
  * 
  * Features:
- * - Recursive website crawling with depth control
- * - Multi-source academic search (arXiv, Semantic Scholar, PubMed, IEEE, ACM)
- * - Advanced PDF selection and batch download management
- * - Structify integration for comprehensive PDF processing
- * - Real-time progress tracking with detailed statistics
- * - Citation network visualization and analysis
- * - Cross-platform download optimization
+ * - Configuration-driven architecture using centralized endpoints
+ * - Enhanced error handling with multiple notification systems
+ * - Improved SocketIO integration using TASK_EVENTS
+ * - Backend connectivity testing with health checks
+ * - Consolidated code with removed redundancies
  * 
  * @module features/webScraper
- * @version 3.0.0
+ * @version 3.1.0 - Optimized with Config Integration
  */
 
-// Import dependencies using window fallbacks
-let blueprintApi, SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, PDF_ENDPOINTS;
-let TASK_EVENTS, BLUEPRINT_EVENTS, SCRAPER_EVENTS, ACADEMIC_EVENTS;
-let CONSTANTS;
+// Import dependencies from centralized config
+import { API_ENDPOINTS, BLUEPRINT_ROUTES } from '../config/endpoints.js';
+import { CONSTANTS, API_CONFIG, SOCKET_CONFIG } from '../config/constants.js';
+import { SOCKET_EVENTS, TASK_EVENTS } from '../config/socketEvents.js';
 
-// Initialize imports when module loads
-async function initializeImports() {
-  // Check if modules are available via window first
-  if (window.NeuroGen?.modules) {
-    // Use window modules if available
-    blueprintApi = window.NeuroGen.modules.blueprintApi || window.blueprintApi;
-    
-    // Get config from window if available
-    const config = window.NeuroGen.config || {};
-    SCRAPER_ENDPOINTS = config.SCRAPER_ENDPOINTS || {
-      START: '/api/scrape2',
-      STATUS: '/api/scrape2/status',
-      CANCEL: '/api/scrape2/cancel'
-    };
-    ACADEMIC_ENDPOINTS = config.ACADEMIC_ENDPOINTS || {
-      SEARCH: '/api/academic-search',
-      PAPER: '/api/academic-search/paper',
-      DOWNLOAD: '/api/academic-search/download'
-    };
-    PDF_ENDPOINTS = config.PDF_ENDPOINTS || {
-      PROCESS: '/api/pdf/process',
-      DOWNLOAD: '/api/download-pdf'
-    };
-    
-    // Socket events
-    TASK_EVENTS = config.TASK_EVENTS || {
-      STARTED: 'task_started',
-      PROGRESS: 'task_progress',
-      COMPLETED: 'task_completed',
-      ERROR: 'task_error',
-      CANCELLED: 'task_cancelled'
-    };
-    SCRAPER_EVENTS = config.SCRAPER_EVENTS || {
-      url_scraped: 'url_scraped',
-      pdf_found: 'pdf_found',
-      pdf_download_start: 'pdf_download_start',
-      pdf_download_progress: 'pdf_download_progress',
-      pdf_download_complete: 'pdf_download_complete',
-      page_discovered: 'page_discovered',
-      crawl_progress: 'crawl_progress'
-    };
-    ACADEMIC_EVENTS = config.ACADEMIC_EVENTS || {
-      paper_found: 'paper_found',
-      search_completed: 'search_completed'
-    };
-    BLUEPRINT_EVENTS = config.BLUEPRINT_EVENTS || {};
-    
-    CONSTANTS = config.CONSTANTS || {
-      MAX_FILE_SIZE: 100 * 1024 * 1024,
-      SUPPORTED_FILE_TYPES: ['.pdf', '.doc', '.docx', '.txt', '.ppt', '.pptx']
-    };
-  } else {
-    // Fallback to dynamic imports
-    try {
-      const [blueprintModule, endpointsModule, eventsModule, constantsModule] = await Promise.all([
-        import('../services/blueprintApi.js'),
-        import('../config/endpoints.js'),
-        import('../config/socketEvents.js'),
-        import('../config/constants.js')
-      ]);
-      
-      blueprintApi = blueprintModule.default;
-      ({ SCRAPER_ENDPOINTS, ACADEMIC_ENDPOINTS, PDF_ENDPOINTS } = endpointsModule);
-      ({ TASK_EVENTS, BLUEPRINT_EVENTS, SCRAPER_EVENTS, ACADEMIC_EVENTS } = eventsModule);
-      ({ CONSTANTS } = constantsModule);
-    } catch (e) {
-      console.error('Failed to import modules:', e);
-      // Use defaults
-      blueprintApi = window.blueprintApi;
-      SCRAPER_ENDPOINTS = { START: '/api/scrape2', STATUS: '/api/scrape2/status', CANCEL: '/api/scrape2/cancel' };
-      ACADEMIC_ENDPOINTS = { SEARCH: '/api/academic-search', PAPER: '/api/academic-search/paper' };
-      PDF_ENDPOINTS = { PROCESS: '/api/pdf/process', DOWNLOAD: '/api/download-pdf' };
-      TASK_EVENTS = { STARTED: 'task_started', PROGRESS: 'task_progress', COMPLETED: 'task_completed', ERROR: 'task_error' };
-      SCRAPER_EVENTS = { url_scraped: 'url_scraped', pdf_found: 'pdf_found', pdf_download_progress: 'pdf_download_progress' };
-      ACADEMIC_EVENTS = { paper_found: 'paper_found' };
-      BLUEPRINT_EVENTS = {};
-      CONSTANTS = { MAX_FILE_SIZE: 100 * 1024 * 1024, SUPPORTED_FILE_TYPES: ['.pdf'] };
-    }
-  }
-}
-
-// Initialize imports
-initializeImports().catch(console.error);
+// Configuration shorthand
+const WEB_SCRAPER_CONFIG = {
+  endpoints: API_ENDPOINTS.WEB_SCRAPER,
+  blueprint: BLUEPRINT_ROUTES.web_scraper,
+  constants: CONSTANTS.WEB_SCRAPER || {},
+  api: API_CONFIG,
+  socket: SOCKET_CONFIG
+};
 
 /**
  * Web Scraper Class - Complete Implementation
@@ -176,21 +99,16 @@ class WebScraper {
   }
 
   /**
-   * Initialize the Web Scraper module
+   * Initialize the Web Scraper module with enhanced error handling
    */
   async init() {
     if (this.state.isInitialized) return;
     
     try {
-      console.log('🌐 Initializing Web Scraper...');
+      console.log('🌐 Initializing Web Scraper with optimized config...');
       
-      // Wait for imports to be ready
-      await initializeImports();
-      
-      // Check if blueprintApi is available
-      if (!blueprintApi) {
-        console.warn('BlueprintAPI not available, some features may be limited');
-      }
+      // Test backend connectivity
+      await this.testBackendConnectivity();
       
       this.cacheElements();
       this.setupEventHandlers();
@@ -203,17 +121,63 @@ class WebScraper {
       this.loadSavedState();
       
       this.state.isInitialized = true;
-      console.log('✅ Web Scraper initialized successfully');
+      console.log('✅ Web Scraper initialized successfully with config integration');
       
       // Register with module system if available
       if (window.NeuroGen?.registerModule) {
         window.NeuroGen.registerModule('webScraper', this);
       }
       
+      // Report successful initialization
+      this.showNotification('Web Scraper module loaded successfully', 'success');
+      
     } catch (error) {
       console.error('❌ Web Scraper initialization failed:', error);
-      // Don't throw - allow module to work with limited functionality
+      this.showNotification('Web Scraper initialization failed - some features may be limited', 'warning');
+      
+      // Report to error handler
+      if (window.NeuroGen?.errorHandler) {
+        window.NeuroGen.errorHandler.logError({
+          module: 'webScraper',
+          action: 'initialization',
+          error: error.message,
+          severity: 'error'
+        });
+      }
+      
+      // Allow module to work with limited functionality
       this.state.isInitialized = true;
+    }
+  }
+
+  /**
+   * Test backend connectivity and configuration
+   */
+  async testBackendConnectivity() {
+    try {
+      console.log('🔗 Testing Web Scraper backend connectivity...');
+      
+      const response = await fetch(WEB_SCRAPER_CONFIG.endpoints.HEALTH, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': localStorage.getItem('api_key') || ''
+        },
+        timeout: 5000
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Web Scraper backend connectivity confirmed:', data);
+        this.state.backendConnected = true;
+        return true;
+      } else {
+        throw new Error(`Health check failed with status: ${response.status}`);
+      }
+      
+    } catch (error) {
+      console.warn('⚠️ Web Scraper backend connectivity test failed:', error.message);
+      this.state.backendConnected = false;
+      return false;
     }
   }
 
@@ -404,14 +368,14 @@ class WebScraper {
     window.socket.on(TASK_EVENTS.ERROR, errorHandler);
     this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.ERROR, errorHandler));
 
-    // Scraper-specific events
+    // Scraper-specific events using centralized config
     const urlScrapedHandler = (data) => {
       if (this.isMyTask(data.task_id)) {
         this.handleUrlScraped(data);
       }
     };
-    window.socket.on(SCRAPER_EVENTS.url_scraped, urlScrapedHandler);
-    this.state.socketListeners.add(() => window.socket.off(SCRAPER_EVENTS.url_scraped, urlScrapedHandler));
+    window.socket.on(SOCKET_EVENTS.WEB_SCRAPER?.URL_SCRAPED || 'url_scraped', urlScrapedHandler);
+    this.state.socketListeners.add(() => window.socket.off(SOCKET_EVENTS.WEB_SCRAPER?.URL_SCRAPED || 'url_scraped', urlScrapedHandler));
 
     const pdfFoundHandler = (data) => {
       if (this.isMyTask(data.task_id)) {
@@ -581,27 +545,21 @@ class WebScraper {
       this.state.processingState = 'scraping';
       this.updateUI();
 
-      // Start scraping using Blueprint API
-      let response;
-      if (blueprintApi && blueprintApi.startWebScraping) {
-        response = await blueprintApi.startWebScraping(urls, options.output_directory, options);
-      } else {
-        // Fallback to direct fetch
-        const fetchResponse = await fetch(SCRAPER_ENDPOINTS.START, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-Key': localStorage.getItem('api_key') || ''
-          },
-          body: JSON.stringify(options)
-        });
-        
-        if (!fetchResponse.ok) {
-          throw new Error(`HTTP error! status: ${fetchResponse.status}`);
-        }
-        
-        response = await fetchResponse.json();
+      // Start scraping using centralized configuration
+      const fetchResponse = await fetch(WEB_SCRAPER_CONFIG.endpoints.SCRAPE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': localStorage.getItem('api_key') || ''
+        },
+        body: JSON.stringify(options)
+      });
+      
+      if (!fetchResponse.ok) {
+        throw new Error(`HTTP error! status: ${fetchResponse.status}`);
       }
+      
+      const response = await fetchResponse.json();
 
       // Store task information
       this.state.currentTask = {
@@ -674,8 +632,8 @@ class WebScraper {
       this.state.processingState = 'scraping';
       this.updateUI();
 
-      // Use the scraping endpoint
-      const response = await fetch('/api/scrape2', {
+      // Use the scraping endpoint from config
+      const response = await fetch(WEB_SCRAPER_CONFIG.endpoints.SCRAPE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -732,31 +690,25 @@ class WebScraper {
       this.state.processingState = 'searching';
       this.updateUI();
 
-      // Start academic search using Blueprint API
-      let response;
-      if (blueprintApi && blueprintApi.searchAcademicPapers) {
-        response = await blueprintApi.searchAcademicPapers(query, sources, maxResults);
-      } else {
-        // Fallback to direct fetch
-        const fetchResponse = await fetch(ACADEMIC_ENDPOINTS.SEARCH, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-Key': localStorage.getItem('api_key') || ''
-          },
-          body: JSON.stringify({
-            query,
-            source: sources.length === 1 ? sources[0] : 'all',
-            max_results: maxResults
-          })
-        });
-        
-        if (!fetchResponse.ok) {
-          throw new Error(`HTTP error! status: ${fetchResponse.status}`);
-        }
-        
-        response = await fetchResponse.json();
+      // Start academic search using centralized configuration
+      const fetchResponse = await fetch(API_ENDPOINTS.ACADEMIC.SEARCH, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': localStorage.getItem('api_key') || ''
+        },
+        body: JSON.stringify({
+          query,
+          source: sources.length === 1 ? sources[0] : 'all',
+          max_results: maxResults
+        })
+      });
+      
+      if (!fetchResponse.ok) {
+        throw new Error(`HTTP error! status: ${fetchResponse.status}`);
       }
+      
+      const response = await fetchResponse.json();
 
       console.log(`📚 Academic search started: ${response.search_id || 'unknown'}`);
       this.showInfo(`Searching for: "${query}" across ${sources.length} source(s)`);
@@ -1078,20 +1030,17 @@ class WebScraper {
     if (!this.state.currentTask) return;
 
     try {
-      if (blueprintApi && blueprintApi.cancelTask) {
-        await blueprintApi.cancelTask(this.state.currentTask.id);
-      } else {
-        // Fallback to direct fetch
-        const fetchResponse = await fetch(`${SCRAPER_ENDPOINTS.CANCEL}/${this.state.currentTask.id}`, {
-          method: 'POST',
-          headers: {
-            'X-API-Key': localStorage.getItem('api_key') || ''
-          }
-        });
-        
-        if (!fetchResponse.ok) {
-          throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+      // Cancel task using centralized configuration
+      const cancelUrl = WEB_SCRAPER_CONFIG.endpoints.CANCEL.replace(':taskId', this.state.currentTask.id);
+      const fetchResponse = await fetch(cancelUrl, {
+        method: 'POST',
+        headers: {
+          'X-API-Key': localStorage.getItem('api_key') || ''
         }
+      });
+      
+      if (!fetchResponse.ok) {
+        throw new Error(`HTTP error! status: ${fetchResponse.status}`);
       }
       
       console.log(`🚫 Task cancelled: ${this.state.currentTask.id}`);
@@ -1221,40 +1170,25 @@ class WebScraper {
           startTime: Date.now()
         });
         
-        // Start download (this will trigger socket events)
-        if (blueprintApi && blueprintApi.request) {
-          await blueprintApi.request('/api/download-pdf', {
-            method: 'POST',
-            body: JSON.stringify({
-              url: url,
-              outputFolder: this.getCurrentOutputDirectory(),
-              outputFilename: item.title,
-              processFile: true,
-              extractTables: this.config.pdfOptions.extractTables,
-              useOcr: this.config.pdfOptions.useOcr
-            })
-          }, 'web_scraper');
-        } else {
-          // Fallback to direct fetch
-          const fetchResponse = await fetch(PDF_ENDPOINTS.DOWNLOAD, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-API-Key': localStorage.getItem('api_key') || ''
-            },
-            body: JSON.stringify({
-              url: url,
-              outputFolder: this.getCurrentOutputDirectory(),
-              outputFilename: item.title,
-              processFile: true,
-              extractTables: this.config.pdfOptions.extractTables,
-              useOcr: this.config.pdfOptions.useOcr
-            })
-          });
-          
-          if (!fetchResponse.ok) {
-            throw new Error(`HTTP error! status: ${fetchResponse.status}`);
-          }
+        // Start download using centralized configuration
+        const fetchResponse = await fetch(WEB_SCRAPER_CONFIG.endpoints.DOWNLOAD_PDF, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': localStorage.getItem('api_key') || ''
+          },
+          body: JSON.stringify({
+            url: url,
+            outputFolder: this.getCurrentOutputDirectory(),
+            outputFilename: item.title,
+            processFile: true,
+            extractTables: this.config.pdfOptions.extractTables,
+            useOcr: this.config.pdfOptions.useOcr
+          })
+        });
+        
+        if (!fetchResponse.ok) {
+          throw new Error(`HTTP error! status: ${fetchResponse.status}`);
         }
         
       } catch (error) {
@@ -1827,65 +1761,107 @@ class WebScraper {
   }
 
   /**
-   * Show error message
+   * Enhanced notification system with multiple delivery methods
    */
-  showError(message) {
-    this.showToast('Web Scraper Error', message, 'error');
+  showNotification(message, type = 'info', title = 'Web Scraper') {
+    // Method 1: Toast notifications
+    this.showToast(title, message, type);
     
-    // Report to error handler
-    if (window.NeuroGen?.errorHandler) {
+    // Method 2: Console logging with styling
+    const styles = {
+      error: 'color: #dc3545; font-weight: bold;',
+      warning: 'color: #fd7e14; font-weight: bold;',
+      success: 'color: #198754; font-weight: bold;',
+      info: 'color: #0d6efd;'
+    };
+    console.log(`%c[${title}] ${message}`, styles[type] || styles.info);
+    
+    // Method 3: System notification (if available)
+    if (window.NeuroGen?.notificationHandler) {
+      window.NeuroGen.notificationHandler.show({
+        title,
+        message,
+        type,
+        module: 'webScraper'
+      });
+    }
+    
+    // Method 4: Error reporting to centralized handler
+    if (type === 'error' && window.NeuroGen?.errorHandler) {
       window.NeuroGen.errorHandler.logError({
         module: 'webScraper',
         message,
-        severity: 'error',
+        severity: type,
         timestamp: new Date().toISOString()
       });
     }
+  }
+
+  /**
+   * Show error message
+   */
+  showError(message) {
+    this.showNotification(message, 'error', 'Web Scraper Error');
   }
 
   /**
    * Show warning message
    */
   showWarning(message) {
-    this.showToast('Web Scraper Warning', message, 'warning');
-    
-    // Report to error handler
-    if (window.NeuroGen?.errorHandler) {
-      window.NeuroGen.errorHandler.logWarning({
-        module: 'webScraper',
-        message,
-        timestamp: new Date().toISOString()
-      });
-    }
+    this.showNotification(message, 'warning', 'Web Scraper Warning');
   }
 
   /**
    * Show info message
    */
   showInfo(message) {
-    this.showToast('Web Scraper', message, 'info');
+    this.showNotification(message, 'info', 'Web Scraper');
+  }
+
+  /**
+   * Show success message
+   */
+  showSuccess(message) {
+    this.showNotification(message, 'success', 'Web Scraper');
   }
   
   /**
-   * Get module health status
+   * Get module health status with configuration details
    */
   getHealthStatus() {
     return {
       module: 'webScraper',
+      version: '3.1.0',
       initialized: this.state.isInitialized,
       status: this.state.processingState,
+      backendConnected: this.state.backendConnected || false,
       activeTasks: this.state.activeTasks.size,
       downloadQueue: this.state.downloadQueue.size,
       currentTask: this.state.currentTask ? {
         id: this.state.currentTask.id,
         type: this.state.currentTask.type,
-        startTime: this.state.currentTask.startTime
+        startTime: this.state.currentTask.startTime,
+        progress: this.state.currentTask.progress || 0
       } : null,
+      configuration: {
+        endpoints: {
+          scrape: WEB_SCRAPER_CONFIG.endpoints.SCRAPE,
+          health: WEB_SCRAPER_CONFIG.endpoints.HEALTH,
+          configLoaded: !!WEB_SCRAPER_CONFIG.endpoints
+        },
+        constants: {
+          maxDepth: this.config.maxDepth,
+          maxPages: this.config.maxPages,
+          maxDownloads: this.config.pdfOptions.maxDownloads
+        }
+      },
       dependencies: {
-        blueprintApi: !!blueprintApi,
         socket: !!window.socket?.connected,
-        endpoints: !!SCRAPER_ENDPOINTS
-      }
+        constants: !!CONSTANTS,
+        taskEvents: !!TASK_EVENTS,
+        socketEvents: !!SOCKET_EVENTS
+      },
+      statistics: this.getModuleStats()
     };
   }
 
@@ -2130,4 +2106,4 @@ if (document.readyState === 'loading') {
   });
 }
 
-console.log('🌐 Web Scraper module loaded (Blueprint Architecture v3.0)');
+console.log('🌐 Web Scraper module loaded (Optimized v3.1.0 - Config Integration)');
