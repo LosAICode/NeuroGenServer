@@ -8,8 +8,8 @@ NeuroGenServer is a production-ready AI-powered document processing and web scra
 
 ## ✨ Key Features
 
-- **🗂️ Advanced File Processing**: Convert 40+ formats (PDF, DOCX, PPTX, TXT) to structured JSON with Structify integration
-- **🌐 Intelligent Web Scraping**: Enhanced 2-option system optimized for LLM training data extraction
+- **🗂️ Advanced File Processing**: Convert 40+ formats (PDF, DOCX, PPTX, TXT) to structured JSON ready to use as LLM training data. 
+- **🌐 Intelligent Web Scraping**: Enhanced Web Scraping system optimized for LLM training data extraction.  Download PDF's from several Academic Sources. 
 - **🎥 Playlist Downloading**: Download YouTube playlists with metadata extraction and content processing
 - **📚 Academic Search Integration**: Multi-source search (arXiv, Semantic Scholar, PubMed, IEEE, ACM) with citation networks
 - **⚡ Real-time Progress Tracking**: Live WebSocket updates with detailed statistics and health monitoring
