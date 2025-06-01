@@ -198,3 +198,8 @@ TypeError: argument must be an int, or have a fileno() method.
 2025-05-30 19:17:39,516 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
 2025-05-30 20:10:22,791 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
 2025-05-30 20:13:38,727 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-01 01:55:08,790 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-01 02:01:42,478 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-01 02:01:42,539 - blueprints.socketio_events - INFO - SocketIO Events context initialized for background threads
+2025-06-01 02:01:42,540 - blueprints.socketio_events - INFO - Emitted unified task_completed for test-dedup-123 (test_task)
+2025-06-01 07:14:53,813 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows

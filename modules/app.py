@@ -105,6 +105,10 @@ def create_app():
     import socketio_context_helper
     socketio_context_helper.set_app_context(app, socketio)
     
+    # Initialize SocketIO events context for centralized events
+    from blueprints.socketio_events import set_socketio_context
+    set_socketio_context(app, socketio)
+    
     # Register error handlers
     register_error_handlers(app)
     

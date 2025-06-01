@@ -354,6 +354,13 @@ class FileProcessor {
       'progress-status',
       'progress-stats',
       'result-container',
+      'result-stats',
+      'open-btn',
+      'new-task-btn',
+      'error-container',
+      'error-message', 
+      'error-details',
+      'retry-btn',
       'cancel-btn'
     ];
 
@@ -361,6 +368,9 @@ class FileProcessor {
       const element = document.getElementById(id);
       if (element) {
         this.state.elements.set(id, element);
+        console.log(`✅ [FileProcessor] Cached element: ${id}`);
+      } else {
+        console.warn(`⚠️ [FileProcessor] Element not found: ${id}`);
       }
     });
   }
@@ -809,21 +819,32 @@ class FileProcessor {
       this.updateStats(data.stats);
     }
     
-    // Enhanced 100% detection - transition to stats immediately when 100% reached
-    if (progress >= 100 && this.state.processingState === 'processing') {
-      console.log('🎉 [FileProcessor] 100% progress detected - transitioning to completion');
+    // Enhanced 100% detection - multiple triggers for completion
+    const isCompleted = progress >= 100 || 
+                       (data.stats && data.stats.current_stage === 'Completed') ||
+                       (data.stats && data.stats.completion_percentage >= 100);
+    
+    if (isCompleted && this.state.processingState === 'processing') {
+      console.log('🎉 [FileProcessor] Completion detected - transitioning to results');
+      console.log('📊 [FileProcessor] Completion triggers:', {
+        progress_100: progress >= 100,
+        stage_completed: data.stats?.current_stage === 'Completed',
+        completion_pct_100: data.stats?.completion_percentage >= 100,
+        stats: data.stats
+      });
+      
       this.state.processingState = 'completed';
       
       // Show 100% completion briefly, then transition to results
       setTimeout(() => {
-        console.log('📋 [FileProcessor] Transitioning to results after 100% completion');
+        console.log('📋 [FileProcessor] Transitioning to results with enhanced stats');
         this.showResultContainer({
           stats: data.stats || {},
-          output_file: this.state.currentTask?.outputFile,
+          output_file: data.output_file || this.state.currentTask?.outputFile,
           progress: 100,
           message: 'Processing completed successfully!'
         });
-      }, 1000); // Shorter delay for immediate feedback
+      }, 800); // Slightly faster transition
     }
   }
 
@@ -937,6 +958,19 @@ class FileProcessor {
 
       // Update result content with enhanced stats
       this.updateResultStats(resultContainer, data);
+      
+      // Update the dedicated result-stats element
+      const resultStatsElement = this.state.elements.get('result-stats');
+      if (resultStatsElement && data.stats) {
+        const quickStats = `
+          <div class="d-flex justify-content-between text-muted small">
+            <span><i class="fas fa-file me-1"></i>${data.stats.processed_files || 0} files processed</span>
+            <span><i class="fas fa-clock me-1"></i>${data.stats.formatted_duration || 'Unknown'}</span>
+            <span><i class="fas fa-check-circle me-1"></i>${data.stats.success_rate_percent || 0}% success</span>
+          </div>
+        `;
+        resultStatsElement.innerHTML = quickStats;
+      }
 
       console.log('✅ [FileProcessor] Result container shown with stats');
     } catch (error) {
@@ -1024,15 +1058,42 @@ class FileProcessor {
   }
 
   /**
-   * Update statistics display
+   * Update statistics display during processing
    */
   updateStats(stats) {
     const statsContainer = this.state.elements.get('progress-stats');
     if (!statsContainer) return;
 
-    const statsText = `Files: ${stats.files_processed || 0}/${stats.total_files || 0} | Size: ${this.formatFileSize(stats.total_size || 0)} | Time: ${this.formatDuration(stats.elapsed_time || 0)}`;
+    // Use enhanced CustomFileStats fields if available
+    const processed = stats.processed_files || 0;
+    const total = stats.total_files || 0;
+    const size = stats.formatted_total_size || this.formatFileSize(stats.total_bytes || 0);
+    const duration = stats.formatted_duration || this.formatDuration(stats.elapsed_time || 0);
+    const rate = stats.formatted_processing_rate || `${stats.current_processing_rate || 0} files/sec`;
+    const stage = stats.current_stage || 'Processing';
 
-    statsContainer.textContent = statsText;
+    // Enhanced real-time stats display
+    const statsHtml = `
+      <div class="row g-2 small">
+        <div class="col-md-6">
+          <i class="fas fa-files-o me-1"></i><strong>Files:</strong> ${processed}/${total}
+        </div>
+        <div class="col-md-6">
+          <i class="fas fa-database me-1"></i><strong>Size:</strong> ${size}
+        </div>
+        <div class="col-md-6">
+          <i class="fas fa-clock me-1"></i><strong>Time:</strong> ${duration}
+        </div>
+        <div class="col-md-6">
+          <i class="fas fa-tachometer-alt me-1"></i><strong>Rate:</strong> ${rate}
+        </div>
+        <div class="col-12">
+          <i class="fas fa-cog me-1"></i><strong>Stage:</strong> ${stage}
+        </div>
+      </div>
+    `;
+
+    statsContainer.innerHTML = statsHtml;
     statsContainer.style.display = 'block';
   }
 
@@ -1124,9 +1185,35 @@ class FileProcessor {
           <h5><i class="fas fa-chart-bar me-2"></i>Processing Statistics</h5>
           <div class="time-badge">
             <i class="fas fa-clock"></i>
-            <span>${this.formatDuration((stats.total_duration_seconds || stats.processing_time || 0) * 1000)} total processing time</span>
+            <span>${stats.formatted_duration || this.formatDuration((stats.total_duration_seconds || stats.processing_time || 0) * 1000)} total processing time</span>
           </div>
         </div>
+        
+        <!-- Enhanced Real-time Performance Metrics -->
+        ${stats.completion_percentage ? `
+        <div class="alert alert-success mb-3">
+          <div class="row text-center">
+            <div class="col-4">
+              <div class="performance-metric">
+                <div class="value">${stats.completion_percentage}%</div>
+                <div class="label">Completion</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="performance-metric">
+                <div class="value">${stats.formatted_processing_rate || `${stats.files_per_second || 0} files/sec`}</div>
+                <div class="label">Processing Rate</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="performance-metric">
+                <div class="value">${stats.success_rate_percent || 0}%</div>
+                <div class="label">Success Rate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        ` : ''}
         
         <div class="row mb-4">
           <div class="col-md-4">

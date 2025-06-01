@@ -26,28 +26,56 @@ _emitted_events = {}  # {task_id: {event_type: timestamp}}
 _emitted_completions = set()  # Track completed tasks to prevent duplicates
 
 # Export main registration function and utilities
-__all__ = ['register_socketio_events', 'safe_emit', 'get_socketio', 'emit_task_completion_unified', 'emit_progress_update_unified', 'emit_task_error_unified']
+__all__ = ['register_socketio_events', 'safe_emit', 'get_socketio', 'set_socketio_context', 'emit_task_completion_unified', 'emit_progress_update_unified', 'emit_task_error_unified']
+
+# Global SocketIO context for background threads (same pattern as socketio_context_helper)
+_app_instance = None
+_socketio_instance = None
+
+def set_socketio_context(app, socketio):
+    """Set the Flask app and SocketIO instances for use in background threads"""
+    global _app_instance, _socketio_instance
+    _app_instance = app
+    _socketio_instance = socketio
+    logger.info("SocketIO Events context initialized for background threads")
 
 # Helper to get socketio instance
 def get_socketio():
-    """Get socketio instance from current app or return None"""
+    """Get socketio instance from global context or current app"""
+    global _socketio_instance
+    
+    # Try global context first (for background threads)
+    if _socketio_instance:
+        return _socketio_instance
+    
+    # Fallback to current app context
     try:
         return current_app.extensions.get('socketio')
     except:
         return None
 
-# Helper to emit events safely
+# Helper to emit events safely with proper context
 def safe_emit(event, data, **kwargs):
-    """Safely emit an event using socketio from current app"""
-    socketio = get_socketio()
-    if socketio:
-        socketio.emit(event, data, **kwargs)
-    else:
+    """Safely emit an event using socketio with proper Flask context"""
+    global _app_instance, _socketio_instance
+    
+    if not _socketio_instance or not _app_instance:
+        logger.warning(f"Could not emit {event} - no socketio context available")
+        return False
+    
+    try:
+        # Use Flask application context for background threads
+        with _app_instance.app_context():
+            _socketio_instance.emit(event, data, **kwargs)
+            return True
+    except Exception as e:
         # Fallback to direct emit if we're in a request context
         try:
             emit(event, data, **kwargs)
-        except:
-            logger.warning(f"Could not emit {event} - no socketio instance available")
+            return True
+        except Exception as fallback_error:
+            logger.warning(f"Could not emit {event} - context error: {e}, fallback error: {fallback_error}")
+            return False
 
 # =============================================================================
 # UNIFIED TASK EVENT EMISSION FUNCTIONS (Centralized)

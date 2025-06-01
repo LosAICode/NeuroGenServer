@@ -497,16 +497,18 @@ class CustomFileStats:
     def to_dict(self) -> Dict[str, Any]:
         """
         Convert to dictionary for JSON serialization with enhanced error handling.
+        Frontend-optimized format for Submit → Progress → Stats flow.
         
         Returns:
-            Dictionary with all statistics
+            Dictionary with all statistics optimized for UI display
         """
         try:
             # Calculate duration with error handling
             duration_seconds = self.calculate_duration()
+            current_time = time.time()
             
             d = {
-                # Basic file metrics
+                # Basic file metrics (Frontend priority)
                 'total_files': self.total_files,
                 'processed_files': self.processed_files,
                 'skipped_files': self.skipped_files,
@@ -524,7 +526,7 @@ class CustomFileStats:
                 # File type tracking
                 'binary_files_detected': self.binary_files_detected,
                 
-                # Performance metrics
+                # Performance metrics (Enhanced for UI)
                 'total_processing_time': self.total_processing_time,
                 'largest_file_bytes': self.largest_file_bytes,
                 'largest_file_path': self.largest_file_path,
@@ -533,9 +535,22 @@ class CustomFileStats:
                 'duration_seconds': duration_seconds,
                 'current_processing_rate': round(self.current_processing_rate, 2),
                 
+                # Real-time progress indicators (NEW)
+                'completion_percentage': round(min(100.0, (self.processed_files / max(1, max(self.total_files, self.processed_files))) * 100), 1),
+                'files_remaining': max(0, max(self.total_files, self.processed_files) - self.processed_files),
+                'estimated_completion_time': self._estimate_completion_time(),
+                'current_stage': self._get_current_stage(),
+                
+                # Formatted display values (NEW - Frontend ready)
+                'formatted_total_size': self._format_bytes(self.total_bytes),
+                'formatted_largest_file': self._format_bytes(self.largest_file_bytes),
+                'formatted_duration': self._format_duration(duration_seconds),
+                'formatted_processing_rate': f"{self.current_processing_rate:.1f} files/sec",
+                
                 # Timestamp information
                 'start_time_iso': datetime.fromtimestamp(float(self.start_time) if isinstance(self.start_time, (int, float, str)) else time.time()).isoformat(),
-                'current_time_iso': datetime.now().isoformat()
+                'current_time_iso': datetime.now().isoformat(),
+                'elapsed_time': current_time - float(self.start_time)
             }
             
             # Add derived statistics with error handling
@@ -581,6 +596,73 @@ class CustomFileStats:
                 'error_files': self.error_files,
                 'skipped_files': self.skipped_files
             }
+    
+    def _estimate_completion_time(self) -> float:
+        """Estimate completion time based on current processing rate"""
+        try:
+            if self.current_processing_rate > 0 and self.total_files > self.processed_files:
+                remaining_files = self.total_files - self.processed_files
+                return remaining_files / self.current_processing_rate
+            return 0.0
+        except Exception:
+            return 0.0
+    
+    def _get_current_stage(self) -> str:
+        """Get current processing stage description"""
+        try:
+            if self.total_files == 0:
+                return "Initializing"
+            
+            completion_pct = (self.processed_files / self.total_files) * 100
+            
+            if completion_pct == 0:
+                return "Starting"
+            elif completion_pct < 25:
+                return "Processing files"
+            elif completion_pct < 50:
+                return "25% complete"
+            elif completion_pct < 75:
+                return "Halfway complete"
+            elif completion_pct < 95:
+                return "Almost finished"
+            elif completion_pct < 100:
+                return "Finalizing"
+            else:
+                return "Completed"
+        except Exception:
+            return "Processing"
+    
+    def _format_bytes(self, bytes_count: int) -> str:
+        """Format bytes to human readable string"""
+        try:
+            if bytes_count == 0:
+                return "0 B"
+            
+            size_names = ["B", "KB", "MB", "GB", "TB"]
+            i = 0
+            while bytes_count >= 1024 and i < len(size_names) - 1:
+                bytes_count /= 1024.0
+                i += 1
+            
+            return f"{bytes_count:.1f} {size_names[i]}"
+        except Exception:
+            return "Unknown"
+    
+    def _format_duration(self, seconds: float) -> str:
+        """Format duration to human readable string"""
+        try:
+            if seconds < 60:
+                return f"{seconds:.1f}s"
+            elif seconds < 3600:
+                minutes = int(seconds // 60)
+                remaining_seconds = seconds % 60
+                return f"{minutes}m {remaining_seconds:.0f}s"
+            else:
+                hours = int(seconds // 3600)
+                minutes = int((seconds % 3600) // 60)
+                return f"{hours}h {minutes}m"
+        except Exception:
+            return "Unknown"
             
     def __str__(self) -> str:
         """Return a string representation of the statistics with error handling."""
@@ -1744,6 +1826,7 @@ class ProcessingTask(BaseTask):
                 
                 try:
                     # Add to task history (non-emission activity)
+                    from blueprints.api.management import add_task_to_history
                     add_task_to_history(
                         self.task_id,
                         self.task_type,

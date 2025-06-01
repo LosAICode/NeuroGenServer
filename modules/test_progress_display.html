@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Progress Display Test</title>
+    <style>
+        .d-none { display: none !important; }
+        .container { margin: 20px; padding: 20px; border: 1px solid #ccc; }
+        .progress-bar { 
+            background: #007bff; 
+            height: 20px; 
+            color: white; 
+            text-align: center; 
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Processor Progress Display Test</h1>
+    
+    <div id="form-container" class="container">
+        <h3>Form Container</h3>
+        <input type="text" id="input-dir" value="/test/input" />
+        <input type="text" id="output-file" value="test.json" />
+        <button id="submit-btn" onclick="testStartProcessing()">Start Processing</button>
+    </div>
+    
+    <div id="progress-container" class="container d-none">
+        <h3>Progress Container</h3>
+        <div class="progress-bar" id="progress-bar" style="width: 0%;">0%</div>
+        <div id="progress-status">Ready...</div>
+        <button id="cancel-btn" onclick="testCancel()">Cancel</button>
+    </div>
+    
+    <div id="result-container" class="container d-none">
+        <h3>Result Container</h3>
+        <div id="result-content">Results will appear here...</div>
+    </div>
+
+    <script>
+        // Mock file processor state
+        const mockState = {
+            elements: new Map(),
+            processingState: 'idle',
+            currentTask: null
+        };
+
+        // Cache elements
+        const elementIds = ['form-container', 'progress-container', 'result-container', 
+                           'input-dir', 'output-file', 'submit-btn', 'progress-bar', 
+                           'progress-status', 'cancel-btn'];
+        elementIds.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                mockState.elements.set(id, element);
+                console.log(`✅ Cached element: ${id}`, element);
+            } else {
+                console.error(`❌ Element not found: ${id}`);
+            }
+        });
+
+        function transitionToContainer(targetContainer) {
+            console.log('🔄 Transitioning to container:', targetContainer);
+            
+            if (!targetContainer) {
+                console.error('❌ Target container is null/undefined');
+                return;
+            }
+
+            const allContainers = [
+                mockState.elements.get('form-container'),
+                mockState.elements.get('progress-container'),
+                mockState.elements.get('result-container')
+            ].filter(container => container);
+
+            console.log('📦 All containers:', allContainers);
+
+            // Hide all containers
+            allContainers.forEach(container => {
+                if (container !== targetContainer) {
+                    console.log(`🙈 Hiding container:`, container.id);
+                    container.classList.add('d-none');
+                    container.style.display = 'none';
+                }
+            });
+
+            // Show target container
+            console.log(`👁️ Showing container:`, targetContainer.id);
+            targetContainer.classList.remove('d-none');
+            targetContainer.style.display = 'block';
+            targetContainer.style.opacity = '1';
+        }
+
+        function showProgressContainer() {
+            console.log('📊 showProgressContainer called');
+            const progressContainer = mockState.elements.get('progress-container');
+            console.log('📊 Progress container element:', progressContainer);
+            
+            if (!progressContainer) {
+                console.error('❌ Progress container not found in cache');
+                return;
+            }
+            
+            transitionToContainer(progressContainer);
+            console.log('✅ Progress container should now be visible');
+        }
+
+        function showProgress(progress, message) {
+            console.log(`📈 showProgress(${progress}, "${message}")`);
+            
+            const progressBar = mockState.elements.get('progress-bar');
+            const progressText = mockState.elements.get('progress-status');
+            const progressContainer = mockState.elements.get('progress-container');
+
+            // Ensure progress container is visible
+            if (progressContainer) {
+                progressContainer.classList.remove('d-none');
+                progressContainer.style.display = 'block';
+                console.log('✅ Progress container visibility ensured');
+            }
+
+            if (progressBar) {
+                progressBar.style.width = `${progress}%`;
+                progressBar.textContent = `${progress}%`;
+                console.log(`✅ Progress bar updated to ${progress}%`);
+            }
+
+            if (progressText) {
+                progressText.textContent = message;
+                console.log(`✅ Progress text updated: "${message}"`);
+            }
+        }
+
+        function testStartProcessing() {
+            console.log('🚀 Testing start processing...');
+            
+            mockState.processingState = 'processing';
+            
+            // Step 1: Show progress container
+            showProgressContainer();
+            
+            // Step 2: Initialize progress
+            showProgress(0, 'Initializing file processing...');
+            
+            // Step 3: Simulate progress updates
+            setTimeout(() => showProgress(25, 'Processing files...'), 1000);
+            setTimeout(() => showProgress(50, 'Halfway complete...'), 2000);
+            setTimeout(() => showProgress(75, 'Almost done...'), 3000);
+            setTimeout(() => showProgress(100, 'Processing completed!'), 4000);
+        }
+
+        function testCancel() {
+            console.log('🚫 Testing cancellation...');
+            showProgress(0, 'Processing cancelled by user');
+            setTimeout(() => {
+                const formContainer = mockState.elements.get('form-container');
+                transitionToContainer(formContainer);
+            }, 1500);
+        }
+
+        console.log('🧪 Test page loaded. Click "Start Processing" to test the flow.');
+    </script>
+</body>
+</html>
