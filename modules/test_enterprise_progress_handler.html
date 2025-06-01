@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise ProgressHandler v6.0 Test Suite</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        .test-section {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .status-connected { background-color: #198754; }
+        .status-disconnected { background-color: #dc3545; }
+        .status-unknown { background-color: #6c757d; }
+        .console-log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 0.75rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Enterprise ProgressHandler v6.0 Test Suite
+                </h1>
+                
+                <!-- System Status -->
+                <div class="test-section">
+                    <h3>System Status</h3>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Socket Connection</h5>
+                                    <p class="card-text">
+                                        <span id="socket-status-indicator" class="status-indicator status-unknown"></span>
+                                        <span id="socket-status-text">Connecting...</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Progress Handler</h5>
+                                    <p class="card-text">
+                                        <span id="progress-handler-status-indicator" class="status-indicator status-unknown"></span>
+                                        <span id="progress-handler-status-text">Loading...</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Registered Buttons</h5>
+                                    <p class="card-text">
+                                        <span id="button-count">0</span> buttons
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Active Tasks</h5>
+                                    <p class="card-text">
+                                        <span id="active-tasks-count">0</span> tasks
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module Testing -->
+                <div class="test-section">
+                    <h3>Module Testing</h3>
+                    <div class="row">
+                        <!-- File Processing Test -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">File Processing Module</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="test-file-form">
+                                        <div class="mb-3">
+                                            <label for="test-input-dir" class="form-label">Input Directory</label>
+                                            <input type="text" class="form-control" id="test-input-dir" value="/tmp/test_files">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="test-output-file" class="form-label">Output File</label>
+                                            <input type="text" class="form-control" id="test-output-file" value="test_output.json">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary" id="test-submit-btn">
+                                            <i class="fas fa-play me-2"></i> Test File Processing
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- File Processing Progress -->
+                                    <div id="test-progress-container" class="mt-3" style="display: none;">
+                                        <h6>Progress</h6>
+                                        <div class="progress mb-2">
+                                            <div id="test-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                 role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                0%
+                                            </div>
+                                        </div>
+                                        <div id="test-progress-status" class="text-muted small"></div>
+                                        <div id="test-progress-stats" class="text-muted small"></div>
+                                        <button id="test-cancel-btn" class="btn btn-sm btn-outline-danger mt-2">
+                                            <i class="fas fa-times me-1"></i> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Web Scraping Test -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">Web Scraping Module</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="test-scraper-form">
+                                        <div class="mb-3">
+                                            <label for="test-scraper-url" class="form-label">URL to Scrape</label>
+                                            <input type="url" class="form-control" id="test-scraper-url" value="https://example.com">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="test-scraper-output" class="form-label">Output Directory</label>
+                                            <input type="text" class="form-control" id="test-scraper-output" value="/tmp/scraper_test">
+                                        </div>
+                                        <button type="submit" class="btn btn-info" id="test-scrape-btn">
+                                            <i class="fas fa-spider me-2"></i> Test Web Scraping
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- Scraper Progress -->
+                                    <div id="test-scraper-progress-container" class="mt-3" style="display: none;">
+                                        <h6>Scraping Progress</h6>
+                                        <div class="progress mb-2">
+                                            <div id="test-scraper-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                                                 role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                0%
+                                            </div>
+                                        </div>
+                                        <div id="test-scraper-progress-status" class="text-muted small"></div>
+                                        <div id="test-scraper-progress-stats" class="text-muted small"></div>
+                                        <button id="test-scraper-cancel-btn" class="btn btn-sm btn-outline-danger mt-2">
+                                            <i class="fas fa-times me-1"></i> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct Progress Simulation -->
+                <div class="test-section">
+                    <h3>Direct Progress Simulation</h3>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-success" id="simulate-success-btn">
+                                    <i class="fas fa-check me-2"></i> Simulate Success Task
+                                </button>
+                                <button class="btn btn-warning" id="simulate-error-btn">
+                                    <i class="fas fa-exclamation-triangle me-2"></i> Simulate Error Task
+                                </button>
+                                <button class="btn btn-secondary" id="simulate-cancel-btn">
+                                    <i class="fas fa-ban me-2"></i> Simulate Cancel Task
+                                </button>
+                                <button class="btn btn-primary" id="simulate-multi-btn">
+                                    <i class="fas fa-tasks me-2"></i> Simulate Multiple Tasks
+                                </button>
+                            </div>
+                            
+                            <!-- Simulation Progress -->
+                            <div id="simulation-progress-container" class="mt-3" style="display: none;">
+                                <h6>Simulation Progress</h6>
+                                <div class="progress mb-2">
+                                    <div id="simulation-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                        0%
+                                    </div>
+                                </div>
+                                <div id="simulation-progress-status" class="text-muted small"></div>
+                                <div id="simulation-progress-stats" class="text-muted small"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Debug Controls</h6>
+                                </div>
+                                <div class="card-body">
+                                    <button class="btn btn-outline-secondary btn-sm w-100 mb-2" onclick="showSystemHealth()">
+                                        <i class="fas fa-heart-pulse me-1"></i> System Health
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm w-100 mb-2" onclick="showButtonStates()">
+                                        <i class="fas fa-mouse-pointer me-1"></i> Button States
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm w-100 mb-2" onclick="showAnalytics()">
+                                        <i class="fas fa-chart-bar me-1"></i> Analytics
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm w-100" onclick="resetAll()">
+                                        <i class="fas fa-redo me-1"></i> Reset All
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Console Output -->
+                <div class="test-section">
+                    <h3>Console Output</h3>
+                    <div id="console-output" class="console-log">
+                        Initializing test suite...
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary mt-2" onclick="clearConsole()">
+                        <i class="fas fa-trash me-1"></i> Clear Console
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Global test state
+        window.testState = {
+            progressHandler: null,
+            socket: null,
+            simulationCounter: 0
+        };
+
+        // Console logging override
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+        
+        function logToConsole(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const consoleOutput = document.getElementById('console-output');
+            const typePrefix = type === 'error' ? '❌' : type === 'warn' ? '⚠️' : '📝';
+            consoleOutput.textContent += `[${timestamp}] ${typePrefix} ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            logToConsole(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalConsoleError.apply(console, args);
+            logToConsole(args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalConsoleWarn.apply(console, args);
+            logToConsole(args.join(' '), 'warn');
+        };
+
+        // Initialize socket connection
+        window.socket = io('http://localhost:5025');
+        window.testState.socket = window.socket;
+
+        window.socket.on('connect', () => {
+            updateStatus('socket', 'connected', 'Connected');
+            console.log('Socket connected to test server');
+        });
+
+        window.socket.on('disconnect', () => {
+            updateStatus('socket', 'disconnected', 'Disconnected');
+            console.log('Socket disconnected from test server');
+        });
+
+        // Initialize Progress Handler
+        async function initializeTest() {
+            try {
+                console.log('Initializing Enterprise ProgressHandler v6.0 test suite...');
+                
+                // Import and initialize progress handler
+                const progressModule = await import('./static/js/modules/utils/progressHandler.js');
+                await progressModule.default();
+                window.testState.progressHandler = progressModule;
+                
+                updateStatus('progress-handler', 'connected', 'Ready');
+                updateButtonCount();
+                updateActiveTasksCount();
+                
+                console.log('✅ Enterprise ProgressHandler v6.0 test suite initialized successfully');
+                
+                // Setup test event handlers
+                setupTestEventHandlers();
+                
+            } catch (error) {
+                console.error('❌ Failed to initialize test suite:', error);
+                updateStatus('progress-handler', 'disconnected', 'Failed');
+            }
+        }
+
+        function updateStatus(component, status, text) {
+            const indicator = document.getElementById(`${component}-status-indicator`);
+            const textElement = document.getElementById(`${component}-status-text`);
+            
+            if (indicator) {
+                indicator.className = `status-indicator status-${status}`;
+            }
+            if (textElement) {
+                textElement.textContent = text;
+            }
+        }
+
+        function updateButtonCount() {
+            const count = window.progressHandler?.buttonManager?.buttonStates?.size || 0;
+            document.getElementById('button-count').textContent = count;
+        }
+
+        function updateActiveTasksCount() {
+            const count = window.progressHandler?.getActiveTasksCount?.() || 0;
+            document.getElementById('active-tasks-count').textContent = count;
+        }
+
+        function setupTestEventHandlers() {
+            // Test file processing
+            document.getElementById('test-submit-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                startTestFileProcessing();
+            });
+
+            // Test web scraping
+            document.getElementById('test-scrape-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                startTestWebScraping();
+            });
+
+            // Simulation buttons
+            document.getElementById('simulate-success-btn').addEventListener('click', () => simulateTask('success'));
+            document.getElementById('simulate-error-btn').addEventListener('click', () => simulateTask('error'));
+            document.getElementById('simulate-cancel-btn').addEventListener('click', () => simulateTask('cancel'));
+            document.getElementById('simulate-multi-btn').addEventListener('click', () => simulateMultipleTasks());
+        }
+
+        async function startTestFileProcessing() {
+            const taskId = `file_test_${Date.now()}`;
+            console.log(`🚀 Starting file processing test: ${taskId}`);
+            
+            const tracker = window.testState.progressHandler.trackProgress(taskId, {
+                targetElement: 'test-progress-container',
+                taskType: 'file_processing',
+                module: 'file_processing',
+                elementPrefix: 'test-'
+            });
+
+            // Simulate task started
+            setTimeout(() => {
+                window.socket.emit('task_started', {
+                    task_id: taskId,
+                    task_type: 'file_processing',
+                    message: 'Starting file processing test...'
+                });
+            }, 100);
+
+            // Simulate progress updates
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                progress = Math.min(progress, 100);
+                
+                window.socket.emit('progress_update', {
+                    task_id: taskId,
+                    progress: progress,
+                    message: `Processing files... ${progress.toFixed(1)}%`,
+                    stats: {
+                        files_processed: Math.floor(progress / 10),
+                        total_files: 10,
+                        elapsed_time: (Date.now() - parseInt(taskId.split('_')[2])) / 1000,
+                        total_size: 1024 * 1024 * 50 // 50MB
+                    }
+                });
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        window.socket.emit('task_completed', {
+                            task_id: taskId,
+                            message: 'File processing test completed!',
+                            output_file: 'test_output.json'
+                        });
+                    }, 500);
+                }
+            }, 800);
+        }
+
+        async function startTestWebScraping() {
+            const taskId = `scraper_test_${Date.now()}`;
+            console.log(`🕷️ Starting web scraping test: ${taskId}`);
+            
+            const tracker = window.testState.progressHandler.trackProgress(taskId, {
+                targetElement: 'test-scraper-progress-container',
+                taskType: 'web_scraping',
+                module: 'web_scraping',
+                elementPrefix: 'test-scraper-'
+            });
+
+            // Simulate scraping task
+            setTimeout(() => {
+                window.socket.emit('task_started', {
+                    task_id: taskId,
+                    task_type: 'web_scraping',
+                    message: 'Starting web scraping test...'
+                });
+            }, 100);
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 12;
+                progress = Math.min(progress, 100);
+                
+                window.socket.emit('progress_update', {
+                    task_id: taskId,
+                    progress: progress,
+                    message: `Scraping pages... ${progress.toFixed(1)}%`,
+                    stats: {
+                        files_processed: Math.floor(progress / 5),
+                        total_files: 20,
+                        elapsed_time: (Date.now() - parseInt(taskId.split('_')[2])) / 1000
+                    }
+                });
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        window.socket.emit('task_completed', {
+                            task_id: taskId,
+                            message: 'Web scraping test completed!',
+                            output_file: 'scraper_results.json'
+                        });
+                    }, 500);
+                }
+            }, 1000);
+        }
+
+        function simulateTask(type) {
+            const taskId = `sim_${type}_${++window.testState.simulationCounter}`;
+            console.log(`🎭 Simulating ${type} task: ${taskId}`);
+            
+            const tracker = window.testState.progressHandler.trackProgress(taskId, {
+                targetElement: 'simulation-progress-container',
+                taskType: 'simulation',
+                module: 'test_simulation',
+                elementPrefix: 'simulation-'
+            });
+
+            setTimeout(() => {
+                window.socket.emit('task_started', {
+                    task_id: taskId,
+                    task_type: 'simulation',
+                    message: `Starting ${type} simulation...`
+                });
+            }, 100);
+
+            if (type === 'error') {
+                setTimeout(() => {
+                    window.socket.emit('task_error', {
+                        task_id: taskId,
+                        error: 'Simulated error for testing purposes'
+                    });
+                }, 2000);
+            } else if (type === 'cancel') {
+                setTimeout(() => {
+                    window.socket.emit('task_cancelled', {
+                        task_id: taskId,
+                        reason: 'Simulated cancellation for testing'
+                    });
+                }, 1500);
+            } else {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 20;
+                    progress = Math.min(progress, 100);
+                    
+                    window.socket.emit('progress_update', {
+                        task_id: taskId,
+                        progress: progress,
+                        message: `Simulating... ${progress.toFixed(1)}%`
+                    });
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            window.socket.emit('task_completed', {
+                                task_id: taskId,
+                                message: 'Simulation completed successfully!'
+                            });
+                        }, 300);
+                    }
+                }, 500);
+            }
+        }
+
+        function simulateMultipleTasks() {
+            console.log('🔥 Starting multiple task simulation...');
+            setTimeout(() => simulateTask('success'), 100);
+            setTimeout(() => simulateTask('success'), 1000);
+            setTimeout(() => simulateTask('error'), 2000);
+            setTimeout(() => simulateTask('success'), 3000);
+        }
+
+        // Debug functions
+        window.showSystemHealth = function() {
+            const health = window.progressHandler?.getHealthStatus?.();
+            console.log('🏥 System Health:', JSON.stringify(health, null, 2));
+        };
+
+        window.showButtonStates = function() {
+            const buttons = window.progressHandler?.buttonManager?.getAllButtonStates?.();
+            console.log('🔘 Button States:', JSON.stringify(buttons, null, 2));
+        };
+
+        window.showAnalytics = function() {
+            const analytics = window.progressHandler?.getAnalytics?.();
+            console.log('📊 Analytics:', JSON.stringify(analytics, null, 2));
+        };
+
+        window.resetAll = function() {
+            console.log('🔄 Resetting all state...');
+            window.progressHandler?.state?.reset?.();
+            updateActiveTasksCount();
+            clearConsole();
+        };
+
+        window.clearConsole = function() {
+            document.getElementById('console-output').textContent = '';
+        };
+
+        // Auto-update counters
+        setInterval(() => {
+            updateActiveTasksCount();
+        }, 1000);
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeTest);
+    </script>
+</body>
+</html>

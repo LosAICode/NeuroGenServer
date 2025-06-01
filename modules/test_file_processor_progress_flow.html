@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Processor Progress Flow Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        .test-section {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .status-connected { background-color: #198754; }
+        .status-disconnected { background-color: #dc3545; }
+        .status-unknown { background-color: #6c757d; }
+        .d-none { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">
+            <i class="fas fa-file-alt me-2"></i>
+            File Processor Progress Flow Test
+        </h1>
+        
+        <!-- System Status -->
+        <div class="test-section">
+            <h3>System Status</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Socket:</strong> <span id="socket-status">Connecting...</span></p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>File Processor:</strong> <span id="file-processor-status">Loading...</span></p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Progress Handler:</strong> <span id="progress-handler-status">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Processing Form (Simplified) -->
+        <div class="test-section">
+            <h3>File Processing Test</h3>
+            <form id="process-form">
+                <div class="mb-3">
+                    <label for="input-dir" class="form-label">Input Directory</label>
+                    <input type="text" class="form-control" id="input-dir" value="/tmp/test" required>
+                </div>
+                <div class="mb-3">
+                    <label for="output-file" class="form-label">Output File</label>
+                    <input type="text" class="form-control" id="output-file" value="test_output.json" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-btn">
+                    <i class="fas fa-play me-2"></i> Start Processing
+                </button>
+                <button type="button" class="btn btn-secondary ms-2" onclick="simulateProgress()">
+                    <i class="fas fa-test me-2"></i> Simulate Progress
+                </button>
+            </form>
+        </div>
+
+        <!-- Progress Container (Matches main index.html structure) -->
+        <div id="progress-container" class="test-section d-none">
+            <h4 class="mb-3">Processing Files...</h4>
+            <div class="progress mb-3" style="height: 25px;">
+                <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                     role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+            </div>
+            <div id="progress-status" class="mb-3 text-muted">Initializing...</div>
+            <div id="progress-stats" class="small text-muted mb-3" style="display: none;"></div>
+            <button id="cancel-btn" class="btn btn-outline-danger">
+                <i class="fas fa-times me-2"></i> Cancel
+            </button>
+        </div>
+
+        <!-- Result Container -->
+        <div id="result-container" class="test-section d-none"></div>
+
+        <!-- Debug Console -->
+        <div class="test-section">
+            <h3>Debug Console</h3>
+            <div id="debug-console" style="background: #f8f9fa; padding: 1rem; border-radius: 0.25rem; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto;">
+                Initializing test environment...\n
+            </div>
+            <button class="btn btn-sm btn-outline-secondary mt-2" onclick="clearDebugConsole()">Clear Console</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Enhanced console logging
+        const debugConsole = document.getElementById('debug-console');
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : '📝';
+            debugConsole.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            debugConsole.scrollTop = debugConsole.scrollHeight;
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+
+        // Initialize socket connection
+        window.socket = io('http://localhost:5025');
+        
+        window.socket.on('connect', () => {
+            document.getElementById('socket-status').innerHTML = '<span class="status-indicator status-connected"></span>Connected';
+            log('Socket connected to server', 'success');
+        });
+        
+        window.socket.on('disconnect', () => {
+            document.getElementById('socket-status').innerHTML = '<span class="status-indicator status-disconnected"></span>Disconnected';
+            log('Socket disconnected from server', 'warning');
+        });
+
+        // Socket event listeners for progress tracking
+        window.socket.on('task_started', (data) => {
+            log(`Task started: ${data.task_id}`, 'info');
+        });
+
+        window.socket.on('progress_update', (data) => {
+            log(`Progress update: ${data.progress}% - ${data.message}`, 'info');
+        });
+
+        window.socket.on('task_completed', (data) => {
+            log(`Task completed: ${data.task_id}`, 'success');
+        });
+
+        window.socket.on('task_error', (data) => {
+            log(`Task error: ${data.error}`, 'error');
+        });
+
+        // Initialize modules
+        async function initializeModules() {
+            try {
+                log('Initializing File Processor module...', 'info');
+                
+                // Import and initialize file processor
+                const fileProcessor = await import('./static/js/modules/features/fileProcessor.js');
+                await fileProcessor.default.init();
+                window.fileProcessor = fileProcessor.default;
+                
+                document.getElementById('file-processor-status').innerHTML = '<span class="status-indicator status-connected"></span>Ready';
+                log('File Processor initialized successfully', 'success');
+                
+                // Import and initialize progress handler
+                const progressModule = await import('./static/js/modules/utils/progressHandler.js');
+                await progressModule.default();
+                window.progressHandler = progressModule;
+                
+                document.getElementById('progress-handler-status').innerHTML = '<span class="status-indicator status-connected"></span>Ready';
+                log('Progress Handler initialized successfully', 'success');
+                
+            } catch (error) {
+                document.getElementById('file-processor-status').innerHTML = '<span class="status-indicator status-disconnected"></span>Failed';
+                document.getElementById('progress-handler-status').innerHTML = '<span class="status-indicator status-disconnected"></span>Failed';
+                log(`Module initialization failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Simulate progress for testing
+        window.simulateProgress = function() {
+            log('Starting progress simulation...', 'info');
+            
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressStatus = document.getElementById('progress-status');
+            const progressStats = document.getElementById('progress-stats');
+            const resultContainer = document.getElementById('result-container');
+            
+            // Show progress container
+            progressContainer.classList.remove('d-none');
+            progressContainer.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                progress = Math.min(progress, 100);
+                
+                // Update progress bar
+                progressBar.style.width = `${progress}%`;
+                progressBar.setAttribute('aria-valuenow', progress);
+                progressBar.textContent = `${progress.toFixed(1)}%`;
+                
+                // Update status
+                progressStatus.textContent = `Simulating... ${progress.toFixed(1)}%`;
+                
+                // Update stats
+                const filesProcessed = Math.floor(progress / 10);
+                const totalFiles = 10;
+                progressStats.textContent = `Files: ${filesProcessed}/${totalFiles} | Size: ${(progress * 10).toFixed(0)}KB | Time: ${(progress / 10).toFixed(1)}s`;
+                progressStats.style.display = 'block';
+                
+                log(`Progress: ${progress.toFixed(1)}%`, 'info');
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Show completion results
+                    setTimeout(() => {
+                        resultContainer.innerHTML = `
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-check-circle me-2"></i>Simulation Complete!</h5>
+                                <p>Successfully simulated file processing</p>
+                                <p>Output file: <strong>test_output.json</strong></p>
+                            </div>
+                        `;
+                        resultContainer.classList.remove('d-none');
+                        resultContainer.style.display = 'block';
+                        
+                        log('Simulation completed successfully', 'success');
+                    }, 500);
+                }
+            }, 800);
+        };
+
+        // Clear debug console
+        window.clearDebugConsole = function() {
+            debugConsole.textContent = '';
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeModules);
+    </script>
+</body>
+</html>

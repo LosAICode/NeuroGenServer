@@ -1,0 +1,144 @@
+{
+  "test2.txt": {
+    "docs_data": [
+      {
+        "file_path": "/tmp/test_validation/test2.txt",
+        "relative_path": "test2.txt",
+        "content": "more content\n",
+        "chunks": [
+          "more content\n"
+        ],
+        "metadata": {
+          "file_name": "test2.txt",
+          "file_path": "/tmp/test_validation/test2.txt",
+          "file_size": 13,
+          "file_extension": ".txt",
+          "last_modified": "2025-05-31T23:19:59.188838",
+          "relative_path": "test2.txt"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "test2.txt",
+      "processed_date": "2025-05-31 23:20:08",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-31T23:20:08.482395",
+      "processing_time_seconds": 0.0729074478149414,
+      "total_time_seconds": 0.1266787052154541,
+      "discovery_time_seconds": 0.00873422622680664,
+      "total_files_processed": 2,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 2,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  },
+  "test1.txt": {
+    "docs_data": [
+      {
+        "file_path": "/tmp/test_validation/test1.txt",
+        "relative_path": "test1.txt",
+        "content": "test content\n",
+        "chunks": [
+          "test content\n"
+        ],
+        "metadata": {
+          "file_name": "test1.txt",
+          "file_path": "/tmp/test_validation/test1.txt",
+          "file_size": 13,
+          "file_extension": ".txt",
+          "last_modified": "2025-05-31T23:19:59.178837",
+          "relative_path": "test1.txt"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "test1.txt",
+      "processed_date": "2025-05-31 23:20:08",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-31T23:20:08.482419",
+      "processing_time_seconds": 0.0729074478149414,
+      "total_time_seconds": 0.1266787052154541,
+      "discovery_time_seconds": 0.00873422622680664,
+      "total_files_processed": 2,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 2,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  }
+}

@@ -345,6 +345,7 @@ class FileProcessor {
   cacheElements() {
     const elementIds = [
       'process-form',
+      'form-container',
       'input-dir',
       'output-file', 
       'submit-btn',
@@ -665,6 +666,10 @@ class FileProcessor {
 
       this.state.processingState = 'processing';
       this.updateUI();
+      
+      // Transition from form to progress container immediately
+      this.showProgressContainer();
+      this.showProgress(0, 'Initializing file processing...');
 
       // Start processing using Blueprint API
       const response = await blueprintApi.processFiles(inputDir, outputFile, {
@@ -672,6 +677,9 @@ class FileProcessor {
         max_size: this.config.maxFileSize,
         chunk_size: this.config.chunkSize
       });
+      
+      // Update progress immediately after API call
+      this.showProgress(5, 'Processing request submitted, starting task...');
 
       // Store task information
       this.state.currentTask = {
@@ -697,13 +705,13 @@ class FileProcessor {
 
 
   /**
-   * Initialize progress tracking using new SocketIO-aligned progressHandler v5.0
+   * Initialize progress tracking using Enterprise ProgressHandler v6.0
    */
   async initializeProgressTracking(taskId) {
     try {
-      console.log(`📊 [FileProcessor] Initializing progress tracking for: ${taskId}`);
+      console.log(`📊 [FileProcessor] Initializing Enterprise progress tracking for: ${taskId}`);
       
-      // Import new progressHandler v5.0
+      // Import Enterprise progressHandler v6.0
       const progressHandlerModule = await import('../utils/progressHandler.js');
       const { trackProgress } = progressHandlerModule;
       
@@ -711,27 +719,35 @@ class FileProcessor {
       if (typeof progressHandlerModule.default === 'function' && !window.progressHandlerInitialized) {
         await progressHandlerModule.default();
         window.progressHandlerInitialized = true;
+        console.log('📊 [FileProcessor] Enterprise ProgressHandler v6.0 initialized');
       }
       
-      // Start tracking this specific task with v5.0 API
+      // Start tracking this specific task with v6.0 Enterprise API
       if (trackProgress) {
-        console.log(`📊 [FileProcessor] Starting progress tracking with v5.0...`);
+        console.log(`📊 [FileProcessor] Starting Enterprise progress tracking...`);
         const tracker = trackProgress(taskId, {
           targetElement: 'progress-container',
           taskType: 'file_processing',
-          elementPrefix: '' // Use default element IDs
+          module: 'file_processing',
+          elementPrefix: '', // File processing uses default IDs (no prefix)
+          buttonId: 'submit-btn', // Link to the submit button
+          // Let FileProcessor handle its own UI updates
+          customUIHandler: true
         });
         
         // Store tracker for cleanup
         this.state.progressTracker = tracker;
+        
+        console.log(`📊 [FileProcessor] Enterprise progress tracking active for task: ${taskId}`);
+        
+        // Ensure progress container is immediately visible
+        this.showProgress(0, 'Connecting to processing service...');
       }
       
-      console.log(`📊 [FileProcessor] Progress tracking v5.0 initialized`);
-      
     } catch (error) {
-      console.error('❌ Failed to initialize progress tracking:', error);
+      console.error('❌ Failed to initialize Enterprise progress tracking:', error);
       this.showNotification(`Progress tracking failed: ${error.message}`, 'warning');
-      // Continue without progress tracking
+      // Continue without progress tracking - graceful degradation
     }
   }
 
@@ -759,7 +775,7 @@ class FileProcessor {
   }
 
   /**
-   * Handle progress update
+   * Handle progress update with enhanced 100% detection
    */
   handleProgressUpdate(data) {
     console.log(`📊 [FileProcessor] Progress update received:`, data);
@@ -773,6 +789,23 @@ class FileProcessor {
     if (data.stats) {
       this.updateStats(data.stats);
     }
+    
+    // Enhanced 100% detection - transition to stats immediately when 100% reached
+    if (progress >= 100 && this.state.processingState === 'processing') {
+      console.log('🎉 [FileProcessor] 100% progress detected - transitioning to completion');
+      this.state.processingState = 'completed';
+      
+      // Show 100% completion briefly, then transition to results
+      setTimeout(() => {
+        console.log('📋 [FileProcessor] Transitioning to results after 100% completion');
+        this.showResultContainer({
+          stats: data.stats || {},
+          output_file: this.state.currentTask?.outputFile,
+          progress: 100,
+          message: 'Processing completed successfully!'
+        });
+      }, 1000); // Shorter delay for immediate feedback
+    }
   }
 
   /**
@@ -784,20 +817,31 @@ class FileProcessor {
   }
 
   /**
-   * Handle task completion
+   * Handle task completion with duplicate prevention
    */
   handleTaskCompleted(data) {
     console.log('✅ File processing completed:', data);
     
+    // Prevent duplicate completion handling
+    if (this.state.processingState === 'completed') {
+      console.log('📊 [FileProcessor] Task already completed - ignoring duplicate completion event');
+      return;
+    }
+    
     this.state.processingState = 'completed';
     this.showProgress(100, 'Processing completed successfully!');
     
-    // Show results
-    this.showResults(data);
+    // If not already transitioned, show results
+    const resultContainer = this.state.elements.get('result-container');
+    const isResultsVisible = resultContainer && !resultContainer.classList.contains('d-none');
     
-    // Update stats
-    if (data.stats) {
-      this.updateStats(data.stats);
+    if (!isResultsVisible) {
+      console.log('📋 [FileProcessor] Transitioning to results from completion event');
+      setTimeout(() => {
+        this.showResultContainer(data);
+      }, 1000);
+    } else {
+      console.log('📋 [FileProcessor] Results already visible - completion event handled');
     }
     
     this.updateUI();
@@ -815,12 +859,112 @@ class FileProcessor {
   }
 
   /**
+   * Show the main form container
+   */
+  showForm() {
+    try {
+      const formContainer = this.state.elements.get('form-container') || document.getElementById('form-container');
+      const progressContainer = this.state.elements.get('progress-container');
+      const resultContainer = this.state.elements.get('result-container');
+      const submitBtn = this.state.elements.get('submit-btn');
+
+      // Reset processing state
+      this.state.processingState = 'idle';
+      this.state.currentTask = null;
+
+      // Show form, hide other containers with smooth transitions
+      this.transitionToContainer(formContainer);
+      
+      // Reset button state
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Processing';
+      }
+
+      console.log('📁 [FileProcessor] Form container shown');
+    } catch (error) {
+      console.error('❌ Error showing form:', error);
+    }
+  }
+
+  /**
+   * Show the progress container with enhanced transitions
+   */
+  showProgressContainer() {
+    try {
+      const formContainer = this.state.elements.get('form-container') || document.getElementById('form-container');
+      const progressContainer = this.state.elements.get('progress-container');
+      const resultContainer = this.state.elements.get('result-container');
+
+      // Transition from form to progress
+      this.transitionToContainer(progressContainer);
+      
+      console.log('📊 [FileProcessor] Progress container shown');
+    } catch (error) {
+      console.error('❌ Error showing progress container:', error);
+    }
+  }
+
+  /**
+   * Show the result container with comprehensive stats
+   */
+  showResultContainer(data) {
+    try {
+      const progressContainer = this.state.elements.get('progress-container');
+      const resultContainer = this.state.elements.get('result-container');
+
+      // Transition from progress to results
+      this.transitionToContainer(resultContainer);
+
+      // Update result content with enhanced stats
+      this.updateResultStats(resultContainer, data);
+
+      console.log('✅ [FileProcessor] Result container shown with stats');
+    } catch (error) {
+      console.error('❌ Error showing result container:', error);
+    }
+  }
+
+  /**
+   * Smooth transition between containers
+   */
+  transitionToContainer(targetContainer) {
+    if (!targetContainer) return;
+
+    const allContainers = [
+      this.state.elements.get('form-container') || document.getElementById('form-container'),
+      this.state.elements.get('progress-container'),
+      this.state.elements.get('result-container')
+    ].filter(container => container);
+
+    // Hide all containers
+    allContainers.forEach(container => {
+      if (container !== targetContainer) {
+        container.classList.add('d-none');
+        container.style.display = 'none';
+      }
+    });
+
+    // Show target container with fade-in effect
+    if (targetContainer) {
+      targetContainer.classList.remove('d-none');
+      targetContainer.style.display = 'block';
+      
+      // Add fade-in animation
+      targetContainer.style.opacity = '0';
+      setTimeout(() => {
+        targetContainer.style.transition = 'opacity 0.3s ease-in-out';
+        targetContainer.style.opacity = '1';
+      }, 10);
+    }
+  }
+
+  /**
    * Update UI based on current state
    */
   updateUI() {
     const startBtn = this.state.elements.get('submit-btn');
     const cancelBtn = this.state.elements.get('cancel-btn');
-    const progressContainer = this.state.elements.get('progress-container');
 
     if (startBtn) {
       startBtn.disabled = this.state.processingState === 'processing';
@@ -832,11 +976,6 @@ class FileProcessor {
     if (cancelBtn) {
       cancelBtn.style.display = this.state.processingState === 'processing' ? 'inline-block' : 'none';
     }
-
-    if (progressContainer) {
-      progressContainer.style.display = 
-        ['processing', 'completed', 'error'].includes(this.state.processingState) ? 'block' : 'none';
-    }
   }
 
   /**
@@ -845,11 +984,19 @@ class FileProcessor {
   showProgress(progress, message) {
     const progressBar = this.state.elements.get('progress-bar');
     const progressText = this.state.elements.get('progress-status');
+    const progressContainer = this.state.elements.get('progress-container');
+
+    // Ensure progress container is visible
+    if (progressContainer) {
+      progressContainer.classList.remove('d-none');
+      progressContainer.style.display = 'block';
+    }
 
     if (progressBar) {
       progressBar.style.width = `${progress}%`;
       progressBar.setAttribute('aria-valuenow', progress);
-      progressBar.textContent = `${progress}%`;
+      // Format progress to 1 decimal place for consistency
+      progressBar.textContent = `${progress.toFixed(1)}%`;
     }
 
     if (progressText) {
@@ -871,30 +1018,312 @@ class FileProcessor {
   }
 
   /**
-   * Show processing results
+   * Update result statistics display with comprehensive formatting
    */
-  showResults(data) {
-    const resultsContainer = this.state.elements.get('result-container');
-    if (!resultsContainer) return;
+  updateResultStats(container, data) {
+    if (!container) return;
 
-    const resultsHtml = `
-      <div class="alert alert-success">
-        <h5><i class="fas fa-check-circle me-2"></i>Processing Complete!</h5>
-        <p>Successfully processed files from: <strong>${this.state.currentTask.inputDir}</strong></p>
-        <p>Output file: <strong>${data.output_file || this.state.currentTask.outputFile}</strong></p>
+    // Process stats data to ensure all values are present
+    const stats = this.processStatsData(data.stats || {});
+    const outputFile = data.output_file || this.state.currentTask?.outputFile;
+
+    const statsHtml = `
+      <style>
+        .stat-card {
+          background: var(--bs-body-bg);
+          border: 1px solid var(--bs-border-color);
+          border-radius: 0.5rem;
+          padding: 1rem;
+          margin-bottom: 0.5rem;
+          transition: all 0.2s ease;
+        }
+        .stat-card:hover {
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          transform: translateY(-2px);
+        }
+        .stat-card .icon {
+          font-size: 1.5rem;
+          margin-right: 1rem;
+          color: var(--bs-primary);
+        }
+        .stat-card .value {
+          font-size: 1.8rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+        }
+        .stat-card .label {
+          font-size: 0.875rem;
+          color: var(--bs-secondary);
+          margin: 0;
+        }
+        .zero-value {
+          opacity: 0.6;
+        }
+        .performance-metric {
+          text-align: center;
+          padding: 1rem;
+          background: var(--bs-light);
+          border-radius: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+        .performance-metric .value {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: var(--bs-primary);
+        }
+        .performance-metric .label {
+          font-size: 0.875rem;
+          color: var(--bs-secondary);
+          margin-top: 0.25rem;
+        }
+        .time-badge {
+          background: var(--bs-primary);
+          color: white;
+          padding: 0.25rem 0.75rem;
+          border-radius: 1rem;
+          font-size: 0.875rem;
+        }
+        .stats-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      </style>
+      <div class="result-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4><i class="fas fa-check-circle text-success me-2"></i>Processing Complete!</h4>
+          <button class="btn btn-outline-secondary btn-sm" onclick="window.fileProcessor.showForm()">
+            <i class="fas fa-plus me-2"></i>New Task
+          </button>
+        </div>
+        <p class="text-muted mb-0">Successfully processed files from: <strong>${this.state.currentTask?.inputDir}</strong></p>
+        ${outputFile ? `<p class="text-muted">Output file: <strong>${outputFile}</strong></p>` : ''}
+      </div>
+
+      <div class="stats-container">
+        <div class="stats-header mb-4">
+          <h5><i class="fas fa-chart-bar me-2"></i>Processing Statistics</h5>
+          <div class="time-badge">
+            <i class="fas fa-clock"></i>
+            <span>${this.formatDuration((stats.total_duration_seconds || stats.processing_time || 0) * 1000)} total processing time</span>
+          </div>
+        </div>
         
-        ${data.download_url ? `
-        <div class="mt-3">
-          <a href="${data.download_url}" class="btn btn-primary" download>
-            <i class="fas fa-download me-2"></i>Download Results
-          </a>
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="d-flex align-items-center">
+                <div class="icon"><i class="fas fa-file"></i></div>
+                <div>
+                  <div class="value ${stats.total_files === 0 ? 'zero-value' : ''}">${stats.total_files}</div>
+                  <div class="label">Total Files</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="d-flex align-items-center">
+                <div class="icon text-success"><i class="fas fa-check-circle"></i></div>
+                <div>
+                  <div class="value text-success">${stats.processed_files}</div>
+                  <div class="label">Processed Files</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="d-flex align-items-center">
+                <div class="icon text-danger"><i class="fas fa-times-circle"></i></div>
+                <div>
+                  <div class="value text-danger">${stats.error_files}</div>
+                  <div class="label">Error Files</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="d-flex align-items-center">
+                <div class="icon text-warning"><i class="fas fa-exclamation-circle"></i></div>
+                <div>
+                  <div class="value text-warning">${stats.skipped_files}</div>
+                  <div class="label">Skipped Files</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="d-flex align-items-center">
+                <div class="icon text-info"><i class="fas fa-database"></i></div>
+                <div>
+                  <div class="value text-info">${this.formatFileSize(stats.total_bytes)}</div>
+                  <div class="label">Total Size</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="d-flex align-items-center">
+                <div class="icon text-primary"><i class="fas fa-puzzle-piece"></i></div>
+                <div>
+                  <div class="value text-primary">${stats.total_chunks}</div>
+                  <div class="label">Total Chunks</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        ${stats.pdf_files > 0 ? `
+        <div class="pdf-stats mb-4">
+          <h6 class="mb-3"><i class="fas fa-file-pdf me-2"></i>PDF Statistics</h6>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="stat-card">
+                <div class="d-flex align-items-center">
+                  <div class="icon" style="color: #fd7e14;"><i class="fas fa-file-pdf"></i></div>
+                  <div>
+                    <div class="value" style="color: #fd7e14;">${stats.pdf_files}</div>
+                    <div class="label">PDF Files</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="stat-card">
+                <div class="d-flex align-items-center">
+                  <div class="icon" style="color: #20c997;"><i class="fas fa-table"></i></div>
+                  <div>
+                    <div class="value" style="color: #20c997;">${stats.tables_extracted || 0}</div>
+                    <div class="label">Tables Extracted</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="stat-card">
+                <div class="d-flex align-items-center">
+                  <div class="icon" style="color: #6f42c1;"><i class="fas fa-quote-right"></i></div>
+                  <div>
+                    <div class="value" style="color: #6f42c1;">${stats.references_extracted || 0}</div>
+                    <div class="label">References Extracted</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         ` : ''}
+        
+        <div class="performance-metrics mb-4">
+          <h6 class="mb-3"><i class="fas fa-tachometer-alt me-2"></i>Performance Metrics</h6>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="performance-metric">
+                <div class="value">${this.formatDuration((stats.total_duration_seconds || stats.processing_time || 0) * 1000)}</div>
+                <div class="label">Total Duration</div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="performance-metric">
+                <div class="value">${this.formatDuration((stats.avg_file_processing_time || 0) * 1000)}</div>
+                <div class="label">Avg. Time Per File</div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="performance-metric">
+                <div class="value">${((stats.processed_files || 0) / Math.max(1, stats.total_duration_seconds || stats.processing_time || 1)).toFixed(2)}</div>
+                <div class="label">Files Per Second</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      
+      ${outputFile ? `
+      <div class="file-actions mt-4">
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" onclick="window.fileProcessor.openFileOrFolder('${outputFile}')">
+            <i class="fas fa-file-alt me-2"></i>Open Output File
+          </button>
+          <button class="btn btn-secondary" onclick="window.fileProcessor.openFileOrFolder('${outputFile}', true)">
+            <i class="fas fa-folder-open me-2"></i>Open Containing Folder
+          </button>
+        </div>
+      </div>
+      ` : ''}
     `;
 
-    resultsContainer.innerHTML = resultsHtml;
-    resultsContainer.style.display = 'block';
+    container.innerHTML = statsHtml;
+    
+    // Add smooth entrance animation
+    container.style.opacity = '0';
+    setTimeout(() => {
+      container.style.transition = 'opacity 0.5s ease-in-out';
+      container.style.opacity = '1';
+    }, 100);
+  }
+
+  /**
+   * Process raw stats data to ensure all values are properly extracted
+   */
+  processStatsData(rawStats) {
+    const defaultStats = {
+      total_files: 0,
+      processed_files: 0,
+      skipped_files: 0,
+      error_files: 0,
+      total_bytes: 0,
+      total_chunks: 0,
+      duration_seconds: 0,
+      processing_time: 0,
+      total_duration_seconds: 0,
+      avg_file_processing_time: 0,
+      pdf_files: 0,
+      tables_extracted: 0,
+      references_extracted: 0
+    };
+    
+    if (!rawStats || typeof rawStats !== 'object') {
+      return defaultStats;
+    }
+    
+    // Handle nested stats structure
+    if (rawStats.stats && typeof rawStats.stats === 'object') {
+      rawStats = rawStats.stats;
+    }
+    
+    return { ...defaultStats, ...rawStats };
+  }
+
+  /**
+   * Open file or folder using system default application
+   */
+  openFileOrFolder(path, openFolder = false) {
+    // This would typically make a call to the backend to open the file/folder
+    console.log(`Opening ${openFolder ? 'folder for' : 'file'}: ${path}`);
+    
+    // For now, just show a notification
+    this.showNotification(
+      `Request sent to open ${openFolder ? 'folder containing' : ''} ${path}`, 
+      'info', 
+      'File System'
+    );
   }
 
   /**

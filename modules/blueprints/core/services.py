@@ -245,9 +245,6 @@ class CustomFileStats:
         """
         with self._lock:
             try:
-                # Update total files count
-                self.total_files += 1
-                
                 # Track file by extension
                 ext = os.path.splitext(file_path)[1].lower()
                 self._extension_counts[ext] = self._extension_counts.get(ext, 0) + 1

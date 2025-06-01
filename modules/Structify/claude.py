@@ -6787,9 +6787,6 @@ def process_file(
     """
     start_time = time.time()
     
-    # Track total files
-    stats.total_files += 1
-    
     # Skip binary files if enabled (except PDFs which are handled specially)
     if include_binary_detection and is_binary_file(file_path):
         stats.skipped_files += 1
@@ -7097,7 +7094,6 @@ def safe_process(
         Tuple of (primary_library, list_of_docdata) or None if processing failed
     """
     file_path = str(path)
-    stats.total_files += 1
     
     try:
         # File size check
@@ -7341,6 +7337,9 @@ def process_all_files(
 
     discovery_time = time.time() - discovery_start
     logger.info(f"Found {len(all_files)} valid files in {root_directory} ({discovery_time:.2f}s)")
+    
+    # Set total_files to the actual discovered count
+    stats.total_files = len(all_files)
     
     # Check if any files were found
     if not all_files:

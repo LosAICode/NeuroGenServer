@@ -4,7 +4,7 @@
     "health": {
       "status": 200,
       "ok": true,
-      "response_time": 0.098846,
+      "response_time": 0.031149,
       "data": {
         "checks": {
           "dependencies": {
@@ -103,9 +103,9 @@
             "total": 16
           }
         },
-        "response_time_ms": 65,
+        "response_time_ms": 23,
         "status": "warning",
-        "timestamp": "2025-05-31T04:24:35.941947",
+        "timestamp": "2025-05-31T23:20:18.299385",
         "version": "3.1.0"
       },
       "modules_loaded": 0
@@ -113,7 +113,7 @@
     "diagnostics": {
       "status": 200,
       "ok": true,
-      "response_time": 0.366573,
+      "response_time": 0.55705,
       "data": {
         "backend": {
           "modules": {
@@ -430,6 +430,7 @@
                   "logger",
                   "logging",
                   "os",
+                  "re",
                   "remove_task",
                   "request",
                   "require_api_key",
@@ -930,13 +931,13 @@
               "constants.js": {
                 "exists": true,
                 "path": "static/js/modules/config/constants.js",
-                "size": 16185,
+                "size": 17463,
                 "status": "loaded"
               },
               "endpoints.js": {
                 "exists": true,
                 "path": "static/js/modules/config/endpoints.js",
-                "size": 13890,
+                "size": 13943,
                 "status": "loaded"
               },
               "socketEvents.js": {
@@ -950,7 +951,7 @@
               "app.js": {
                 "exists": true,
                 "path": "static/js/modules/core/app.js",
-                "size": 13968,
+                "size": 22513,
                 "status": "loaded"
               },
               "domUtils.js": {
@@ -962,7 +963,7 @@
               "errorHandler.js": {
                 "exists": true,
                 "path": "static/js/modules/core/errorHandler.js",
-                "size": 23584,
+                "size": 33009,
                 "status": "loaded"
               },
               "eventManager.js": {
@@ -974,13 +975,13 @@
               "healthMonitor.js": {
                 "exists": true,
                 "path": "static/js/modules/core/healthMonitor.js",
-                "size": 13030,
+                "size": 14466,
                 "status": "loaded"
               },
               "moduleImports.js": {
                 "exists": true,
                 "path": "static/js/modules/core/moduleImports.js",
-                "size": 6596,
+                "size": 6739,
                 "status": "loaded"
               },
               "moduleLoader.js": {
@@ -1012,13 +1013,13 @@
               "academicSearch.js": {
                 "exists": true,
                 "path": "static/js/modules/features/academicSearch.js",
-                "size": 48220,
+                "size": 55261,
                 "status": "loaded"
               },
               "fileProcessor.js": {
                 "exists": true,
                 "path": "static/js/modules/features/fileProcessor.js",
-                "size": 18729,
+                "size": 33420,
                 "status": "loaded"
               },
               "historyManager.js": {
@@ -1030,7 +1031,7 @@
               "pdfProcessor.js": {
                 "exists": true,
                 "path": "static/js/modules/features/pdfProcessor.js",
-                "size": 57950,
+                "size": 64790,
                 "status": "loaded"
               },
               "playlistDownloader.js": {
@@ -1058,19 +1059,19 @@
               "fileHandler.js": {
                 "exists": true,
                 "path": "static/js/modules/utils/fileHandler.js",
-                "size": 19952,
+                "size": 27037,
                 "status": "loaded"
               },
               "moduleDiagnostics.js": {
                 "exists": true,
                 "path": "static/js/modules/utils/moduleDiagnostics.js",
-                "size": 26610,
+                "size": 28753,
                 "status": "loaded"
               },
               "progressHandler.js": {
                 "exists": true,
                 "path": "static/js/modules/utils/progressHandler.js",
-                "size": 87702,
+                "size": 51525,
                 "status": "loaded"
               },
               "socketHandler.js": {
@@ -1088,7 +1089,7 @@
               "ui.js": {
                 "exists": true,
                 "path": "static/js/modules/utils/ui.js",
-                "size": 53976,
+                "size": 58997,
                 "status": "loaded"
               },
               "utils.js": {
@@ -1112,9 +1113,9 @@
               "endpoint": "/api/academic/search",
               "exists": true,
               "methods": [
-                "HEAD",
                 "OPTIONS",
-                "GET"
+                "GET",
+                "HEAD"
               ],
               "status": "aligned"
             },
@@ -1122,9 +1123,9 @@
               "endpoint": "/api/test-modules",
               "exists": true,
               "methods": [
-                "HEAD",
                 "OPTIONS",
-                "GET"
+                "GET",
+                "HEAD"
               ],
               "status": "aligned"
             },
@@ -1132,8 +1133,8 @@
               "endpoint": "/api/process",
               "exists": true,
               "methods": [
-                "POST",
-                "OPTIONS"
+                "OPTIONS",
+                "POST"
               ],
               "status": "aligned"
             },
@@ -1141,9 +1142,9 @@
               "endpoint": "/api/health",
               "exists": true,
               "methods": [
-                "HEAD",
                 "OPTIONS",
-                "GET"
+                "GET",
+                "HEAD"
               ],
               "status": "aligned"
             },
@@ -1157,8 +1158,8 @@
               "endpoint": "/api/start-playlists",
               "exists": true,
               "methods": [
-                "POST",
-                "OPTIONS"
+                "OPTIONS",
+                "POST"
               ],
               "status": "aligned"
             },
@@ -1166,15 +1167,15 @@
               "endpoint": "/api/scrape2",
               "exists": true,
               "methods": [
-                "POST",
-                "OPTIONS"
+                "OPTIONS",
+                "POST"
               ],
               "status": "aligned"
             }
           },
           "health_status": {
             "endpoints_available": 77,
-            "last_check": "2025-05-31T04:24:36.375995",
+            "last_check": "2025-05-31T23:20:18.877692",
             "memory_usage": "normal",
             "modules_failed": 0,
             "modules_loaded": 16,
@@ -1195,7 +1196,7 @@
           }
         },
         "system_health": "healthy",
-        "timestamp": "2025-05-31T04:24:36.012166",
+        "timestamp": "2025-05-31T23:20:18.327498",
         "version": "3.1.0"
       },
       "frontend_modules": 0,
@@ -1204,15 +1205,15 @@
     "progress_integration": {
       "status": 200,
       "ok": true,
-      "response_time": 0.022024,
+      "response_time": 0.022773,
       "data": {
         "input_dir": "/tmp/test",
         "message": "Processing started",
         "output_file": "/workspace/modules/downloads/test_progress.json",
         "status": "processing",
-        "task_id": "44dc318f-a4be-4066-96b3-93649584af14"
+        "task_id": "5118aaba-d2a7-42c8-bbcb-9e3cefacc51b"
       },
-      "task_id": "44dc318f-a4be-4066-96b3-93649584af14"
+      "task_id": "5118aaba-d2a7-42c8-bbcb-9e3cefacc51b"
     }
   },
   "errors": [],

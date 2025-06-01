@@ -1,0 +1,357 @@
+{
+  "config.xml": {
+    "docs_data": [
+      {
+        "file_path": "/tmp/final_validation_pv4ke115/config.xml",
+        "relative_path": "config.xml",
+        "content": "<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n",
+        "chunks": [
+          "<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n<config><setting>value</setting></config>\n"
+        ],
+        "metadata": {
+          "file_name": "config.xml",
+          "file_path": "/tmp/final_validation_pv4ke115/config.xml",
+          "file_size": 210,
+          "file_extension": ".xml",
+          "last_modified": "2025-05-31T23:26:48.241256",
+          "relative_path": "config.xml"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "config.xml",
+      "processed_date": "2025-05-31 23:26:48",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-31T23:26:48.438590",
+      "processing_time_seconds": 0.038800716400146484,
+      "total_time_seconds": 0.054995059967041016,
+      "discovery_time_seconds": 0.003486156463623047,
+      "total_files_processed": 5,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 5,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  },
+  "script.py": {
+    "docs_data": [
+      {
+        "file_path": "/tmp/final_validation_pv4ke115/script.py",
+        "relative_path": "script.py",
+        "content": "# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n",
+        "chunks": [
+          "# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n# Test Python script\nprint('Hello, World!')\n"
+        ],
+        "metadata": {
+          "file_name": "script.py",
+          "file_path": "/tmp/final_validation_pv4ke115/script.py",
+          "file_size": 440,
+          "file_extension": ".py",
+          "last_modified": "2025-05-31T23:26:48.241256",
+          "relative_path": "script.py"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "script.py",
+      "processed_date": "2025-05-31 23:26:48",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-31T23:26:48.438633",
+      "processing_time_seconds": 0.038800716400146484,
+      "total_time_seconds": 0.054995059967041016,
+      "discovery_time_seconds": 0.003486156463623047,
+      "total_files_processed": 5,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 5,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  },
+  "data.json": {
+    "docs_data": [
+      {
+        "file_path": "/tmp/final_validation_pv4ke115/data.json",
+        "relative_path": "data.json",
+        "content": "{\"test\": \"data\", \"numbers\": [1, 2, 3, 4, 5]}",
+        "chunks": [
+          "{\"test\": \"data\", \"numbers\": [1, 2, 3, 4, 5]}"
+        ],
+        "metadata": {
+          "file_name": "data.json",
+          "file_path": "/tmp/final_validation_pv4ke115/data.json",
+          "file_size": 44,
+          "file_extension": ".json",
+          "last_modified": "2025-05-31T23:26:48.241256",
+          "relative_path": "data.json"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "data.json",
+      "processed_date": "2025-05-31 23:26:48",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-31T23:26:48.438640",
+      "processing_time_seconds": 0.038800716400146484,
+      "total_time_seconds": 0.054995059967041016,
+      "discovery_time_seconds": 0.003486156463623047,
+      "total_files_processed": 5,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 5,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  },
+  "readme.md": {
+    "docs_data": [
+      {
+        "file_path": "/tmp/final_validation_pv4ke115/readme.md",
+        "relative_path": "readme.md",
+        "content": "# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n",
+        "chunks": [
+          "# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n# Test README\n\nThis is a markdown file for testing.\n"
+        ],
+        "metadata": {
+          "file_name": "readme.md",
+          "file_path": "/tmp/final_validation_pv4ke115/readme.md",
+          "file_size": 520,
+          "file_extension": ".md",
+          "last_modified": "2025-05-31T23:26:48.241256",
+          "relative_path": "readme.md"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "readme.md",
+      "processed_date": "2025-05-31 23:26:48",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-31T23:26:48.438643",
+      "processing_time_seconds": 0.038800716400146484,
+      "total_time_seconds": 0.054995059967041016,
+      "discovery_time_seconds": 0.003486156463623047,
+      "total_files_processed": 5,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 5,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  },
+  "document1.txt": {
+    "docs_data": [
+      {
+        "file_path": "/tmp/final_validation_pv4ke115/document1.txt",
+        "relative_path": "document1.txt",
+        "content": "This is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\n",
+        "chunks": [
+          "This is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\nThis is a test document with some content.\n"
+        ],
+        "metadata": {
+          "file_name": "document1.txt",
+          "file_path": "/tmp/final_validation_pv4ke115/document1.txt",
+          "file_size": 860,
+          "file_extension": ".txt",
+          "last_modified": "2025-05-31T23:26:48.241256",
+          "relative_path": "document1.txt"
+        },
+        "tags": [],
+        "chunk_count": 1
+      }
+    ],
+    "metadata": {
+      "library_name": "document1.txt",
+      "processed_date": "2025-05-31 23:26:48",
+      "source": "Derived from file structure",
+      "processor_version": "claude.beta.py 3.0",
+      "processing_timestamp": "2025-05-31T23:26:48.438647",
+      "processing_time_seconds": 0.038800716400146484,
+      "total_time_seconds": 0.054995059967041016,
+      "discovery_time_seconds": 0.003486156463623047,
+      "total_files_processed": 5,
+      "total_files_skipped": 0,
+      "total_files_error": 0,
+      "total_chunks": 5,
+      "max_chunk_size": 4096,
+      "chunk_overlap": 200,
+      "valid_extensions": [
+        ".py",
+        ".html",
+        ".css",
+        ".yaml",
+        ".yml",
+        ".txt",
+        ".md",
+        ".js",
+        ".gitignore",
+        ".ts",
+        ".json",
+        ".csv",
+        ".rtf",
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".xml",
+        ".sh",
+        ".bat",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".cs",
+        ".php",
+        ".rb",
+        ".go",
+        ".rs",
+        ".swift"
+      ],
+      "binary_detection": true
+    }
+  }
+}

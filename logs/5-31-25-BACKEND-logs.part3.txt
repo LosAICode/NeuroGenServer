@@ -1,96 +1,326 @@
-2025-05-31 18:08:32,975 - blueprints.core.services - INFO - Task d49017dc-a9ee-4bf2-85f3-19d584a16f39 progress: 49% - Stage: processing (175/350)
-2025-05-31 18:08:32,976 - file_processor - INFO - Ensured output directory exists: C:/Users/Los/Documents
-2025-05-31 18:08:32,976 - file_processor - INFO - Ensured output directory exists: C:/Users/Los/Documents
-2025-05-31 18:08:33,287 - file_processor - INFO - Created JSON output at C:/Users/Los/Documents/NeuroGen.Server.json
-2025-05-31 18:08:33,287 - file_processor - INFO - Created JSON output at C:/Users/Los/Documents/NeuroGen.Server.json
-emitting event "progress_update" to all [/]
-2025-05-31 18:08:33,372 - socketio.server - INFO - emitting event "progress_update" to all [/]
-3bro5klGQdUgu8MkAAAA: Sending packet MESSAGE data 2["progress_update",{"task_id":"d49017dc-a9ee-4bf2-85f3-19d584a16f39","task_type":"unknown","blueprint":"core","progress":99,"status":"processing","message":"Stage: completed (100/100)","timestamp":1748729313.372782,"stats":{"total_files":100,"processed_files":175,"skipped_files":0,"error_files":0,"total_bytes":10791591,"total_chunks":2801,"pdf_files":0,"tables_extracted":0,"references_extracted":0,"scanned_pages_processed":0,"ocr_processed_files":0,"binary_files_detected":0,"total_processing_time":0.2871370315551758,"largest_file_bytes":0,"largest_file_path":"","peak_memory_usage_mb":228.21,"avg_memory_usage_mb":210.25,"duration_seconds":1.2968230247497559,"current_processing_rate":0,"start_time_iso":"2025-05-31T18:08:32.075442","current_time_iso":"2025-05-31T18:08:33.372782","files_per_second":134.95,"average_file_size":61666.23,"success_rate_percent":175.0,"error_rate_percent":0.0,"memory_profile":{"peak_memory_mb":228.21,"average_memory_mb":210.25,"samples_count":11},"speed_profile":{"current_rate_files_per_second":0,"average_rate_files_per_second":134.89,"average_bytes_per_second":8318243.26},"elapsed_seconds":1.3,"estimated_remaining_seconds":0.01},"details":{"current_stage_message":"completed","processed_count":100,"total_count":100,"elapsed_time":1.2967503070831299,"processing_rate_files_per_sec":77.11584832776089,"memory_usage_mb":228.21484375,"current_chunk_size":4096,"current_batch_size":25,"gc_events":0}}]
-2025-05-31 18:08:33,376 - engineio.server - INFO - 3bro5klGQdUgu8MkAAAA: Sending packet MESSAGE data 2["progress_update",{"task_id":"d49017dc-a9ee-4bf2-85f3-19d584a16f39","task_type":"unknown","blueprint":"core","progress":99,"status":"processing","message":"Stage: completed (100/100)","timestamp":1748729313.372782,"stats":{"total_files":100,"processed_files":175,"skipped_files":0,"error_files":0,"total_bytes":10791591,"total_chunks":2801,"pdf_files":0,"tables_extracted":0,"references_extracted":0,"scanned_pages_processed":0,"ocr_processed_files":0,"binary_files_detected":0,"total_processing_time":0.2871370315551758,"largest_file_bytes":0,"largest_file_path":"","peak_memory_usage_mb":228.21,"avg_memory_usage_mb":210.25,"duration_seconds":1.2968230247497559,"current_processing_rate":0,"start_time_iso":"2025-05-31T18:08:32.075442","current_time_iso":"2025-05-31T18:08:33.372782","files_per_second":134.95,"average_file_size":61666.23,"success_rate_percent":175.0,"error_rate_percent":0.0,"memory_profile":{"peak_memory_mb":228.21,"average_memory_mb":210.25,"samples_count":11},"speed_profile":{"current_rate_files_per_second":0,"average_rate_files_per_second":134.89,"average_bytes_per_second":8318243.26},"elapsed_seconds":1.3,"estimated_remaining_seconds":0.01},"details":{"current_stage_message":"completed","processed_count":100,"total_count":100,"elapsed_time":1.2967503070831299,"processing_rate_files_per_sec":77.11584832776089,"memory_usage_mb":228.21484375,"current_chunk_size":4096,"current_batch_size":25,"gc_events":0}}]
-2025-05-31 18:08:33,383 - blueprints.core.services - INFO - Task d49017dc-a9ee-4bf2-85f3-19d584a16f39 progress: 99% - Stage: completed (100/100)
-2025-05-31 18:08:33,385 - file_processor - INFO - Processing complete in 0.86s
-2025-05-31 18:08:33,385 - file_processor - INFO - Processing complete in 0.86s
-2025-05-31 18:08:33,386 - file_processor - INFO - Stats: 175 files found, 175 processed, 0 skipped, 0 errors, 2801 chunks created
-2025-05-31 18:08:33,386 - file_processor - INFO - Stats: 175 files found, 175 processed, 0 skipped, 0 errors, 2801 chunks created
-2025-05-31 18:08:33,388 - blueprints.core.services - INFO - Output file validation passed: C:/Users/Los/Documents/NeuroGen.Server.json (22656748 bytes)
-2025-05-31 18:08:33,407 - blueprints.core.services - INFO - Processing completed in 1.33s: 175/100 files processed, 0 errors, 0 skipped
-emitting event "task_completed" to all [/]
-2025-05-31 18:08:33,424 - socketio.server - INFO - emitting event "task_completed" to all [/]
-3bro5klGQdUgu8MkAAAA: Sending packet MESSAGE data 2["task_completed",{"task_id":"d49017dc-a9ee-4bf2-85f3-19d584a16f39","task_type":"file_processing","blueprint":"file_processor","status":"completed","progress":100,"message":"File Processing completed successfully","timestamp":1748729313.4220955,"output_file":"C:/Users/Los/Documents/NeuroGen.Server.json","stats":{"total_files":100,"processed_files":175,"skipped_files":0,"error_files":0,"total_bytes":10791591,"total_chunks":2801,"pdf_files":0,"tables_extracted":0,"references_extracted":0,"scanned_pages_processed":0,"ocr_processed_files":0,"binary_files_detected":0,"total_processing_time":1.3316419124603271,"largest_file_bytes":0,"largest_file_path":"","peak_memory_usage_mb":228.21,"avg_memory_usage_mb":211.75,"duration_seconds":1.346653699874878,"current_processing_rate":0,"start_time_iso":"2025-05-31T18:08:32.075442","current_time_iso":"2025-05-31T18:08:33.422095","files_per_second":129.95,"average_file_size":61666.23,"success_rate_percent":175.0,"error_rate_percent":0.0,"memory_profile":{"peak_memory_mb":228.21,"average_memory_mb":211.75,"samples_count":12},"speed_profile":{"current_rate_files_per_second":0,"average_rate_files_per_second":129.95,"average_bytes_per_second":8013634.84}},"details":{"performance_metrics":{"task_duration":1.345646858215332,"processing_efficiency":{"files_per_second":130.0489789959412,"bytes_per_second":8019630.807381647,"mb_per_second":7.648115928060195,"overall_efficiency_score":88.24},"processing_stages":[{"stage":"initialization","start_time":1748729312.1115417,"memory_mb":197.4765625},{"stage":"main_processing","start_time":1748729312.1155083,"memory_mb":197.48046875},{"stage":"processing_complete","start_time":1748729313.3870912,"memory_mb":228.21484375}],"adaptive_optimizations":{"final_chunk_size":4096,"final_batch_size":25,"gc_events":0}}}}]
-2025-05-31 18:08:33,427 - engineio.server - INFO - 3bro5klGQdUgu8MkAAAA: Sending packet MESSAGE data 2["task_completed",{"task_id":"d49017dc-a9ee-4bf2-85f3-19d584a16f39","task_type":"file_processing","blueprint":"file_processor","status":"completed","progress":100,"message":"File Processing completed successfully","timestamp":1748729313.4220955,"output_file":"C:/Users/Los/Documents/NeuroGen.Server.json","stats":{"total_files":100,"processed_files":175,"skipped_files":0,"error_files":0,"total_bytes":10791591,"total_chunks":2801,"pdf_files":0,"tables_extracted":0,"references_extracted":0,"scanned_pages_processed":0,"ocr_processed_files":0,"binary_files_detected":0,"total_processing_time":1.3316419124603271,"largest_file_bytes":0,"largest_file_path":"","peak_memory_usage_mb":228.21,"avg_memory_usage_mb":211.75,"duration_seconds":1.346653699874878,"current_processing_rate":0,"start_time_iso":"2025-05-31T18:08:32.075442","current_time_iso":"2025-05-31T18:08:33.422095","files_per_second":129.95,"average_file_size":61666.23,"success_rate_percent":175.0,"error_rate_percent":0.0,"memory_profile":{"peak_memory_mb":228.21,"average_memory_mb":211.75,"samples_count":12},"speed_profile":{"current_rate_files_per_second":0,"average_rate_files_per_second":129.95,"average_bytes_per_second":8013634.84}},"details":{"performance_metrics":{"task_duration":1.345646858215332,"processing_efficiency":{"files_per_second":130.0489789959412,"bytes_per_second":8019630.807381647,"mb_per_second":7.648115928060195,"overall_efficiency_score":88.24},"processing_stages":[{"stage":"initialization","start_time":1748729312.1115417,"memory_mb":197.4765625},{"stage":"main_processing","start_time":1748729312.1155083,"memory_mb":197.48046875},{"stage":"processing_complete","start_time":1748729313.3870912,"memory_mb":228.21484375}],"adaptive_optimizations":{"final_chunk_size":4096,"final_batch_size":25,"gc_events":0}}}}]
-2025-05-31 18:08:33,440 - socketio_context_helper - INFO - Emitted unified task_completed for d49017dc-a9ee-4bf2-85f3-19d584a16f39 (file_processing)
-2025-05-31 18:08:33,455 - blueprints.core.services - WARNING - Enhanced stats showcase not available, using standard completion
-emitting event "task_completed" to all [/]
-2025-05-31 18:08:33,460 - socketio.server - INFO - emitting event "task_completed" to all [/]
-3bro5klGQdUgu8MkAAAA: Sending packet MESSAGE data 2["task_completed",{"task_id":"d49017dc-a9ee-4bf2-85f3-19d584a16f39","task_type":"file_processing","blueprint":"file_processor","status":"completed","progress":100,"message":"File Processing completed successfully","timestamp":1748729313.460694,"output_file":"C:/Users/Los/Documents/NeuroGen.Server.json","stats":{"total_files":100,"processed_files":175,"skipped_files":0,"error_files":0,"total_bytes":10791591,"total_chunks":2801,"pdf_files":0,"tables_extracted":0,"references_extracted":0,"scanned_pages_processed":0,"ocr_processed_files":0,"binary_files_detected":0,"total_processing_time":1.3316419124603271,"largest_file_bytes":0,"largest_file_path":"","peak_memory_usage_mb":228.21,"avg_memory_usage_mb":211.75,"duration_seconds":1.3842499256134033,"current_processing_rate":0,"start_time_iso":"2025-05-31T18:08:32.075442","current_time_iso":"2025-05-31T18:08:33.459691","files_per_second":126.42,"average_file_size":61666.23,"success_rate_percent":175.0,"error_rate_percent":0.0,"memory_profile":{"peak_memory_mb":228.21,"average_memory_mb":211.75,"samples_count":12},"speed_profile":{"current_rate_files_per_second":0,"average_rate_files_per_second":126.33,"average_bytes_per_second":7790343.67}}}]
-2025-05-31 18:08:33,460 - engineio.server - INFO - 3bro5klGQdUgu8MkAAAA: Sending packet MESSAGE data 2["task_completed",{"task_id":"d49017dc-a9ee-4bf2-85f3-19d584a16f39","task_type":"file_processing","blueprint":"file_processor","status":"completed","progress":100,"message":"File Processing completed successfully","timestamp":1748729313.460694,"output_file":"C:/Users/Los/Documents/NeuroGen.Server.json","stats":{"total_files":100,"processed_files":175,"skipped_files":0,"error_files":0,"total_bytes":10791591,"total_chunks":2801,"pdf_files":0,"tables_extracted":0,"references_extracted":0,"scanned_pages_processed":0,"ocr_processed_files":0,"binary_files_detected":0,"total_processing_time":1.3316419124603271,"largest_file_bytes":0,"largest_file_path":"","peak_memory_usage_mb":228.21,"avg_memory_usage_mb":211.75,"duration_seconds":1.3842499256134033,"current_processing_rate":0,"start_time_iso":"2025-05-31T18:08:32.075442","current_time_iso":"2025-05-31T18:08:33.459691","files_per_second":126.42,"average_file_size":61666.23,"success_rate_percent":175.0,"error_rate_percent":0.0,"memory_profile":{"peak_memory_mb":228.21,"average_memory_mb":211.75,"samples_count":12},"speed_profile":{"current_rate_files_per_second":0,"average_rate_files_per_second":126.33,"average_bytes_per_second":7790343.67}}}]
-2025-05-31 18:08:33,472 - socketio_context_helper - INFO - Emitted unified task_completed for d49017dc-a9ee-4bf2-85f3-19d584a16f39 (file_processing)
-2025-05-31 18:08:34,952 - app - ERROR - Exception on /api/cancel/d49017dc-a9ee-4bf2-85f3-19d584a16f39 [POST]
-Traceback (most recent call last):
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\api\management.py", line 87, in cancel_task_api
-    from blueprints.core.cancellation import mark_task_cancelled, emit_cancellation_event
-  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\core\cancellation.py", line 12, in <module>
-    from .services import (
-ImportError: cannot import name 'socketio' from 'blueprints.core.services' (C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\core\services.py)
-2025-05-31 18:08:34,959 - blueprints.core.routes - ERROR - Internal server error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
-2025-05-31 18:08:35,122 - blueprints.core.services - INFO - Task d49017dc-a9ee-4bf2-85f3-19d584a16f39 enhanced final stats: processed=175, errors=0, skipped=0, pdfs=0, duration=3.05s, efficiency=66.89
-2025-05-31 18:08:35,131 - blueprints.core.services - INFO - Task d49017dc-a9ee-4bf2-85f3-19d584a16f39 (file_processing) completed in 3.06s.
-2025-05-31 18:08:35,132 - blueprints.core.services - INFO - Processing completed in 3.06s: 175/100 files processed, 0 errors, 0 skipped
-2025-05-31 18:08:35,133 - blueprints.core.services - ERROR - Error emitting task_completed for d49017dc-a9ee-4bf2-85f3-19d584a16f39: Working outside of application context.
 
-This typically means that you attempted to use functionality that needed
-the current application. To solve this, set up an application context
-with app.app_context(). See the documentation for more information.
-2025-05-31 18:08:35,134 - blueprints.core.services - INFO - Removed task d49017dc-a9ee-4bf2-85f3-19d584a16f39 from active tasks
-2025-05-31 18:08:36,007 - app - ERROR - Exception on /api/cancel/d49017dc-a9ee-4bf2-85f3-19d584a16f39 [POST]
-Traceback (most recent call last):
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\api\management.py", line 87, in cancel_task_api
-    from blueprints.core.cancellation import mark_task_cancelled, emit_cancellation_event
-  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\core\cancellation.py", line 12, in <module>
-    from .services import (
-ImportError: cannot import name 'socketio' from 'blueprints.core.services' (C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\core\services.py)
-2025-05-31 18:08:36,008 - blueprints.core.routes - ERROR - Internal server error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
-2025-05-31 18:08:38,029 - app - ERROR - Exception on /api/cancel/d49017dc-a9ee-4bf2-85f3-19d584a16f39 [POST]
-Traceback (most recent call last):
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flask\app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\api\management.py", line 87, in cancel_task_api
-    from blueprints.core.cancellation import mark_task_cancelled, emit_cancellation_event
-  File "C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\core\cancellation.py", line 12, in <module>
-    from .services import (
-ImportError: cannot import name 'socketio' from 'blueprints.core.services' (C:\Users\Los\Documents\GitHub\NeuroGenServer\NeuroGenServer\modules\blueprints\core\services.py)
-2025-05-31 18:08:38,031 - blueprints.core.routes - ERROR - Internal server error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+SES The 'dateTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
+📦 Registered module: fileProcessor index.js:326:19
+🔄 Loading /static/js/modules/features/playlistDownloader.js (attempt 1/2) index.js:273:19
+[File Processor] Initializing File Processor v4.0 fileProcessor.js:149:13
+📁 Setting up File Processor event handlers... fileProcessor.js:371:13
+✅ Form submission handler attached fileProcessor.js:386:15
+✅ Submit button handler attached fileProcessor.js:403:15
+✅ Cancel button handler attached fileProcessor.js:417:15
+📁 File Processor event handlers setup complete fileProcessor.js:423:13
+✅ Successfully loaded /static/js/modules/features/playlistDownloader.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/features/playlistDownloader.js: ✅ (30ms) index.js:52:15
+📦 Registered module: playlistDownloader index.js:326:19
+🔄 Loading /static/js/modules/features/webScraper.js (attempt 1/2) index.js:273:19
+🌐 Initializing Web Scraper with optimized config... webScraper.js:108:15
+🔗 Testing Web Scraper backend connectivity... webScraper.js:158:15
+🌐 Web Scraper module loaded (Optimized v3.1.0 - Config Integration) webScraper.js:2109:9
+✅ Successfully loaded /static/js/modules/features/webScraper.js on attempt 1 index.js:287:19
+📦 Module /static/js/modules/features/webScraper.js: ✅ (190ms) index.js:52:15
+📦 Registered module: webScraper index.js:326:19
+🔄 Loading /static/js/modules/features/academicSearch.js (attempt 1/2) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+
+╔═══════════════════════════════════════════════════════════════╗
+║                    🧠 NeuroGen Server v3.0.0                  ║
+║                Enhanced Frontend Module System               ║
+╠═══════════════════════════════════════════════════════════════╣
+║ 🔧 Debug Mode: ENABLED                                       ║
+║ 📊 Performance Tracking: ACTIVE                              ║
+║ 🛠️ Diagnostics: window.NeuroGenDebug                         ║
+║ 🎯 API: window.NeuroGenServer                                ║
+╚═══════════════════════════════════════════════════════════════╝
+    index.js:1926:13
+📦 Module Status: 17/18 loaded successfully index.js:1939:13
+🔍 Run window.NeuroGenDebug.showModal() for detailed diagnostics index.js:1945:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 18 progressHandler.js:436:13
+🔄 Application shutting down... index.js:2333:13
+📊 Final diagnostics: 
+Object { totalTime: 20833, phases: {…}, moduleLoadTimes: {…}, errors: (9) […], warnings: [], initSequence: (48) […] }
+index.js:2337:13
+[File Processor] Backend connectivity failed: NetworkError when attempting to fetch resource. fileProcessor.js:149:13
+[File Processor] File Processor v4.0 initialized successfully fileProcessor.js:149:13
+✅ File Processor v4.0 initialized successfully fileProcessor.js:333:15
+⚠️ Web Scraper backend connectivity test failed: NetworkError when attempting to fetch resource. webScraper.js:178:15
+Socket.IO not available, real-time updates will be limited webScraper.js:334:15
+✅ Web Scraper initialized successfully with config integration webScraper.js:124:15
+[Web Scraper] Web Scraper module loaded successfully webScraper.js:1777:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+❌ Attempt 1 failed for /static/js/modules/features/academicSearch.js: Load timeout after 20000ms index.js:294:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+🔄 Loading /static/js/modules/features/academicSearch.js (attempt 2/2) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 22 progressHandler.js:436:13
+⏰ Application initialization timeout reached index.js:2307:13
+❌ Error in startup-timeout: Error: Initialization timeout
+    <anonymous> http://localhost:5025/static/js/index.js:2308
+index.js:58:13
+🛠️ Activating enhanced recovery mode index.js:1654:11
+❌ Error in recovery-activation: Error: Application failed to initialize within 45 seconds
+    <anonymous> http://localhost:5025/static/js/index.js:2309
+index.js:58:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 2 progressHandler.js:436:13
+❌ Attempt 2 failed for /static/js/modules/features/academicSearch.js: Load timeout after 25000ms index.js:294:19
+❌ Error in loadModule(/static/js/modules/features/academicSearch.js): Error: Load timeout after 25000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module /static/js/modules/features/academicSearch.js: ❌ (46022ms) index.js:52:15
+✅ Feature modules loaded: 
+Array(4) [ "app", "fileProcessor", "playlistDownloader", "webScraper" ]
+index.js:641:15
+✅ Phase completed: feature-modules in 46289ms index.js:44:17
+🔄 Phase started: optional-modules (47134ms) index.js:40:15
+🔧 Loading optional modules... index.js:652:13
+Optional module paths: 
+Array(6) [ "./modules/features/historyManager.js", "./modules/features/keyboardShortcuts.js", "./modules/features/dragDropHandler.js", "./modules/utils/systemHealth.js", "./modules/utils/debugTools.js", "./modules/utils/moduleDiagnostics.js" ]
+index.js:653:13
+🔄 Loading ./modules/features/historyManager.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 15 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/features/historyManager.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/features/historyManager.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/features/historyManager.js: ❌ (15090ms) index.js:52:15
+🔄 Loading ./modules/features/keyboardShortcuts.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 15 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/features/keyboardShortcuts.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/features/keyboardShortcuts.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/features/keyboardShortcuts.js: ❌ (15011ms) index.js:52:15
+🔄 Loading ./modules/features/dragDropHandler.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 3 progressHandler.js:436:13
+🔄 Application shutting down... index.js:2333:13
+📊 Final diagnostics: 
+Object { totalTime: 80192, phases: {…}, moduleLoadTimes: {…}, errors: (9) […], warnings: [], initSequence: (48) […] }
+index.js:2337:13
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/academicSearch.js”. localhost:5025
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 12 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/features/dragDropHandler.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/features/dragDropHandler.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/features/dragDropHandler.js: ❌ (15005ms) index.js:52:15
+🔄 Loading ./modules/utils/systemHealth.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+📱 Application hidden - reducing activity index.js:2357:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 4 progressHandler.js:436:13
+📱 Application visible - resuming activity index.js:2362:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 3 progressHandler.js:436:13
+📱 Application hidden - reducing activity index.js:2357:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 5 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/utils/systemHealth.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/utils/systemHealth.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/utils/systemHealth.js: ❌ (15436ms) index.js:52:15
+🔄 Loading ./modules/utils/debugTools.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 7 progressHandler.js:436:13
+📱 Application visible - resuming activity index.js:2362:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+📱 Application hidden - reducing activity index.js:2357:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+📱 Application visible - resuming activity index.js:2362:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/keyboardShortcuts.js”. localhost:5025
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/dragDropHandler.js”. localhost:5025
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/historyManager.js”. localhost:5025
+🔄 Application shutting down... index.js:2333:13
+📊 Final diagnostics: 
+Object { totalTime: 119177, phases: {…}, moduleLoadTimes: {…}, errors: (9) […], warnings: [], initSequence: (48) […] }
+index.js:2337:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+Loading failed for the module with source “http://localhost:5025/static/js/modules/utils/debugTools.js”. localhost:5025
+❌ Attempt 1 failed for ./modules/utils/debugTools.js: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/debugTools.js index.js:294:19
+❌ Error in loadModule(./modules/utils/debugTools.js): TypeError: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/debugTools.js index.js:58:13
+📦 Module ./modules/utils/debugTools.js: ❌ (11507ms) index.js:52:15
+🔄 Loading ./modules/utils/moduleDiagnostics.js (attempt 1/1) index.js:273:19
+Loading failed for the module with source “http://localhost:5025/static/js/modules/utils/systemHealth.js”. localhost:5025
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 10 progressHandler.js:436:13
+SES_UNCAUGHT_EXCEPTION: TypeError: window.NeuroGenDebug.showModal is not a function
+    onclick http://localhost:5025/?input_dir=C:\Users\Los\Documents\NeuroGenServer&output_file=C:\Users\Los\Documents\NeuroGen.Server:1
+lockdown-install.js:1:138390
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 4 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/utils/moduleDiagnostics.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/utils/moduleDiagnostics.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/utils/moduleDiagnostics.js: ❌ (15015ms) index.js:52:15
+✅ Optional modules loaded: 
+Array []
+index.js:666:15
+✅ Phase completed: optional-modules in 87065ms index.js:44:17
+🔄 Phase started: module-initialization (134199ms) index.js:40:15
+⚙️ Initializing modules... index.js:677:13
+📦 Registering modules with module manager... index.js:752:13
+📦 Registering module: module-bridge module-manager.js:17:17
+📦 Registering module: errorHandler module-manager.js:17:17
+📦 Registering module: domUtils module-manager.js:17:17
+📦 Registering module: uiRegistry module-manager.js:17:17
+📦 Registering module: stateManager module-manager.js:17:17
+📦 Registering module: eventRegistry module-manager.js:17:17
+📦 Registering module: eventManager module-manager.js:17:17
+📦 Registering module: themeManager module-manager.js:17:17
+📦 Registering module: socketHandler module-manager.js:17:17
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 58 progressHandler.js:436:13
+
+​
+
+
+​
+
+
+SES The 'dateTaming' option is deprecated and does nothing. In the future specifying it will be an error. lockdown-install.js:1:194912
+📦 Module Status: 17/18 loaded successfully index.js:1939:13
+🔍 Run window.NeuroGenDebug.showModal() for detailed diagnostics index.js:1945:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 18 progressHandler.js:436:13
+🔄 Application shutting down... index.js:2333:13
+📊 Final diagnostics: 
+Object { totalTime: 20833, phases: {…}, moduleLoadTimes: {…}, errors: (9) […], warnings: [], initSequence: (48) […] }
+index.js:2337:13
+[File Processor] Backend connectivity failed: NetworkError when attempting to fetch resource. fileProcessor.js:149:13
+[File Processor] File Processor v4.0 initialized successfully fileProcessor.js:149:13
+✅ File Processor v4.0 initialized successfully fileProcessor.js:333:15
+⚠️ Web Scraper backend connectivity test failed: NetworkError when attempting to fetch resource. webScraper.js:178:15
+Socket.IO not available, real-time updates will be limited webScraper.js:334:15
+✅ Web Scraper initialized successfully with config integration webScraper.js:124:15
+[Web Scraper] Web Scraper module loaded successfully webScraper.js:1777:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+❌ Attempt 1 failed for /static/js/modules/features/academicSearch.js: Load timeout after 20000ms index.js:294:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+🔄 Loading /static/js/modules/features/academicSearch.js (attempt 2/2) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 22 progressHandler.js:436:13
+⏰ Application initialization timeout reached index.js:2307:13
+❌ Error in startup-timeout: Error: Initialization timeout
+    <anonymous> http://localhost:5025/static/js/index.js:2308
+index.js:58:13
+🛠️ Activating enhanced recovery mode index.js:1654:11
+❌ Error in recovery-activation: Error: Application failed to initialize within 45 seconds
+    <anonymous> http://localhost:5025/static/js/index.js:2309
+index.js:58:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 2 progressHandler.js:436:13
+❌ Attempt 2 failed for /static/js/modules/features/academicSearch.js: Load timeout after 25000ms index.js:294:19
+❌ Error in loadModule(/static/js/modules/features/academicSearch.js): Error: Load timeout after 25000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module /static/js/modules/features/academicSearch.js: ❌ (46022ms) index.js:52:15
+✅ Feature modules loaded: 
+Array(4) [ "app", "fileProcessor", "playlistDownloader", "webScraper" ]
+index.js:641:15
+✅ Phase completed: feature-modules in 46289ms index.js:44:17
+🔄 Phase started: optional-modules (47134ms) index.js:40:15
+🔧 Loading optional modules... index.js:652:13
+Optional module paths: 
+Array(6) [ "./modules/features/historyManager.js", "./modules/features/keyboardShortcuts.js", "./modules/features/dragDropHandler.js", "./modules/utils/systemHealth.js", "./modules/utils/debugTools.js", "./modules/utils/moduleDiagnostics.js" ]
+index.js:653:13
+🔄 Loading ./modules/features/historyManager.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 15 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/features/historyManager.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/features/historyManager.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/features/historyManager.js: ❌ (15090ms) index.js:52:15
+🔄 Loading ./modules/features/keyboardShortcuts.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 15 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/features/keyboardShortcuts.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/features/keyboardShortcuts.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/features/keyboardShortcuts.js: ❌ (15011ms) index.js:52:15
+🔄 Loading ./modules/features/dragDropHandler.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 3 progressHandler.js:436:13
+🔄 Application shutting down... index.js:2333:13
+📊 Final diagnostics: 
+Object { totalTime: 80192, phases: {…}, moduleLoadTimes: {…}, errors: (9) […], warnings: [], initSequence: (48) […] }
+index.js:2337:13
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/academicSearch.js”. localhost:5025
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 12 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/features/dragDropHandler.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/features/dragDropHandler.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/features/dragDropHandler.js: ❌ (15005ms) index.js:52:15
+🔄 Loading ./modules/utils/systemHealth.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+📱 Application hidden - reducing activity index.js:2357:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 4 progressHandler.js:436:13
+📱 Application visible - resuming activity index.js:2362:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 3 progressHandler.js:436:13
+📱 Application hidden - reducing activity index.js:2357:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 5 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/utils/systemHealth.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/utils/systemHealth.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/utils/systemHealth.js: ❌ (15436ms) index.js:52:15
+🔄 Loading ./modules/utils/debugTools.js (attempt 1/1) index.js:273:19
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 7 progressHandler.js:436:13
+📱 Application visible - resuming activity index.js:2362:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+📱 Application hidden - reducing activity index.js:2357:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+📱 Application visible - resuming activity index.js:2362:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/keyboardShortcuts.js”. localhost:5025
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/dragDropHandler.js”. localhost:5025
+Loading failed for the module with source “http://localhost:5025/static/js/modules/features/historyManager.js”. localhost:5025
+🔄 Application shutting down... index.js:2333:13
+📊 Final diagnostics: 
+Object { totalTime: 119177, phases: {…}, moduleLoadTimes: {…}, errors: (9) […], warnings: [], initSequence: (48) […] }
+index.js:2337:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... progressHandler.js:436:13
+Loading failed for the module with source “http://localhost:5025/static/js/modules/utils/debugTools.js”. localhost:5025
+❌ Attempt 1 failed for ./modules/utils/debugTools.js: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/debugTools.js index.js:294:19
+❌ Error in loadModule(./modules/utils/debugTools.js): TypeError: error loading dynamically imported module: http://localhost:5025/static/js/modules/utils/debugTools.js index.js:58:13
+📦 Module ./modules/utils/debugTools.js: ❌ (11507ms) index.js:52:15
+🔄 Loading ./modules/utils/moduleDiagnostics.js (attempt 1/1) index.js:273:19
+Loading failed for the module with source “http://localhost:5025/static/js/modules/utils/systemHealth.js”. localhost:5025
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 10 progressHandler.js:436:13
+SES_UNCAUGHT_EXCEPTION: TypeError: window.NeuroGenDebug.showModal is not a function
+    onclick http://localhost:5025/?input_dir=C:\Users\Los\Documents\NeuroGenServer&output_file=C:\Users\Los\Documents\NeuroGen.Server:1
+lockdown-install.js:1:138390
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 4 progressHandler.js:436:13
+❌ Attempt 1 failed for ./modules/utils/moduleDiagnostics.js: Load timeout after 15000ms index.js:294:19
+❌ Error in loadModule(./modules/utils/moduleDiagnostics.js): Error: Load timeout after 15000ms
+    timeoutPromise http://localhost:5025/static/js/index.js:280
+index.js:58:13
+📦 Module ./modules/utils/moduleDiagnostics.js: ❌ (15015ms) index.js:52:15
+✅ Optional modules loaded: 
+Array []
+index.js:666:15
+✅ Phase completed: optional-modules in 87065ms index.js:44:17
+🔄 Phase started: module-initialization (134199ms) index.js:40:15
+⚙️ Initializing modules... index.js:677:13
+📦 Registering modules with module manager... index.js:752:13
+📦 Registering module: module-bridge module-manager.js:17:17
+📦 Registering module: errorHandler module-manager.js:17:17
+📦 Registering module: domUtils module-manager.js:17:17
+📦 Registering module: uiRegistry module-manager.js:17:17
+📦 Registering module: stateManager module-manager.js:17:17
+📦 Registering module: eventRegistry module-manager.js:17:17
+📦 Registering module: eventManager module-manager.js:17:17
+📦 Registering module: themeManager module-manager.js:17:17
+📦 Registering module: socketHandler module-manager.js:17:17
+📦 Registering module: progressHandler module-manager.js:17:17
+📦 Registering module: ui module-manager.js:17:17
+📦 Registering module: utils module-manager.js:17:17
+📦 Registering module: fileHandler module-manager.js:17:17
+📦 Registering module: app module-manager.js:17:17
+📦 Registering module: fileProcessor module-manager.js:17:17
+📦 Registering module: playlistDownloader module-manager.js:17:17
+📦 Registering module: webScraper module-manager.js:17:17
+🚀 Using module manager for initialization... index.js:787:15
+🚀 Initializing all modules... module-manager.js:126:17
+🔧 Initializing module-bridge... module-manager.js:42:21
+🧹 Cleaning up module-bridge... module-manager.js:69:17
+✅ module-bridge initialized successfully module-manager.js:53:21
+🔧 Initializing errorHandler... module-manager.js:42:21
+🧹 Cleaning up errorHandler... module-manager.js:69:17
+[Error Handler] Initializing Error Handler v4.0 errorHandler.js:836:13
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 5 progressHandler.js:436:13
+📱 Application hidden - reducing activity index.js:2357:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 11 progressHandler.js:436:13
+📱 Application visible - resuming activity index.js:2362:15
+📊 [ProgressHandler] Socket not available, retrying in 1 second... 32 progressHandler.js:436:13
+
+​
+
