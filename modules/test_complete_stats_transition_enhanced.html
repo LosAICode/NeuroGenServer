@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Processor - Enhanced Complete Stats Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .container-transition { transition: all 0.3s ease-in-out; }
+        .test-log { 
+            background: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            border-radius: 0.5rem; 
+            padding: 1rem; 
+            font-family: monospace; 
+            font-size: 0.875rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-entry { margin-bottom: 0.25rem; }
+        .log-info { color: #0d6efd; }
+        .log-success { color: #198754; font-weight: bold; }
+        .log-error { color: #dc3545; font-weight: bold; }
+        .log-warning { color: #fd7e14; }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-idle { background-color: #6c757d; }
+        .status-processing { background-color: #0d6efd; animation: pulse 1s infinite; }
+        .status-completed { background-color: #198754; }
+        .status-error { background-color: #dc3545; }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2><i class="fas fa-flask me-2"></i>File Processor - Enhanced Complete Stats Test</h2>
+                <p class="text-muted">Test the complete Submit → Progress → Stats flow with comprehensive completion detection</p>
+                
+                <!-- Status Indicator -->
+                <div id="status-indicator" class="card mb-4">
+                    <div class="card-body py-2">
+                        <div class="d-flex align-items-center">
+                            <span class="status-indicator status-idle" id="status-dot"></span>
+                            <span id="status-text">Ready to start processing</span>
+                            <div class="ms-auto">
+                                <small class="text-muted" id="status-detail">No active task</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Container -->
+        <div id="form-container" class="card mb-4 container-transition">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-play me-2"></i>Start Processing</h5>
+                <form id="process-form">
+                    <div class="mb-3">
+                        <label for="input-dir" class="form-label">Input Directory</label>
+                        <input type="text" class="form-control" id="input-dir" 
+                               value="/workspace/modules/downloads/simple_test" 
+                               placeholder="Enter directory path to process">
+                    </div>
+                    <div class="mb-3">
+                        <label for="output-file" class="form-label">Output File</label>
+                        <input type="text" class="form-control" id="output-file" 
+                               value="enhanced_stats_test.json" 
+                               placeholder="Output filename">
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <i class="fas fa-play me-2"></i>Start Processing
+                    </button>
+                    <button type="button" id="cancel-btn" class="btn btn-danger ms-2" style="display: none;">
+                        <i class="fas fa-stop me-2"></i>Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Progress Container -->
+        <div id="progress-container" class="card mb-4 d-none container-transition">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-spinner fa-spin me-2"></i>Processing Files...</h5>
+                
+                <div class="progress mb-3" style="height: 30px;">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        0%
+                    </div>
+                </div>
+                
+                <div id="progress-status" class="text-muted mb-3">
+                    Initializing...
+                </div>
+                
+                <div id="progress-stats" class="small text-muted" style="display: none;">
+                    <!-- Real-time stats will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Container -->
+        <div id="result-container" class="card mb-4 d-none container-transition">
+            <div class="card-body">
+                <!-- Results will be populated here by updateResultStats -->
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-gamepad me-2"></i>Test Controls</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" onclick="simulateProgress()">
+                                <i class="fas fa-play-circle me-2"></i>Simulate Progress (0% → 100%)
+                            </button>
+                            <button class="btn btn-outline-success" onclick="simulateCompletion()">
+                                <i class="fas fa-check-circle me-2"></i>Simulate Task Completion
+                            </button>
+                            <button class="btn btn-outline-info" onclick="simulateStatsCompletion()">
+                                <i class="fas fa-chart-bar me-2"></i>Simulate Stats Completion
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-warning" onclick="testButtonStates()">
+                                <i class="fas fa-toggle-on me-2"></i>Test Button States
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetTest()">
+                                <i class="fas fa-undo me-2"></i>Reset Test
+                            </button>
+                            <button class="btn btn-outline-dark" onclick="testResultsScreen()">
+                                <i class="fas fa-desktop me-2"></i>Test Results Screen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Log -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-terminal me-2"></i>Test Log</h5>
+                <div id="test-log" class="test-log">
+                    <div class="log-entry log-info">🧪 Enhanced Complete Stats Test initialized</div>
+                    <div class="log-entry log-info">📊 Monitoring Submit → Progress → Stats flow...</div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="clearLog()">
+                        <i class="fas fa-trash me-2"></i>Clear Log
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="checkStateConsistency()">
+                        <i class="fas fa-search me-2"></i>Check State
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Display (for result-stats element) -->
+    <div id="result-stats" class="d-none"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        // Initialize Socket.IO
+        const socket = io('http://localhost:5025');
+        window.socket = socket;
+
+        // Test logging
+        function logToTest(message, type = 'info') {
+            const logDiv = document.getElementById('test-log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            
+            // Update status indicator
+            updateStatusIndicator(message, type);
+        }
+
+        function updateStatusIndicator(message, type) {
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const statusDetail = document.getElementById('status-detail');
+            
+            // Update based on type and message content
+            if (message.includes('Processing') || message.includes('progress')) {
+                statusDot.className = 'status-indicator status-processing';
+                statusText.textContent = 'Processing...';
+            } else if (message.includes('Completed') || message.includes('SUCCESS')) {
+                statusDot.className = 'status-indicator status-completed';
+                statusText.textContent = 'Completed';
+            } else if (type === 'error') {
+                statusDot.className = 'status-indicator status-error';
+                statusText.textContent = 'Error';
+            } else {
+                statusDot.className = 'status-indicator status-idle';
+                statusText.textContent = 'Ready';
+            }
+            
+            statusDetail.textContent = message.substring(0, 50) + (message.length > 50 ? '...' : '');
+        }
+
+        function clearLog() {
+            document.getElementById('test-log').innerHTML = `
+                <div class="log-entry log-info">🧪 Enhanced Complete Stats Test cleared</div>
+                <div class="log-entry log-info">📊 Ready for new test...</div>
+            `;
+        }
+
+        // Enhanced simulation functions
+        function simulateProgress() {
+            logToTest('🎬 Simulating progressive updates 0% → 100%...', 'info');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                
+                const progressData = {
+                    task_id: 'test-progress-' + Date.now(),
+                    progress: progress,
+                    message: `Processing files... ${progress}%`,
+                    stats: {
+                        processed_files: Math.floor(progress * 1.75),
+                        total_files: 175,
+                        completion_percentage: progress,
+                        current_stage: progress < 100 ? `${progress}% complete` : 'Completed'
+                    }
+                };
+                
+                if (window.fileProcessor) {
+                    window.fileProcessor.handleProgressUpdate(progressData);
+                    logToTest(`📊 Progress: ${progress}%`, 'info');
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    logToTest('✅ Progress simulation complete - check if results screen appears', 'success');
+                }
+            }, 500);
+        }
+
+        function simulateCompletion() {
+            logToTest('🎬 Simulating task completion event...', 'info');
+            
+            const mockCompletionData = {
+                task_id: 'test-completion-' + Date.now(),
+                progress: 100,
+                stats: {
+                    processed_files: 175,
+                    total_files: 175,
+                    completion_percentage: 100.0,
+                    current_stage: 'Completed',
+                    formatted_duration: '4.2s',
+                    formatted_total_size: '2.1 MB',
+                    formatted_processing_rate: '41.7 files/sec',
+                    success_rate_percent: 100,
+                    total_bytes: 2201600,
+                    total_chunks: 256,
+                    pdf_files: 8,
+                    error_files: 0,
+                    skipped_files: 0,
+                    total_duration_seconds: 4.2,
+                    avg_file_processing_time: 0.024
+                },
+                output_file: '/workspace/modules/downloads/enhanced_stats_test.json',
+                message: 'Processing completed successfully!'
+            };
+            
+            if (window.fileProcessor) {
+                logToTest('📡 Sending completion data to fileProcessor...', 'info');
+                window.fileProcessor.handleTaskCompleted(mockCompletionData);
+                logToTest('✅ Mock completion sent - check results screen', 'success');
+            } else {
+                logToTest('❌ fileProcessor not available for simulation', 'error');
+            }
+        }
+
+        function simulateStatsCompletion() {
+            logToTest('🎬 Simulating stats-based completion...', 'info');
+            
+            const statsCompletionData = {
+                task_id: 'test-stats-completion-' + Date.now(),
+                progress: 99, // Progress not quite 100
+                message: 'Finalizing...',
+                stats: {
+                    processed_files: 175,
+                    total_files: 175,
+                    completion_percentage: 100.0, // But stats show 100%
+                    current_stage: 'Completed', // And stage is completed
+                    formatted_duration: '3.8s',
+                    formatted_total_size: '1.9 MB',
+                    success_rate_percent: 100
+                },
+                output_file: '/workspace/modules/downloads/enhanced_stats_test.json'
+            };
+            
+            if (window.fileProcessor) {
+                logToTest('📊 Testing stats-based completion detection...', 'info');
+                window.fileProcessor.handleProgressUpdate(statsCompletionData);
+                logToTest('✅ Stats completion test sent', 'success');
+            } else {
+                logToTest('❌ fileProcessor not available', 'error');
+            }
+        }
+
+        function testButtonStates() {
+            logToTest('🔘 Testing button state transitions...', 'info');
+            
+            if (!window.fileProcessor) {
+                logToTest('❌ fileProcessor not available', 'error');
+                return;
+            }
+            
+            const states = ['idle', 'processing', 'completed', 'error'];
+            let currentState = 0;
+            
+            const testState = () => {
+                if (currentState < states.length) {
+                    const state = states[currentState];
+                    window.fileProcessor.state.processingState = state;
+                    window.fileProcessor.updateUI();
+                    logToTest(`🔘 Testing state: ${state}`, 'info');
+                    currentState++;
+                    setTimeout(testState, 1500);
+                } else {
+                    // Reset to idle
+                    window.fileProcessor.state.processingState = 'idle';
+                    window.fileProcessor.updateUI();
+                    logToTest('✅ Button state test complete', 'success');
+                }
+            };
+            
+            testState();
+        }
+
+        function resetTest() {
+            logToTest('🔄 Resetting test environment...', 'info');
+            
+            if (window.fileProcessor) {
+                window.fileProcessor.showForm();
+                logToTest('✅ Test environment reset', 'success');
+            } else {
+                logToTest('❌ fileProcessor not available for reset', 'error');
+            }
+        }
+
+        function testResultsScreen() {
+            logToTest('🖥️ Testing comprehensive results screen...', 'info');
+            
+            if (!window.fileProcessor) {
+                logToTest('❌ fileProcessor not available', 'error');
+                return;
+            }
+            
+            const comprehensiveResults = {
+                stats: {
+                    processed_files: 175,
+                    total_files: 175,
+                    completion_percentage: 100.0,
+                    current_stage: 'Completed',
+                    formatted_duration: '5.3s',
+                    formatted_total_size: '3.2 MB',
+                    formatted_processing_rate: '33.0 files/sec',
+                    success_rate_percent: 98,
+                    total_bytes: 3355443,
+                    total_chunks: 512,
+                    pdf_files: 12,
+                    error_files: 3,
+                    skipped_files: 2,
+                    total_duration_seconds: 5.3,
+                    avg_file_processing_time: 0.030,
+                    tables_extracted: 24,
+                    references_extracted: 156
+                },
+                output_file: '/workspace/modules/downloads/comprehensive_test_results.json',
+                task_id: 'comprehensive-test-' + Date.now(),
+                progress: 100,
+                message: 'Comprehensive processing completed!'
+            };
+            
+            window.fileProcessor.state.processingState = 'completed';
+            window.fileProcessor.updateUI();
+            window.fileProcessor.showResult(comprehensiveResults);
+            logToTest('✅ Comprehensive results screen displayed', 'success');
+        }
+
+        function checkStateConsistency() {
+            if (!window.fileProcessor) {
+                logToTest('❌ fileProcessor not available for state check', 'error');
+                return;
+            }
+            
+            const state = window.fileProcessor.state;
+            logToTest(`🔍 State Check: ${state.processingState}`, 'info');
+            logToTest(`📋 Current Task: ${state.currentTask ? state.currentTask.id : 'None'}`, 'info');
+            logToTest(`🎯 Initialized: ${state.isInitialized}`, 'info');
+            logToTest(`🔌 Backend Connected: ${state.backendConnected}`, 'info');
+            
+            // Check button state
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) {
+                logToTest(`🔘 Button Text: "${submitBtn.textContent.trim()}"`, 'info');
+                logToTest(`🔘 Button Disabled: ${submitBtn.disabled}`, 'info');
+                logToTest(`🔘 Button Classes: ${submitBtn.className}`, 'info');
+            }
+        }
+
+        // Socket event monitoring
+        socket.on('connect', () => {
+            logToTest('🔌 Socket.IO connected to backend', 'success');
+        });
+
+        socket.on('disconnect', () => {
+            logToTest('🔌 Socket.IO disconnected', 'warning');
+        });
+
+        socket.on('task_started', (data) => {
+            logToTest(`🚀 Task started: ${data.task_id}`, 'info');
+        });
+
+        socket.on('progress_update', (data) => {
+            logToTest(`📊 Progress: ${data.progress}% - ${data.message}`, 'info');
+            if (data.progress >= 100) {
+                logToTest('🎯 100% completion detected in progress update!', 'success');
+                
+                // Check if UI transitions properly
+                setTimeout(() => {
+                    const resultContainer = document.getElementById('result-container');
+                    const isVisible = resultContainer && !resultContainer.classList.contains('d-none');
+                    if (isVisible) {
+                        logToTest('✅ SUCCESS: Results container visible after 100%!', 'success');
+                    } else {
+                        logToTest('❌ ISSUE: Results container still hidden after 100%', 'error');
+                    }
+                }, 1000);
+            }
+        });
+
+        socket.on('task_completed', (data) => {
+            logToTest(`✅ Task completed: ${data.task_id}`, 'success');
+            logToTest('🎉 Checking if UI transitions to comprehensive stats...', 'info');
+            
+            // Check if result container becomes visible and has content
+            setTimeout(() => {
+                const resultContainer = document.getElementById('result-container');
+                const isVisible = resultContainer && !resultContainer.classList.contains('d-none');
+                const hasContent = resultContainer && resultContainer.innerHTML.includes('Processing Complete');
+                
+                if (isVisible && hasContent) {
+                    logToTest('✅ SUCCESS: Comprehensive results screen displayed!', 'success');
+                    logToTest('🎊 Complete Submit → Progress → Stats flow working!', 'success');
+                } else if (isVisible) {
+                    logToTest('⚠️ PARTIAL: Results visible but content may be incomplete', 'warning');
+                } else {
+                    logToTest('❌ ISSUE: Results container is still hidden', 'error');
+                }
+            }, 1500);
+        });
+
+        socket.on('task_error', (data) => {
+            logToTest(`❌ Task error: ${data.error}`, 'error');
+        });
+
+        // Initialize File Processor when available
+        document.addEventListener('DOMContentLoaded', async () => {
+            logToTest('🏃 DOM ready, initializing File Processor...', 'info');
+            
+            try {
+                let attempts = 0;
+                const maxAttempts = 10;
+                
+                const waitForFileProcessor = async () => {
+                    if (window.fileProcessor) {
+                        logToTest('✅ File Processor loaded successfully', 'success');
+                        
+                        // Monitor critical methods
+                        const originalShowResult = window.fileProcessor.showResult;
+                        window.fileProcessor.showResult = function(data) {
+                            logToTest('🎯 showResult called - transitioning to results!', 'success');
+                            logToTest(`📊 Stats: ${JSON.stringify(data.stats?.processed_files || 'N/A')} files processed`, 'info');
+                            return originalShowResult.call(this, data);
+                        };
+                        
+                        const originalUpdateUI = window.fileProcessor.updateUI;
+                        window.fileProcessor.updateUI = function() {
+                            logToTest(`🔄 UI update called, state: ${this.state.processingState}`, 'info');
+                            return originalUpdateUI.call(this);
+                        };
+                        
+                        const originalTransitionToContainer = window.fileProcessor.transitionToContainer;
+                        window.fileProcessor.transitionToContainer = function(targetContainer) {
+                            if (targetContainer && targetContainer.id === 'result-container') {
+                                logToTest('📦 Transitioning to result container!', 'success');
+                            }
+                            return originalTransitionToContainer.call(this, targetContainer);
+                        };
+                        
+                        return;
+                    }
+                    
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        setTimeout(waitForFileProcessor, 500);
+                    } else {
+                        logToTest('❌ File Processor failed to load after 5 seconds', 'error');
+                    }
+                };
+                
+                await waitForFileProcessor();
+                
+            } catch (error) {
+                logToTest(`❌ Error initializing: ${error.message}`, 'error');
+            }
+        });
+        
+        logToTest('🎯 Enhanced Complete Stats Test ready', 'success');
+    </script>
+    
+    <!-- Load File Processor Module -->
+    <script type="module">
+        try {
+            const { default: fileProcessor } = await import('./static/js/modules/features/fileProcessor.js');
+            window.fileProcessor = fileProcessor;
+            console.log('📁 File Processor module loaded for testing');
+        } catch (error) {
+            console.error('❌ Failed to load File Processor module:', error);
+            document.getElementById('test-log').innerHTML += `
+                <div class="log-entry log-error">❌ Failed to load File Processor: ${error.message}</div>
+            `;
+        }
+    </script>
+</body>
+</html>

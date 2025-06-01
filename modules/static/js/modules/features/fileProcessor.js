@@ -120,7 +120,27 @@ class FileProcessor {
       eventListeners: new Set(),
       socketListeners: new Set(),
       backendConnected: false,
-      lastHealthCheck: null
+      lastHealthCheck: null,
+      // Enhanced completion tracking
+      completionState: {
+        completed: false,
+        completionTime: null,
+        error: false,
+        cancelled: false
+      },
+      // Progress tracking for stuck task detection
+      lastProgressTimestamp: null,
+      lastReportedProgress: 0,
+      progressUpdateCount: 0,
+      progressRates: [],
+      processingStartTime: null,
+      // Completion monitoring
+      completionMonitoring: {
+        enabled: true,
+        timeoutIds: new Set(),
+        checkIntervalMs: 5000, // Check every 5 seconds
+        maxStuckDurationMs: 30000 // Consider stuck after 30 seconds with no updates
+      }
     };
     
     // Initialize config with safe defaults - will be properly set in init()
@@ -675,6 +695,22 @@ class FileProcessor {
       }
 
       this.state.processingState = 'processing';
+      
+      // Reset completion state for new task
+      this.state.completionState = {
+        completed: false,
+        completionTime: null,
+        error: false,
+        cancelled: false
+      };
+      
+      // Initialize progress tracking
+      this.state.lastProgressTimestamp = Date.now();
+      this.state.lastReportedProgress = 0;
+      this.state.progressUpdateCount = 0;
+      this.state.progressRates = [];
+      this.state.processingStartTime = Date.now();
+      
       this.updateUI();
       
       // Transition from form to progress container immediately
@@ -804,47 +840,98 @@ class FileProcessor {
   }
 
   /**
-   * Handle progress update with enhanced 100% detection
+   * Handle progress update with sophisticated completion detection and stuck task monitoring
    */
   handleProgressUpdate(data) {
-    console.log(`📊 [FileProcessor] Progress update received:`, data);
-    
-    const progress = Math.min(100, Math.max(0, data.progress || 0));
-    const message = data.message || `Processing... ${progress.toFixed(1)}%`;
-    
-    this.showProgress(progress, message);
-    
-    // Update stats if available
-    if (data.stats) {
-      this.updateStats(data.stats);
-    }
-    
-    // Enhanced 100% detection - multiple triggers for completion
-    const isCompleted = progress >= 100 || 
-                       (data.stats && data.stats.current_stage === 'Completed') ||
-                       (data.stats && data.stats.completion_percentage >= 100);
-    
-    if (isCompleted && this.state.processingState === 'processing') {
-      console.log('🎉 [FileProcessor] Completion detected - transitioning to results');
-      console.log('📊 [FileProcessor] Completion triggers:', {
-        progress_100: progress >= 100,
-        stage_completed: data.stats?.current_stage === 'Completed',
-        completion_pct_100: data.stats?.completion_percentage >= 100,
-        stats: data.stats
-      });
+    try {
+      console.log(`📊 [FileProcessor] Progress update received:`, data);
       
-      this.state.processingState = 'completed';
+      if (!data || !data.task_id || data.task_id !== this.state.currentTask?.id) {
+        console.log('📊 [FileProcessor] Progress update ignored - task ID mismatch');
+        return;
+      }
       
-      // Show 100% completion briefly, then transition to results
-      setTimeout(() => {
-        console.log('📋 [FileProcessor] Transitioning to results with enhanced stats');
-        this.showResultContainer({
-          stats: data.stats || {},
-          output_file: data.output_file || this.state.currentTask?.outputFile,
-          progress: 100,
-          message: 'Processing completed successfully!'
+      let progress = Math.min(100, Math.max(0, data.progress || 0));
+      const message = data.message || `Processing... ${progress.toFixed(1)}%`;
+      
+      // Enhanced progress handling to avoid visual stutter at 99%
+      if (progress >= 99 && progress < 100) {
+        // If status indicates completion, jump to 100%
+        if (data.status === "completed" || this.isCompletionPhase(data)) {
+          progress = 100;
+          console.log("🎯 [FileProcessor] Forcing progress to 100% due to completion indicators");
+        }
+        // If we're already showing 99%+ and status isn't completed, be conservative
+        else if (this.state.lastReportedProgress >= 99) {
+          if (progress > this.state.lastReportedProgress) {
+            console.log(`📊 [FileProcessor] Updating from ${this.state.lastReportedProgress}% to ${progress}%`);
+          } else {
+            console.log(`📊 [FileProcessor] Skipping progress update: current ${this.state.lastReportedProgress}%, new ${progress}%`);
+            return;
+          }
+        }
+      }
+      
+      // Store progress metrics for ETA calculation
+      this.updateProgressMetrics(progress);
+      
+      // Update progress display
+      this.showProgress(progress, message);
+      
+      // Update stats if available
+      if (data.stats) {
+        this.updateStats(data.stats);
+      }
+      
+      // Store last reported progress
+      this.state.lastReportedProgress = progress;
+      this.state.progressUpdateCount++;
+      
+      // Enhanced completion detection with multiple sophisticated triggers
+      const isCompleted = 
+        (data.status === "completed") || 
+        (progress >= 99 && data.stats && data.stats.status === "completed") ||
+        (progress >= 99.9) ||
+        (progress >= 99 && this.isCompletionPhase(data)) ||
+        (data.stats && data.stats.current_stage === 'Completed') ||
+        (data.stats && data.stats.completion_percentage >= 100) ||
+        (progress >= 99 && data.stats && 
+         data.stats.processed_files === data.stats.total_files);
+      
+      if (isCompleted && this.state.processingState === 'processing' && !this.state.completionState.completed) {
+        console.log('🎉 [FileProcessor] Completion detected via progress update');
+        console.log('📊 [FileProcessor] Completion triggers:', {
+          progress_100: progress >= 100,
+          status_completed: data.status === "completed",
+          stage_completed: data.stats?.current_stage === 'Completed',
+          completion_pct_100: data.stats?.completion_percentage >= 100,
+          completion_phase: this.isCompletionPhase(data),
+          files_match: data.stats?.processed_files === data.stats?.total_files,
+          processing_state: this.state.processingState,
+          stats: data.stats
         });
-      }, 800); // Slightly faster transition
+        
+        // Force progress to 100% for completed tasks
+        this.showProgress(100, data.message || "Task completed successfully", data.stats);
+        
+        // Complete the task after brief delay to ensure UI is updated
+        setTimeout(() => {
+          this.handleTaskCompleted(data);
+        }, 500);
+      }
+      else if (data.status === "failed" || data.status === "error") {
+        this.handleTaskError(data);
+      } 
+      else if (data.status === "cancelled") {
+        this.handleTaskCancelled(data);
+      }
+      
+      // Monitor for stuck tasks at high progress
+      this.monitorTaskProgress(data);
+      
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error handling progress update:', error);
+      this.showNotification(`Progress update error: ${error.message}`, 'warning', 'File Processor');
     }
   }
 
@@ -857,34 +944,80 @@ class FileProcessor {
   }
 
   /**
-   * Handle task completion with duplicate prevention
+   * Handle task completion with comprehensive cleanup and history tracking
    */
   handleTaskCompleted(data) {
-    console.log('✅ File processing completed:', data);
-    
-    // Prevent duplicate completion handling
-    if (this.state.processingState === 'completed') {
-      console.log('📊 [FileProcessor] Task already completed - ignoring duplicate completion event');
-      return;
-    }
-    
-    this.state.processingState = 'completed';
-    this.showProgress(100, 'Processing completed successfully!');
-    
-    // If not already transitioned, show results
-    const resultContainer = this.state.elements.get('result-container');
-    const isResultsVisible = resultContainer && !resultContainer.classList.contains('d-none');
-    
-    if (!isResultsVisible) {
-      console.log('📋 [FileProcessor] Transitioning to results from completion event');
+    try {
+      console.log('✅ [FileProcessor] Task completion received:', data);
+      
+      // Check if already completed with time-based duplicate prevention
+      if (this.state.completionState.completed && 
+          this.state.completionState.completionTime && 
+          (Date.now() - this.state.completionState.completionTime < 5000)) {
+        console.log("📊 [FileProcessor] Task already marked as completed, preventing duplicate completion");
+        return;
+      }
+      
+      // Mark as completed to prevent duplicate processing
+      this.state.completionState.completed = true;
+      this.state.completionState.completionTime = Date.now();
+      this.state.processingState = 'completed';
+      
+      console.log("🎉 [FileProcessor] Processing task completion with full cleanup");
+      
+      // Clear completion monitoring
+      this.clearCompletionMonitoring();
+      
+      // Update UI to show completion state immediately
+      this.updateUI();
+      
+      // Force progress to 100% to avoid stuck progress bar
+      this.showProgress(100, "Task completed successfully", data.stats);
+      
+      // Clean up session storage
+      this.cleanupSessionState();
+      
+      // Reset processing state
+      this.resetProcessingState();
+      
+      // Complete tracking in progressHandler if available
+      this.completeProgressHandler(data);
+      
+      // Add completed task to history
       setTimeout(() => {
-        this.showResultContainer(data);
-      }, 1000);
-    } else {
-      console.log('📋 [FileProcessor] Results already visible - completion event handled');
+        this.addTaskToHistory(data);
+      }, 500); // Brief delay for stats to finalize
+      
+      // Show comprehensive result UI
+      setTimeout(() => {
+        this.showResult({
+          stats: data.stats || {},
+          output_file: data.output_file || this.state.currentTask?.outputFile,
+          task_id: data.task_id || this.state.currentTask?.id,
+          progress: 100,
+          message: 'Processing completed successfully!'
+        });
+      }, 800); // Delay for better UX
+      
+      // Show success notification
+      this.showNotification('Processing completed successfully!', 'success', 'File Processor');
+      
+      // Update state manager if available
+      if (window.stateManager && typeof window.stateManager.setProcessingActive === 'function') {
+        window.stateManager.setProcessingActive(false);
+      }
+      
+      // Trigger completion event for other modules
+      if (window.eventRegistry && typeof window.eventRegistry.emit === 'function') {
+        window.eventRegistry.emit('file.processing.completed', data);
+      }
+      
+      console.log("✅ [FileProcessor] Task completion cleanup completed successfully");
+      
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error handling task completion:', error);
+      this.showNotification(`Completion handling error: ${error.message}`, 'error', 'File Processor');
     }
-    
-    this.updateUI();
   }
 
   /**
@@ -894,8 +1027,312 @@ class FileProcessor {
     console.error('❌ File processing error:', data);
     
     this.state.processingState = 'error';
+    this.state.completionState.error = true;
+    this.clearCompletionMonitoring();
     this.showError(data.error || 'Processing failed');
     this.updateUI();
+  }
+
+  /**
+   * Handle task cancellation
+   */
+  handleTaskCancelled(data) {
+    console.log('🚫 File processing cancelled:', data);
+    
+    this.state.processingState = 'cancelled';
+    this.state.completionState.cancelled = true;
+    this.clearCompletionMonitoring();
+    this.showForm();
+    this.showNotification('Processing cancelled', 'warning', 'File Processor');
+  }
+
+  /**
+   * Helper function to check if data indicates completion phase
+   */
+  isCompletionPhase(data) {
+    return (
+      data.status === "completed" || 
+      (data.stats && data.stats.status === "completed") ||
+      (data.message && (
+        data.message.toLowerCase().includes("complet") ||
+        data.message.toLowerCase().includes("done") ||
+        data.message.toLowerCase().includes("finish")
+      )) ||
+      (data.progress >= 99.5) ||
+      (data.progress >= 99 && data.stats && 
+       data.stats.processed_files === data.stats.total_files)
+    );
+  }
+
+  /**
+   * Monitor task progress and detect potentially stuck tasks
+   */
+  monitorTaskProgress(data) {
+    if (!this.state.completionMonitoring.enabled) return;
+    
+    try {
+      const { progress, task_id } = data;
+      
+      // Only monitor tasks at high progress percentages
+      if (progress < 95) return;
+      
+      // Clear any existing timeout for this task
+      this.clearCompletionMonitoring();
+      
+      // Set a timeout to check if the task is stuck
+      const timeoutId = setTimeout(() => {
+        // Only proceed if still in processing state and not already completed
+        if (this.state.processingState !== 'processing' || this.state.completionState.completed) return;
+        
+        console.log(`🔍 [FileProcessor] Checking if task ${task_id} is stuck at ${progress}%`);
+        
+        const currentTime = Date.now();
+        const lastUpdateTime = this.state.lastProgressTimestamp || 0;
+        const timeSinceUpdate = currentTime - lastUpdateTime;
+        
+        // If no updates for a while and at high percentage, task may be stuck
+        if (timeSinceUpdate > this.state.completionMonitoring.maxStuckDurationMs && progress >= 95) {
+          console.warn(`⚠️ [FileProcessor] Task appears stuck at ${progress}% with no updates for ${timeSinceUpdate/1000}s`);
+          
+          // Force check completion status via API
+          this.checkTaskCompletionStatus(task_id);
+        }
+      }, this.state.completionMonitoring.checkIntervalMs);
+      
+      // Store the timeout ID
+      this.state.completionMonitoring.timeoutIds.add(timeoutId);
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error in task progress monitoring:', error);
+    }
+  }
+
+  /**
+   * Clear any active completion monitoring timeouts
+   */
+  clearCompletionMonitoring() {
+    try {
+      for (const timeoutId of this.state.completionMonitoring.timeoutIds) {
+        clearTimeout(timeoutId);
+      }
+      this.state.completionMonitoring.timeoutIds.clear();
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error clearing completion monitoring:', error);
+    }
+  }
+
+  /**
+   * Check task completion status via API for stuck tasks
+   */
+  async checkTaskCompletionStatus(taskId) {
+    try {
+      console.log(`🔍 [FileProcessor] Checking completion status of task ${taskId} via API`);
+      
+      const response = await fetch(`/api/status/${taskId}`);
+      
+      if (!response.ok) {
+        console.warn(`⚠️ [FileProcessor] Status check failed with status ${response.status}`);
+        return;
+      }
+      
+      const data = await response.json();
+      console.log(`📊 [FileProcessor] Task status from API: ${data.status}, progress: ${data.progress}%`);
+      
+      // If task is completed according to API but UI doesn't show it
+      if (data.status === "completed" || data.progress >= 100) {
+        console.log("🎯 [FileProcessor] Task is completed according to API, forcing completion in UI");
+        
+        // Force progress to 100%
+        this.showProgress(100, "Task completed successfully", data.stats);
+        
+        // Mark as completed if not already
+        if (!this.state.completionState.completed) {
+          this.handleTaskCompleted(data);
+        }
+      }
+      // Handle other status cases
+      else if (data.status === "error" || data.status === "failed") {
+        if (!this.state.completionState.error) {
+          this.handleTaskError(data);
+        }
+      }
+      else if (data.status === "cancelled") {
+        if (!this.state.completionState.cancelled) {
+          this.handleTaskCancelled(data);
+        }
+      }
+      // Task is still running - update progress
+      else {
+        console.log("📊 [FileProcessor] Task is still running according to API");
+        this.handleProgressUpdate(data);
+        
+        // Schedule another check in case the task gets stuck again
+        const timeoutId = setTimeout(() => {
+          this.checkTaskCompletionStatus(taskId);
+        }, this.state.completionMonitoring.checkIntervalMs * 2);
+        
+        this.state.completionMonitoring.timeoutIds.add(timeoutId);
+      }
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error checking task completion status:', error);
+    }
+  }
+
+  /**
+   * Update progress metrics for ETA calculation
+   */
+  updateProgressMetrics(progress) {
+    const now = Date.now();
+    
+    if (!this.state.lastProgressTimestamp) {
+      this.state.lastProgressTimestamp = now;
+      this.state.processingStartTime = this.state.processingStartTime || now;
+      return;
+    }
+    
+    const lastProgress = this.state.lastReportedProgress;
+    const timeDelta = now - this.state.lastProgressTimestamp;
+    
+    // Only update if significant time and progress changes
+    if (timeDelta > 500 && progress > lastProgress) {
+      const progressDelta = progress - lastProgress;
+      const rate = progressDelta / timeDelta;
+      
+      // Store rate for averaging (keep last 10 rates)
+      this.state.progressRates.push(rate);
+      if (this.state.progressRates.length > 10) {
+        this.state.progressRates.shift();
+      }
+      
+      this.state.lastProgressTimestamp = now;
+    }
+  }
+
+  /**
+   * Clean up session storage and state
+   */
+  cleanupSessionState() {
+    try {
+      sessionStorage.removeItem('ongoingTaskId');
+      sessionStorage.removeItem('ongoingTaskType');
+      sessionStorage.removeItem('outputFile');
+      localStorage.removeItem('currentTask');
+      sessionStorage.setItem('taskCompletionTime', Date.now().toString());
+    } catch (error) {
+      console.warn('⚠️ [FileProcessor] Error cleaning session state:', error);
+    }
+  }
+
+  /**
+   * Reset processing state variables
+   */
+  resetProcessingState() {
+    this.state.currentTask = null;
+    this.state.lastProgressTimestamp = null;
+    this.state.lastReportedProgress = 0;
+    this.state.progressUpdateCount = 0;
+    this.state.progressRates = [];
+    this.state.processingStartTime = null;
+  }
+
+  /**
+   * Complete progress handler integration
+   */
+  completeProgressHandler(data) {
+    try {
+      // Try multiple approaches to complete progress tracking
+      if (window.progressHandler && typeof window.progressHandler.complete === 'function') {
+        window.progressHandler.complete(data);
+        console.log("📊 [FileProcessor] Progress handler completed task:", data.task_id);
+      } else if (window.moduleInstances?.progressHandler?.completeTask) {
+        window.moduleInstances.progressHandler.completeTask(data.task_id, data);
+        console.log("📊 [FileProcessor] Module instance progressHandler completed task:", data.task_id);
+      }
+    } catch (error) {
+      console.warn('⚠️ [FileProcessor] Error completing progress handler:', error);
+    }
+  }
+
+  /**
+   * Add task to history using multiple approaches
+   */
+  addTaskToHistory(data) {
+    try {
+      if (!data) return;
+      
+      console.log("📚 [FileProcessor] Adding task to history:", data);
+      
+      // Prepare the task data for history
+      const taskData = {
+        task_id: data.task_id || this.state.currentTask?.id,
+        type: 'file',
+        status: 'completed',
+        timestamp: Date.now(),
+        filename: this.getFileNameFromPath(data.output_file),
+        inputPath: this.state.currentTask?.inputDir,
+        outputPath: data.output_file,
+        stats: data.stats || {}
+      };
+      
+      // Try historyManager if available
+      if (window.historyManager && typeof window.historyManager.addTaskToHistory === 'function') {
+        window.historyManager.addTaskToHistory(taskData);
+        console.log("📚 [FileProcessor] Task added to history successfully");
+        
+        // Also add to recent files
+        if (data.output_file && typeof window.historyManager.addFileToRecent === 'function') {
+          window.historyManager.addFileToRecent({
+            path: data.output_file,
+            name: this.getFileNameFromPath(data.output_file),
+            lastAccessed: Date.now()
+          });
+        }
+        return true;
+      }
+      
+      // Try moduleInstances approach
+      if (window.moduleInstances?.historyManager?.addTaskToHistory) {
+        window.moduleInstances.historyManager.addTaskToHistory(taskData);
+        console.log("📚 [FileProcessor] Task added to history using moduleInstances");
+        return true;
+      }
+      
+      // Try event registry approach
+      if (window.eventRegistry && typeof window.eventRegistry.emit === 'function') {
+        console.log("📚 [FileProcessor] Using event registry to add task to history");
+        window.eventRegistry.emit('history.add', {
+          type: 'file',
+          name: data.output_file ? this.getFileNameFromPath(data.output_file) : 'Processed Data',
+          data: taskData
+        });
+      }
+      
+      // Fallback to localStorage
+      try {
+        const historyItems = JSON.parse(localStorage.getItem('fileProcessorHistory') || '[]');
+        historyItems.unshift({
+          type: 'file',
+          name: data.output_file ? this.getFileNameFromPath(data.output_file) : 'Processed Data',
+          data: taskData
+        });
+        
+        // Keep only last 50 items
+        if (historyItems.length > 50) historyItems.length = 50;
+        localStorage.setItem('fileProcessorHistory', JSON.stringify(historyItems));
+        console.log("📚 [FileProcessor] Task saved to localStorage history fallback");
+      } catch (storageErr) {
+        console.warn('⚠️ [FileProcessor] Failed to save to localStorage:', storageErr);
+      }
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error adding task to history:', error);
+    }
+  }
+
+  /**
+   * Extract filename from path
+   */
+  getFileNameFromPath(filePath) {
+    if (!filePath) return 'Unknown File';
+    return filePath.split('/').pop() || filePath.split('\\').pop() || 'Unknown File';
   }
 
   /**
@@ -915,11 +1352,8 @@ class FileProcessor {
       // Show form, hide other containers with smooth transitions
       this.transitionToContainer(formContainer);
       
-      // Reset button state
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Processing';
-      }
+      // Update UI to reset button state properly
+      this.updateUI();
 
       console.log('📁 [FileProcessor] Form container shown');
     } catch (error) {
@@ -946,36 +1380,60 @@ class FileProcessor {
   }
 
   /**
-   * Show the result container with comprehensive stats
+   * Show results with comprehensive stats display (NEW - enhanced showResult pattern)
    */
-  showResultContainer(data) {
+  showResult(data) {
+    console.log('🎯 [FileProcessor] showResult called with data:', data);
+    
     try {
-      const progressContainer = this.state.elements.get('progress-container');
+      // Force immediate container transition
       const resultContainer = this.state.elements.get('result-container');
-
-      // Transition from progress to results
+      
+      if (!resultContainer) {
+        console.error('❌ [FileProcessor] Result container not found!');
+        this.showNotification('Results container not available', 'error');
+        return;
+      }
+      
+      console.log('📦 [FileProcessor] Transitioning to result container...');
       this.transitionToContainer(resultContainer);
-
-      // Update result content with enhanced stats
+      
+      // Update result content immediately
+      console.log('📊 [FileProcessor] Updating result stats...');
       this.updateResultStats(resultContainer, data);
       
-      // Update the dedicated result-stats element
+      // Update quick stats display
       const resultStatsElement = this.state.elements.get('result-stats');
       if (resultStatsElement && data.stats) {
         const quickStats = `
           <div class="d-flex justify-content-between text-muted small">
             <span><i class="fas fa-file me-1"></i>${data.stats.processed_files || 0} files processed</span>
             <span><i class="fas fa-clock me-1"></i>${data.stats.formatted_duration || 'Unknown'}</span>
-            <span><i class="fas fa-check-circle me-1"></i>${data.stats.success_rate_percent || 0}% success</span>
+            <span><i class="fas fa-check-circle me-1"></i>${data.stats.success_rate_percent || 100}% success</span>
           </div>
         `;
         resultStatsElement.innerHTML = quickStats;
+        console.log('📈 [FileProcessor] Quick stats updated');
       }
-
-      console.log('✅ [FileProcessor] Result container shown with stats');
+      
+      // Show success notification
+      this.showNotification('Processing completed successfully!', 'success', 'File Processor');
+      
+      console.log('✅ [FileProcessor] Results displayed successfully');
+      
     } catch (error) {
-      console.error('❌ Error showing result container:', error);
+      console.error('❌ [FileProcessor] Error in showResult:', error);
+      // Fallback to basic completion message
+      this.showNotification('Processing completed - check console for details', 'success');
     }
+  }
+
+  /**
+   * Show the result container with comprehensive stats (LEGACY - keep for compatibility)
+   */
+  showResultContainer(data) {
+    console.log('🔄 [FileProcessor] showResultContainer called - redirecting to showResult');
+    this.showResult(data);
   }
 
   /**
@@ -1013,22 +1471,47 @@ class FileProcessor {
   }
 
   /**
-   * Update UI based on current state
+   * Update UI based on current state - Enhanced for completion handling
    */
   updateUI() {
     const startBtn = this.state.elements.get('submit-btn');
     const cancelBtn = this.state.elements.get('cancel-btn');
 
+    console.log(`🔄 [FileProcessor] Updating UI, current state: ${this.state.processingState}`);
+
     if (startBtn) {
-      startBtn.disabled = this.state.processingState === 'processing';
-      startBtn.innerHTML = this.state.processingState === 'processing' ? 
-        '<i class="fas fa-spinner fa-spin me-2"></i> Processing...' : 
-        '<i class="fas fa-play me-2"></i> Start Processing';
+      // Update button based on processing state
+      switch (this.state.processingState) {
+        case 'processing':
+          startBtn.disabled = true;
+          startBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+          break;
+        case 'completed':
+          startBtn.disabled = false;
+          startBtn.innerHTML = '<i class="fas fa-check me-2"></i> Completed';
+          startBtn.classList.remove('btn-primary');
+          startBtn.classList.add('btn-success');
+          break;
+        case 'error':
+          startBtn.disabled = false;
+          startBtn.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Error - Retry';
+          startBtn.classList.remove('btn-primary', 'btn-success');
+          startBtn.classList.add('btn-warning');
+          break;
+        default: // 'idle'
+          startBtn.disabled = false;
+          startBtn.innerHTML = '<i class="fas fa-play me-2"></i> Start Processing';
+          startBtn.classList.remove('btn-success', 'btn-warning');
+          startBtn.classList.add('btn-primary');
+          break;
+      }
     }
 
     if (cancelBtn) {
       cancelBtn.style.display = this.state.processingState === 'processing' ? 'inline-block' : 'none';
     }
+
+    console.log(`✅ [FileProcessor] UI updated for state: ${this.state.processingState}`);
   }
 
   /**
@@ -1361,18 +1844,71 @@ class FileProcessor {
         </div>
       </div>
       
+      <!-- Completion Summary Banner -->
+      <div class="alert alert-success mb-4" style="border-left: 4px solid #198754;">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h6 class="alert-heading mb-2"><i class="fas fa-check-circle me-2"></i>Task Completed Successfully!</h6>
+            <p class="mb-0">
+              <strong>${stats.processed_files || 0}</strong> files processed successfully
+              ${stats.error_files > 0 ? `, <strong class="text-warning">${stats.error_files}</strong> errors` : ''}
+              ${stats.skipped_files > 0 ? `, <strong class="text-info">${stats.skipped_files}</strong> skipped` : ''}
+            </p>
+          </div>
+          <div class="col-md-4 text-end">
+            <span class="badge bg-success fs-6 px-3 py-2">
+              <i class="fas fa-thumbs-up me-2"></i>100% Complete
+            </span>
+          </div>
+        </div>
+      </div>
+
       ${outputFile ? `
-      <div class="file-actions mt-4">
-        <div class="d-flex gap-2">
-          <button class="btn btn-primary" onclick="window.fileProcessor.openFileOrFolder('${outputFile}')">
-            <i class="fas fa-file-alt me-2"></i>Open Output File
-          </button>
-          <button class="btn btn-secondary" onclick="window.fileProcessor.openFileOrFolder('${outputFile}', true)">
-            <i class="fas fa-folder-open me-2"></i>Open Containing Folder
-          </button>
+      <!-- File Actions Section -->
+      <div class="card mt-4" style="border: 2px solid #198754;">
+        <div class="card-header bg-success text-white">
+          <h6 class="mb-0"><i class="fas fa-download me-2"></i>Output File Ready</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label text-muted small">Output File Path:</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control form-control-sm me-2" value="${outputFile}" readonly onclick="this.select()">
+              <button class="btn btn-outline-secondary btn-sm" onclick="navigator.clipboard.writeText('${outputFile}'); window.fileProcessor.showNotification('Path copied to clipboard!', 'success');" title="Copy path">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-success" onclick="window.fileProcessor.openFileOrFolder('${outputFile}')">
+              <i class="fas fa-file-alt me-2"></i>Open Result File
+            </button>
+            <button class="btn btn-outline-primary" onclick="window.fileProcessor.openFileOrFolder('${outputFile}', true)">
+              <i class="fas fa-folder-open me-2"></i>Open Folder
+            </button>
+            <button class="btn btn-outline-secondary" onclick="window.fileProcessor.downloadFile('${outputFile}')">
+              <i class="fas fa-download me-2"></i>Download
+            </button>
+            <button class="btn btn-outline-info" onclick="window.fileProcessor.showFilePreview('${outputFile}')">
+              <i class="fas fa-eye me-2"></i>Preview
+            </button>
+          </div>
         </div>
       </div>
       ` : ''}
+      
+      <!-- Action Buttons -->
+      <div class="d-flex gap-2 mt-4 justify-content-center">
+        <button class="btn btn-primary btn-lg" onclick="window.fileProcessor.showForm()">
+          <i class="fas fa-plus me-2"></i>New Task
+        </button>
+        <button class="btn btn-outline-secondary" onclick="window.fileProcessor.viewHistory()">
+          <i class="fas fa-history me-2"></i>View History
+        </button>
+        <button class="btn btn-outline-info" onclick="window.fileProcessor.exportStats('${data.task_id || 'unknown'}')">
+          <i class="fas fa-file-export me-2"></i>Export Stats
+        </button>
+      </div>
     `;
 
     container.innerHTML = statsHtml;
@@ -1430,6 +1966,140 @@ class FileProcessor {
       'info', 
       'File System'
     );
+  }
+
+  /**
+   * Download file to user's computer
+   */
+  downloadFile(filePath) {
+    console.log(`Downloading file: ${filePath}`);
+    
+    // Create a download link for the file
+    try {
+      const link = document.createElement('a');
+      link.href = `/api/download?file=${encodeURIComponent(filePath)}`;
+      link.download = filePath.split('/').pop();
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      this.showNotification('Download started', 'success', 'File Processor');
+    } catch (error) {
+      console.error('Download error:', error);
+      this.showNotification('Download failed - file may not be accessible', 'error', 'File Processor');
+    }
+  }
+
+  /**
+   * Show file preview in modal or new window
+   */
+  showFilePreview(filePath) {
+    console.log(`Showing preview for: ${filePath}`);
+    
+    // For JSON files, try to fetch and display content
+    if (filePath.endsWith('.json')) {
+      this.previewJsonFile(filePath);
+    } else {
+      this.showNotification('Preview not available for this file type', 'info', 'File Processor');
+    }
+  }
+
+  /**
+   * Preview JSON file content
+   */
+  async previewJsonFile(filePath) {
+    try {
+      const response = await fetch(`/api/file-content?file=${encodeURIComponent(filePath)}`);
+      if (response.ok) {
+        const content = await response.text();
+        const jsonData = JSON.parse(content);
+        
+        // Create a simple preview modal
+        const preview = `
+          <div class="modal fade" id="filePreviewModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title"><i class="fas fa-file-code me-2"></i>File Preview: ${filePath.split('/').pop()}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <pre style="max-height: 400px; overflow-y: auto; background: #f8f9fa; padding: 1rem; border-radius: 0.5rem;"><code>${JSON.stringify(jsonData, null, 2)}</code></pre>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="window.fileProcessor.downloadFile('${filePath}')">Download</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Remove existing modal if any
+        const existing = document.getElementById('filePreviewModal');
+        if (existing) existing.remove();
+        
+        // Add modal to page and show it
+        document.body.insertAdjacentHTML('beforeend', preview);
+        const modal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
+        modal.show();
+        
+      } else {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Preview error:', error);
+      this.showNotification('Unable to preview file - file may not be accessible', 'error', 'File Processor');
+    }
+  }
+
+  /**
+   * View processing history
+   */
+  viewHistory() {
+    console.log('Opening processing history...');
+    this.showNotification('Opening processing history...', 'info', 'File Processor');
+    
+    // This would typically navigate to history view or open history modal
+    if (window.NeuroGen?.modules?.historyManager) {
+      window.NeuroGen.modules.historyManager.show();
+    } else {
+      this.showNotification('History feature not available', 'warning', 'File Processor');
+    }
+  }
+
+  /**
+   * Export processing statistics
+   */
+  exportStats(taskId) {
+    console.log(`Exporting stats for task: ${taskId}`);
+    
+    try {
+      // Create stats export data
+      const exportData = {
+        taskId,
+        timestamp: new Date().toISOString(),
+        task: this.state.currentTask,
+        processingState: this.state.processingState,
+        exported: new Date().toLocaleString()
+      };
+      
+      // Download as JSON file
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `file-processor-stats-${taskId}-${Date.now()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      this.showNotification('Stats exported successfully', 'success', 'File Processor');
+    } catch (error) {
+      console.error('Export error:', error);
+      this.showNotification('Failed to export stats', 'error', 'File Processor');
+    }
   }
 
   /**
