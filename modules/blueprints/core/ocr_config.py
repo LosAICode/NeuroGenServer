@@ -22,6 +22,9 @@ pikepdf_available = False
 TEMP_DIR = None
 TESSDATA_PREFIX = None
 
+# Singleton pattern to prevent duplicate initialization
+_ocr_initialized = False
+
 # Handle pikepdf import
 try:
     import pikepdf
@@ -35,11 +38,21 @@ except ImportError:
 def setup_ocr_environment() -> Dict[str, str]:
     """
     Set up OCR environment with proper paths and permissions.
+    Uses singleton pattern to prevent duplicate initialization.
     
     Returns:
         Dictionary containing configuration paths
     """
-    global TEMP_DIR, TESSDATA_PREFIX
+    global TEMP_DIR, TESSDATA_PREFIX, _ocr_initialized
+    
+    # Singleton check - return existing config if already initialized
+    if _ocr_initialized:
+        logger.debug("OCR environment already initialized - skipping duplicate setup")
+        return {
+            'base_temp_dir': TEMP_DIR,
+            'tessdata_dir': TESSDATA_PREFIX,
+            'temp_env': TEMP_DIR
+        }
     
     # Determine temp directory path (relative to this module)
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -76,6 +89,10 @@ def setup_ocr_environment() -> Dict[str, str]:
     
     # Ensure tessdata files exist
     ensure_tessdata_exists(tessdata_dir)
+    
+    # Mark as initialized to prevent duplicates
+    _ocr_initialized = True
+    logger.info("OCR environment initialized successfully (singleton)")
     
     return {
         'base_temp_dir': custom_temp_dir,

@@ -749,12 +749,11 @@ class BaseTask:
         self.progress = 0  # Reset progress at actual start
         logger.info(f"Task {self.task_id} ({self.task_type}) started processing.")
         try:
-            import socketio_context_helper
+            from blueprints.socketio_events import emit_task_started
             
-            # Use safe emit function
-            success = socketio_context_helper.emit_task_started_safe(
+            # Use centralized emit function
+            success = emit_task_started(
                 task_id=self.task_id,
-                task_type=self.task_type,
                 message=self.message
             )
             
@@ -819,12 +818,12 @@ class BaseTask:
         if details:
             payload["details"] = details
         
-        # Send event using safe context
+        # Send event using centralized emission
         try:
-            import socketio_context_helper
+            from blueprints.socketio_events import emit_progress_update_unified
             
-            # Use safe emit function
-            success = socketio_context_helper.emit_progress_update_safe(
+            # Use centralized emit function with deduplication
+            success = emit_progress_update_unified(
                 task_id=self.task_id,
                 progress=self.progress,
                 message=self.message,
@@ -879,10 +878,10 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            import socketio_context_helper
+            from blueprints.socketio_events import emit_task_error_unified
             
-            # Use safe emit function
-            success = socketio_context_helper.emit_task_error_safe(
+            # Use centralized emit function
+            success = emit_task_error_unified(
                 task_id=self.task_id,
                 task_type=self.task_type,
                 error_message=self.error_message,
@@ -901,11 +900,19 @@ class BaseTask:
             remove_task(self.task_id)
 
     def emit_completion(self):
-        """Emit task completion event via Socket.IO."""
+        """Emit task completion event via Socket.IO - SINGLE EMISSION ONLY."""
+        # Prevent duplicate completion emissions
+        if hasattr(self, '_completion_emitted') and self._completion_emitted:
+            logger.debug(f"Task {self.task_id} completion already emitted - skipping duplicate")
+            return
+        
         self.status = "completed"
         self.progress = 100
         self.message = "Task completed successfully."
         duration_seconds = round(time.time() - self.start_time, 2)
+        
+        # Mark as emitted to prevent duplicates
+        self._completion_emitted = True
         
         logger.info(f"Task {self.task_id} ({self.task_type}) completed in {duration_seconds}s.")
 
@@ -935,10 +942,10 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            import socketio_context_helper
+            from blueprints.socketio_events import emit_task_completion_unified
             
-            # Use safe emit function
-            success = socketio_context_helper.emit_task_completion_safe(
+            # Use centralized emit function with deduplication
+            success = emit_task_completion_unified(
                 task_id=self.task_id,
                 task_type=self.task_type,
                 output_file=payload.get("output_file"),
@@ -994,12 +1001,11 @@ class BaseTask:
             "timestamp": time.time()
         }
         try:
-            import socketio_context_helper
+            from blueprints.socketio_events import emit_task_cancelled
             
-            # Use safe emit function
-            success = socketio_context_helper.emit_task_cancelled_safe(
+            # Use centralized emit function
+            success = emit_task_cancelled(
                 task_id=self.task_id,
-                task_type=self.task_type,
                 reason=payload.get("reason", "Task cancelled")
             )
             
@@ -1484,9 +1490,11 @@ class ProcessingTask(BaseTask):
                 logger.info(f"Task {self.task_id} cancelled during processing")
                 raise InterruptedError("Task cancelled by user")
         
-        # Calculate progress with better precision
+        # Calculate progress with better precision - allow reaching 100%
         if total_count > 0:
-            self.progress = min(int((processed_count / total_count) * 99), 99)  # Reserve 100% for completion
+            # Calculate actual progress percentage, allowing 100% when complete
+            actual_progress = (processed_count / total_count) * 100
+            self.progress = min(int(actual_progress), 100)
         else:
             self.progress = 0
         
@@ -1730,21 +1738,12 @@ class ProcessingTask(BaseTask):
                     }
                 }
                 
-                # Success case - emit enhanced completion
+                # Success case - let BaseTask handle completion
                 self.status = "completed"
                 self.progress = 100
                 
                 try:
-                    # Use task completion emission
-                    emit_task_completion(
-                        task_id=self.task_id,
-                        task_type=self.task_type,
-                        output_file=self.output_file,
-                        stats=self.stats,
-                        details={"performance_metrics": performance_metrics}
-                    )
-                    
-                    # Add to task history
+                    # Add to task history (non-emission activity)
                     add_task_to_history(
                         self.task_id,
                         self.task_type,
@@ -1752,26 +1751,11 @@ class ProcessingTask(BaseTask):
                         self.output_file
                     )
                     
-                    logger.info(f"Task {self.task_id} completed with enhanced stats showcase")
+                    logger.info(f"Task {self.task_id} completed - BaseTask will handle emission")
                     
-                except NameError:
-                    # Fallback to standard completion if enhanced stats not available
-                    logger.warning("Enhanced stats showcase not available, using standard completion")
-                    emit_task_completion(
-                        self.task_id,
-                        self.task_type,
-                        self.output_file,
-                        self.stats
-                    )
                 except Exception as e:
-                    logger.error(f"Error in enhanced task completion: {e}")
-                    # Fallback to standard completion
-                    emit_task_completion(
-                        self.task_id,
-                        self.task_type,
-                        self.output_file,
-                        self.stats
-                    )
+                    logger.error(f"Error in task history addition: {e}")
+                    # BaseTask will still handle completion emission
             
         except InterruptedError:
             # Handle cancellation gracefully
@@ -4100,7 +4084,7 @@ def emit_task_completion(task_id, task_type="generic", output_file=None, stats=N
         details: Optional additional details
     """
     try:
-        import socketio_context_helper
+        from blueprints.socketio_events import emit_task_completion_unified
         
         # Process stats for serialization
         processed_stats = None
@@ -4115,8 +4099,8 @@ def emit_task_completion(task_id, task_type="generic", output_file=None, stats=N
                 except (AttributeError, TypeError):
                     processed_stats = {'raw_stats': str(stats)}
         
-        # Use safe emit function
-        success = socketio_context_helper.emit_task_completion_safe(
+        # Use centralized emit function
+        success = emit_task_completion_unified(
             task_id=task_id,
             task_type=task_type,
             output_file=output_file,
@@ -4142,11 +4126,12 @@ def emit_task_error(task_id, error_message, error_details=None, stats=None):
         stats: Optional statistics at time of error
     """
     try:
-        import socketio_context_helper
+        from blueprints.socketio_events import emit_task_error_unified
         
-        # Use safe emit function
-        success = socketio_context_helper.emit_task_error_safe(
+        # Use centralized emit function
+        success = emit_task_error_unified(
             task_id=task_id,
+            task_type='unknown',
             error_message=error_message,
             error_details=error_details
         )
@@ -4167,10 +4152,10 @@ def emit_task_cancelled(task_id, reason=None):
         reason: Optional reason for cancellation
     """
     try:
-        import socketio_context_helper
+        from blueprints.socketio_events import emit_task_cancelled
         
-        # Use safe emit function
-        success = socketio_context_helper.emit_task_cancelled_safe(
+        # Use centralized emit function
+        success = emit_task_cancelled(
             task_id=task_id,
             reason=reason
         )
@@ -4193,10 +4178,10 @@ def emit_progress_update(task_id, progress, message=None, details=None):
         details: Optional additional details
     """
     try:
-        import socketio_context_helper
+        from blueprints.socketio_events import emit_progress_update_unified
         
-        # Use safe emit function
-        success = socketio_context_helper.emit_progress_update_safe(
+        # Use centralized emit function
+        success = emit_progress_update_unified(
             task_id=task_id,
             progress=progress,
             message=message,

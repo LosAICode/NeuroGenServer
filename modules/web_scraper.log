@@ -2952,3 +2952,9 @@ TypeError: argument must be an int, or have a fileno() method.
 2025-06-01 00:35:00,419 - INFO - PDF extractor module is available
 2025-06-01 01:03:38,325 - INFO - Claude module is available for processing
 2025-06-01 01:03:38,328 - INFO - PDF extractor module is available
+2025-06-01 01:15:24,899 - INFO - Claude module is available for processing
+2025-06-01 01:15:24,900 - INFO - PDF extractor module is available
+2025-06-01 01:22:55,651 - INFO - Claude module is available for processing
+2025-06-01 01:22:55,652 - INFO - PDF extractor module is available
+2025-06-01 01:24:09,916 - INFO - Claude module is available for processing
+2025-06-01 01:24:09,918 - INFO - PDF extractor module is available

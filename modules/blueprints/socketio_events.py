@@ -21,8 +21,12 @@ from blueprints.core.structify_integration import structify_module, structify_av
 
 logger = logging.getLogger(__name__)
 
+# Event deduplication tracking
+_emitted_events = {}  # {task_id: {event_type: timestamp}}
+_emitted_completions = set()  # Track completed tasks to prevent duplicates
+
 # Export main registration function and utilities
-__all__ = ['register_socketio_events', 'safe_emit', 'get_socketio']
+__all__ = ['register_socketio_events', 'safe_emit', 'get_socketio', 'emit_task_completion_unified', 'emit_progress_update_unified', 'emit_task_error_unified']
 
 # Helper to get socketio instance
 def get_socketio():
@@ -44,6 +48,127 @@ def safe_emit(event, data, **kwargs):
             emit(event, data, **kwargs)
         except:
             logger.warning(f"Could not emit {event} - no socketio instance available")
+
+# =============================================================================
+# UNIFIED TASK EVENT EMISSION FUNCTIONS (Centralized)
+# =============================================================================
+
+def emit_task_completion_unified(task_id: str, task_type: str = "generic", output_file: Optional[str] = None, 
+                               stats: Optional[Dict] = None, details: Optional[Dict] = None) -> bool:
+    """Centralized task completion emission with deduplication"""
+    global _emitted_completions
+    
+    # Deduplication check
+    if task_id in _emitted_completions:
+        logger.debug(f"Task {task_id} completion already emitted - skipping duplicate")
+        return True
+    
+    # Blueprint-aligned payload
+    payload = {
+        'task_id': task_id,
+        'task_type': task_type,
+        'blueprint': _get_blueprint_from_task_type(task_type),
+        'status': 'completed',
+        'progress': 100,
+        'message': f"{task_type.replace('_', ' ').title()} completed successfully",
+        'timestamp': time.time()
+    }
+    
+    # Optional fields
+    if output_file:
+        payload['output_file'] = output_file
+    if stats:
+        payload['stats'] = _serialize_stats(stats)
+    if details:
+        payload['details'] = details
+    
+    # Emit event
+    success = safe_emit('task_completed', payload)
+    if success:
+        _emitted_completions.add(task_id)
+        logger.info(f"Emitted unified task_completed for {task_id} ({task_type})")
+    
+    return success
+
+def emit_progress_update_unified(task_id: str, progress: float, message: str = "", 
+                               stats: Optional[Dict] = None, details: Optional[Dict] = None) -> bool:
+    """Centralized progress update emission with deduplication"""
+    global _emitted_events
+    
+    # Progress deduplication - only emit if progress changed significantly
+    event_key = f"{task_id}:progress"
+    if event_key in _emitted_events:
+        last_progress = _emitted_events[event_key].get('progress', 0)
+        if abs(last_progress - progress) < 1:  # Skip if less than 1% change
+            return True
+    
+    # Blueprint-aligned payload
+    payload = {
+        'task_id': task_id,
+        'progress': round(progress, 1),
+        'message': message or f"Processing... {progress:.1f}%",
+        'timestamp': time.time()
+    }
+    
+    # Optional fields
+    if stats:
+        payload['stats'] = _serialize_stats(stats)
+    if details:
+        payload['details'] = details
+    
+    # Emit event
+    success = safe_emit('progress_update', payload)
+    if success:
+        _emitted_events[event_key] = {'progress': progress, 'timestamp': time.time()}
+        logger.debug(f"Emitted progress_update for {task_id}: {progress:.1f}%")
+    
+    return success
+
+def emit_task_error_unified(task_id: str, task_type: str, error_message: str, 
+                          error_details: Optional[Dict] = None, stats: Optional[Dict] = None) -> bool:
+    """Centralized task error emission"""
+    payload = {
+        'task_id': task_id,
+        'task_type': task_type,
+        'blueprint': _get_blueprint_from_task_type(task_type),
+        'status': 'failed',
+        'error': error_message,
+        'timestamp': time.time()
+    }
+    
+    # Optional fields
+    if error_details:
+        payload['error_details'] = error_details
+    if stats:
+        payload['stats'] = _serialize_stats(stats)
+    
+    success = safe_emit('task_error', payload)
+    if success:
+        logger.info(f"Emitted task_error for {task_id} ({task_type}): {error_message}")
+    
+    return success
+
+def _get_blueprint_from_task_type(task_type: str) -> str:
+    """Get Blueprint name from task type for consistent alignment"""
+    blueprint_map = {
+        'file_processing': 'file_processor',
+        'playlist_download': 'playlist_downloader', 
+        'web_scraping': 'web_scraper',
+        'academic_search': 'academic_search',
+        'pdf_processing': 'pdf_processor'
+    }
+    return blueprint_map.get(task_type, 'core')
+
+def _serialize_stats(stats) -> Dict:
+    """Serialize stats object to dict for JSON transmission"""
+    if isinstance(stats, dict):
+        return stats
+    elif hasattr(stats, 'to_dict') and callable(stats.to_dict):
+        return stats.to_dict()
+    elif hasattr(stats, '__dict__'):
+        return stats.__dict__
+    else:
+        return {'raw_stats': str(stats)}
 
 # Utility functions for task management
 def force_cancel_all_tasks():

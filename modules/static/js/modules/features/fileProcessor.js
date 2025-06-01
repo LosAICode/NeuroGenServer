@@ -758,11 +758,30 @@ class FileProcessor {
     if (!this.state.currentTask) return;
 
     try {
-      await blueprintApi.cancelTask(this.state.currentTask.id);
+      const success = await blueprintApi.cancelTask(this.state.currentTask.id);
       console.log(`🚫 Processing cancelled: ${this.state.currentTask.id}`);
+      
+      if (success) {
+        // Reset UI state immediately
+        this.state.processingState = 'cancelled';
+        this.state.currentTask = null;
+        
+        // Show form again
+        this.showForm();
+        
+        // Display cancellation message
+        this.showProgress(0, 'Processing cancelled by user');
+        
+        // Hide progress after brief delay
+        setTimeout(() => {
+          this.showForm();
+        }, 1500);
+      }
       
     } catch (error) {
       console.error('❌ Failed to cancel processing:', error);
+      // Still reset UI on error to prevent stuck state
+      this.showForm();
     }
   }
 
