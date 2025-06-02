@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocketIO Integration Test</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Enhanced SocketIO Integration Test</h1>
+    <div id="status">Initializing...</div>
+    <div id="connection-info"></div>
+    <div id="test-results"></div>
+    
+    <script>
+        console.log('🚀 Starting SocketIO Integration Test');
+        
+        // Simulate the enhanced SocketIO initialization from index.js
+        window.socket = io();
+        
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            const colors = {
+                info: '#0d6efd',
+                success: '#198754', 
+                warning: '#fd7e14',
+                error: '#dc3545'
+            };
+            statusDiv.style.color = colors[type];
+            statusDiv.textContent = message;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function updateConnectionInfo(data) {
+            const infoDiv = document.getElementById('connection-info');
+            infoDiv.innerHTML = `
+                <h3>Connection Information:</h3>
+                <ul>
+                    <li><strong>Socket ID:</strong> ${data.socketId || 'Not connected'}</li>
+                    <li><strong>Connected:</strong> ${data.connected ? '✅ Yes' : '❌ No'}</li>
+                    <li><strong>Connection Time:</strong> ${data.connectionTime || 'N/A'}</li>
+                    <li><strong>Attempts:</strong> ${data.attempts || 0}</li>
+                </ul>
+            `;
+        }
+        
+        function addTestResult(test, result, details = '') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultElement = document.createElement('div');
+            resultElement.style.margin = '10px 0';
+            resultElement.style.padding = '10px';
+            resultElement.style.border = '1px solid ' + (result ? '#198754' : '#dc3545');
+            resultElement.style.backgroundColor = result ? '#d1e7dd' : '#f8d7da';
+            
+            resultElement.innerHTML = `
+                <strong>${result ? '✅' : '❌'} ${test}</strong>
+                ${details ? `<br><small>${details}</small>` : ''}
+            `;
+            
+            resultsDiv.appendChild(resultElement);
+        }
+        
+        let connectionAttempts = 0;
+        let connectionTime = null;
+        let testResults = {
+            socketAvailable: false,
+            connectionEstablished: false,
+            eventsRegistered: false,
+            pingPongWorking: false
+        };
+        
+        // Test 1: Check if Socket.IO is available
+        if (typeof io !== 'undefined') {
+            testResults.socketAvailable = true;
+            addTestResult('Socket.IO Library Available', true, 'Socket.IO library loaded successfully');
+            updateStatus('Socket.IO library detected', 'info');
+        } else {
+            addTestResult('Socket.IO Library Available', false, 'Socket.IO library not found');
+            updateStatus('Socket.IO library missing', 'error');
+        }
+        
+        // Test 2: Connection establishment
+        window.socket.on('connect', () => {
+            testResults.connectionEstablished = true;
+            connectionTime = new Date().toLocaleTimeString();
+            
+            addTestResult('Connection Established', true, `Connected with ID: ${window.socket.id}`);
+            updateStatus('Connected to server', 'success');
+            
+            updateConnectionInfo({
+                socketId: window.socket.id,
+                connected: true,
+                connectionTime,
+                attempts: connectionAttempts
+            });
+            
+            // Test 3: Event registration
+            testEventHandlers();
+            
+            // Test 4: Ping/Pong
+            testPingPong();
+        });
+        
+        window.socket.on('connect_error', (error) => {
+            connectionAttempts++;
+            addTestResult('Connection Error', false, `Error: ${error.message}, Attempt: ${connectionAttempts}`);
+            updateStatus(`Connection error (attempt ${connectionAttempts})`, 'error');
+            
+            updateConnectionInfo({
+                socketId: null,
+                connected: false,
+                connectionTime: null,
+                attempts: connectionAttempts
+            });
+        });
+        
+        window.socket.on('disconnect', (reason) => {
+            addTestResult('Disconnect Event', true, `Reason: ${reason}`);
+            updateStatus(`Disconnected: ${reason}`, 'warning');
+            
+            updateConnectionInfo({
+                socketId: null,
+                connected: false,
+                connectionTime: connectionTime,
+                attempts: connectionAttempts
+            });
+        });
+        
+        function testEventHandlers() {
+            // Test common events used by the application
+            const eventsToTest = [
+                'task_progress',
+                'task_completed', 
+                'task_error',
+                'task_cancelled'
+            ];
+            
+            let eventCount = 0;
+            
+            eventsToTest.forEach(eventName => {
+                window.socket.on(eventName, (data) => {
+                    eventCount++;
+                    console.log(`Event received: ${eventName}`, data);
+                });
+            });
+            
+            testResults.eventsRegistered = true;
+            addTestResult('Event Handlers Registered', true, `Registered ${eventsToTest.length} event handlers`);
+        }
+        
+        function testPingPong() {
+            const startTime = Date.now();
+            
+            // Send ping
+            window.socket.emit('ping', { timestamp: startTime });
+            
+            // Listen for pong
+            window.socket.on('pong', (data) => {
+                const roundTrip = Date.now() - startTime;
+                testResults.pingPongWorking = true;
+                
+                addTestResult('Ping/Pong Communication', true, `Round trip: ${roundTrip}ms`);
+                
+                // Final summary
+                setTimeout(showTestSummary, 1000);
+            });
+            
+            // Timeout for ping/pong test
+            setTimeout(() => {
+                if (!testResults.pingPongWorking) {
+                    addTestResult('Ping/Pong Communication', false, 'No pong response received within 5 seconds');
+                    setTimeout(showTestSummary, 100);
+                }
+            }, 5000);
+        }
+        
+        function showTestSummary() {
+            const totalTests = Object.keys(testResults).length;
+            const passedTests = Object.values(testResults).filter(Boolean).length;
+            
+            const summaryDiv = document.createElement('div');
+            summaryDiv.style.margin = '20px 0';
+            summaryDiv.style.padding = '15px';
+            summaryDiv.style.border = '2px solid ' + (passedTests === totalTests ? '#198754' : '#fd7e14');
+            summaryDiv.style.backgroundColor = passedTests === totalTests ? '#d1e7dd' : '#fff3cd';
+            
+            summaryDiv.innerHTML = `
+                <h3>Test Summary</h3>
+                <p><strong>Tests Passed:</strong> ${passedTests}/${totalTests}</p>
+                <p><strong>Overall Status:</strong> ${passedTests === totalTests ? '✅ All tests passed' : '⚠️ Some tests failed'}</p>
+                <p><strong>Integration Status:</strong> ${passedTests >= 3 ? '✅ SocketIO integration working' : '❌ SocketIO integration has issues'}</p>
+            `;
+            
+            document.getElementById('test-results').appendChild(summaryDiv);
+            
+            if (passedTests >= 3) {
+                updateStatus('SocketIO integration test completed successfully', 'success');
+            } else {
+                updateStatus('SocketIO integration test completed with issues', 'warning');
+            }
+        }
+        
+        // Timeout for initial connection
+        setTimeout(() => {
+            if (!testResults.connectionEstablished) {
+                addTestResult('Connection Timeout', false, 'No connection established within 10 seconds');
+                updateStatus('Connection timeout', 'error');
+                showTestSummary();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

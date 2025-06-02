@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-06-01T16:59:11.758588",
+  "test_results": {
+    "server_health": true,
+    "socket_connection": false,
+    "file_processor_flow": false,
+    "web_scraper_flow": false,
+    "event_alignment": false
+  },
+  "detailed_results": {
+    "server_health": {
+      "status": "warning",
+      "response_time": 36,
+      "modules_loaded": 16,
+      "endpoints_available": {
+        "endpoints": {
+          "academic_search": true,
+          "file_processor": true,
+          "pdf_processor": false,
+          "playlist_downloader": true,
+          "web_scraper": true
+        },
+        "status": "warning"
+      }
+    }
+  },
+  "event_log": [],
+  "active_tasks": {},
+  "summary": {
+    "tests_passed": 1,
+    "total_tests": 5,
+    "success_rate": 20.0,
+    "total_events": 0
+  }
+}

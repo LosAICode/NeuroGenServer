@@ -682,6 +682,164 @@ class FileProcessor {
   }
 
   /**
+   * Enhanced SocketIO connection establishment with robust retry mechanisms
+   */
+  async waitForSocketConnection(timeoutMs = 15000) {
+    console.log('📡 [FileProcessor] Enhanced SocketIO connection check...');
+    
+    // Check if already connected
+    if (window.socket?.connected) {
+      console.log('✅ [FileProcessor] SocketIO already connected');
+      return { connected: true, fallback: false };
+    }
+    
+    // First, try to initialize SocketIO if it doesn't exist
+    if (!window.socket) {
+      console.log('🔧 [FileProcessor] SocketIO not found, attempting initialization...');
+      const initResult = await this.initializeSocketIO();
+      if (!initResult) {
+        console.warn('⚠️ [FileProcessor] Failed to initialize SocketIO');
+        return { connected: false, fallback: true };
+      }
+    }
+    
+    return new Promise((resolve) => {
+      const startTime = Date.now();
+      let attemptCount = 0;
+      const maxAttempts = 5;
+      const retryDelay = 1000; // 1 second between retries
+      
+      const attemptConnection = async () => {
+        attemptCount++;
+        console.log(`📡 [FileProcessor] Connection attempt ${attemptCount}/${maxAttempts}`);
+        
+        // Check current connection status
+        if (window.socket?.connected) {
+          console.log('✅ [FileProcessor] SocketIO connection established');
+          resolve({ connected: true, fallback: false });
+          return;
+        }
+        
+        // Check for timeout
+        const elapsed = Date.now() - startTime;
+        if (elapsed > timeoutMs) {
+          console.warn(`⚠️ [FileProcessor] SocketIO connection timeout after ${elapsed}ms`);
+          resolve({ connected: false, fallback: true });
+          return;
+        }
+        
+        // If we have attempts left, try to reconnect
+        if (attemptCount < maxAttempts && window.socket && !window.socket.connected) {
+          try {
+            console.log('🔄 [FileProcessor] Attempting manual reconnection...');
+            window.socket.connect();
+            
+            // Wait for connection result
+            setTimeout(() => {
+              if (window.socket?.connected) {
+                console.log('✅ [FileProcessor] Manual reconnection successful');
+                resolve({ connected: true, fallback: false });
+              } else {
+                // Try again after delay
+                setTimeout(attemptConnection, retryDelay);
+              }
+            }, 1500);
+          } catch (error) {
+            console.error('❌ [FileProcessor] Error during manual reconnection:', error);
+            setTimeout(attemptConnection, retryDelay);
+          }
+        } else if (attemptCount >= maxAttempts) {
+          console.warn('⚠️ [FileProcessor] Max connection attempts reached, falling back');
+          resolve({ connected: false, fallback: true });
+        } else {
+          // Continue checking
+          setTimeout(attemptConnection, 200);
+        }
+      };
+      
+      // Start connection attempts
+      attemptConnection();
+    });
+  }
+
+  /**
+   * Initialize SocketIO connection if not present
+   */
+  async initializeSocketIO() {
+    try {
+      // Check if Socket.IO library is loaded
+      if (typeof io === 'undefined') {
+        console.error('❌ [FileProcessor] Socket.IO library not loaded');
+        return false;
+      }
+      
+      // Check if socket is already being initialized
+      if (window._socketInitializing) {
+        console.log('🔄 [FileProcessor] Socket already being initialized, waiting...');
+        return new Promise((resolve) => {
+          const checkInit = () => {
+            if (!window._socketInitializing) {
+              resolve(!!window.socket);
+            } else {
+              setTimeout(checkInit, 100);
+            }
+          };
+          setTimeout(checkInit, 100);
+        });
+      }
+      
+      window._socketInitializing = true;
+      
+      console.log('🚀 [FileProcessor] Initializing SocketIO connection...');
+      
+      // Initialize socket with enhanced configuration
+      window.socket = io({
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 10000,
+        forceNew: false,
+        multiplex: true,
+        transports: ['websocket', 'polling']
+      });
+      
+      // Set up connection event handlers
+      window.socket.on('connect', () => {
+        console.log('✅ [FileProcessor] SocketIO connected successfully');
+        window._socketInitializing = false;
+      });
+      
+      window.socket.on('connect_error', (error) => {
+        console.error('❌ [FileProcessor] SocketIO connection error:', error);
+      });
+      
+      window.socket.on('disconnect', (reason) => {
+        console.warn('⚠️ [FileProcessor] SocketIO disconnected:', reason);
+      });
+      
+      // Wait up to 5 seconds for initial connection
+      return new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          window._socketInitializing = false;
+          resolve(false);
+        }, 5000);
+        
+        window.socket.on('connect', () => {
+          clearTimeout(timeout);
+          window._socketInitializing = false;
+          resolve(true);
+        });
+      });
+      
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error initializing SocketIO:', error);
+      window._socketInitializing = false;
+      return false;
+    }
+  }
+
+  /**
    * Start file processing using Blueprint API
    */
   async startProcessing() {
@@ -715,7 +873,19 @@ class FileProcessor {
       
       // Transition from form to progress container immediately
       this.showProgressContainer();
-      this.showProgress(0, 'Initializing file processing...');
+      this.showProgress(0, 'Waiting for SocketIO connection...');
+
+      // ENHANCED: Wait for SocketIO connection with improved retry logic
+      const connectionResult = await this.waitForSocketConnection(8000);
+      if (!connectionResult.connected) {
+        if (connectionResult.fallback) {
+          this.showProgress(5, 'No real-time connection, using fallback polling...');
+          this.showNotification('Using fallback mode - progress updates may be delayed', 'warning');
+        }
+      } else {
+        this.showProgress(10, 'Real-time connection established, starting processing...');
+        this.showNotification('Connected to real-time progress updates', 'success');
+      }
 
       // Start processing using Blueprint API
       const response = await blueprintApi.processFiles(inputDir, outputFile, {
@@ -725,7 +895,7 @@ class FileProcessor {
       });
       
       // Update progress immediately after API call
-      this.showProgress(5, 'Processing request submitted, starting task...');
+      this.showProgress(15, 'Processing request submitted, task started...');
 
       // Store task information
       this.state.currentTask = {
@@ -741,6 +911,9 @@ class FileProcessor {
       // Start progress tracking using existing progressHandler
       await this.initializeProgressTracking(response.task_id);
       
+      // Start enhanced fallback progress monitoring with HTTP polling
+      this.startEnhancedFallbackMonitoring(response.task_id, connectionResult.fallback);
+      
       this.showInfo(`Processing started for: ${inputDir}`);
 
     } catch (error) {
@@ -749,6 +922,245 @@ class FileProcessor {
     }
   }
 
+
+  /**
+   * Start enhanced fallback progress monitoring with improved polling and multiple endpoints
+   */
+  startEnhancedFallbackMonitoring(taskId, forceFallback = false) {
+    console.log(`🔄 [FileProcessor] Starting enhanced fallback monitoring for: ${taskId} (force: ${forceFallback})`);
+    
+    // Clear any existing timers
+    this.clearAllTimers();
+    
+    // Set up enhanced monitoring parameters
+    let pollCount = 0;
+    let consecutiveErrors = 0;
+    let lastProgressUpdate = Date.now();
+    let lastReportedProgress = 0;
+    const maxPollAttempts = 150; // 12.5 minutes with 5s interval
+    const maxConsecutiveErrors = 5;
+    
+    // Different polling intervals based on connection status
+    const baseInterval = forceFallback ? 3000 : 5000; // 3s if forced fallback, 5s otherwise
+    let currentInterval = baseInterval;
+    
+    // Track polling status
+    this.state.statusPollingTimer = setInterval(async () => {
+      try {
+        pollCount++;
+        
+        // Stop polling if task is no longer active or completed
+        if (!this.state.currentTask || this.state.currentTask.id !== taskId || 
+            this.state.processingState === 'completed' ||
+            this.state.completionState.completed) {
+          console.log(`🛑 [FileProcessor] Stopping fallback monitoring - task no longer active`);
+          this.clearAllTimers();
+          return;
+        }
+        
+        // Check if we've received recent SocketIO updates (only if not forced fallback)
+        if (!forceFallback) {
+          const timeSinceLastUpdate = Date.now() - this.state.lastProgressTimestamp;
+          if (timeSinceLastUpdate < 8000) {
+            console.log(`📡 [FileProcessor] Recent SocketIO updates detected, reducing polling frequency`);
+            currentInterval = Math.min(currentInterval * 1.5, 15000); // Gradually reduce frequency
+            return;
+          }
+        }
+        
+        // Try multiple API endpoints for better reliability
+        const statusData = await this.fetchTaskStatusFromMultipleEndpoints(taskId);
+        
+        if (statusData) {
+          consecutiveErrors = 0; // Reset error counter on success
+          
+          // Handle different status types
+          if (statusData.status === 'completed' || statusData.progress >= 100) {
+            console.log(`✅ [FileProcessor] Enhanced fallback detected completion for: ${taskId}`);
+            this.handleTaskCompleted({
+              task_id: taskId,
+              progress: 100,
+              message: 'Task completed successfully',
+              ...statusData
+            });
+            this.clearAllTimers();
+            return;
+          } 
+          else if (statusData.status === 'error' || statusData.status === 'failed') {
+            console.log(`❌ [FileProcessor] Enhanced fallback detected error for: ${taskId}`);
+            this.handleTaskError({
+              task_id: taskId,
+              error: statusData.error || 'Task failed',
+              ...statusData
+            });
+            this.clearAllTimers();
+            return;
+          }
+          else if (statusData.status === 'cancelled') {
+            console.log(`🚫 [FileProcessor] Enhanced fallback detected cancellation for: ${taskId}`);
+            this.handleTaskCancelled({
+              task_id: taskId,
+              ...statusData
+            });
+            this.clearAllTimers();
+            return;
+          }
+          else if (statusData.progress !== undefined) {
+            // Update progress if it has changed significantly
+            if (Math.abs(statusData.progress - lastReportedProgress) >= 1) {
+              console.log(`📊 [FileProcessor] Enhanced fallback progress update: ${statusData.progress}%`);
+              this.handleProgressUpdate({
+                task_id: taskId,
+                progress: statusData.progress,
+                message: statusData.message || `Processing... ${statusData.progress.toFixed(1)}%`,
+                stats: statusData.stats || {}
+              });
+              lastReportedProgress = statusData.progress;
+              lastProgressUpdate = Date.now();
+              
+              // Reset interval on progress update
+              currentInterval = baseInterval;
+            }
+          }
+        } else {
+          consecutiveErrors++;
+          console.warn(`⚠️ [FileProcessor] Error fetching status (${consecutiveErrors}/${maxConsecutiveErrors})`);
+          
+          // If too many consecutive errors, slow down polling
+          if (consecutiveErrors >= maxConsecutiveErrors) {
+            currentInterval = Math.min(currentInterval * 2, 30000); // Max 30s interval
+            console.warn(`⚠️ [FileProcessor] Too many errors, slowing polling to ${currentInterval}ms`);
+          }
+        }
+        
+        // Check for stuck task (no progress for extended period)
+        const timeSinceProgress = Date.now() - lastProgressUpdate;
+        if (timeSinceProgress > 60000 && lastReportedProgress > 0 && lastReportedProgress < 100) {
+          console.warn(`⏰ [FileProcessor] Task appears stuck at ${lastReportedProgress}% for ${timeSinceProgress/1000}s`);
+          // Force a completion check
+          await this.forceCompletionCheck(taskId);
+        }
+        
+        // Stop polling after max attempts
+        if (pollCount > maxPollAttempts) {
+          console.warn(`⏰ [FileProcessor] Enhanced fallback polling timeout for: ${taskId} after ${pollCount} attempts`);
+          this.clearAllTimers();
+          
+          // Try one final completion check
+          await this.forceCompletionCheck(taskId);
+        }
+        
+      } catch (error) {
+        consecutiveErrors++;
+        console.error(`❌ [FileProcessor] Enhanced fallback polling error (attempt ${pollCount}):`, error);
+        
+        // If too many consecutive errors, give up
+        if (consecutiveErrors >= maxConsecutiveErrors * 2) {
+          console.error(`❌ [FileProcessor] Too many consecutive errors, stopping fallback monitoring`);
+          this.clearAllTimers();
+        }
+      }
+    }, currentInterval);
+    
+    console.log(`✅ [FileProcessor] Enhanced fallback monitoring started with ${currentInterval}ms interval`);
+  }
+
+  /**
+   * Clear all monitoring timers
+   */
+  clearAllTimers() {
+    if (this.state.fallbackTimer) {
+      clearInterval(this.state.fallbackTimer);
+      this.state.fallbackTimer = null;
+    }
+    if (this.state.statusPollingTimer) {
+      clearInterval(this.state.statusPollingTimer);
+      this.state.statusPollingTimer = null;
+    }
+    console.log('🧹 [FileProcessor] All monitoring timers cleared');
+  }
+
+  /**
+   * Fetch task status from multiple endpoints for better reliability
+   */
+  async fetchTaskStatusFromMultipleEndpoints(taskId) {
+    const endpoints = [
+      `/api/task/${taskId}/status`,
+      `/api/status/${taskId}`,
+      `/api/task_status/${taskId}`,
+      `/api/progress/${taskId}`
+    ];
+    
+    for (const endpoint of endpoints) {
+      try {
+        const response = await fetch(endpoint, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`📡 [FileProcessor] Status fetched from ${endpoint}:`, data);
+          return data;
+        } else if (response.status === 404) {
+          // Task might be completed, try the next endpoint
+          continue;
+        }
+      } catch (error) {
+        console.warn(`⚠️ [FileProcessor] Error fetching from ${endpoint}:`, error.message);
+        continue;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Force a completion check when task appears stuck
+   */
+  async forceCompletionCheck(taskId) {
+    try {
+      console.log(`🔍 [FileProcessor] Forcing completion check for potentially stuck task: ${taskId}`);
+      
+      // Try to get final status
+      const finalStatus = await this.fetchTaskStatusFromMultipleEndpoints(taskId);
+      
+      if (finalStatus) {
+        if (finalStatus.status === 'completed' || finalStatus.progress >= 100) {
+          console.log(`✅ [FileProcessor] Force check confirmed completion`);
+          this.handleTaskCompleted({
+            task_id: taskId,
+            progress: 100,
+            message: 'Task completed (force check)',
+            ...finalStatus
+          });
+        } else if (finalStatus.status === 'error' || finalStatus.status === 'failed') {
+          console.log(`❌ [FileProcessor] Force check detected error`);
+          this.handleTaskError({
+            task_id: taskId,
+            error: finalStatus.error || 'Task failed during force check',
+            ...finalStatus
+          });
+        } else {
+          console.log(`🔄 [FileProcessor] Force check shows task still running: ${finalStatus.progress}%`);
+        }
+      } else {
+        console.warn(`⚠️ [FileProcessor] Force check could not determine task status, assuming completion`);
+        // As a last resort, assume completion
+        this.handleTaskCompleted({
+          task_id: taskId,
+          progress: 100,
+          message: 'Task completed (assumed after timeout)',
+          stats: {}
+        });
+      }
+    } catch (error) {
+      console.error(`❌ [FileProcessor] Error in force completion check:`, error);
+    }
+  }
 
   /**
    * Initialize progress tracking using Enterprise ProgressHandler v6.0
@@ -786,8 +1198,12 @@ class FileProcessor {
         
         console.log(`📊 [FileProcessor] Enterprise progress tracking active for task: ${taskId}`);
         
-        // Ensure progress container is immediately visible
-        this.showProgress(0, 'Connecting to processing service...');
+        // Ensure progress container is immediately visible and show connection status
+        if (window.socket?.connected) {
+          this.showProgress(20, 'Connected to processing service, monitoring progress...');
+        } else {
+          this.showProgress(20, 'Starting processing (limited real-time updates)...');
+        }
       }
       
     } catch (error) {
@@ -944,17 +1360,23 @@ class FileProcessor {
   }
 
   /**
-   * Handle task completion with comprehensive cleanup and history tracking
+   * Enhanced task completion with comprehensive validation and triggering
    */
   handleTaskCompleted(data) {
     try {
       console.log('✅ [FileProcessor] Task completion received:', data);
       
-      // Check if already completed with time-based duplicate prevention
+      // Enhanced completion validation with multiple checks
+      if (!this.validateTaskCompletion(data)) {
+        console.log("❌ [FileProcessor] Task completion validation failed, ignoring");
+        return;
+      }
+      
+      // Check if already completed with enhanced duplicate prevention
       if (this.state.completionState.completed && 
           this.state.completionState.completionTime && 
-          (Date.now() - this.state.completionState.completionTime < 5000)) {
-        console.log("📊 [FileProcessor] Task already marked as completed, preventing duplicate completion");
+          (Date.now() - this.state.completionState.completionTime < 3000)) {
+        console.log("📊 [FileProcessor] Task already marked as completed recently, preventing duplicate");
         return;
       }
       
@@ -963,60 +1385,230 @@ class FileProcessor {
       this.state.completionState.completionTime = Date.now();
       this.state.processingState = 'completed';
       
-      console.log("🎉 [FileProcessor] Processing task completion with full cleanup");
+      console.log("🎉 [FileProcessor] Processing task completion with enhanced cleanup");
       
-      // Clear completion monitoring
+      // Enhanced cleanup with multiple fallback timers
+      this.performEnhancedCleanup();
+      
+      // Enhanced UI update with immediate feedback
+      this.updateCompletionUI(data);
+      
+      // Trigger enhanced completion notifications
+      this.triggerCompletionNotifications(data);
+      
+      // Enhanced result display with better UX
+      this.displayEnhancedResults(data);
+      
+      console.log("✅ [FileProcessor] Enhanced task completion processing completed successfully");
+      
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error in enhanced task completion:', error);
+      this.showNotification(`Completion handling error: ${error.message}`, 'error', 'File Processor');
+      
+      // Fallback completion handling
+      this.performFallbackCompletion(data);
+    }
+  }
+
+  /**
+   * Validate task completion with multiple criteria
+   */
+  validateTaskCompletion(data) {
+    // Basic data validation
+    if (!data) {
+      console.warn('❌ [FileProcessor] No completion data provided');
+      return false;
+    }
+    
+    // Task ID validation
+    if (!data.task_id) {
+      console.warn('❌ [FileProcessor] No task ID in completion data');
+      return false;
+    }
+    
+    // Current task validation
+    if (this.state.currentTask && data.task_id !== this.state.currentTask.id) {
+      console.warn(`❌ [FileProcessor] Task ID mismatch: ${data.task_id} vs ${this.state.currentTask.id}`);
+      return false;
+    }
+    
+    // State validation - ensure we're still processing
+    if (this.state.processingState === 'idle') {
+      console.warn('❌ [FileProcessor] Completion received but not in processing state');
+      return false;
+    }
+    
+    console.log('✅ [FileProcessor] Task completion validation passed');
+    return true;
+  }
+
+  /**
+   * Perform enhanced cleanup with multiple safeguards
+   */
+  performEnhancedCleanup() {
+    try {
+      // Clear all monitoring timers
       this.clearCompletionMonitoring();
       
-      // Update UI to show completion state immediately
-      this.updateUI();
+      // Clear fallback timer with multiple checks
+      if (this.state.fallbackTimer) {
+        clearInterval(this.state.fallbackTimer);
+        this.state.fallbackTimer = null;
+        console.log('🧹 [FileProcessor] Fallback timer cleared');
+      }
       
-      // Force progress to 100% to avoid stuck progress bar
-      this.showProgress(100, "Task completed successfully", data.stats);
+      // Clear any status polling
+      if (this.state.statusPollingTimer) {
+        clearInterval(this.state.statusPollingTimer);
+        this.state.statusPollingTimer = null;
+        console.log('🧹 [FileProcessor] Status polling timer cleared');
+      }
       
-      // Clean up session storage
+      // Clean up session storage with validation
       this.cleanupSessionState();
       
-      // Reset processing state
+      // Reset processing state with validation
       this.resetProcessingState();
+      
+      console.log('🧹 [FileProcessor] Enhanced cleanup completed');
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error in enhanced cleanup:', error);
+    }
+  }
+
+  /**
+   * Update completion UI with enhanced feedback
+   */
+  updateCompletionUI(data) {
+    try {
+      // Update UI state immediately
+      this.updateUI();
+      
+      // Force progress to 100% with enhanced validation
+      const finalMessage = data.message || "Task completed successfully!";
+      this.showProgress(100, finalMessage, data.stats);
+      
+      // Ensure progress bar visual completion
+      const progressBar = this.state.elements.get('progress-bar');
+      if (progressBar) {
+        progressBar.style.width = '100%';
+        progressBar.setAttribute('aria-valuenow', 100);
+        progressBar.textContent = '100%';
+        progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+        progressBar.classList.add('bg-success');
+      }
+      
+      console.log('🎨 [FileProcessor] Completion UI updated');
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error updating completion UI:', error);
+    }
+  }
+
+  /**
+   * Trigger enhanced completion notifications
+   */
+  triggerCompletionNotifications(data) {
+    try {
+      // Show primary success notification
+      this.showNotification('Processing completed successfully!', 'success', 'File Processor');
       
       // Complete tracking in progressHandler if available
       this.completeProgressHandler(data);
       
-      // Add completed task to history
-      setTimeout(() => {
-        this.addTaskToHistory(data);
-      }, 500); // Brief delay for stats to finalize
-      
-      // Show comprehensive result UI
-      setTimeout(() => {
-        this.showResult({
-          stats: data.stats || {},
-          output_file: data.output_file || this.state.currentTask?.outputFile,
-          task_id: data.task_id || this.state.currentTask?.id,
-          progress: 100,
-          message: 'Processing completed successfully!'
-        });
-      }, 800); // Delay for better UX
-      
-      // Show success notification
-      this.showNotification('Processing completed successfully!', 'success', 'File Processor');
-      
       // Update state manager if available
       if (window.stateManager && typeof window.stateManager.setProcessingActive === 'function') {
         window.stateManager.setProcessingActive(false);
+        console.log('📊 [FileProcessor] State manager updated');
       }
       
       // Trigger completion event for other modules
       if (window.eventRegistry && typeof window.eventRegistry.emit === 'function') {
         window.eventRegistry.emit('file.processing.completed', data);
+        console.log('📡 [FileProcessor] Completion event emitted');
       }
       
-      console.log("✅ [FileProcessor] Task completion cleanup completed successfully");
+      // Add completed task to history with delay for stats finalization
+      setTimeout(() => {
+        this.addTaskToHistory(data);
+      }, 300);
       
+      console.log('📢 [FileProcessor] Completion notifications triggered');
     } catch (error) {
-      console.error('❌ [FileProcessor] Error handling task completion:', error);
-      this.showNotification(`Completion handling error: ${error.message}`, 'error', 'File Processor');
+      console.error('❌ [FileProcessor] Error triggering completion notifications:', error);
+    }
+  }
+
+  /**
+   * Display enhanced results with better UX
+   */
+  displayEnhancedResults(data) {
+    try {
+      // Prepare enhanced result data
+      const enhancedData = {
+        stats: data.stats || {},
+        output_file: data.output_file || this.state.currentTask?.outputFile,
+        task_id: data.task_id || this.state.currentTask?.id,
+        progress: 100,
+        message: 'Processing completed successfully!',
+        completionTime: this.state.completionState.completionTime,
+        duration: this.state.currentTask ? (Date.now() - this.state.currentTask.startTime) : 0
+      };
+      
+      // Show result UI with enhanced delay for better UX
+      setTimeout(() => {
+        this.showResult(enhancedData);
+      }, 600);
+      
+      console.log('🎯 [FileProcessor] Enhanced results display scheduled');
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error displaying enhanced results:', error);
+      
+      // Fallback to basic result display
+      setTimeout(() => {
+        this.showResult({
+          stats: data.stats || {},
+          output_file: data.output_file,
+          task_id: data.task_id,
+          progress: 100,
+          message: 'Processing completed successfully!'
+        });
+      }, 500);
+    }
+  }
+
+  /**
+   * Fallback completion handling for error cases
+   */
+  performFallbackCompletion(data) {
+    try {
+      console.log('🔄 [FileProcessor] Performing fallback completion handling');
+      
+      // Basic state updates
+      this.state.processingState = 'completed';
+      this.state.completionState.completed = true;
+      this.state.completionState.completionTime = Date.now();
+      
+      // Basic UI updates
+      this.updateUI();
+      this.showProgress(100, "Task completed (fallback mode)");
+      
+      // Basic notifications
+      this.showNotification('Task completed (using fallback method)', 'success', 'File Processor');
+      
+      // Basic result display
+      setTimeout(() => {
+        this.showResult({
+          stats: data?.stats || {},
+          output_file: data?.output_file,
+          task_id: data?.task_id,
+          progress: 100,
+          message: 'Processing completed!'
+        });
+      }, 800);
+      
+      console.log('✅ [FileProcessor] Fallback completion handling completed');
+    } catch (error) {
+      console.error('❌ [FileProcessor] Error in fallback completion:', error);
     }
   }
 
@@ -1029,6 +1621,13 @@ class FileProcessor {
     this.state.processingState = 'error';
     this.state.completionState.error = true;
     this.clearCompletionMonitoring();
+    
+    // Clear fallback timer
+    if (this.state.fallbackTimer) {
+      clearInterval(this.state.fallbackTimer);
+      this.state.fallbackTimer = null;
+    }
+    
     this.showError(data.error || 'Processing failed');
     this.updateUI();
   }

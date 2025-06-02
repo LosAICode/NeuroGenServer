@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-06-01T17:16:51.340514",
+  "summary": {
+    "tests_passed": 3,
+    "total_tests": 5,
+    "success_rate": 60.0
+  },
+  "test_results": {
+    "server_health": {
+      "status": "warning",
+      "response_time": 118,
+      "modules_total": 16,
+      "endpoints_active": 4,
+      "passed": true
+    },
+    "file_processor_endpoint": {
+      "status": "success",
+      "task_id": "03ed1e94-6043-4717-b10a-811e419cf5c9",
+      "response_code": 200,
+      "passed": true
+    },
+    "web_scraper_endpoint": {
+      "status": "failed",
+      "response_code": 400,
+      "response_text": "{\"error\":{\"code\":\"ROOT_DIR_REQUIRED\",\"message\":\"Download directory is required.\"}}\n",
+      "passed": false
+    },
+    "static_assets": {
+      "available": 5,
+      "total": 5,
+      "success_rate": 100.0,
+      "passed": true
+    },
+    "socketio_configuration": {
+      "socketio_included": true,
+      "events_config": false,
+      "progress_handler": false,
+      "passed": false
+    }
+  }
+}

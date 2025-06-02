@@ -700,8 +700,9 @@ async function initializeApp() {
       }
     }));
     
-    // Post-initialization setup
+    // Post-initialization setup with enhanced SocketIO
     setTimeout(() => {
+      initializeEnhancedSocketIO();
       enhanceSocketIOIntegration();
       registerGlobalErrorHandlers();
       ensureFormHandlersWork();
@@ -1028,8 +1029,252 @@ function setupTabNavigation() {
 }
 
 // --------------------------------------------------------------------------
-// Enhanced Socket.IO Integration with Advanced Error Handling
+// Enhanced Socket.IO Initialization and Integration
 // --------------------------------------------------------------------------
+
+/**
+ * Initialize enhanced SocketIO connection with retry mechanisms
+ */
+function initializeEnhancedSocketIO() {
+  try {
+    console.log('🚀 Initializing Enhanced SocketIO connection...');
+    
+    // Check if Socket.IO library is available
+    if (typeof io === 'undefined') {
+      console.error('❌ Socket.IO library not loaded');
+      showErrorMessage('Socket.IO library not available. Real-time features will be limited.');
+      return false;
+    }
+    
+    // Prevent duplicate initialization
+    if (window.socket && window.socket.connected) {
+      console.log('✅ SocketIO already connected');
+      return true;
+    }
+    
+    // Clear any existing socket
+    if (window.socket) {
+      try {
+        window.socket.disconnect();
+        window.socket = null;
+      } catch (error) {
+        console.warn('⚠️ Error disconnecting existing socket:', error);
+      }
+    }
+    
+    // Initialize with enhanced configuration
+    console.log('🔌 Creating new SocketIO connection...');
+    window.socket = io({
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 15000,
+      forceNew: true,
+      multiplex: true,
+      transports: ['websocket', 'polling'],
+      upgrade: true,
+      rememberUpgrade: true
+    });
+    
+    // Set up enhanced connection monitoring
+    setupEnhancedSocketMonitoring();
+    
+    console.log('✅ Enhanced SocketIO initialization completed');
+    return true;
+    
+  } catch (error) {
+    console.error('❌ Error initializing Enhanced SocketIO:', error);
+    showErrorMessage('Failed to initialize real-time connection. Some features may be limited.');
+    return false;
+  }
+}
+
+/**
+ * Set up enhanced SocketIO connection monitoring
+ */
+function setupEnhancedSocketMonitoring() {
+  if (!window.socket) return;
+  
+  let connectionAttempts = 0;
+  let lastConnectionTime = null;
+  let pingInterval = null;
+  
+  // Connection established
+  window.socket.on('connect', () => {
+    console.log(`✅ Enhanced SocketIO connected: ${window.socket.id}`);
+    connectionAttempts = 0;
+    lastConnectionTime = Date.now();
+    
+    // Start keep-alive ping
+    if (pingInterval) clearInterval(pingInterval);
+    pingInterval = setInterval(() => {
+      if (window.socket && window.socket.connected) {
+        window.socket.emit('ping', { timestamp: Date.now() });
+      }
+    }, 25000);
+    
+    // Update connection status indicator
+    updateConnectionStatus('connected', 'Connected to server');
+    
+    // Emit event for modules
+    if (window.eventRegistry) {
+      window.eventRegistry.emit('socket.connected', {
+        socketId: window.socket.id,
+        timestamp: lastConnectionTime
+      });
+    }
+    
+    // Check for ongoing tasks
+    checkForOngoingTasks();
+  });
+  
+  // Connection error
+  window.socket.on('connect_error', (error) => {
+    connectionAttempts++;
+    console.error(`❌ Enhanced SocketIO connection error (attempt ${connectionAttempts}):`, error);
+    
+    updateConnectionStatus('error', `Connection error (attempt ${connectionAttempts})`);
+    
+    // Emit event for modules
+    if (window.eventRegistry) {
+      window.eventRegistry.emit('socket.connect_error', {
+        error: error.message,
+        attempts: connectionAttempts
+      });
+    }
+  });
+  
+  // Disconnection
+  window.socket.on('disconnect', (reason) => {
+    console.warn(`⚠️ Enhanced SocketIO disconnected: ${reason}`);
+    
+    // Clear ping interval
+    if (pingInterval) {
+      clearInterval(pingInterval);
+      pingInterval = null;
+    }
+    
+    updateConnectionStatus('disconnected', `Disconnected: ${reason}`);
+    
+    // Emit event for modules
+    if (window.eventRegistry) {
+      window.eventRegistry.emit('socket.disconnected', {
+        reason,
+        lastConnection: lastConnectionTime
+      });
+    }
+    
+    // Start fallback monitoring for active tasks
+    startTaskFallbackMonitoring();
+  });
+  
+  // Reconnection attempts
+  window.socket.on('reconnect_attempt', (attemptNumber) => {
+    console.log(`🔄 Enhanced SocketIO reconnect attempt ${attemptNumber}`);
+    updateConnectionStatus('connecting', `Reconnecting (${attemptNumber})...`);
+  });
+  
+  // Successful reconnection
+  window.socket.on('reconnect', (attemptNumber) => {
+    console.log(`✅ Enhanced SocketIO reconnected after ${attemptNumber} attempts`);
+    connectionAttempts = 0;
+    lastConnectionTime = Date.now();
+    
+    updateConnectionStatus('connected', 'Reconnected to server');
+    
+    // Check for ongoing tasks after reconnection
+    setTimeout(checkForOngoingTasks, 1000);
+  });
+  
+  // Reconnection failed
+  window.socket.on('reconnect_failed', () => {
+    console.error('❌ Enhanced SocketIO reconnection failed');
+    updateConnectionStatus('error', 'Reconnection failed');
+    
+    // Force fallback mode
+    startTaskFallbackMonitoring();
+  });
+  
+  // Pong response
+  window.socket.on('pong', (data) => {
+    const roundTrip = Date.now() - (data.timestamp || 0);
+    if (window._debugMode) {
+      console.log(`🏓 SocketIO ping: ${roundTrip}ms`);
+    }
+  });
+}
+
+/**
+ * Update connection status indicator
+ */
+function updateConnectionStatus(status, message) {
+  const indicator = document.getElementById('connection-status');
+  if (indicator) {
+    indicator.className = `connection-status ${status}`;
+    indicator.textContent = message;
+    indicator.title = `Connection status: ${message}`;
+  }
+  
+  if (window._debugMode) {
+    console.log(`🔌 Connection status: ${status} - ${message}`);
+  }
+}
+
+/**
+ * Check for ongoing tasks after connection
+ */
+function checkForOngoingTasks() {
+  try {
+    const ongoingTaskId = sessionStorage.getItem('ongoingTaskId');
+    const taskType = sessionStorage.getItem('ongoingTaskType');
+    
+    if (ongoingTaskId) {
+      console.log(`🔍 Found ongoing task: ${ongoingTaskId} (${taskType || 'unknown'})`);
+      
+      // Emit task resume event
+      if (window.eventRegistry) {
+        window.eventRegistry.emit('task.resume', {
+          taskId: ongoingTaskId,
+          taskType: taskType || 'unknown'
+        });
+      }
+      
+      // Request task status
+      if (window.socket && window.socket.connected) {
+        window.socket.emit('request_task_status', { task_id: ongoingTaskId });
+      }
+      
+      showToast('Task Resumed', 'Reconnected to ongoing task', 'info');
+    }
+  } catch (error) {
+    console.error('❌ Error checking for ongoing tasks:', error);
+  }
+}
+
+/**
+ * Start fallback monitoring for active tasks when socket disconnected
+ */
+function startTaskFallbackMonitoring() {
+  const ongoingTaskId = sessionStorage.getItem('ongoingTaskId');
+  
+  if (ongoingTaskId) {
+    console.log(`🔄 Starting fallback monitoring for disconnected task: ${ongoingTaskId}`);
+    
+    // Try to activate fallback monitoring in file processor
+    if (window.fileProcessor && typeof window.fileProcessor.startEnhancedFallbackMonitoring === 'function') {
+      window.fileProcessor.startEnhancedFallbackMonitoring(ongoingTaskId, true);
+    }
+    
+    // Emit fallback event
+    if (window.eventRegistry) {
+      window.eventRegistry.emit('socket.fallback_mode', {
+        taskId: ongoingTaskId,
+        reason: 'socket_disconnected'
+      });
+    }
+  }
+}
 
 function enhanceSocketIOIntegration() {
   try {

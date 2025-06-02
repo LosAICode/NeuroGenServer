@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive SocketIO Events & Progress Completion Validation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .test-section {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+        }
+        .test-header {
+            background: #e9ecef;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+        }
+        .test-content {
+            padding: 1rem;
+        }
+        .log-container {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .status-healthy { background-color: #28a745; }
+        .status-warning { background-color: #ffc107; }
+        .status-error { background-color: #dc3545; }
+        .status-unknown { background-color: #6c757d; }
+        .progress-section {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.375rem;
+            background: #fff;
+        }
+        .metric-card {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0d6efd;
+        }
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+        .event-log {
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+        .event-success { color: #28a745; }
+        .event-error { color: #dc3545; }
+        .event-warning { color: #ffc107; }
+        .event-info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-vial me-2"></i>Comprehensive SocketIO Events & Progress Completion Validation</h1>
+                <p class="text-muted">Testing complete Submit → Progress → Stats flow with aligned SocketIO events</p>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="test-section">
+            <div class="test-header">
+                <i class="fas fa-server me-2"></i>System Status & Connectivity
+            </div>
+            <div class="test-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div id="server-status" class="metric-value">
+                                <span class="status-indicator status-unknown"></span>Unknown
+                            </div>
+                            <div class="metric-label">Server Status</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div id="socket-status" class="metric-value">
+                                <span class="status-indicator status-unknown"></span>Disconnected
+                            </div>
+                            <div class="metric-label">SocketIO Status</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div id="events-registered" class="metric-value">0</div>
+                            <div class="metric-label">Events Registered</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div id="modules-loaded" class="metric-value">0</div>
+                            <div class="metric-label">Modules Loaded</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Alignment Validation -->
+        <div class="test-section">
+            <div class="test-header">
+                <i class="fas fa-exchange-alt me-2"></i>SocketIO Event Alignment Validation
+            </div>
+            <div class="test-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Backend Events (Expected)</h6>
+                        <div id="backend-events" class="event-log"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Frontend Events (Registered)</h6>
+                        <div id="frontend-events" class="event-log"></div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary" onclick="validateEventAlignment()">
+                        <i class="fas fa-check-double me-2"></i>Validate Event Alignment
+                    </button>
+                    <div id="alignment-results" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module Testing -->
+        <div class="row">
+            <!-- File Processor Test -->
+            <div class="col-md-6">
+                <div class="test-section">
+                    <div class="test-header">
+                        <i class="fas fa-file-alt me-2"></i>File Processor Flow Test
+                    </div>
+                    <div class="test-content">
+                        <div class="progress-section">
+                            <div class="mb-3">
+                                <label class="form-label">Input Directory:</label>
+                                <input type="text" id="file-input-dir" class="form-control" 
+                                       value="/workspace/modules/test_output" placeholder="Enter directory path">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Output File:</label>
+                                <input type="text" id="file-output-file" class="form-control" 
+                                       value="test_file_processing.json" placeholder="Enter output filename">
+                            </div>
+                            <button class="btn btn-success" onclick="testFileProcessorFlow()">
+                                <i class="fas fa-play me-2"></i>Test File Processor
+                            </button>
+                            
+                            <!-- Progress Display -->
+                            <div id="file-progress-container" style="display: none;" class="mt-3">
+                                <div class="progress mb-2">
+                                    <div id="file-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <div id="file-progress-status" class="text-muted">Ready to start...</div>
+                                <div id="file-progress-stats" class="small text-muted mt-2"></div>
+                            </div>
+                            
+                            <!-- Results Display -->
+                            <div id="file-results-container" style="display: none;" class="mt-3">
+                                <div class="alert alert-success">
+                                    <h6><i class="fas fa-check-circle me-2"></i>File Processing Complete!</h6>
+                                    <div id="file-results-stats"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="file-events-log" class="event-log"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web Scraper Test -->
+            <div class="col-md-6">
+                <div class="test-section">
+                    <div class="test-header">
+                        <i class="fas fa-globe me-2"></i>Web Scraper Flow Test
+                    </div>
+                    <div class="test-content">
+                        <div class="progress-section">
+                            <div class="mb-3">
+                                <label class="form-label">URLs to Scrape:</label>
+                                <textarea id="scraper-urls" class="form-control" rows="3"
+                                         placeholder="https://example.com&#10;https://another-site.com">https://docs.python.org/3/tutorial/</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Output File:</label>
+                                <input type="text" id="scraper-output-file" class="form-control" 
+                                       value="test_web_scraping.json" placeholder="Enter output filename">
+                            </div>
+                            <button class="btn btn-info" onclick="testWebScraperFlow()">
+                                <i class="fas fa-play me-2"></i>Test Web Scraper
+                            </button>
+                            
+                            <!-- Progress Display -->
+                            <div id="scraper-progress-container" style="display: none;" class="mt-3">
+                                <div class="progress mb-2">
+                                    <div id="scraper-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                                         role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <div id="scraper-progress-status" class="text-muted">Ready to start...</div>
+                                <div id="scraper-progress-stats" class="small text-muted mt-2"></div>
+                            </div>
+                            
+                            <!-- Results Display -->
+                            <div id="scraper-results-container" style="display: none;" class="mt-3">
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-check-circle me-2"></i>Web Scraping Complete!</h6>
+                                    <div id="scraper-results-stats"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="scraper-events-log" class="event-log"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Event Monitor -->
+        <div class="test-section">
+            <div class="test-header">
+                <i class="fas fa-stream me-2"></i>Real-time SocketIO Event Monitor
+            </div>
+            <div class="test-content">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Event Statistics</h6>
+                        <div class="metric-card">
+                            <div id="total-events" class="metric-value">0</div>
+                            <div class="metric-label">Total Events</div>
+                        </div>
+                        <div class="metric-card mt-2">
+                            <div id="progress-events" class="metric-value">0</div>
+                            <div class="metric-label">Progress Updates</div>
+                        </div>
+                        <div class="metric-card mt-2">
+                            <div id="completion-events" class="metric-value">0</div>
+                            <div class="metric-label">Completions</div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h6>Live Event Stream</h6>
+                        <div id="realtime-events" class="log-container"></div>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-secondary" onclick="clearEventLog()">
+                                <i class="fas fa-trash me-1"></i>Clear Log
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="exportEventLog()">
+                                <i class="fas fa-download me-1"></i>Export Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="test-section">
+            <div class="test-header">
+                <i class="fas fa-cogs me-2"></i>Test Controls & Validation
+            </div>
+            <div class="test-content">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>System Tests</h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" onclick="testServerHealth()">
+                                <i class="fas fa-heartbeat me-2"></i>Test Server Health
+                            </button>
+                            <button class="btn btn-outline-info" onclick="testSocketConnection()">
+                                <i class="fas fa-plug me-2"></i>Test SocketIO Connection
+                            </button>
+                            <button class="btn btn-outline-success" onclick="testModuleLoading()">
+                                <i class="fas fa-puzzle-piece me-2"></i>Test Module Loading
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Event Tests</h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-warning" onclick="simulateProgressEvents()">
+                                <i class="fas fa-tasks me-2"></i>Simulate Progress Events
+                            </button>
+                            <button class="btn btn-outline-success" onclick="simulateCompletionEvent()">
+                                <i class="fas fa-check-circle me-2"></i>Simulate Completion
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="simulateErrorEvent()">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Simulate Error
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Integration Tests</h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" onclick="runComprehensiveTest()">
+                                <i class="fas fa-vial me-2"></i>Run Comprehensive Test
+                            </button>
+                            <button class="btn btn-outline-success" onclick="validateAllFlows()">
+                                <i class="fas fa-check-double me-2"></i>Validate All Flows
+                            </button>
+                            <button class="btn btn-outline-info" onclick="generateTestReport()">
+                                <i class="fas fa-file-alt me-2"></i>Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script>
+        // Global test state
+        const testState = {
+            socket: null,
+            eventCounts: {
+                total: 0,
+                progress: 0,
+                completion: 0,
+                error: 0
+            },
+            activeTasks: new Map(),
+            eventLog: [],
+            testResults: {
+                fileProcessor: null,
+                webScraper: null,
+                eventAlignment: null,
+                systemHealth: null
+            }
+        };
+
+        // Expected events configuration
+        const EXPECTED_EVENTS = {
+            'task_started': 'Task initialization event',
+            'progress_update': 'Progress update event', 
+            'task_completed': 'Task completion event',
+            'task_error': 'Task error event',
+            'task_cancelled': 'Task cancellation event',
+            'connection_established': 'Connection establishment',
+            'url_scraped': 'Web scraper URL processed',
+            'pdf_found': 'PDF discovery event',
+            'pdf_download_progress': 'PDF download progress',
+            'file_processed': 'File processing event'
+        };
+
+        // Initialize test framework
+        function initializeTestFramework() {
+            logEvent('🚀 Initializing Comprehensive SocketIO Validation Framework...', 'info');
+            
+            // Initialize SocketIO connection
+            initializeSocket();
+            
+            // Test server health
+            testServerHealth();
+            
+            // Load modules and validate
+            setTimeout(() => {
+                testModuleLoading();
+                validateEventAlignment();
+            }, 1000);
+        }
+
+        // Initialize SocketIO connection
+        function initializeSocket() {
+            try {
+                testState.socket = io('http://localhost:5025', {
+                    transports: ['websocket', 'polling'],
+                    timeout: 5000
+                });
+
+                // Connection events
+                testState.socket.on('connect', () => {
+                    logEvent('✅ SocketIO connected successfully', 'success');
+                    updateSocketStatus('Connected', 'healthy');
+                    registerEventHandlers();
+                });
+
+                testState.socket.on('disconnect', () => {
+                    logEvent('⚠️ SocketIO disconnected', 'warning');
+                    updateSocketStatus('Disconnected', 'error');
+                });
+
+                testState.socket.on('connect_error', (error) => {
+                    logEvent(`❌ SocketIO connection error: ${error.message}`, 'error');
+                    updateSocketStatus('Error', 'error');
+                });
+
+                testState.socket.on('reconnect', () => {
+                    logEvent('🔄 SocketIO reconnected', 'info');
+                    updateSocketStatus('Reconnected', 'healthy');
+                });
+
+            } catch (error) {
+                logEvent(`❌ Failed to initialize SocketIO: ${error.message}`, 'error');
+                updateSocketStatus('Failed', 'error');
+            }
+        }
+
+        // Register all event handlers
+        function registerEventHandlers() {
+            let registeredCount = 0;
+            
+            Object.keys(EXPECTED_EVENTS).forEach(eventName => {
+                testState.socket.on(eventName, (data) => {
+                    handleSocketEvent(eventName, data);
+                });
+                registeredCount++;
+            });
+
+            document.getElementById('events-registered').textContent = registeredCount;
+            logEvent(`📡 Registered ${registeredCount} SocketIO event handlers`, 'info');
+        }
+
+        // Handle incoming socket events
+        function handleSocketEvent(eventName, data) {
+            testState.eventCounts.total++;
+            
+            // Count specific event types
+            if (eventName.includes('progress')) {
+                testState.eventCounts.progress++;
+            } else if (eventName.includes('completed') || eventName.includes('finished')) {
+                testState.eventCounts.completion++;
+            } else if (eventName.includes('error') || eventName.includes('failed')) {
+                testState.eventCounts.error++;
+            }
+
+            // Log the event
+            const timestamp = new Date().toISOString().substr(11, 12);
+            const logMessage = `[${timestamp}] ${eventName}: ${JSON.stringify(data, null, 2)}`;
+            
+            testState.eventLog.push({
+                timestamp: Date.now(),
+                event: eventName,
+                data: data,
+                message: logMessage
+            });
+
+            // Update UI
+            updateEventCounts();
+            updateRealTimeLog(logMessage, getEventClass(eventName));
+
+            // Handle specific events
+            if (eventName === 'progress_update' && data.task_id) {
+                updateProgressUI(data.task_id, data);
+            } else if (eventName === 'task_completed' && data.task_id) {
+                updateCompletionUI(data.task_id, data);
+            }
+        }
+
+        // Update progress UI for specific task
+        function updateProgressUI(taskId, data) {
+            const moduleType = testState.activeTasks.get(taskId);
+            if (!moduleType) return;
+
+            const prefix = moduleType === 'file_processing' ? 'file' : 'scraper';
+            const progressBar = document.getElementById(`${prefix}-progress-bar`);
+            const progressStatus = document.getElementById(`${prefix}-progress-status`);
+            const progressStats = document.getElementById(`${prefix}-progress-stats`);
+            const progressContainer = document.getElementById(`${prefix}-progress-container`);
+
+            if (progressContainer) {
+                progressContainer.style.display = 'block';
+            }
+
+            if (progressBar) {
+                const progress = Math.min(100, Math.max(0, data.progress || 0));
+                progressBar.style.width = `${progress}%`;
+                progressBar.textContent = `${progress.toFixed(1)}%`;
+                progressBar.setAttribute('aria-valuenow', progress);
+            }
+
+            if (progressStatus) {
+                progressStatus.textContent = data.message || `Processing... ${data.progress || 0}%`;
+            }
+
+            if (progressStats && data.stats) {
+                const statsText = Object.entries(data.stats)
+                    .filter(([key, value]) => typeof value === 'number' || typeof value === 'string')
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join(' | ');
+                progressStats.textContent = statsText;
+            }
+        }
+
+        // Update completion UI for specific task
+        function updateCompletionUI(taskId, data) {
+            const moduleType = testState.activeTasks.get(taskId);
+            if (!moduleType) return;
+
+            const prefix = moduleType === 'file_processing' ? 'file' : 'scraper';
+            const progressContainer = document.getElementById(`${prefix}-progress-container`);
+            const resultsContainer = document.getElementById(`${prefix}-results-container`);
+            const resultsStats = document.getElementById(`${prefix}-results-stats`);
+
+            // Hide progress, show results
+            if (progressContainer) {
+                progressContainer.style.display = 'none';
+            }
+
+            if (resultsContainer) {
+                resultsContainer.style.display = 'block';
+            }
+
+            if (resultsStats && data.stats) {
+                const statsHtml = Object.entries(data.stats)
+                    .filter(([key, value]) => typeof value === 'number' || typeof value === 'string')
+                    .map(([key, value]) => `<div><strong>${key}:</strong> ${value}</div>`)
+                    .join('');
+                resultsStats.innerHTML = statsHtml;
+            }
+
+            // Log completion
+            logEvent(`✅ Task ${taskId} completed for ${moduleType}`, 'success');
+            
+            // Update test results
+            testState.testResults[moduleType === 'file_processing' ? 'fileProcessor' : 'webScraper'] = {
+                status: 'completed',
+                taskId: taskId,
+                data: data,
+                timestamp: Date.now()
+            };
+
+            // Clean up task tracking
+            testState.activeTasks.delete(taskId);
+        }
+
+        // Test File Processor flow
+        async function testFileProcessorFlow() {
+            const inputDir = document.getElementById('file-input-dir').value.trim();
+            const outputFile = document.getElementById('file-output-file').value.trim();
+
+            if (!inputDir || !outputFile) {
+                logEvent('❌ File Processor test: Missing input directory or output file', 'error');
+                return;
+            }
+
+            logEvent('🔄 Starting File Processor flow test...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:5025/api/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input_dir: inputDir,
+                        output_file: outputFile
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                logEvent(`📋 File Processor task started: ${result.task_id}`, 'success');
+                
+                // Track this task
+                testState.activeTasks.set(result.task_id, 'file_processing');
+                
+                // Show progress container
+                document.getElementById('file-progress-container').style.display = 'block';
+
+            } catch (error) {
+                logEvent(`❌ File Processor test failed: ${error.message}`, 'error');
+                testState.testResults.fileProcessor = {
+                    status: 'error',
+                    error: error.message,
+                    timestamp: Date.now()
+                };
+            }
+        }
+
+        // Test Web Scraper flow
+        async function testWebScraperFlow() {
+            const urls = document.getElementById('scraper-urls').value.trim().split('\n').filter(url => url.trim());
+            const outputFile = document.getElementById('scraper-output-file').value.trim();
+
+            if (!urls.length || !outputFile) {
+                logEvent('❌ Web Scraper test: Missing URLs or output file', 'error');
+                return;
+            }
+
+            logEvent('🔄 Starting Web Scraper flow test...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:5025/api/scrape2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        urls: urls,
+                        output_file: outputFile,
+                        download_pdfs: false,
+                        max_pdfs: 5
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                logEvent(`🌐 Web Scraper task started: ${result.task_id}`, 'success');
+                
+                // Track this task
+                testState.activeTasks.set(result.task_id, 'web_scraping');
+                
+                // Show progress container
+                document.getElementById('scraper-progress-container').style.display = 'block';
+
+            } catch (error) {
+                logEvent(`❌ Web Scraper test failed: ${error.message}`, 'error');
+                testState.testResults.webScraper = {
+                    status: 'error',
+                    error: error.message,
+                    timestamp: Date.now()
+                };
+            }
+        }
+
+        // Test server health
+        async function testServerHealth() {
+            try {
+                const response = await fetch('http://localhost:5025/api/health');
+                const health = await response.json();
+                
+                logEvent(`🏥 Server health check: ${health.status}`, health.status === 'healthy' ? 'success' : 'warning');
+                updateServerStatus(health.status, health.status === 'healthy' ? 'healthy' : 'warning');
+                
+                // Update modules count
+                if (health.checks && health.checks.modules) {
+                    document.getElementById('modules-loaded').textContent = health.checks.modules.total || 0;
+                }
+
+                testState.testResults.systemHealth = health;
+
+            } catch (error) {
+                logEvent(`❌ Server health check failed: ${error.message}`, 'error');
+                updateServerStatus('Error', 'error');
+                testState.testResults.systemHealth = { status: 'error', error: error.message };
+            }
+        }
+
+        // Test module loading
+        async function testModuleLoading() {
+            logEvent('🧩 Testing module loading...', 'info');
+            
+            // Check if required global objects are available
+            const modules = [
+                'window.NeuroGen',
+                'window.progressHandler', 
+                'window.healthMonitor',
+                'window.stateManager',
+                'window.socket'
+            ];
+
+            let loadedCount = 0;
+            modules.forEach(modulePath => {
+                const exists = eval(`typeof ${modulePath} !== 'undefined'`);
+                if (exists) {
+                    loadedCount++;
+                    logEvent(`✅ Module available: ${modulePath}`, 'success');
+                } else {
+                    logEvent(`⚠️ Module not available: ${modulePath}`, 'warning');
+                }
+            });
+
+            logEvent(`📊 Module loading test: ${loadedCount}/${modules.length} modules available`, 'info');
+        }
+
+        // Validate event alignment
+        function validateEventAlignment() {
+            logEvent('🔍 Validating SocketIO event alignment...', 'info');
+
+            const backendEvents = Object.keys(EXPECTED_EVENTS);
+            const frontendEvents = testState.socket ? Object.keys(testState.socket._callbacks || {}) : [];
+
+            // Update UI displays
+            document.getElementById('backend-events').innerHTML = 
+                backendEvents.map(event => `<div class="event-success">${event}</div>`).join('');
+            
+            document.getElementById('frontend-events').innerHTML = 
+                frontendEvents.map(event => `<div class="event-info">${event}</div>`).join('');
+
+            // Check alignment
+            const aligned = backendEvents.filter(event => frontendEvents.includes(event));
+            const missing = backendEvents.filter(event => !frontendEvents.includes(event));
+
+            const alignmentHtml = `
+                <div class="alert alert-${missing.length === 0 ? 'success' : 'warning'}">
+                    <strong>Alignment Results:</strong><br>
+                    ✅ Aligned Events: ${aligned.length}/${backendEvents.length}<br>
+                    ${missing.length > 0 ? `⚠️ Missing Events: ${missing.join(', ')}` : '🎉 All events aligned!'}
+                </div>
+            `;
+
+            document.getElementById('alignment-results').innerHTML = alignmentHtml;
+            
+            testState.testResults.eventAlignment = {
+                total: backendEvents.length,
+                aligned: aligned.length,
+                missing: missing,
+                percentage: Math.round((aligned.length / backendEvents.length) * 100)
+            };
+
+            logEvent(`📊 Event alignment: ${aligned.length}/${backendEvents.length} (${testState.testResults.eventAlignment.percentage}%)`, 
+                missing.length === 0 ? 'success' : 'warning');
+        }
+
+        // Simulate progress events
+        function simulateProgressEvents() {
+            const simulatedTaskId = `test_task_${Date.now()}`;
+            logEvent(`🎭 Simulating progress events for task: ${simulatedTaskId}`, 'info');
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Simulate completion
+                    setTimeout(() => {
+                        const completionData = {
+                            task_id: simulatedTaskId,
+                            status: 'completed',
+                            progress: 100,
+                            message: 'Simulation completed successfully!',
+                            stats: {
+                                processed_files: 42,
+                                total_files: 42,
+                                success_rate: 100,
+                                duration: 15.5
+                            }
+                        };
+                        handleSocketEvent('task_completed', completionData);
+                    }, 500);
+                }
+
+                const progressData = {
+                    task_id: simulatedTaskId,
+                    progress: Math.round(progress),
+                    message: `Simulating progress... ${Math.round(progress)}%`,
+                    stats: {
+                        processed_files: Math.round((progress / 100) * 42),
+                        total_files: 42,
+                        current_stage: progress < 100 ? 'Processing' : 'Completed'
+                    }
+                };
+
+                handleSocketEvent('progress_update', progressData);
+            }, 800);
+        }
+
+        // Simulate completion event
+        function simulateCompletionEvent() {
+            const simulatedTaskId = `completion_test_${Date.now()}`;
+            const completionData = {
+                task_id: simulatedTaskId,
+                task_type: 'file_processing',
+                status: 'completed',
+                progress: 100,
+                message: 'Simulated task completed successfully!',
+                stats: {
+                    processed_files: 25,
+                    total_files: 25,
+                    success_rate_percent: 100,
+                    processing_time: 12.3,
+                    total_size: 1024000,
+                    completion_percentage: 100
+                },
+                output_file: 'simulated_output.json'
+            };
+
+            logEvent(`🎭 Simulating completion event for task: ${simulatedTaskId}`, 'info');
+            handleSocketEvent('task_completed', completionData);
+        }
+
+        // Simulate error event
+        function simulateErrorEvent() {
+            const simulatedTaskId = `error_test_${Date.now()}`;
+            const errorData = {
+                task_id: simulatedTaskId,
+                task_type: 'web_scraping',
+                status: 'failed',
+                error: 'Simulated error for testing purposes',
+                error_details: {
+                    code: 'SIMULATION_ERROR',
+                    message: 'This is a simulated error to test error handling'
+                }
+            };
+
+            logEvent(`🎭 Simulating error event for task: ${simulatedTaskId}`, 'info');
+            handleSocketEvent('task_error', errorData);
+        }
+
+        // Test SocketIO connection
+        function testSocketConnection() {
+            if (testState.socket && testState.socket.connected) {
+                logEvent('✅ SocketIO connection test: Connected', 'success');
+                
+                // Test ping
+                testState.socket.emit('ping_from_client', { timestamp: Date.now() });
+                
+                testState.socket.once('pong_to_client', (data) => {
+                    const latency = Date.now() - data.original_data.timestamp;
+                    logEvent(`🏓 SocketIO ping test: ${latency}ms latency`, 'success');
+                });
+
+            } else {
+                logEvent('❌ SocketIO connection test: Not connected', 'error');
+                initializeSocket();
+            }
+        }
+
+        // Run comprehensive test
+        async function runComprehensiveTest() {
+            logEvent('🚀 Starting comprehensive validation test...', 'info');
+            
+            // Reset test results
+            testState.testResults = {
+                fileProcessor: null,
+                webScraper: null,
+                eventAlignment: null,
+                systemHealth: null
+            };
+
+            // Run all tests in sequence
+            await testServerHealth();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            testSocketConnection();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            validateEventAlignment();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            testModuleLoading();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            logEvent('📊 Comprehensive test completed. Review results above.', 'success');
+        }
+
+        // Validate all flows
+        function validateAllFlows() {
+            logEvent('🔄 Validating all Submit → Progress → Stats flows...', 'info');
+            
+            // Check if we have test results for both modules
+            const fileProcessorResult = testState.testResults.fileProcessor;
+            const webScraperResult = testState.testResults.webScraper;
+            
+            let validationResults = [];
+
+            if (fileProcessorResult) {
+                const status = fileProcessorResult.status === 'completed' ? '✅' : '❌';
+                validationResults.push(`${status} File Processor: ${fileProcessorResult.status}`);
+            } else {
+                validationResults.push('⏳ File Processor: Not tested yet');
+            }
+
+            if (webScraperResult) {
+                const status = webScraperResult.status === 'completed' ? '✅' : '❌';
+                validationResults.push(`${status} Web Scraper: ${webScraperResult.status}`);
+            } else {
+                validationResults.push('⏳ Web Scraper: Not tested yet');
+            }
+
+            // Event alignment validation
+            const eventAlignment = testState.testResults.eventAlignment;
+            if (eventAlignment) {
+                const status = eventAlignment.percentage >= 90 ? '✅' : '⚠️';
+                validationResults.push(`${status} Event Alignment: ${eventAlignment.percentage}%`);
+            }
+
+            logEvent('📋 Flow Validation Results:', 'info');
+            validationResults.forEach(result => {
+                logEvent(`  ${result}`, 'info');
+            });
+        }
+
+        // Generate test report
+        function generateTestReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                testResults: testState.testResults,
+                eventCounts: testState.eventCounts,
+                eventLog: testState.eventLog.slice(-50), // Last 50 events
+                activeTasks: Object.fromEntries(testState.activeTasks),
+                summary: {
+                    testsRun: Object.values(testState.testResults).filter(r => r !== null).length,
+                    testsSuccessful: Object.values(testState.testResults).filter(r => r && r.status === 'completed').length,
+                    totalEvents: testState.eventCounts.total,
+                    eventAlignmentScore: testState.testResults.eventAlignment?.percentage || 0
+                }
+            };
+
+            const reportJson = JSON.stringify(report, null, 2);
+            const blob = new Blob([reportJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `socketio_validation_report_${Date.now()}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            logEvent('📄 Test report generated and downloaded', 'success');
+        }
+
+        // Utility functions
+        function logEvent(message, type = 'info') {
+            const timestamp = new Date().toISOString().substr(11, 8);
+            const logEntry = `[${timestamp}] ${message}`;
+            
+            console.log(logEntry);
+            updateRealTimeLog(logEntry, `event-${type}`);
+        }
+
+        function updateRealTimeLog(message, className = 'event-info') {
+            const logContainer = document.getElementById('realtime-events');
+            const logEntry = document.createElement('div');
+            logEntry.className = className;
+            logEntry.textContent = message;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // Keep only last 100 entries
+            while (logContainer.children.length > 100) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+
+        function updateEventCounts() {
+            document.getElementById('total-events').textContent = testState.eventCounts.total;
+            document.getElementById('progress-events').textContent = testState.eventCounts.progress;
+            document.getElementById('completion-events').textContent = testState.eventCounts.completion;
+        }
+
+        function updateServerStatus(status, type) {
+            const element = document.getElementById('server-status');
+            const indicator = element.querySelector('.status-indicator');
+            
+            element.innerHTML = `<span class="status-indicator status-${type}"></span>${status}`;
+        }
+
+        function updateSocketStatus(status, type) {
+            const element = document.getElementById('socket-status');
+            element.innerHTML = `<span class="status-indicator status-${type}"></span>${status}`;
+        }
+
+        function getEventClass(eventName) {
+            if (eventName.includes('error') || eventName.includes('failed')) return 'event-error';
+            if (eventName.includes('completed') || eventName.includes('success')) return 'event-success';
+            if (eventName.includes('warning') || eventName.includes('cancelled')) return 'event-warning';
+            return 'event-info';
+        }
+
+        function clearEventLog() {
+            document.getElementById('realtime-events').innerHTML = '';
+            testState.eventLog = [];
+        }
+
+        function exportEventLog() {
+            const logData = testState.eventLog.map(entry => entry.message).join('\n');
+            const blob = new Blob([logData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `socketio_events_log_${Date.now()}.txt`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeTestFramework);
+    </script>
+</body>
+</html>
