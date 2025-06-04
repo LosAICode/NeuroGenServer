@@ -464,20 +464,424 @@ class PDFDownloader {
   }
 
   /**
-   * Handle task completion events
+   * Handle task completion events - Enhanced to match fileProcessor spec
    */
   handleTaskCompleted(data) {
-    console.log('✅ Task completed:', data);
+    try {
+      console.log('✅ Enhanced PDF download completion started:', data);
+      
+      // Validate completion data
+      if (!this.validateTaskCompletion(data)) {
+        return;
+      }
+      
+      // Update download queue status
+      if (data.task_id && this.state.downloadQueue.has(data.task_id)) {
+        const download = this.state.downloadQueue.get(data.task_id);
+        download.status = 'completed';
+        download.progress = 100;
+        download.file_path = data.file_path;
+        download.completedTime = Date.now();
+        download.fileSize = data.file_size || 0;
+        download.downloadSpeed = data.download_speed || 'N/A';
+      }
+      
+      // Update processing state
+      this.state.processingState = 'completed';
+      
+      // Enhanced cleanup
+      this.performEnhancedCleanup();
+      
+      // Update completion UI
+      this.updateCompletionUI(data);
+      
+      // Trigger completion notifications
+      this.triggerCompletionNotifications(data);
+      
+      // Display enhanced results with stats screen (like fileProcessor)
+      this.displayEnhancedResults(data);
+      
+    } catch (error) {
+      console.error('❌ Error in enhanced PDF download completion:', error);
+      this.performFallbackCompletion(data);
+    }
+  }
+
+  /**
+   * Validate task completion data
+   */
+  validateTaskCompletion(data) {
+    if (!data) {
+      console.warn('❌ No PDF completion data provided');
+      return false;
+    }
     
+    if (!data.task_id) {
+      console.warn('❌ No task ID in completion data');
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Enhanced cleanup after task completion
+   */
+  performEnhancedCleanup() {
+    // Clear active downloads
+    this.state.activeDownloads.clear();
+    
+    // Update queue UI
+    this.updateQueueUI();
+    
+    // Clear any progress intervals
+    if (this.progressInterval) {
+      clearInterval(this.progressInterval);
+      this.progressInterval = null;
+    }
+  }
+
+  /**
+   * Update completion UI
+   */
+  updateCompletionUI(data) {
+    // Re-enable form submissions
+    const singleForm = this.state.elements.get('single-pdf-form');
+    const batchForm = this.state.elements.get('batch-pdf-form');
+    
+    if (singleForm) {
+      const submitBtn = singleForm.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Download PDF';
+      }
+    }
+    
+    if (batchForm) {
+      const submitBtn = batchForm.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Download Selected PDFs';
+      }
+    }
+  }
+
+  /**
+   * Trigger completion notifications
+   */
+  triggerCompletionNotifications(data) {
+    // Count totals for comprehensive notification
+    let totalCompleted = 0, totalFailed = 0, totalSize = 0;
+    this.state.downloadQueue.forEach(download => {
+      if (download.status === 'completed') {
+        totalCompleted++;
+        totalSize += download.fileSize || 0;
+      }
+      if (download.status === 'failed') totalFailed++;
+    });
+    
+    const message = `PDF downloads completed! ${totalCompleted} successful, ${totalFailed} failed. Total size: ${this.formatFileSize(totalSize)}`;
+    this.showSuccess(message);
+  }
+
+  /**
+   * Display enhanced results with comprehensive stats (like fileProcessor)
+   */
+  displayEnhancedResults(data) {
+    // Prepare comprehensive download statistics
+    const enhancedData = this.prepareEnhancedStats(data);
+    
+    // Show result UI with enhanced delay for better UX
+    setTimeout(() => {
+      this.showEnhancedResult(enhancedData);
+    }, 600);
+  }
+
+  /**
+   * Prepare enhanced statistics
+   */
+  prepareEnhancedStats(data) {
+    let totalCompleted = 0, totalFailed = 0, totalSize = 0, totalDuration = 0;
+    const completedDownloads = [];
+    const failedDownloads = [];
+    
+    this.state.downloadQueue.forEach(download => {
+      if (download.status === 'completed') {
+        totalCompleted++;
+        totalSize += download.fileSize || 0;
+        if (download.startTime && download.completedTime) {
+          totalDuration += (download.completedTime - download.startTime);
+        }
+        completedDownloads.push(download);
+      }
+      if (download.status === 'failed') {
+        totalFailed++;
+        failedDownloads.push(download);
+      }
+    });
+    
+    const avgDuration = totalCompleted > 0 ? totalDuration / totalCompleted : 0;
+    const successRate = totalCompleted + totalFailed > 0 ? (totalCompleted / (totalCompleted + totalFailed)) * 100 : 100;
+    const avgFileSize = totalCompleted > 0 ? totalSize / totalCompleted : 0;
+    
+    return {
+      task_id: data.task_id,
+      total_downloads: totalCompleted + totalFailed,
+      completed_downloads: totalCompleted,
+      failed_downloads: totalFailed,
+      total_size: totalSize,
+      avg_duration: avgDuration,
+      success_rate: successRate,
+      avg_file_size: avgFileSize,
+      completedTime: Date.now(),
+      completed_files: completedDownloads,
+      failed_files: failedDownloads,
+      output_directory: data.output_directory || 'Downloads folder'
+    };
+  }
+
+  /**
+   * Show enhanced result with container transitions (like fileProcessor)
+   */
+  showEnhancedResult(data) {
+    // Find or create result container
+    let resultContainer = this.state.elements.get('pdf-result-container');
+    if (!resultContainer) {
+      resultContainer = this.createResultContainer();
+    }
+    
+    // Transition to result container
+    this.transitionToContainer(resultContainer);
+    
+    // Update result content with comprehensive stats
+    this.updateEnhancedResultStats(resultContainer, data);
+    
+    // Show success notification
+    this.showSuccess('PDF downloads completed successfully!');
+  }
+
+  /**
+   * Create result container if it doesn't exist
+   */
+  createResultContainer() {
+    // Look for existing download queue container to insert result container after
+    const queueContainer = this.state.elements.get('pdf-queue-container') || 
+                          document.getElementById('pdf-queue-container') ||
+                          document.querySelector('.pdf-queue-container');
+    
+    let resultContainer = document.getElementById('pdf-result-container');
+    if (!resultContainer) {
+      resultContainer = document.createElement('div');
+      resultContainer.id = 'pdf-result-container';
+      resultContainer.className = 'container-fluid mt-3';
+      resultContainer.style.display = 'none';
+      
+      // Insert after queue container or at end of body
+      if (queueContainer && queueContainer.parentNode) {
+        queueContainer.parentNode.insertBefore(resultContainer, queueContainer.nextSibling);
+      } else {
+        document.body.appendChild(resultContainer);
+      }
+      
+      this.state.elements.set('pdf-result-container', resultContainer);
+    }
+    
+    return resultContainer;
+  }
+
+  /**
+   * Transition to container (like fileProcessor)
+   */
+  transitionToContainer(targetContainer) {
+    // Hide queue container if it exists
+    const queueContainer = this.state.elements.get('pdf-queue-container');
+    if (queueContainer) {
+      queueContainer.style.display = 'none';
+    }
+    
+    // Show target container with smooth transition
+    if (targetContainer) {
+      targetContainer.style.display = 'block';
+      targetContainer.style.opacity = '0';
+      targetContainer.style.transition = 'opacity 0.3s ease-in-out';
+      
+      setTimeout(() => {
+        targetContainer.style.opacity = '1';
+      }, 50);
+    }
+  }
+
+  /**
+   * Update result stats with comprehensive display (enhanced like fileProcessor)
+   */
+  updateEnhancedResultStats(resultContainer, data) {
+    if (!resultContainer) return;
+    
+    const avgDurationSeconds = Math.round(data.avg_duration / 1000);
+    const avgDownloadSpeed = data.avg_duration > 0 ? Math.round(data.avg_file_size / (data.avg_duration / 1000)) : 0;
+    
+    const resultHTML = `
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-check-circle me-2"></i>
+            PDF Downloads Completed Successfully
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Summary Stats -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-primary" style="font-size: 2.5rem; font-weight: bold;">${data.completed_downloads}</div>
+                <div class="stat-label text-muted">PDFs Downloaded</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-info" style="font-size: 2.5rem; font-weight: bold;">${this.formatFileSize(data.total_size)}</div>
+                <div class="stat-label text-muted">Total Size</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-warning" style="font-size: 2.5rem; font-weight: bold;">${Math.round(data.success_rate)}%</div>
+                <div class="stat-label text-muted">Success Rate</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-success" style="font-size: 2.5rem; font-weight: bold;">${data.failed_downloads}</div>
+                <div class="stat-label text-muted">Failed Downloads</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Metrics -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div class="metric-item">
+                <strong><i class="fas fa-clock me-2"></i>Avg Duration:</strong>
+                <span class="ms-2">${avgDurationSeconds}s per file</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="metric-item">
+                <strong><i class="fas fa-tachometer-alt me-2"></i>Avg Speed:</strong>
+                <span class="ms-2">${this.formatFileSize(avgDownloadSpeed)}/s</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="metric-item">
+                <strong><i class="fas fa-file-pdf me-2"></i>Avg File Size:</strong>
+                <span class="ms-2">${this.formatFileSize(data.avg_file_size)}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Output Information -->
+          <div class="output-section mb-4">
+            <h6><i class="fas fa-folder me-2"></i>Download Location</h6>
+            <div class="d-flex align-items-center">
+              <code class="me-3">${data.output_directory}</code>
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-primary" onclick="openFolder('${data.output_directory}')">
+                  <i class="fas fa-folder-open me-1"></i>Open Folder
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Downloaded Files List -->
+          ${data.completed_files.length > 0 ? `
+          <div class="files-section mb-4">
+            <h6><i class="fas fa-file-pdf me-2"></i>Downloaded Files (${data.completed_files.length})</h6>
+            <div class="files-list" style="max-height: 300px; overflow-y: auto;">
+              ${data.completed_files.map(file => `
+                <div class="file-item d-flex justify-content-between align-items-center p-2 border-bottom">
+                  <div>
+                    <strong>${file.title || file.filename || 'Untitled'}</strong>
+                    <small class="text-muted d-block">${this.formatFileSize(file.fileSize || 0)} • ${file.downloadSpeed || 'N/A'}</small>
+                  </div>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary btn-sm" onclick="openFile('${file.file_path}')">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="downloadFile('${file.file_path}')">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          ` : ''}
+
+          <!-- Failed Downloads -->
+          ${data.failed_files.length > 0 ? `
+          <div class="failed-section mb-4">
+            <h6><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Failed Downloads (${data.failed_files.length})</h6>
+            <div class="failed-list">
+              ${data.failed_files.map(file => `
+                <div class="failed-item p-2 border-bottom">
+                  <strong>${file.title || file.url || 'Unknown'}</strong>
+                  <small class="text-muted d-block">${file.error || 'Download failed'}</small>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          ` : ''}
+
+          <!-- Additional Details -->
+          <div class="details-section">
+            <h6><i class="fas fa-info-circle me-2"></i>Download Summary</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <ul class="list-unstyled">
+                  <li><strong>Task ID:</strong> <code>${data.task_id}</code></li>
+                  <li><strong>Total Downloads:</strong> ${data.total_downloads}</li>
+                  <li><strong>Completion Time:</strong> ${new Date(data.completedTime).toLocaleString()}</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="list-unstyled">
+                  <li><strong>Success Rate:</strong> ${Math.round(data.success_rate)}%</li>
+                  <li><strong>Total Data:</strong> ${this.formatFileSize(data.total_size)}</li>
+                  <li><strong>Average File Size:</strong> ${this.formatFileSize(data.avg_file_size)}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Display -->
+          <div class="d-flex justify-content-between text-muted small mt-3 pt-3 border-top">
+            <span><i class="fas fa-file-pdf me-1"></i>${data.completed_downloads} PDFs downloaded</span>
+            <span><i class="fas fa-hdd me-1"></i>${this.formatFileSize(data.total_size)} total size</span>
+            <span><i class="fas fa-check-circle me-1"></i>${Math.round(data.success_rate)}% success rate</span>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    resultContainer.innerHTML = resultHTML;
+  }
+
+  /**
+   * Fallback completion handler
+   */
+  performFallbackCompletion(data) {
+    console.warn('Using fallback PDF completion handler');
+    
+    // Update download queue status (basic)
     if (data.task_id && this.state.downloadQueue.has(data.task_id)) {
       const download = this.state.downloadQueue.get(data.task_id);
       download.status = 'completed';
       download.progress = 100;
       download.file_path = data.file_path;
-      
-      this.updateQueueUI();
-      this.showSuccess(`Download completed: ${data.file_path || 'PDF downloaded successfully'}`);
     }
+    
+    this.updateQueueUI();
+    this.showSuccess(`Download completed: ${data.file_path || 'PDF downloaded successfully'}`);
   }
 
   /**

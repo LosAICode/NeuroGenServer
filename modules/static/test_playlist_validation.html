@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Downloader Validation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeeba; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+        #results { margin-top: 20px; }
+        .log { font-family: monospace; background: #f8f9fa; padding: 10px; margin: 5px 0; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🎬 Playlist Downloader Validation Test</h1>
+    <p>Testing YouTube integration functionality and cross-platform compatibility</p>
+
+    <div class="test-section">
+        <h3>🔍 Configuration Test</h3>
+        <button onclick="testConfiguration()">Test Config Loading</button>
+        <div id="config-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🏥 Health Check Test</h3>
+        <button onclick="testHealth()">Test Backend Health</button>
+        <div id="health-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📡 API Endpoint Test</h3>
+        <button onclick="testAPIEndpoints()">Test API Endpoints</button>
+        <div id="api-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🎯 YouTube URL Validation</h3>
+        <input type="text" id="playlist-url" placeholder="YouTube playlist URL" style="width: 500px;">
+        <button onclick="validatePlaylistURL()">Validate URL</button>
+        <div id="url-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📁 Cross-Platform Path Test</h3>
+        <input type="text" id="download-path" placeholder="Download path (Linux/Windows)" style="width: 400px;">
+        <button onclick="testCrossPlatformPaths()">Test Paths</button>
+        <div id="path-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🎬 Complete Workflow Test</h3>
+        <p>Test the full submit button → progress handler → stats screen workflow</p>
+        <div>
+            <label>Playlist URLs (one per line):</label><br>
+            <textarea id="workflow-playlists" rows="3" style="width: 100%; margin: 5px 0;">
+https://www.youtube.com/playlist?list=PLQVvvaa0QuDeFZhcpWi5vFXB66FhEXaQ
+https://www.youtube.com/playlist?list=PLcAuQ5Zkn7-lyYEx5OcNRWceSz4TJ5nM6</textarea>
+        </div>
+        <div>
+            <label>Download Directory:</label><br>
+            <input type="text" id="workflow-directory" value="/workspace/modules/downloads/test_playlists" style="width: 100%; margin: 5px 0;">
+        </div>
+        <div>
+            <label>Output File:</label><br>
+            <input type="text" id="workflow-output" value="playlist_test_results.json" style="width: 100%; margin: 5px 0;">
+        </div>
+        <button id="workflow-submit" onclick="testCompleteWorkflow()" style="background: #007bff; color: white; padding: 10px 20px;">
+            🚀 Start Complete Workflow Test
+        </button>
+        <button id="workflow-cancel" onclick="cancelWorkflowTest()" style="background: #dc3545; color: white; padding: 10px 20px;" disabled>
+            ❌ Cancel Test
+        </button>
+        <div id="workflow-results"></div>
+        
+        <!-- Progress Display -->
+        <div id="progress-container" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
+            <h4>📊 Progress Monitor</h4>
+            <div id="progress-bar-container" style="background: #e9ecef; border-radius: 5px; height: 30px; margin: 10px 0;">
+                <div id="progress-bar" style="background: #007bff; height: 100%; border-radius: 5px; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">0%</div>
+            </div>
+            <div id="progress-status">Initializing...</div>
+            <div id="progress-details" style="font-family: monospace; font-size: 12px; margin-top: 10px;"></div>
+        </div>
+
+        <!-- Stats Display -->
+        <div id="stats-container" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #28a745; border-radius: 5px; background: #f8f9fa;">
+            <h4>📈 Completion Stats</h4>
+            <div id="stats-summary"></div>
+            <div id="stats-details"></div>
+        </div>
+    </div>
+
+    <div id="results"></div>
+
+    <script type="module">
+        // Test results container
+        let testResults = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            console.log(logEntry);
+            
+            const resultsDiv = document.getElementById('results');
+            const logDiv = document.createElement('div');
+            logDiv.className = `log ${type}`;
+            logDiv.textContent = logEntry;
+            resultsDiv.appendChild(logDiv);
+            
+            testResults.push({ timestamp, message, type });
+        }
+
+        // Configuration Test
+        window.testConfiguration = async function() {
+            const resultsDiv = document.getElementById('config-results');
+            resultsDiv.innerHTML = '<p>Testing configuration loading...</p>';
+
+            try {
+                // Test dynamic imports of config
+                const { API_ENDPOINTS } = await import('./static/js/modules/config/endpoints.js');
+                const { CONSTANTS } = await import('./static/js/modules/config/constants.js');
+                const { SOCKET_EVENTS } = await import('./static/js/modules/config/socketEvents.js');
+
+                // Verify playlist configuration
+                const playlistConfig = {
+                    endpoints: API_ENDPOINTS.PLAYLIST,
+                    constants: CONSTANTS.PLAYLIST_DOWNLOADER || {},
+                    socketEvents: SOCKET_EVENTS
+                };
+
+                if (playlistConfig.endpoints && playlistConfig.endpoints.START) {
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Configuration Loaded Successfully</h4>
+                            <pre>${JSON.stringify(playlistConfig.endpoints, null, 2)}</pre>
+                        </div>
+                    `;
+                    log('Configuration test passed', 'success');
+                } else {
+                    throw new Error('Missing playlist endpoints configuration');
+                }
+
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Configuration Test Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                log(`Configuration test failed: ${error.message}`, 'error');
+            }
+        };
+
+        // Health Check Test
+        window.testHealth = async function() {
+            const resultsDiv = document.getElementById('health-results');
+            resultsDiv.innerHTML = '<p>Testing backend health...</p>';
+
+            try {
+                const response = await fetch('/api/health', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const health = await response.json();
+                
+                if (health.checks.endpoints.playlist_downloader) {
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Backend Health Check Passed</h4>
+                            <p>Playlist downloader endpoint: ${health.checks.endpoints.playlist_downloader}</p>
+                            <p>Response time: ${health.response_time_ms}ms</p>
+                        </div>
+                    `;
+                    log('Health check passed', 'success');
+                } else {
+                    throw new Error('Playlist downloader endpoint not healthy');
+                }
+
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Health Check Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                log(`Health check failed: ${error.message}`, 'error');
+            }
+        };
+
+        // API Endpoints Test
+        window.testAPIEndpoints = async function() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<p>Testing API endpoints...</p>';
+
+            try {
+                // Test empty POST request to start-playlists (should return validation error)
+                const response = await fetch('/api/start-playlists', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+                
+                if (result.error && result.error.code === 'NO_DATA') {
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Endpoint Test Passed</h4>
+                            <p>Endpoint responding correctly with validation errors</p>
+                            <pre>${JSON.stringify(result, null, 2)}</pre>
+                        </div>
+                    `;
+                    log('API endpoint test passed', 'success');
+                } else {
+                    throw new Error(`Unexpected API response: ${JSON.stringify(result)}`);
+                }
+
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ API Endpoint Test Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                log(`API endpoint test failed: ${error.message}`, 'error');
+            }
+        };
+
+        // YouTube URL Validation
+        window.validatePlaylistURL = function() {
+            const urlInput = document.getElementById('playlist-url');
+            const resultsDiv = document.getElementById('url-results');
+            const url = urlInput.value.trim();
+
+            const playlistRegex = /(?:youtube\.com\/(?:playlist\?list=|watch\?.*&list=)|youtu\.be\/(?:playlist\?list=))([a-zA-Z0-9_-]+)/;
+            
+            if (!url) {
+                resultsDiv.innerHTML = '<div class="warning">Please enter a YouTube playlist URL</div>';
+                return;
+            }
+
+            if (playlistRegex.test(url)) {
+                const match = url.match(playlistRegex);
+                const playlistId = match[1];
+                
+                resultsDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ Valid YouTube Playlist URL</h4>
+                        <p>Playlist ID: ${playlistId}</p>
+                        <p>URL: ${url}</p>
+                    </div>
+                `;
+                log(`Valid playlist URL validated: ${playlistId}`, 'success');
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Invalid YouTube Playlist URL</h4>
+                        <p>Please provide a valid YouTube playlist URL</p>
+                        <p>Examples:</p>
+                        <ul>
+                            <li>https://www.youtube.com/playlist?list=PLxxxxxx</li>
+                            <li>https://www.youtube.com/watch?v=xxxx&list=PLxxxxxx</li>
+                        </ul>
+                    </div>
+                `;
+                log('Invalid playlist URL provided', 'warning');
+            }
+        };
+
+        // Cross-Platform Path Test
+        window.testCrossPlatformPaths = function() {
+            const pathInput = document.getElementById('download-path');
+            const resultsDiv = document.getElementById('path-results');
+            const path = pathInput.value.trim();
+
+            if (!path) {
+                resultsDiv.innerHTML = '<div class="warning">Please enter a download path</div>';
+                return;
+            }
+
+            // Test various path formats
+            const pathTests = {
+                windows: /^[A-Za-z]:\\(?:[^<>:"/\\|?*\x00-\x1f]*\\)*[^<>:"/\\|?*\x00-\x1f]*$/,
+                linux: /^\/(?:[^\/\x00]*\/)*[^\/\x00]*$/,
+                relative: /^(?!\/)[^<>:"/\\|?*\x00-\x1f]*(?:\/[^<>:"/\\|?*\x00-\x1f]*)*$/
+            };
+
+            let pathType = 'unknown';
+            let isValid = false;
+
+            if (pathTests.windows.test(path)) {
+                pathType = 'Windows';
+                isValid = true;
+            } else if (pathTests.linux.test(path)) {
+                pathType = 'Linux';
+                isValid = true;
+            } else if (pathTests.relative.test(path)) {
+                pathType = 'Relative';
+                isValid = true;
+            }
+
+            if (isValid) {
+                resultsDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ Valid ${pathType} Path</h4>
+                        <p>Path: ${path}</p>
+                        <p>Type: ${pathType} path format</p>
+                    </div>
+                `;
+                log(`Valid ${pathType} path validated: ${path}`, 'success');
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Invalid Path Format</h4>
+                        <p>Path: ${path}</p>
+                        <p>Please use valid Windows (C:\\path) or Linux (/path) format</p>
+                    </div>
+                `;
+                log(`Invalid path format: ${path}`, 'warning');
+            }
+        };
+
+        // Auto-run basic tests on load
+        window.addEventListener('load', async function() {
+            log('Starting Playlist Downloader Validation Tests...', 'info');
+            
+            // Wait a moment for the page to fully load
+            setTimeout(async () => {
+                await testConfiguration();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await testHealth();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await testAPIEndpoints();
+                
+                log('Basic validation tests completed', 'success');
+            }, 1000);
+        });
+
+        // Global state for workflow testing
+        let currentTaskId = null;
+        let progressInterval = null;
+        let workflowActive = false;
+
+        // Complete Workflow Test
+        window.testCompleteWorkflow = async function() {
+            const resultsDiv = document.getElementById('workflow-results');
+            const submitBtn = document.getElementById('workflow-submit');
+            const cancelBtn = document.getElementById('workflow-cancel');
+            const progressContainer = document.getElementById('progress-container');
+            const statsContainer = document.getElementById('stats-container');
+
+            // Get form data
+            const playlists = document.getElementById('workflow-playlists').value
+                .split('\n')
+                .map(url => url.trim())
+                .filter(url => url.length > 0);
+            const directory = document.getElementById('workflow-directory').value.trim();
+            const outputFile = document.getElementById('workflow-output').value.trim();
+
+            // Validate inputs
+            if (playlists.length === 0) {
+                resultsDiv.innerHTML = '<div class="error">Please provide at least one playlist URL</div>';
+                return;
+            }
+
+            if (!directory) {
+                resultsDiv.innerHTML = '<div class="error">Please provide a download directory</div>';
+                return;
+            }
+
+            if (!outputFile) {
+                resultsDiv.innerHTML = '<div class="error">Please provide an output file name</div>';
+                return;
+            }
+
+            try {
+                workflowActive = true;
+                
+                // Update UI state
+                submitBtn.disabled = true;
+                submitBtn.textContent = '🔄 Starting...';
+                cancelBtn.disabled = false;
+                progressContainer.style.display = 'block';
+                statsContainer.style.display = 'none';
+
+                log('Starting complete workflow test...', 'info');
+
+                // Prepare request payload
+                const payload = {
+                    playlists: playlists,
+                    root_directory: directory,
+                    output_file: outputFile,
+                    options: {
+                        test_mode: true,
+                        include_transcripts: true,
+                        max_videos_per_playlist: 5  // Limit for testing
+                    }
+                };
+
+                log(`Submitting playlist download request: ${playlists.length} playlists`, 'info');
+
+                // Submit the request
+                const response = await fetch('/api/start-playlists', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': localStorage.getItem('api_key') || ''
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success' && result.task_id) {
+                    currentTaskId = result.task_id;
+                    
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Workflow Started Successfully</h4>
+                            <p>Task ID: ${currentTaskId}</p>
+                            <p>Output File: ${result.output_file || outputFile}</p>
+                            <p>Processing ${playlists.length} playlist(s)...</p>
+                        </div>
+                    `;
+
+                    // Start progress monitoring
+                    startProgressMonitoring(currentTaskId);
+                    log(`Workflow started with task ID: ${currentTaskId}`, 'success');
+
+                } else {
+                    throw new Error(result.error?.message || 'Failed to start workflow');
+                }
+
+            } catch (error) {
+                workflowActive = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Start Complete Workflow Test';
+                cancelBtn.disabled = true;
+                progressContainer.style.display = 'none';
+
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Workflow Test Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                log(`Workflow test failed: ${error.message}`, 'error');
+            }
+        };
+
+        // Cancel Workflow Test
+        window.cancelWorkflowTest = async function() {
+            if (!currentTaskId) return;
+
+            const cancelBtn = document.getElementById('workflow-cancel');
+            const originalText = cancelBtn.textContent;
+            
+            try {
+                cancelBtn.textContent = '🔄 Cancelling...';
+                cancelBtn.disabled = true;
+
+                log(`Cancelling task: ${currentTaskId}`, 'info');
+
+                const response = await fetch(`/api/cancel-playlists/${currentTaskId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    log('Task cancelled successfully', 'success');
+                    stopProgressMonitoring();
+                    showWorkflowComplete('Task cancelled by user', 'warning');
+                } else {
+                    throw new Error(result.error?.message || 'Failed to cancel task');
+                }
+
+            } catch (error) {
+                log(`Cancel failed: ${error.message}`, 'error');
+                cancelBtn.textContent = originalText;
+                cancelBtn.disabled = false;
+            }
+        };
+
+        // Progress Monitoring
+        function startProgressMonitoring(taskId) {
+            if (progressInterval) clearInterval(progressInterval);
+
+            progressInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/status/${taskId}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    const status = await response.json();
+                    updateProgressDisplay(status);
+
+                    // Check if task is complete
+                    if (status.status === 'completed' || status.status === 'failed' || status.status === 'cancelled') {
+                        stopProgressMonitoring();
+                        showWorkflowComplete(status);
+                    }
+
+                } catch (error) {
+                    log(`Progress check failed: ${error.message}`, 'warning');
+                }
+            }, 2000); // Check every 2 seconds
+        }
+
+        function stopProgressMonitoring() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+            workflowActive = false;
+        }
+
+        function updateProgressDisplay(status) {
+            const progressBar = document.getElementById('progress-bar');
+            const progressStatus = document.getElementById('progress-status');
+            const progressDetails = document.getElementById('progress-details');
+
+            const progress = status.progress || 0;
+            const progressPercent = Math.round(progress);
+
+            // Update progress bar
+            progressBar.style.width = `${progressPercent}%`;
+            progressBar.textContent = `${progressPercent}%`;
+
+            // Update status
+            let statusText = status.stage || status.status || 'Processing';
+            if (status.current_video) {
+                statusText += ` - ${status.current_video}`;
+            }
+            progressStatus.textContent = statusText;
+
+            // Update details
+            let details = [];
+            if (status.processed_videos !== undefined) {
+                details.push(`Videos: ${status.processed_videos}/${status.total_videos || '?'}`);
+            }
+            if (status.download_speed) {
+                details.push(`Speed: ${status.download_speed}`);
+            }
+            if (status.eta) {
+                details.push(`ETA: ${status.eta}`);
+            }
+            if (status.playlist_progress) {
+                details.push(`Playlist: ${status.playlist_progress.current}/${status.playlist_progress.total}`);
+            }
+
+            progressDetails.textContent = details.join(' | ');
+
+            log(`Progress: ${progressPercent}% - ${statusText}`, 'info');
+        }
+
+        function showWorkflowComplete(status, statusType = null) {
+            const submitBtn = document.getElementById('workflow-submit');
+            const cancelBtn = document.getElementById('workflow-cancel');
+            const progressContainer = document.getElementById('progress-container');
+            const statsContainer = document.getElementById('stats-container');
+            const statsDetails = document.getElementById('stats-details');
+            const statsSummary = document.getElementById('stats-summary');
+
+            // Reset UI state
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🚀 Start Complete Workflow Test';
+            cancelBtn.disabled = true;
+
+            // Show completion stats
+            progressContainer.style.display = 'none';
+            statsContainer.style.display = 'block';
+
+            let summaryClass = 'success';
+            let summaryIcon = '✅';
+            
+            if (typeof status === 'string') {
+                statsSummary.innerHTML = `<div class="${statusType || 'info'}">${summaryIcon} ${status}</div>`;
+                statsDetails.innerHTML = '<p>No detailed stats available</p>';
+                log(`Workflow completed: ${status}`, statusType || 'info');
+                return;
+            }
+
+            if (status.status === 'failed') {
+                summaryClass = 'error';
+                summaryIcon = '❌';
+            } else if (status.status === 'cancelled') {
+                summaryClass = 'warning';
+                summaryIcon = '⚠️';
+            }
+
+            // Summary
+            statsSummary.innerHTML = `
+                <div class="${summaryClass}">
+                    <h5>${summaryIcon} Workflow ${status.status?.toUpperCase() || 'COMPLETED'}</h5>
+                    <p>Task ID: ${currentTaskId}</p>
+                    <p>Final Progress: ${Math.round(status.progress || 0)}%</p>
+                </div>
+            `;
+
+            // Detailed stats
+            let detailsHtml = '<table style="width: 100%; border-collapse: collapse;">';
+            detailsHtml += '<tr style="border-bottom: 1px solid #ddd;"><th style="text-align: left; padding: 8px;">Metric</th><th style="text-align: left; padding: 8px;">Value</th></tr>';
+            
+            const stats = [
+                ['Status', status.status || 'Unknown'],
+                ['Total Videos', status.total_videos || 'N/A'],
+                ['Processed Videos', status.processed_videos || 'N/A'],
+                ['Success Rate', status.success_count && status.total_videos ? `${Math.round(status.success_count / status.total_videos * 100)}%` : 'N/A'],
+                ['Duration', status.duration ? `${Math.round(status.duration)}s` : 'N/A'],
+                ['Output File', status.output_file || 'N/A'],
+                ['Download Speed', status.download_speed || 'N/A'],
+                ['Errors', status.error_count || 0]
+            ];
+
+            stats.forEach(([key, value]) => {
+                detailsHtml += `<tr style="border-bottom: 1px solid #eee;"><td style="padding: 4px 8px; font-weight: bold;">${key}</td><td style="padding: 4px 8px;">${value}</td></tr>`;
+            });
+
+            detailsHtml += '</table>';
+
+            if (status.errors && status.errors.length > 0) {
+                detailsHtml += '<h6>Errors:</h6><ul>';
+                status.errors.forEach(error => {
+                    detailsHtml += `<li style="color: #dc3545;">${error}</li>`;
+                });
+                detailsHtml += '</ul>';
+            }
+
+            statsDetails.innerHTML = detailsHtml;
+
+            log(`Workflow completed with status: ${status.status}`, summaryClass);
+            currentTaskId = null;
+        }
+
+        // Sample data for manual testing
+        document.getElementById('playlist-url').value = 'https://www.youtube.com/playlist?list=PLQVvvaa0QuDeFZhcpWi5vFXB66FhEXaQ';
+        document.getElementById('download-path').value = '/workspace/modules/downloads/playlists';
+    </script>
+</body>
+</html>

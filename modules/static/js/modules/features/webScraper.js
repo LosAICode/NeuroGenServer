@@ -973,29 +973,333 @@ class WebScraper {
   }
 
   /**
-   * Handle task completion
+   * Handle task completion - Enhanced to match fileProcessor spec
    */
   handleTaskCompleted(data) {
-    console.log('✅ Task completed:', data);
+    try {
+      console.log('✅ Enhanced task completion started:', data);
+      
+      // Validate completion data
+      if (!this.validateTaskCompletion(data)) {
+        return;
+      }
+      
+      // Update state
+      this.state.processingState = 'completed';
+      
+      // Update task info
+      if (this.state.currentTask) {
+        this.state.currentTask.status = 'completed';
+        this.state.currentTask.endTime = Date.now();
+        this.state.currentTask.results = data;
+      }
+      
+      // Show completion progress first
+      this.showProgress(100, 'Task completed successfully!');
+      
+      // Enhanced cleanup
+      this.performEnhancedCleanup();
+      
+      // Update UI buttons
+      this.updateCompletionUI(data);
+      
+      // Trigger completion notifications
+      this.triggerCompletionNotifications(data);
+      
+      // Display enhanced results with stats screen (like fileProcessor)
+      this.displayEnhancedResults(data);
+      
+    } catch (error) {
+      console.error('❌ Error in enhanced task completion:', error);
+      this.performFallbackCompletion(data);
+    }
+  }
+
+  /**
+   * Validate task completion data
+   */
+  validateTaskCompletion(data) {
+    if (!data) {
+      console.warn('❌ No completion data provided');
+      return false;
+    }
     
+    if (!this.state.currentTask) {
+      console.warn('❌ No current task to complete');
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Enhanced cleanup after task completion
+   */
+  performEnhancedCleanup() {
+    // Clear any active intervals
+    if (this.progressInterval) {
+      clearInterval(this.progressInterval);
+      this.progressInterval = null;
+    }
+    
+    // Clean up active downloads
+    this.state.downloadQueue.clear();
+    this.state.processingQueue.clear();
+    
+    // Reset UI state
+    this.updateUI();
+  }
+
+  /**
+   * Update completion UI
+   */
+  updateCompletionUI(data) {
+    const webStartBtn = this.state.elements.get('web-start-btn');
+    const academicSearchBtn = this.state.elements.get('academic-search-btn');
+    const cancelBtn = this.state.elements.get('scraper-cancel-btn');
+    
+    if (webStartBtn) {
+      webStartBtn.disabled = false;
+      webStartBtn.textContent = 'Start Scraping';
+    }
+    
+    if (academicSearchBtn) {
+      academicSearchBtn.disabled = false;
+      academicSearchBtn.textContent = 'Search';
+    }
+    
+    if (cancelBtn) {
+      cancelBtn.style.display = 'none';
+    }
+  }
+
+  /**
+   * Trigger completion notifications
+   */
+  triggerCompletionNotifications(data) {
+    const message = `Web scraping completed! Processed ${data.stats?.urls_processed || 0} URLs, found ${data.stats?.pdfs_found || 0} PDFs.`;
+    this.showNotification(message, 'success', 'Web Scraper');
+  }
+
+  /**
+   * Display enhanced results with comprehensive stats (like fileProcessor)
+   */
+  displayEnhancedResults(data) {
+    // Prepare enhanced result data
+    const enhancedData = {
+      stats: data.stats || {},
+      output_file: data.output_file || data.output_directory,
+      task_id: data.task_id || this.state.currentTask?.id,
+      progress: 100,
+      message: 'Web scraping completed successfully!',
+      completionTime: Date.now(),
+      duration: this.state.currentTask ? (Date.now() - this.state.currentTask.startTime) : 0,
+      urls_processed: data.stats?.urls_processed || 0,
+      pdfs_found: data.stats?.pdfs_found || 0,
+      pdfs_downloaded: data.stats?.pdfs_downloaded || 0,
+      total_size: data.stats?.total_size || 0,
+      crawl_depth: data.stats?.current_depth || 0
+    };
+    
+    // Show result UI with enhanced delay for better UX
+    setTimeout(() => {
+      this.showEnhancedResult(enhancedData);
+    }, 600);
+  }
+
+  /**
+   * Show enhanced result with container transitions (like fileProcessor)
+   */
+  showEnhancedResult(data) {
+    // Find or create result container
+    let resultContainer = this.state.elements.get('scraper-result-container');
+    if (!resultContainer) {
+      resultContainer = this.createResultContainer();
+    }
+    
+    // Transition to result container
+    this.transitionToContainer(resultContainer);
+    
+    // Update result content with comprehensive stats
+    this.updateEnhancedResultStats(resultContainer, data);
+    
+    // Show success notification
+    this.showNotification('Web scraping completed successfully!', 'success', 'Web Scraper');
+  }
+
+  /**
+   * Create result container if it doesn't exist
+   */
+  createResultContainer() {
+    const progressContainer = this.state.elements.get('scraper-progress-container');
+    if (!progressContainer) return null;
+    
+    let resultContainer = document.getElementById('scraper-result-container');
+    if (!resultContainer) {
+      resultContainer = document.createElement('div');
+      resultContainer.id = 'scraper-result-container';
+      resultContainer.className = 'container-fluid mt-3';
+      resultContainer.style.display = 'none';
+      
+      // Insert after progress container
+      progressContainer.parentNode.insertBefore(resultContainer, progressContainer.nextSibling);
+      this.state.elements.set('scraper-result-container', resultContainer);
+    }
+    
+    return resultContainer;
+  }
+
+  /**
+   * Transition to container (like fileProcessor)
+   */
+  transitionToContainer(targetContainer) {
+    // Hide progress container
+    const progressContainer = this.state.elements.get('scraper-progress-container');
+    if (progressContainer) {
+      progressContainer.style.display = 'none';
+    }
+    
+    // Show target container with smooth transition
+    if (targetContainer) {
+      targetContainer.style.display = 'block';
+      targetContainer.style.opacity = '0';
+      targetContainer.style.transition = 'opacity 0.3s ease-in-out';
+      
+      setTimeout(() => {
+        targetContainer.style.opacity = '1';
+      }, 50);
+    }
+  }
+
+  /**
+   * Update result stats with comprehensive display (enhanced like fileProcessor)
+   */
+  updateEnhancedResultStats(resultContainer, data) {
+    if (!resultContainer) return;
+    
+    const duration = data.duration ? Math.round(data.duration / 1000) : 0;
+    const processingRate = duration > 0 ? Math.round(data.urls_processed / duration * 60) : 0;
+    const successRate = data.urls_processed > 0 ? Math.round((data.urls_processed / (data.urls_processed + (data.stats?.failed_urls || 0))) * 100) : 100;
+    
+    const resultHTML = `
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-check-circle me-2"></i>
+            Web Scraping Completed Successfully
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Summary Stats -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-primary" style="font-size: 2.5rem; font-weight: bold;">${data.urls_processed}</div>
+                <div class="stat-label text-muted">URLs Processed</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-info" style="font-size: 2.5rem; font-weight: bold;">${data.pdfs_found}</div>
+                <div class="stat-label text-muted">PDFs Found</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-success" style="font-size: 2.5rem; font-weight: bold;">${data.pdfs_downloaded}</div>
+                <div class="stat-label text-muted">PDFs Downloaded</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card text-center p-3 border rounded">
+                <div class="stat-value text-warning" style="font-size: 2.5rem; font-weight: bold;">${successRate}%</div>
+                <div class="stat-label text-muted">Success Rate</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Metrics -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div class="metric-item">
+                <strong><i class="fas fa-clock me-2"></i>Duration:</strong>
+                <span class="ms-2">${this.formatDuration(duration * 1000)}</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="metric-item">
+                <strong><i class="fas fa-tachometer-alt me-2"></i>Processing Rate:</strong>
+                <span class="ms-2">${processingRate} URLs/min</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="metric-item">
+                <strong><i class="fas fa-hdd me-2"></i>Total Size:</strong>
+                <span class="ms-2">${this.formatFileSize(data.total_size)}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Output Information -->
+          ${data.output_file ? `
+          <div class="output-section mb-4">
+            <h6><i class="fas fa-file-alt me-2"></i>Output File</h6>
+            <div class="d-flex align-items-center">
+              <code class="me-3">${data.output_file}</code>
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-primary" onclick="downloadFile('${data.output_file}')">
+                  <i class="fas fa-download me-1"></i>Download
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="openFile('${data.output_file}')">
+                  <i class="fas fa-external-link-alt me-1"></i>Open
+                </button>
+              </div>
+            </div>
+          </div>
+          ` : ''}
+
+          <!-- Additional Details -->
+          <div class="details-section">
+            <h6><i class="fas fa-info-circle me-2"></i>Scraping Details</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <ul class="list-unstyled">
+                  <li><strong>Task ID:</strong> <code>${data.task_id}</code></li>
+                  <li><strong>Crawl Depth:</strong> ${data.crawl_depth}</li>
+                  <li><strong>Completion Time:</strong> ${new Date(data.completionTime).toLocaleString()}</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="list-unstyled">
+                  <li><strong>Failed URLs:</strong> ${data.stats?.failed_urls || 0}</li>
+                  <li><strong>Unique Domains:</strong> ${data.stats?.unique_domains || 0}</li>
+                  <li><strong>Average Response Time:</strong> ${data.stats?.avg_response_time || 'N/A'}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Display -->
+          <div class="d-flex justify-content-between text-muted small mt-3 pt-3 border-top">
+            <span><i class="fas fa-globe me-1"></i>${data.urls_processed} URLs processed</span>
+            <span><i class="fas fa-clock me-1"></i>${this.formatDuration(duration * 1000)}</span>
+            <span><i class="fas fa-check-circle me-1"></i>${successRate}% success rate</span>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    resultContainer.innerHTML = resultHTML;
+  }
+
+  /**
+   * Fallback completion handler
+   */
+  performFallbackCompletion(data) {
+    console.warn('Using fallback completion handler');
     this.state.processingState = 'completed';
-    this.showProgress(100, 'Task completed successfully!');
-    
-    // Show results
-    this.showResults(data);
-    
-    // Update stats
-    if (data.stats) {
-      this.updateStats(data.stats);
-    }
-    
-    // Update task info
-    if (this.state.currentTask) {
-      this.state.currentTask.status = 'completed';
-      this.state.currentTask.endTime = Date.now();
-      this.state.currentTask.results = data;
-    }
-    
+    this.showProgress(100, 'Task completed with some issues');
+    this.showResults(data); // Use original method as fallback
     this.updateUI();
   }
 

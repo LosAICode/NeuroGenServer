@@ -32,7 +32,8 @@
       "Bash(pip3 install:*)",
       "Bash(kill:*)",
       "Bash(/usr/bin/rg:*)",
-      "Bash(diff:*)"
+      "Bash(diff:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": []
   },

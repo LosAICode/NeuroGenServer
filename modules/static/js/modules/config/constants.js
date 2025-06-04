@@ -103,9 +103,58 @@ const TASK_CONFIG = {
     file_processor: 'high',
     playlist_downloader: 'medium',
     web_scraper: 'medium',
-    academic_search: 'low',
+    academic_search: 'high',  // Elevated to high priority
     pdf_processor: 'high',
     management: 'critical'
+  },
+
+  // Academic Search Configuration - Complete source integration
+  ACADEMIC_SEARCH: {
+    // Supported academic sources
+    SEARCH_SOURCES: ['arxiv', 'semantic_scholar', 'openalex', 'pubmed', 'ieee', 'acm'],
+    DEFAULT_SOURCE: 'all',
+    MAX_RESULTS: 100,  // Increased for production
+    DEFAULT_LIMIT: 20,
+    RESULTS_PER_PAGE: 10,
+    
+    // Search operations
+    SUPPORTED_OPERATIONS: ['search', 'details', 'download', 'citations', 'recommendations', 'multi-source'],
+    
+    // Search types
+    SEARCH_TYPES: {
+      BASIC: 'basic',
+      ADVANCED: 'advanced',
+      CITATION: 'citation',
+      AUTHOR: 'author',
+      TITLE: 'title'
+    },
+    
+    // Result filtering
+    FILTERS: {
+      DATE_RANGES: ['all', 'last_year', 'last_5_years', 'last_10_years', 'custom'],
+      PUBLICATION_TYPES: ['all', 'journal', 'conference', 'preprint', 'book', 'thesis'],
+      SORT_OPTIONS: ['relevance', 'date', 'citations', 'title', 'author']
+    },
+    
+    // Source-specific limits
+    SOURCE_LIMITS: {
+      arxiv: 50,
+      semantic_scholar: 100,
+      openalex: 200,
+      pubmed: 50,
+      ieee: 25,
+      acm: 25
+    },
+
+    // API timeouts per source (ms)
+    SOURCE_TIMEOUTS: {
+      arxiv: 30000,
+      semantic_scholar: 45000,
+      openalex: 60000,
+      pubmed: 30000,
+      ieee: 45000,
+      acm: 45000
+    }
   }
 };
 

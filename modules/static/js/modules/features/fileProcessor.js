@@ -140,7 +140,9 @@ class FileProcessor {
         timeoutIds: new Set(),
         checkIntervalMs: 5000, // Check every 5 seconds
         maxStuckDurationMs: 30000 // Consider stuck after 30 seconds with no updates
-      }
+      },
+      // Progress tracker instance
+      progressTracker: null
     };
     
     // Initialize config with safe defaults - will be properly set in init()
@@ -1330,10 +1332,9 @@ class FileProcessor {
         // Force progress to 100% for completed tasks
         this.showProgress(100, data.message || "Task completed successfully", data.stats);
         
-        // Complete the task after brief delay to ensure UI is updated
-        setTimeout(() => {
-          this.handleTaskCompleted(data);
-        }, 500);
+        // Complete the task immediately - no delay needed
+        console.log('🎯 [FileProcessor] Completing task immediately...');
+        this.handleTaskCompleted(data);
       }
       else if (data.status === "failed" || data.status === "error") {
         this.handleTaskError(data);
@@ -1365,6 +1366,9 @@ class FileProcessor {
   handleTaskCompleted(data) {
     try {
       console.log('✅ [FileProcessor] Task completion received:', data);
+      console.log('🔍 [FileProcessor] DEBUGGING - Full data structure:', JSON.stringify(data, null, 2));
+      console.log('🔍 [FileProcessor] DEBUGGING - Stats field:', data.stats);
+      console.log('🔍 [FileProcessor] DEBUGGING - Stats type:', typeof data.stats);
       
       // Enhanced completion validation with multiple checks
       if (!this.validateTaskCompletion(data)) {
@@ -1554,25 +1558,22 @@ class FileProcessor {
         duration: this.state.currentTask ? (Date.now() - this.state.currentTask.startTime) : 0
       };
       
-      // Show result UI with enhanced delay for better UX
-      setTimeout(() => {
-        this.showResult(enhancedData);
-      }, 600);
+      // IMMEDIATE transition to results - no delay
+      console.log('🎯 [FileProcessor] Transitioning to results immediately...');
+      this.showResult(enhancedData);
       
-      console.log('🎯 [FileProcessor] Enhanced results display scheduled');
+      console.log('🎯 [FileProcessor] Enhanced results displayed immediately');
     } catch (error) {
       console.error('❌ [FileProcessor] Error displaying enhanced results:', error);
       
-      // Fallback to basic result display
-      setTimeout(() => {
-        this.showResult({
-          stats: data.stats || {},
-          output_file: data.output_file,
-          task_id: data.task_id,
-          progress: 100,
-          message: 'Processing completed successfully!'
-        });
-      }, 500);
+      // Fallback to basic result display - also immediate
+      this.showResult({
+        stats: data.stats || {},
+        output_file: data.output_file,
+        task_id: data.task_id,
+        progress: 100,
+        message: 'Processing completed successfully!'
+      });
     }
   }
 
@@ -1595,16 +1596,15 @@ class FileProcessor {
       // Basic notifications
       this.showNotification('Task completed (using fallback method)', 'success', 'File Processor');
       
-      // Basic result display
-      setTimeout(() => {
-        this.showResult({
-          stats: data?.stats || {},
-          output_file: data?.output_file,
-          task_id: data?.task_id,
-          progress: 100,
-          message: 'Processing completed!'
-        });
-      }, 800);
+      // Basic result display - immediate
+      console.log('🎯 [FileProcessor] Fallback completion - showing result immediately...');
+      this.showResult({
+        stats: data?.stats || {},
+        output_file: data?.output_file,
+        task_id: data?.task_id,
+        progress: 100,
+        message: 'Processing completed!'
+      });
       
       console.log('✅ [FileProcessor] Fallback completion handling completed');
     } catch (error) {
@@ -2590,16 +2590,28 @@ class FileProcessor {
   }
 
   /**
-   * Show file preview in modal or new window
+   * Show file preview in modal or new window (Enhanced for multiple formats)
    */
   showFilePreview(filePath) {
     console.log(`Showing preview for: ${filePath}`);
     
-    // For JSON files, try to fetch and display content
-    if (filePath.endsWith('.json')) {
-      this.previewJsonFile(filePath);
-    } else {
-      this.showNotification('Preview not available for this file type', 'info', 'File Processor');
+    // Detect file type and handle accordingly
+    const fileExtension = filePath.toLowerCase().split('.').pop();
+    
+    switch (fileExtension) {
+      case 'json':
+        this.previewJsonFile(filePath);
+        break;
+      case 'md':
+      case 'markdown':
+        this.previewMarkdownFile(filePath);
+        break;
+      case 'txt':
+      case 'log':
+        this.previewTextFile(filePath);
+        break;
+      default:
+        this.showNotification('Preview available for .json, .md, and .txt files', 'info', 'File Processor');
     }
   }
 
@@ -2613,17 +2625,21 @@ class FileProcessor {
         const content = await response.text();
         const jsonData = JSON.parse(content);
         
-        // Create a simple preview modal
+        // Create enhanced JSON preview modal
         const preview = `
           <div class="modal fade" id="filePreviewModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title"><i class="fas fa-file-code me-2"></i>File Preview: ${filePath.split('/').pop()}</h5>
+                  <h5 class="modal-title"><i class="fas fa-file-code me-2"></i>JSON Preview: ${filePath.split('/').pop()}</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                  <pre style="max-height: 400px; overflow-y: auto; background: #f8f9fa; padding: 1rem; border-radius: 0.5rem;"><code>${JSON.stringify(jsonData, null, 2)}</code></pre>
+                  <div class="d-flex justify-content-between mb-3">
+                    <span class="badge bg-primary">JSON Format</span>
+                    <span class="text-muted small">File size: ${(content.length / 1024).toFixed(1)} KB</span>
+                  </div>
+                  <pre style="max-height: 500px; overflow-y: auto; background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; font-size: 0.85rem;"><code>${JSON.stringify(jsonData, null, 2)}</code></pre>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -2633,23 +2649,197 @@ class FileProcessor {
             </div>
           </div>
         `;
-        
-        // Remove existing modal if any
-        const existing = document.getElementById('filePreviewModal');
-        if (existing) existing.remove();
-        
-        // Add modal to page and show it
-        document.body.insertAdjacentHTML('beforeend', preview);
-        const modal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
-        modal.show();
+        this.showPreviewModal(preview);
         
       } else {
         throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
-      console.error('Preview error:', error);
-      this.showNotification('Unable to preview file - file may not be accessible', 'error', 'File Processor');
+      console.error('JSON preview error:', error);
+      this.showNotification('Unable to preview JSON file - file may not be accessible', 'error', 'File Processor');
     }
+  }
+
+  /**
+   * Preview Markdown file content
+   */
+  async previewMarkdownFile(filePath) {
+    try {
+      const response = await fetch(`/api/file-content?file=${encodeURIComponent(filePath)}`);
+      if (response.ok) {
+        const content = await response.text();
+        
+        // Basic markdown to HTML conversion for preview
+        const htmlContent = this.markdownToHtml(content);
+        
+        const preview = `
+          <div class="modal fade" id="filePreviewModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title"><i class="fas fa-file-alt me-2"></i>Markdown Preview: ${filePath.split('/').pop()}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="d-flex justify-content-between mb-3">
+                    <span class="badge bg-info">Markdown Format</span>
+                    <div>
+                      <span class="text-muted small me-3">File size: ${(content.length / 1024).toFixed(1)} KB</span>
+                      <button class="btn btn-sm btn-outline-secondary" onclick="window.fileProcessor.toggleMarkdownView()" id="toggleViewBtn">Show Raw</button>
+                    </div>
+                  </div>
+                  <div id="markdownRendered" style="max-height: 500px; overflow-y: auto; padding: 1rem; border: 1px solid #dee2e6; border-radius: 0.5rem;">
+                    ${htmlContent}
+                  </div>
+                  <div id="markdownRaw" style="max-height: 500px; overflow-y: auto; background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; display: none;">
+                    <pre><code>${content}</code></pre>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="window.fileProcessor.downloadFile('${filePath}')">Download</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        this.showPreviewModal(preview);
+        
+      } else {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Markdown preview error:', error);
+      this.showNotification('Unable to preview Markdown file - file may not be accessible', 'error', 'File Processor');
+    }
+  }
+
+  /**
+   * Preview text file content
+   */
+  async previewTextFile(filePath) {
+    try {
+      const response = await fetch(`/api/file-content?file=${encodeURIComponent(filePath)}`);
+      if (response.ok) {
+        const content = await response.text();
+        
+        const preview = `
+          <div class="modal fade" id="filePreviewModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title"><i class="fas fa-file-text me-2"></i>Text Preview: ${filePath.split('/').pop()}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="d-flex justify-content-between mb-3">
+                    <span class="badge bg-secondary">Text Format</span>
+                    <span class="text-muted small">File size: ${(content.length / 1024).toFixed(1)} KB</span>
+                  </div>
+                  <pre style="max-height: 500px; overflow-y: auto; background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; font-size: 0.9rem; white-space: pre-wrap;">${content}</pre>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="window.fileProcessor.downloadFile('${filePath}')">Download</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        this.showPreviewModal(preview);
+        
+      } else {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Text preview error:', error);
+      this.showNotification('Unable to preview text file - file may not be accessible', 'error', 'File Processor');
+    }
+  }
+
+  /**
+   * Helper function to show preview modal
+   */
+  showPreviewModal(modalHtml) {
+    // Remove existing modal if any
+    const existing = document.getElementById('filePreviewModal');
+    if (existing) existing.remove();
+    
+    // Add modal to page and show it
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
+    modal.show();
+  }
+
+  /**
+   * Toggle between rendered and raw markdown view
+   */
+  toggleMarkdownView() {
+    const rendered = document.getElementById('markdownRendered');
+    const raw = document.getElementById('markdownRaw');
+    const toggleBtn = document.getElementById('toggleViewBtn');
+    
+    if (rendered && raw && toggleBtn) {
+      if (rendered.style.display === 'none') {
+        rendered.style.display = 'block';
+        raw.style.display = 'none';
+        toggleBtn.textContent = 'Show Raw';
+      } else {
+        rendered.style.display = 'none';
+        raw.style.display = 'block';
+        toggleBtn.textContent = 'Show Rendered';
+      }
+    }
+  }
+
+  /**
+   * Basic markdown to HTML conversion for preview
+   */
+  markdownToHtml(markdown) {
+    let html = markdown;
+    
+    // Convert YAML frontmatter to formatted block
+    html = html.replace(/^---\n([\s\S]*?)\n---\n/m, (_, frontmatter) => {
+      return `<div class="alert alert-light"><strong>Frontmatter:</strong><pre class="mt-2 mb-0">${frontmatter}</pre></div>\n`;
+    });
+    
+    // Headers
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    
+    // Bold and italic
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+    html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+    
+    // Links
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+    
+    // Lists
+    html = html.replace(/^\* (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    
+    // Line breaks
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = '<p>' + html + '</p>';
+    
+    // Clean up empty paragraphs and fix formatting
+    html = html.replace(/<p><\/p>/g, '');
+    html = html.replace(/<p>(<h[1-6]>)/g, '$1');
+    html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<ul>)/g, '$1');
+    html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<pre>)/g, '$1');
+    html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<div)/g, '$1');
+    html = html.replace(/(<\/div>)<\/p>/g, '$1');
+    
+    return html;
   }
 
   /**

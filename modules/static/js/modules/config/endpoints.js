@@ -43,11 +43,18 @@ export const API_ENDPOINTS = Object.freeze({
     DOWNLOAD_FILE: '/api/download-file/:filePath'
   },
 
-  // Academic Search Endpoints (features/academic_search.py)
+  // Academic Search Endpoints (features/academic_search.py) - Complete integration
   ACADEMIC: {
     SEARCH: '/api/academic/search',
+    MULTI_SOURCE: '/api/academic/multi-source',
+    DETAILS: '/api/academic/details/:id',
+    DOWNLOAD: '/api/academic/download/:id',
+    DOWNLOAD_PDF: '/api/academic/download-pdf',
+    CITATIONS: '/api/academic/citations/:id',
+    RECOMMENDATIONS: '/api/academic/recommendations/:id',
     HEALTH: '/api/academic/health',
-    DOWNLOAD: '/api/academic/download'
+    STATUS: '/api/academic/status/:taskId',
+    CANCEL: '/api/academic/cancel/:taskId'
   },
 
   // PDF Processing Endpoints (features/pdf_processor.py)
@@ -68,12 +75,21 @@ export const API_ENDPOINTS = Object.freeze({
     HEALTH: '/api/pdf/health'
   },
 
-  // Task Management Endpoints (api/management.py)
+  // Task Management Endpoints (api/management.py + task_api_routes.py)
   TASK: {
     LIST: '/api/tasks',
     CANCEL: '/api/cancel/:taskId',
     ANALYTICS: '/api/analytics',
-    EXPORT: '/api/export/:taskId'
+    EXPORT: '/api/export/:taskId',
+    PROGRESS: '/api/progress/:taskId',
+    STATUS: '/api/status/:taskId',
+    TASK_STATUS: '/api/task/:taskId/status',
+    TASK_STATUS_ALT: '/api/task_status/:taskId',
+    CREATE: '/api/task/create',
+    UPDATE: '/api/task/:taskId/update',
+    COMPLETE: '/api/task/:taskId/complete',
+    FAIL: '/api/task/:taskId/fail',
+    HISTORY: '/api/history'
   },
 
   // API Key Management (api/management.py)
@@ -109,8 +125,11 @@ export const BLUEPRINT_ROUTES = Object.freeze({
     blueprint_name: 'file_processor',
     url_prefix: '/api',
     methods: {
-      '/api/process': ['POST'],
+      '/api/process': ['POST', 'HEAD'],
       '/api/status/:taskId': ['GET'],
+      '/api/progress/:taskId': ['GET'],
+      '/api/task/:taskId/status': ['GET'],
+      '/api/task_status/:taskId': ['GET'],
       '/api/download/:taskId': ['GET'],
       '/api/open/:taskId': ['GET'],
       '/api/detect-path': ['POST'],
@@ -126,7 +145,7 @@ export const BLUEPRINT_ROUTES = Object.freeze({
     blueprint_name: 'playlist_downloader',
     url_prefix: '/api',
     methods: {
-      '/api/start-playlists': ['POST'],
+      '/api/start-playlists': ['POST', 'HEAD'],
       '/api/cancel-playlists/:taskId': ['POST']
     }
   },
@@ -137,7 +156,7 @@ export const BLUEPRINT_ROUTES = Object.freeze({
     blueprint_name: 'web_scraper',
     url_prefix: '/api',
     methods: {
-      '/api/scrape2': ['POST'],
+      '/api/scrape2': ['POST', 'HEAD'],
       '/api/scrape2/status/:taskId': ['GET'],
       '/api/scrape2/cancel/:taskId': ['POST'],
       '/api/health-enhanced': ['GET'],

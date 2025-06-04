@@ -205,6 +205,13 @@ def register_blueprints(app):
     app.register_blueprint(analytics_bp)
     app.register_blueprint(diagnostics_bp)
     
+    # Task API routes for progress tracking and status  
+    try:
+        from task_api_routes import register_task_api
+        register_task_api(app)
+    except ImportError:
+        logger.warning("Task API routes not available")
+    
     logger.info("All blueprints registered successfully")
 
 

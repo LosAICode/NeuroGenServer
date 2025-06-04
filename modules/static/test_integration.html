@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebScraper & PDF Downloader Integration Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: white; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeeba; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 12px 20px; margin: 8px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #fd7e14; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        button:hover { opacity: 0.9; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        #results { margin-top: 20px; }
+        .log { font-family: monospace; background: #f8f9fa; padding: 12px; margin: 8px 0; border-radius: 5px; border-left: 4px solid #007bff; }
+        .progress-container { margin: 15px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; }
+        .progress-bar-container { background: #e9ecef; border-radius: 10px; height: 25px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { background: linear-gradient(90deg, #007bff, #0056b3); height: 100%; border-radius: 10px; width: 0%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; }
+        .stats-container { margin: 15px 0; padding: 20px; border: 1px solid #28a745; border-radius: 8px; background: #f8fff9; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0; }
+        .stat-card { background: white; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; text-align: center; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #007bff; }
+        .stat-label { font-size: 12px; color: #6c757d; text-transform: uppercase; }
+        .test-form { background: #f1f3f4; padding: 20px; border-radius: 8px; margin: 15px 0; }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .module-tabs { display: flex; margin-bottom: 20px; }
+        .module-tab { padding: 10px 20px; background: #e9ecef; border: 1px solid #ccc; cursor: pointer; margin-right: 5px; }
+        .module-tab.active { background: #007bff; color: white; }
+        .module-content { display: none; }
+        .module-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <h1>🔬 WebScraper & PDF Downloader Integration Test</h1>
+    <p>Testing complete submit button → progress handler → stats screen workflow like fileProcessor</p>
+
+    <!-- Module Tabs -->
+    <div class="module-tabs">
+        <div class="module-tab active" onclick="switchModule('webscraper')">🕷️ Web Scraper</div>
+        <div class="module-tab" onclick="switchModule('pdfdownloader')">📄 PDF Downloader</div>
+        <div class="module-tab" onclick="switchModule('comparison')">📊 Comparison</div>
+    </div>
+
+    <!-- Web Scraper Module Test -->
+    <div id="webscraper" class="module-content active">
+        <div class="test-section">
+            <h3>🕷️ Web Scraper Integration Test</h3>
+            
+            <div class="test-form">
+                <h4>Scraping Configuration</h4>
+                <div class="form-group">
+                    <label>URLs to Scrape (one per line):</label>
+                    <textarea id="ws-urls" rows="3" placeholder="https://example.com
+https://docs.python.org
+https://www.nature.com"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Output File:</label>
+                    <input type="text" id="ws-output" value="webscraper_test_results.json">
+                </div>
+                <div class="form-group">
+                    <label>Download PDFs:</label>
+                    <select id="ws-download-pdfs">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Max Depth:</label>
+                    <input type="number" id="ws-max-depth" value="2" min="1" max="5">
+                </div>
+            </div>
+
+            <button id="ws-submit" class="btn-primary" onclick="testWebScraperWorkflow()">
+                🚀 Start Web Scraper Test
+            </button>
+            <button id="ws-cancel" class="btn-danger" onclick="cancelWebScraperTest()" disabled>
+                ❌ Cancel Test
+            </button>
+
+            <div id="ws-results"></div>
+            
+            <!-- Progress Display -->
+            <div id="ws-progress-container" class="progress-container" style="display: none;">
+                <h4>📊 Web Scraper Progress</h4>
+                <div class="progress-bar-container">
+                    <div id="ws-progress-bar" class="progress-bar">0%</div>
+                </div>
+                <div id="ws-progress-status">Initializing...</div>
+                <div id="ws-progress-details" style="font-family: monospace; font-size: 12px; margin-top: 10px;"></div>
+            </div>
+
+            <!-- Stats Display -->
+            <div id="ws-stats-container" class="stats-container" style="display: none;">
+                <h4>📈 Web Scraper Completion Stats</h4>
+                <div id="ws-stats-summary"></div>
+                <div class="stats-grid" id="ws-stats-grid"></div>
+                <div id="ws-stats-details"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Downloader Module Test -->
+    <div id="pdfdownloader" class="module-content">
+        <div class="test-section">
+            <h3>📄 PDF Downloader Integration Test</h3>
+            
+            <div class="test-form">
+                <h4>PDF Download Configuration</h4>
+                <div class="form-group">
+                    <label>Search Query:</label>
+                    <input type="text" id="pdf-query" value="machine learning" placeholder="Enter search terms">
+                </div>
+                <div class="form-group">
+                    <label>Data Sources:</label>
+                    <select id="pdf-sources" multiple>
+                        <option value="arxiv" selected>arXiv</option>
+                        <option value="semantic_scholar">Semantic Scholar</option>
+                        <option value="pubmed">PubMed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Max Results:</label>
+                    <input type="number" id="pdf-max-results" value="5" min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label>Output Directory:</label>
+                    <input type="text" id="pdf-output-dir" value="/workspace/modules/downloads/pdf_test">
+                </div>
+            </div>
+
+            <button id="pdf-submit" class="btn-primary" onclick="testPDFDownloaderWorkflow()">
+                🚀 Start PDF Downloader Test
+            </button>
+            <button id="pdf-cancel" class="btn-danger" onclick="cancelPDFDownloaderTest()" disabled>
+                ❌ Cancel Test
+            </button>
+
+            <div id="pdf-results"></div>
+            
+            <!-- Progress Display -->
+            <div id="pdf-progress-container" class="progress-container" style="display: none;">
+                <h4>📊 PDF Downloader Progress</h4>
+                <div class="progress-bar-container">
+                    <div id="pdf-progress-bar" class="progress-bar">0%</div>
+                </div>
+                <div id="pdf-progress-status">Initializing...</div>
+                <div id="pdf-progress-details" style="font-family: monospace; font-size: 12px; margin-top: 10px;"></div>
+            </div>
+
+            <!-- Stats Display -->
+            <div id="pdf-stats-container" class="stats-container" style="display: none;">
+                <h4>📈 PDF Download Completion Stats</h4>
+                <div id="pdf-stats-summary"></div>
+                <div class="stats-grid" id="pdf-stats-grid"></div>
+                <div id="pdf-stats-details"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Module -->
+    <div id="comparison" class="module-content">
+        <div class="test-section">
+            <h3>📊 Integration Comparison</h3>
+            <p>Compare the integration quality of Web Scraper and PDF Downloader vs. File Processor</p>
+            
+            <button class="btn-success" onclick="runComparisonTest()">🔍 Run Integration Comparison</button>
+            
+            <div id="comparison-results"></div>
+        </div>
+    </div>
+
+    <div id="results"></div>
+
+    <script type="module">
+        // Global state
+        let testResults = [];
+        let currentWSTask = null;
+        let currentPDFTask = null;
+        let progressIntervals = new Map();
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            console.log(logEntry);
+            
+            const resultsDiv = document.getElementById('results');
+            const logDiv = document.createElement('div');
+            logDiv.className = `log ${type}`;
+            logDiv.textContent = logEntry;
+            resultsDiv.appendChild(logDiv);
+            
+            testResults.push({ timestamp, message, type });
+        }
+
+        // Module switching
+        window.switchModule = function(moduleId) {
+            // Update tabs
+            document.querySelectorAll('.module-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[onclick="switchModule('${moduleId}')"]`).classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.module-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(moduleId).classList.add('active');
+        };
+
+        // Web Scraper Test
+        window.testWebScraperWorkflow = async function() {
+            const urlsTextarea = document.getElementById('ws-urls');
+            const outputFile = document.getElementById('ws-output').value.trim();
+            const downloadPdfs = document.getElementById('ws-download-pdfs').value === 'true';
+            const maxDepth = parseInt(document.getElementById('ws-max-depth').value);
+            
+            const urls = urlsTextarea.value.split('\n')
+                .map(url => url.trim())
+                .filter(url => url.length > 0);
+
+            if (urls.length === 0) {
+                document.getElementById('ws-results').innerHTML = '<div class="error">Please provide at least one URL</div>';
+                return;
+            }
+
+            try {
+                // Update UI
+                document.getElementById('ws-submit').disabled = true;
+                document.getElementById('ws-cancel').disabled = false;
+                document.getElementById('ws-progress-container').style.display = 'block';
+                document.getElementById('ws-stats-container').style.display = 'none';
+
+                log('Starting Web Scraper workflow test...', 'info');
+
+                // Prepare payload
+                const payload = {
+                    urls: urls,
+                    output_file: outputFile,
+                    options: {
+                        download_pdfs: downloadPdfs,
+                        max_depth: maxDepth,
+                        test_mode: true
+                    }
+                };
+
+                // Submit request
+                const response = await fetch('/api/scrape2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': localStorage.getItem('api_key') || ''
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.task_id) {
+                    currentWSTask = result.task_id;
+                    log(`Web Scraper task started: ${currentWSTask}`, 'success');
+                    startProgressMonitoring('ws', currentWSTask);
+                } else {
+                    throw new Error(result.error?.message || 'Failed to start web scraper');
+                }
+
+            } catch (error) {
+                log(`Web Scraper test failed: ${error.message}`, 'error');
+                resetWebScraperUI();
+            }
+        };
+
+        // PDF Downloader Test
+        window.testPDFDownloaderWorkflow = async function() {
+            const query = document.getElementById('pdf-query').value.trim();
+            const sources = Array.from(document.getElementById('pdf-sources').selectedOptions).map(opt => opt.value);
+            const maxResults = parseInt(document.getElementById('pdf-max-results').value);
+            const outputDir = document.getElementById('pdf-output-dir').value.trim();
+
+            if (!query) {
+                document.getElementById('pdf-results').innerHTML = '<div class="error">Please provide a search query</div>';
+                return;
+            }
+
+            try {
+                // Update UI
+                document.getElementById('pdf-submit').disabled = true;
+                document.getElementById('pdf-cancel').disabled = false;
+                document.getElementById('pdf-progress-container').style.display = 'block';
+                document.getElementById('pdf-stats-container').style.display = 'none';
+
+                log('Starting PDF Downloader workflow test...', 'info');
+
+                // First search for papers
+                const searchPayload = {
+                    query: query,
+                    sources: sources,
+                    max_results: maxResults
+                };
+
+                const searchResponse = await fetch('/api/academic/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(searchPayload)
+                });
+
+                const searchResult = await searchResponse.json();
+
+                if (searchResult.results && searchResult.results.length > 0) {
+                    log(`Found ${searchResult.results.length} papers, starting downloads...`, 'info');
+                    
+                    // Start download
+                    const downloadPayload = {
+                        pdfs: searchResult.results.slice(0, 3).map(paper => ({
+                            url: paper.pdf_url || paper.url,
+                            title: paper.title,
+                            filename: `${paper.title.substring(0, 50).replace(/[^a-zA-Z0-9]/g, '_')}.pdf`
+                        })),
+                        output_directory: outputDir
+                    };
+
+                    const downloadResponse = await fetch('/api/pdf/download', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(downloadPayload)
+                    });
+
+                    const downloadResult = await downloadResponse.json();
+
+                    if (downloadResult.task_id) {
+                        currentPDFTask = downloadResult.task_id;
+                        log(`PDF download task started: ${currentPDFTask}`, 'success');
+                        startProgressMonitoring('pdf', currentPDFTask);
+                    } else {
+                        throw new Error(downloadResult.error?.message || 'Failed to start PDF downloads');
+                    }
+                } else {
+                    throw new Error('No papers found for the search query');
+                }
+
+            } catch (error) {
+                log(`PDF Downloader test failed: ${error.message}`, 'error');
+                resetPDFDownloaderUI();
+            }
+        };
+
+        // Progress Monitoring
+        function startProgressMonitoring(module, taskId) {
+            const intervalId = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/status/${taskId}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        const status = await response.json();
+                        updateProgressDisplay(module, status);
+
+                        if (status.status === 'completed' || status.status === 'failed' || status.status === 'cancelled') {
+                            clearInterval(intervalId);
+                            progressIntervals.delete(module);
+                            showCompletionStats(module, status);
+                        }
+                    }
+                } catch (error) {
+                    log(`Progress check failed for ${module}: ${error.message}`, 'warning');
+                }
+            }, 2000);
+
+            progressIntervals.set(module, intervalId);
+        }
+
+        function updateProgressDisplay(module, status) {
+            const progressBar = document.getElementById(`${module}-progress-bar`);
+            const progressStatus = document.getElementById(`${module}-progress-status`);
+            const progressDetails = document.getElementById(`${module}-progress-details`);
+
+            const progress = Math.round(status.progress || 0);
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${progress}%`;
+
+            let statusText = status.stage || status.status || 'Processing';
+            if (status.current_url) {
+                statusText += ` - ${status.current_url}`;
+            }
+            progressStatus.textContent = statusText;
+
+            let details = [];
+            if (status.processed_urls !== undefined) {
+                details.push(`URLs: ${status.processed_urls}/${status.total_urls || '?'}`);
+            }
+            if (status.downloaded_pdfs !== undefined) {
+                details.push(`PDFs: ${status.downloaded_pdfs}`);
+            }
+            if (status.processing_speed) {
+                details.push(`Speed: ${status.processing_speed}`);
+            }
+
+            progressDetails.textContent = details.join(' | ');
+        }
+
+        function showCompletionStats(module, status) {
+            const progressContainer = document.getElementById(`${module}-progress-container`);
+            const statsContainer = document.getElementById(`${module}-stats-container`);
+            const statsSummary = document.getElementById(`${module}-stats-summary`);
+            const statsGrid = document.getElementById(`${module}-stats-grid`);
+            const statsDetails = document.getElementById(`${module}-stats-details`);
+
+            // Hide progress, show stats
+            progressContainer.style.display = 'none';
+            statsContainer.style.display = 'block';
+
+            // Summary
+            const statusClass = status.status === 'completed' ? 'success' : 'error';
+            const statusIcon = status.status === 'completed' ? '✅' : '❌';
+            
+            statsSummary.innerHTML = `
+                <div class="${statusClass}">
+                    <h5>${statusIcon} ${module.toUpperCase()} ${status.status?.toUpperCase()}</h5>
+                    <p>Task ID: ${status.task_id}</p>
+                    <p>Final Progress: ${Math.round(status.progress || 0)}%</p>
+                </div>
+            `;
+
+            // Stats grid
+            const stats = [
+                { label: 'Status', value: status.status || 'Unknown' },
+                { label: 'Total Items', value: status.total_urls || status.total_pdfs || 'N/A' },
+                { label: 'Processed', value: status.processed_urls || status.downloaded_pdfs || 'N/A' },
+                { label: 'Success Rate', value: status.success_rate ? `${Math.round(status.success_rate * 100)}%` : 'N/A' },
+                { label: 'Duration', value: status.duration ? `${Math.round(status.duration)}s` : 'N/A' },
+                { label: 'Output File', value: status.output_file || 'N/A' }
+            ];
+
+            statsGrid.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="stat-value">${stat.value}</div>
+                    <div class="stat-label">${stat.label}</div>
+                </div>
+            `).join('');
+
+            // Reset UI
+            if (module === 'ws') {
+                resetWebScraperUI();
+            } else {
+                resetPDFDownloaderUI();
+            }
+
+            log(`${module.toUpperCase()} workflow completed with status: ${status.status}`, statusClass);
+        }
+
+        // Cancel functions
+        window.cancelWebScraperTest = async function() {
+            if (currentWSTask) {
+                try {
+                    await fetch(`/api/scrape2/cancel/${currentWSTask}`, { method: 'POST' });
+                    log('Web Scraper task cancelled', 'warning');
+                } catch (error) {
+                    log(`Cancel failed: ${error.message}`, 'error');
+                }
+                resetWebScraperUI();
+            }
+        };
+
+        window.cancelPDFDownloaderTest = async function() {
+            if (currentPDFTask) {
+                try {
+                    await fetch(`/api/pdf/cancel/${currentPDFTask}`, { method: 'POST' });
+                    log('PDF Downloader task cancelled', 'warning');
+                } catch (error) {
+                    log(`Cancel failed: ${error.message}`, 'error');
+                }
+                resetPDFDownloaderUI();
+            }
+        };
+
+        function resetWebScraperUI() {
+            document.getElementById('ws-submit').disabled = false;
+            document.getElementById('ws-cancel').disabled = true;
+            currentWSTask = null;
+            if (progressIntervals.has('ws')) {
+                clearInterval(progressIntervals.get('ws'));
+                progressIntervals.delete('ws');
+            }
+        }
+
+        function resetPDFDownloaderUI() {
+            document.getElementById('pdf-submit').disabled = false;
+            document.getElementById('pdf-cancel').disabled = true;
+            currentPDFTask = null;
+            if (progressIntervals.has('pdf')) {
+                clearInterval(progressIntervals.get('pdf'));
+                progressIntervals.delete('pdf');
+            }
+        }
+
+        // Comparison Test
+        window.runComparisonTest = async function() {
+            const resultsDiv = document.getElementById('comparison-results');
+            
+            log('Running integration comparison test...', 'info');
+            
+            resultsDiv.innerHTML = `
+                <div class="info">
+                    <h4>🔍 Integration Quality Assessment</h4>
+                    <p>Comparing Web Scraper and PDF Downloader integration vs. File Processor spec...</p>
+                </div>
+            `;
+
+            // Test each module's capabilities
+            const modules = [
+                { name: 'File Processor', id: 'fileProcessor', baseline: true },
+                { name: 'Web Scraper', id: 'webScraper', baseline: false },
+                { name: 'PDF Downloader', id: 'pdfDownloader', baseline: false }
+            ];
+
+            const features = [
+                'Submit Button Integration',
+                'SocketIO Event Handling',
+                'Progress Handler Integration', 
+                'Stats Screen Display',
+                'Container Transitions',
+                'Comprehensive Completion',
+                'Error Handling',
+                'Configuration Compliance'
+            ];
+
+            let comparisonHTML = '<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">';
+            comparisonHTML += '<tr style="background: #f8f9fa;"><th style="padding: 12px; border: 1px solid #dee2e6;">Feature</th>';
+            modules.forEach(module => {
+                comparisonHTML += `<th style="padding: 12px; border: 1px solid #dee2e6;">${module.name}</th>`;
+            });
+            comparisonHTML += '</tr>';
+
+            // Mock comparison results (in real implementation, this would test actual functionality)
+            const scores = {
+                fileProcessor: [true, true, true, true, true, true, true, true],
+                webScraper: [true, true, true, false, false, false, true, true],
+                pdfDownloader: [true, true, true, false, false, false, true, true]
+            };
+
+            features.forEach((feature, index) => {
+                comparisonHTML += `<tr><td style="padding: 8px; border: 1px solid #dee2e6; font-weight: bold;">${feature}</td>`;
+                modules.forEach(module => {
+                    const score = scores[module.id][index];
+                    const icon = score ? '✅' : '❌';
+                    const bgColor = score ? '#d4edda' : '#f8d7da';
+                    comparisonHTML += `<td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; background: ${bgColor};">${icon}</td>`;
+                });
+                comparisonHTML += '</tr>';
+            });
+
+            comparisonHTML += '</table>';
+
+            comparisonHTML += `
+                <div class="warning" style="margin: 20px 0;">
+                    <h5>⚠️ Integration Gaps Identified</h5>
+                    <ul>
+                        <li><strong>Web Scraper:</strong> Missing comprehensive stats screen and container transitions</li>
+                        <li><strong>PDF Downloader:</strong> Missing comprehensive stats screen and container transitions</li>
+                        <li><strong>Both modules:</strong> Need enhanced completion flow like File Processor</li>
+                    </ul>
+                </div>
+                
+                <div class="info">
+                    <h5>📋 Recommendations</h5>
+                    <ol>
+                        <li>Implement comprehensive stats screen display for both modules</li>
+                        <li>Add container transition system (form → progress → results)</li>
+                        <li>Enhance completion handling with detailed statistics</li>
+                        <li>Match File Processor's user experience quality</li>
+                    </ol>
+                </div>
+            `;
+
+            resultsDiv.innerHTML += comparisonHTML;
+            log('Integration comparison completed', 'success');
+        };
+
+        // Initialize
+        log('Integration test page loaded', 'success');
+        
+        // Set default values
+        document.getElementById('ws-urls').value = `https://docs.python.org/3/tutorial/
+https://www.example.com`;
+    </script>
+</body>
+</html>

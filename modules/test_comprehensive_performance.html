@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Processor Performance Analysis Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+        .log-entry {
+            margin-bottom: 0.25rem;
+        }
+        .log-timestamp {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .log-info { color: #0d6efd; }
+        .log-success { color: #198754; }
+        .log-warning { color: #fd7e14; }
+        .log-error { color: #dc3545; }
+        .metrics-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .performance-chart {
+            height: 200px;
+            background: white;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <h1 class="mb-4">🔍 File Processor Performance Analysis</h1>
+        
+        <!-- Control Panel -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Test Configuration</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Test Directory</label>
+                            <select class="form-select" id="testDirectory">
+                                <option value="/workspace/modules/static/js/modules">JS Modules (49 files)</option>
+                                <option value="/workspace/modules/blueprints">Blueprints (Python files)</option>
+                                <option value="/workspace/modules/static">Static Files (Mixed)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Output File</label>
+                            <input type="text" class="form-control" id="outputFile" value="performance_test.json">
+                        </div>
+                        <button class="btn btn-primary" id="startTest">Start Performance Test</button>
+                        <button class="btn btn-secondary" id="clearLogs">Clear Logs</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="metrics-card">
+                    <h5>⚡ Real-time Metrics</h5>
+                    <div class="row">
+                        <div class="col-6">
+                            <div><strong>Duration:</strong> <span id="duration">0.00s</span></div>
+                            <div><strong>Progress:</strong> <span id="progress">0%</span></div>
+                        </div>
+                        <div class="col-6">
+                            <div><strong>Files/sec:</strong> <span id="filesPerSec">0.0</span></div>
+                            <div><strong>SocketIO Events:</strong> <span id="socketEvents">0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Processing Progress</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress mb-3" style="height: 30px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 id="progressBar" style="width: 0%">0%</div>
+                        </div>
+                        <div id="statusMessage" class="text-muted">Ready to start test...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs and Analysis -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📡 SocketIO Events Log</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="socketLog" class="log-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📊 Performance Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="analysisLog" class="log-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📈 Test Results Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="resultsContainer" class="d-none">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card border-primary">
+                                        <div class="card-body text-center">
+                                            <h3 class="text-primary" id="totalDuration">0.00s</h3>
+                                            <small>Total Duration</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card border-success">
+                                        <div class="card-body text-center">
+                                            <h3 class="text-success" id="totalFiles">0</h3>
+                                            <small>Files Processed</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card border-warning">
+                                        <div class="card-body text-center">
+                                            <h3 class="text-warning" id="processingRate">0.0</h3>
+                                            <small>Files/Second</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card border-info">
+                                        <div class="card-body text-center">
+                                            <h3 class="text-info" id="totalEvents">0</h3>
+                                            <small>SocketIO Events</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <h6>Event Timeline:</h6>
+                                <div id="eventTimeline" class="small text-muted"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Performance tracking variables
+        let testStartTime = 0;
+        let socketEventCount = 0;
+        let progressUpdates = [];
+        let socketEvents = [];
+        let currentTaskId = null;
+        let pollInterval = null;
+
+        // Initialize SocketIO connection
+        const socket = io('http://localhost:5025', {
+            transports: ['websocket', 'polling']
+        });
+
+        // Log helper functions
+        function formatTime() {
+            return new Date().toLocaleTimeString() + '.' + String(Date.now() % 1000).padStart(3, '0');
+        }
+
+        function logSocket(message, type = 'info') {
+            const timestamp = formatTime();
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> ${message}`;
+            document.getElementById('socketLog').appendChild(entry);
+            document.getElementById('socketLog').scrollTop = document.getElementById('socketLog').scrollHeight;
+        }
+
+        function logAnalysis(message, type = 'info') {
+            const timestamp = formatTime();
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> ${message}`;
+            document.getElementById('analysisLog').appendChild(entry);
+            document.getElementById('analysisLog').scrollTop = document.getElementById('analysisLog').scrollHeight;
+        }
+
+        // SocketIO event handlers with detailed logging
+        socket.on('connect', () => {
+            logSocket('✅ Connected to SocketIO server', 'success');
+            logAnalysis('SocketIO connection established', 'success');
+        });
+
+        socket.on('disconnect', (reason) => {
+            logSocket(`❌ Disconnected: ${reason}`, 'error');
+            logAnalysis(`Connection lost: ${reason}`, 'error');
+        });
+
+        socket.on('task_started', (data) => {
+            socketEventCount++;
+            const elapsed = (Date.now() - testStartTime) / 1000;
+            logSocket(`🚀 Task started: ${data.task_id} (${elapsed.toFixed(3)}s)`, 'success');
+            socketEvents.push({type: 'task_started', time: elapsed, data: data});
+            updateMetrics();
+        });
+
+        socket.on('progress_update', (data) => {
+            socketEventCount++;
+            const elapsed = (Date.now() - testStartTime) / 1000;
+            
+            logSocket(`📊 Progress: ${data.progress}% - ${data.message || 'Processing...'} (${elapsed.toFixed(3)}s)`, 'info');
+            
+            // Track progress for analysis
+            progressUpdates.push({
+                time: elapsed,
+                progress: data.progress,
+                message: data.message
+            });
+            
+            socketEvents.push({type: 'progress_update', time: elapsed, data: data});
+            
+            // Update UI
+            updateProgress(data.progress, data.message);
+            updateMetrics();
+            
+            // Performance analysis
+            if (progressUpdates.length > 1) {
+                const lastUpdate = progressUpdates[progressUpdates.length - 2];
+                const interval = elapsed - lastUpdate.time;
+                
+                if (interval < 0.1) {
+                    logAnalysis(`⚠️ Rapid progress update detected: ${(interval * 1000).toFixed(1)}ms since last`, 'warning');
+                }
+            }
+        });
+
+        socket.on('task_completed', (data) => {
+            socketEventCount++;
+            const elapsed = (Date.now() - testStartTime) / 1000;
+            logSocket(`✅ Task completed: ${data.task_id} (${elapsed.toFixed(3)}s)`, 'success');
+            socketEvents.push({type: 'task_completed', time: elapsed, data: data});
+            
+            // Stop polling
+            if (pollInterval) {
+                clearInterval(pollInterval);
+                pollInterval = null;
+            }
+            
+            updateProgress(100, 'Completed successfully!');
+            updateMetrics();
+            displayResults(data);
+        });
+
+        socket.on('task_error', (data) => {
+            socketEventCount++;
+            const elapsed = (Date.now() - testStartTime) / 1000;
+            logSocket(`❌ Task error: ${data.error} (${elapsed.toFixed(3)}s)`, 'error');
+            socketEvents.push({type: 'task_error', time: elapsed, data: data});
+            
+            if (pollInterval) {
+                clearInterval(pollInterval);
+                pollInterval = null;
+            }
+            
+            updateProgress(0, `Error: ${data.error}`);
+            updateMetrics();
+        });
+
+        // UI update functions
+        function updateProgress(progress, message) {
+            const progressBar = document.getElementById('progressBar');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${progress}%`;
+            statusMessage.textContent = message || `Processing... ${progress}%`;
+            
+            document.getElementById('progress').textContent = `${progress}%`;
+        }
+
+        function updateMetrics() {
+            const elapsed = (Date.now() - testStartTime) / 1000;
+            document.getElementById('duration').textContent = `${elapsed.toFixed(2)}s`;
+            document.getElementById('socketEvents').textContent = socketEventCount;
+            
+            // Calculate files per second if we have progress data
+            if (progressUpdates.length > 0) {
+                const latestProgress = progressUpdates[progressUpdates.length - 1];
+                const filesProcessed = Math.floor((latestProgress.progress / 100) * getExpectedFileCount());
+                const rate = elapsed > 0 ? (filesProcessed / elapsed).toFixed(1) : '0.0';
+                document.getElementById('filesPerSec').textContent = rate;
+            }
+        }
+
+        function getExpectedFileCount() {
+            const dir = document.getElementById('testDirectory').value;
+            if (dir.includes('js/modules')) return 49;
+            if (dir.includes('blueprints')) return 50; // Estimate
+            return 30; // Default estimate
+        }
+
+        // API functions
+        async function startTest() {
+            const testDir = document.getElementById('testDirectory').value;
+            const outputFile = document.getElementById('outputFile').value;
+            
+            // Reset tracking variables
+            testStartTime = Date.now();
+            socketEventCount = 0;
+            progressUpdates = [];
+            socketEvents = [];
+            
+            // Clear logs
+            document.getElementById('socketLog').innerHTML = '';
+            document.getElementById('analysisLog').innerHTML = '';
+            document.getElementById('resultsContainer').classList.add('d-none');
+            
+            logAnalysis('🚀 Starting performance test', 'info');
+            logAnalysis(`📁 Test directory: ${testDir}`, 'info');
+            logAnalysis(`📄 Output file: ${outputFile}`, 'info');
+            
+            try {
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input_dir: testDir,
+                        output_file: outputFile
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                currentTaskId = data.task_id;
+                
+                logAnalysis(`✅ API request successful, task ID: ${currentTaskId}`, 'success');
+                
+                // Start HTTP polling as fallback
+                startPolling();
+                
+            } catch (error) {
+                logSocket(`❌ API Error: ${error.message}`, 'error');
+                logAnalysis(`❌ API Error: ${error.message}`, 'error');
+            }
+        }
+
+        function startPolling() {
+            if (!currentTaskId) return;
+            
+            logAnalysis('📡 Starting HTTP polling fallback', 'info');
+            
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/status/${currentTaskId}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Only log if status changed significantly
+                        const lastProgress = progressUpdates.length > 0 ? progressUpdates[progressUpdates.length - 1].progress : -1;
+                        if (Math.abs(data.progress - lastProgress) >= 5 || data.status === 'completed') {
+                            logAnalysis(`📊 HTTP Poll: ${data.progress}% - ${data.status}`, 'info');
+                        }
+                        
+                        if (data.status === 'completed' || data.status === 'failed') {
+                            clearInterval(pollInterval);
+                            pollInterval = null;
+                            
+                            if (data.status === 'completed') {
+                                logAnalysis('✅ HTTP polling detected completion', 'success');
+                                displayResults(data);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    logAnalysis(`❌ HTTP polling error: ${error.message}`, 'error');
+                }
+            }, 1000); // Poll every second
+        }
+
+        function displayResults(data) {
+            const totalDuration = (Date.now() - testStartTime) / 1000;
+            const stats = data.stats || {};
+            const filesProcessed = stats.processed_files || 0;
+            const processingRate = totalDuration > 0 ? (filesProcessed / totalDuration).toFixed(1) : '0.0';
+            
+            // Update result cards
+            document.getElementById('totalDuration').textContent = `${totalDuration.toFixed(2)}s`;
+            document.getElementById('totalFiles').textContent = filesProcessed;
+            document.getElementById('processingRate').textContent = processingRate;
+            document.getElementById('totalEvents').textContent = socketEventCount;
+            
+            // Show results container
+            document.getElementById('resultsContainer').classList.remove('d-none');
+            
+            // Create event timeline
+            const timeline = socketEvents.map(event => 
+                `${event.time.toFixed(3)}s: ${event.type} (${event.data.progress || 'N/A'}%)`
+            ).join('<br>');
+            document.getElementById('eventTimeline').innerHTML = timeline;
+            
+            // Final analysis
+            logAnalysis('📊 === PERFORMANCE ANALYSIS COMPLETE ===', 'success');
+            logAnalysis(`⏱️ Total Duration: ${totalDuration.toFixed(3)}s`, 'info');
+            logAnalysis(`📁 Files Processed: ${filesProcessed}`, 'info');
+            logAnalysis(`⚡ Processing Rate: ${processingRate} files/sec`, 'info');
+            logAnalysis(`📡 SocketIO Events: ${socketEventCount}`, 'info');
+            logAnalysis(`📈 Progress Updates: ${progressUpdates.length}`, 'info');
+            
+            // Analyze event frequency
+            if (progressUpdates.length > 1) {
+                const intervals = [];
+                for (let i = 1; i < progressUpdates.length; i++) {
+                    intervals.push(progressUpdates[i].time - progressUpdates[i-1].time);
+                }
+                const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                const minInterval = Math.min(...intervals);
+                const maxInterval = Math.max(...intervals);
+                
+                logAnalysis(`📊 Avg update interval: ${avgInterval.toFixed(3)}s`, 'info');
+                logAnalysis(`📊 Min update interval: ${minInterval.toFixed(3)}s`, 'info');
+                logAnalysis(`📊 Max update interval: ${maxInterval.toFixed(3)}s`, 'info');
+                
+                const rapidUpdates = intervals.filter(i => i < 0.1).length;
+                if (rapidUpdates > 0) {
+                    logAnalysis(`⚠️ Rapid updates detected: ${rapidUpdates} updates < 100ms`, 'warning');
+                } else {
+                    logAnalysis(`✅ No rapid updates detected (all >= 100ms)`, 'success');
+                }
+            }
+        }
+
+        // Event listeners
+        document.getElementById('startTest').addEventListener('click', startTest);
+        document.getElementById('clearLogs').addEventListener('click', () => {
+            document.getElementById('socketLog').innerHTML = '';
+            document.getElementById('analysisLog').innerHTML = '';
+        });
+
+        // Initialize
+        logAnalysis('🔧 Performance test page loaded', 'info');
+    </script>
+</body>
+</html>

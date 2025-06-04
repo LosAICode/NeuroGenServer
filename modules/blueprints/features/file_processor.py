@@ -45,6 +45,25 @@ DEFAULT_MEMORY_LIMIT = 1024 * 1024 * 1024  # 1GB
 CACHE_FILE = "file_cache.json"
 DEFAULT_OUTPUT_FOLDER = "downloads"
 
+def detect_output_format(filename):
+    """
+    Detect the desired output format based on file extension.
+    
+    Args:
+        filename (str): The filename to analyze
+        
+    Returns:
+        str: 'json' or 'markdown' based on extension
+    """
+    if not filename:
+        return 'json'
+    
+    filename_lower = filename.lower()
+    if filename_lower.endswith('.md') or filename_lower.endswith('.markdown'):
+        return 'markdown'
+    else:
+        return 'json'  # Default to JSON
+
 # Define FileStats class for compatibility
 class FileStats:
     def __init__(self):
@@ -58,8 +77,26 @@ class FileStats:
         self.references_extracted = 0
         self.scanned_pages_processed = 0
         self.ocr_processed_files = 0
+        self.total_bytes = 0
+        self.total_processing_time = 0
     
     def to_dict(self):
+        # Calculate formatted duration
+        if self.total_processing_time < 1:
+            formatted_duration = f"{self.total_processing_time*1000:.0f}ms"
+        elif self.total_processing_time < 60:
+            formatted_duration = f"{self.total_processing_time:.1f}s"
+        else:
+            minutes = int(self.total_processing_time // 60)
+            seconds = self.total_processing_time % 60
+            formatted_duration = f"{minutes}m {seconds:.1f}s"
+        
+        # Calculate success rate percentage
+        if self.total_files > 0:
+            success_rate_percent = round((self.processed_files / self.total_files) * 100, 1)
+        else:
+            success_rate_percent = 100.0
+        
         return {
             'processed_files': self.processed_files,
             'skipped_files': self.skipped_files,
@@ -70,8 +107,238 @@ class FileStats:
             'tables_extracted': self.tables_extracted,
             'references_extracted': self.references_extracted,
             'scanned_pages_processed': self.scanned_pages_processed,
-            'ocr_processed_files': self.ocr_processed_files
+            'ocr_processed_files': self.ocr_processed_files,
+            'total_bytes': self.total_bytes,
+            'total_processing_time': self.total_processing_time,
+            'formatted_duration': formatted_duration,
+            'success_rate_percent': success_rate_percent
         }
+
+def write_optimized_json(all_data, output_file):
+    """
+    Write highly optimized JSON output focused on LLM training data.
+    Removes metadata bloat and focuses on content + minimal context.
+    
+    Args:
+        all_data (dict): Processed data from all files
+        output_file (str): Path to output file
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        # Debug: Log input data structure
+        logger.info(f"write_optimized_json called with {len(all_data)} libraries")
+        total_docs = sum(len(lib_data.get("docs_data", [])) for lib_data in all_data.values())
+        logger.info(f"Total documents across all libraries: {total_docs}")
+        
+        if total_docs == 0:
+            logger.error("Input data contains no documents!")
+            logger.error(f"all_data keys: {list(all_data.keys())}")
+            for lib_name, lib_data in all_data.items():
+                logger.error(f"Library '{lib_name}' structure: {list(lib_data.keys())}")
+        
+        training_data = {
+            "training_corpus": {
+                "document_count": total_docs,
+                "created": datetime.now().strftime("%Y-%m-%d"),
+                "documents": []
+            }
+        }
+        
+        # Process all documents into a flat, clean structure
+        for lib_name, lib_data in all_data.items():
+            docs = lib_data.get("docs_data", [])
+            logger.info(f"Processing library '{lib_name}' with {len(docs)} documents")
+            
+            for i, doc in enumerate(docs):
+                logger.debug(f"Processing document {i}: {list(doc.keys())}")
+                
+                # Only keep essential training data
+                clean_doc = {
+                    "content": doc.get("content", ""),
+                    "source": doc.get("file_path", "unknown")
+                }
+                
+                # Debug: Check if content is actually empty
+                content = doc.get("content", "")
+                if not content:
+                    logger.warning(f"Document {i} in library '{lib_name}' has empty content. Available fields: {list(doc.keys())}")
+                    logger.debug(f"Doc data sample: {str(doc)[:200]}...")
+                
+                # Only add section name if it provides meaningful context
+                section_name = doc.get("section_name", "")
+                if section_name and section_name.strip() and len(section_name) < 200:
+                    clean_doc["title"] = section_name.strip()
+                
+                # Only add language if detected and useful
+                language = doc.get("language", "")
+                if language and language not in ["", "unknown", "auto"]:
+                    clean_doc["language"] = language
+                
+                # Only add tables if they exist and contain useful data
+                tables = doc.get("tables", [])
+                if tables and len(tables) > 0:
+                    # Simplified table representation
+                    clean_doc["tables"] = [str(table) for table in tables if table]
+                
+                # Skip empty content
+                if clean_doc["content"] and clean_doc["content"].strip():
+                    training_data["training_corpus"]["documents"].append(clean_doc)
+                else:
+                    logger.warning(f"Skipping document {i} in library '{lib_name}' due to empty content")
+        
+        # Write with maximum compression settings for training efficiency
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(training_data, f, ensure_ascii=False, separators=(',', ':'))
+        
+        final_doc_count = len(training_data['training_corpus']['documents'])
+        logger.info(f"Created training-optimized JSON with {final_doc_count} documents")
+        
+        if final_doc_count == 0:
+            logger.error("No documents were processed! Training data is empty.")
+            logger.error(f"Input libraries: {list(all_data.keys())}")
+            for lib_name, lib_data in all_data.items():
+                docs = lib_data.get("docs_data", [])
+                logger.error(f"Library '{lib_name}': {len(docs)} docs_data entries")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error writing optimized JSON: {e}", exc_info=True)
+        return False
+
+
+def write_markdown_output(all_data, output_file, stats=None):
+    """
+    Write optimized Markdown output focused on LLM training data.
+    Eliminates metadata bloat and focuses on content readability.
+    
+    Args:
+        all_data (dict): Processed data from all files
+        output_file (str): Path to output file
+        stats (FileStats): Processing statistics (optional, minimal use)
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        # Debug: Log input data structure
+        logger.info(f"write_markdown_output called with {len(all_data)} libraries")
+        total_docs = sum(len(lib_data.get("docs_data", [])) for lib_data in all_data.values())
+        logger.info(f"Total documents across all libraries: {total_docs}")
+        
+        if total_docs == 0:
+            logger.error("Input data contains no documents!")
+            logger.error(f"all_data keys: {list(all_data.keys())}")
+            for lib_name, lib_data in all_data.items():
+                logger.error(f"Library '{lib_name}' structure: {list(lib_data.keys())}")
+        
+        # Create optimized training-focused Markdown content
+        content = []
+        
+        # Minimal header - no metadata bloat
+        content.append("# Training Corpus")
+        content.append("")
+        content.append(f"**Document Count:** {total_docs}")
+        content.append(f"**Generated:** {datetime.now().strftime('%Y-%m-%d')}")
+        content.append("")
+        content.append("---")
+        content.append("")
+        
+        # Process all documents into clean, readable format
+        doc_count = 0
+        for lib_name, lib_data in all_data.items():
+            docs = lib_data.get("docs_data", [])
+            logger.info(f"Processing library '{lib_name}' with {len(docs)} documents")
+            
+            if not docs:
+                continue
+                
+            for i, doc in enumerate(docs):
+                doc_count += 1
+                logger.debug(f"Processing document {i}: {list(doc.keys())}")
+                
+                # Extract essential content only
+                doc_content = doc.get("content", "")
+                source = doc.get("file_path", "unknown")
+                title = doc.get("section_name", f"Document {doc_count}")
+                
+                # Debug: Check if content is actually empty
+                if not doc_content:
+                    logger.warning(f"Document {i} in library '{lib_name}' has empty content. Available fields: {list(doc.keys())}")
+                    logger.debug(f"Doc data sample: {str(doc)[:200]}...")
+                    continue
+                
+                # Clean content formatting
+                clean_content = doc_content.strip()
+                if not clean_content:
+                    logger.warning(f"Skipping document {i} in library '{lib_name}' due to empty content")
+                    continue
+                
+                # Add document with minimal metadata
+                content.append(f"## {title}")
+                content.append("")
+                
+                # Only add source if it provides meaningful context
+                if source and source != "unknown":
+                    content.append(f"**Source:** `{source}`")
+                    content.append("")
+                
+                # Add language if detected and useful
+                language = doc.get("language", "")
+                if language and language not in ["", "unknown", "auto", "en"]:
+                    content.append(f"**Language:** {language}")
+                    content.append("")
+                
+                # Add the actual content
+                content.append(clean_content)
+                content.append("")
+                
+                # Add tables if they exist and contain useful data
+                tables = doc.get("tables", [])
+                if tables and len(tables) > 0:
+                    content.append("### Tables")
+                    content.append("")
+                    for j, table in enumerate(tables):
+                        if table:  # Only add non-empty tables
+                            content.append(f"**Table {j + 1}:**")
+                            content.append("```")
+                            content.append(str(table))
+                            content.append("```")
+                            content.append("")
+                
+                content.append("---")
+                content.append("")
+        
+        # Write the optimized content
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(content))
+        
+        logger.info(f"Created training-optimized Markdown with {doc_count} documents")
+        
+        if doc_count == 0:
+            logger.error("No documents were processed! Markdown data is empty.")
+            logger.error(f"Input libraries: {list(all_data.keys())}")
+            for lib_name, lib_data in all_data.items():
+                docs = lib_data.get("docs_data", [])
+                logger.error(f"Library '{lib_name}': {len(docs)} docs_data entries")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error writing optimized Markdown: {e}", exc_info=True)
+        return False
+
+
+# Legacy function removed - now using optimized write_markdown_output() 
+# that creates a single, clean training-focused file instead of 
+# complex multi-file structure with metadata bloat
+
+
+# Legacy functions removed - now using optimized single-file Markdown output
+# that eliminates metadata bloat and focuses on training content
+
 
 # Create the blueprint
 file_processor_bp = Blueprint('file_processor', __name__, url_prefix='/api')
@@ -130,9 +397,15 @@ def process_all_files(
     Returns:
         Dictionary with statistics and processed data
     """
-    # Setup logging with specified options
+    # Setup logging with specified options (import inline to avoid circular imports)
     global logger
-    logger = setup_logging(log_level, log_file)
+    try:
+        from Structify.claude import setup_logging
+        logger = setup_logging(log_level, log_file)
+    except ImportError:
+        # Fallback to basic logging setup
+        logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        logger = logging.getLogger(__name__)
     
     start_time = time.time()
     stats = stats_obj if stats_obj else FileStats()
@@ -327,6 +600,17 @@ def process_all_files(
                         })
                 else:
                     # Standard processing for non-PDF files
+                    # Import safe_process inline to avoid circular imports
+                    try:
+                        from Structify.claude import safe_process
+                    except ImportError:
+                        logger.error("Could not import safe_process from Structify.claude")
+                        processing_failures.append({
+                            "file_path": str(p),
+                            "reason": "missing_safe_process_function"
+                        })
+                        continue
+                    
                     r = safe_process(
                         p, root_directory, max_chunk_size, stop_words, 
                         include_binary_detection, stats, overlap, max_file_size, 
@@ -370,6 +654,17 @@ def process_all_files(
                         )
                     else:
                         # Submit standard file processing task
+                        # Import safe_process inline to avoid circular imports
+                        try:
+                            from Structify.claude import safe_process
+                        except ImportError:
+                            logger.error("Could not import safe_process from Structify.claude")
+                            processing_failures.append({
+                                "file_path": str(p),
+                                "reason": "missing_safe_process_function"
+                            })
+                            continue
+                        
                         fut = ex.submit(
                             safe_process, 
                             p, 
@@ -402,13 +697,7 @@ def process_all_files(
         for pth, (lib, docs) in results:
             if lib not in all_data:
                 all_data[lib] = {
-                    "docs_data": [],
-                    "metadata": {
-                        "library_name": lib,
-                        "processed_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "source": "Derived from file structure",
-                        "processor_version": "claude.beta.py 3.0" 
-                    }
+                    "docs_data": []
                 }
             
             # Add document data
@@ -448,45 +737,9 @@ def process_all_files(
         except ImportError:
             pass  # psutil not available
 
-    # Add overall processing metadata
+    # Calculate timing for statistics only (not stored in output)
     processing_time = time.time() - processing_start
     total_time = time.time() - start_time
-    
-    # Add processing information to the output
-    metakey = "metadata"
-    for lib in all_data:
-        if metakey in all_data[lib]:
-            all_data[lib][metakey].update({
-                "processing_timestamp": datetime.now().isoformat(),
-                "processing_time_seconds": processing_time,
-                "total_time_seconds": total_time,
-                "discovery_time_seconds": discovery_time,
-                "total_files_processed": stats.processed_files,
-                "total_files_skipped": stats.skipped_files,
-                "total_files_error": stats.error_files,
-                "total_chunks": stats.total_chunks,
-                "max_chunk_size": max_chunk_size,
-                "chunk_overlap": overlap,
-                "valid_extensions": valid_extensions,
-                "binary_detection": include_binary_detection
-            })
-            
-            # Add PDF-specific stats if available
-            if stats.pdf_files > 0:
-                all_data[lib][metakey].update({
-                    "pdf_files_processed": stats.pdf_files,
-                    "tables_extracted": stats.tables_extracted,
-                    "references_extracted": stats.references_extracted,
-                    "scanned_pages_processed": stats.scanned_pages_processed,
-                    "ocr_processed_files": stats.ocr_processed_files
-                })
-
-    # Add processing failures if requested
-    if include_failed_files and (processing_failures or skipped_during_discovery):
-        for lib in all_data:
-            if metakey in all_data[lib]:
-                all_data[lib][metakey]["processing_failures"] = processing_failures
-                all_data[lib][metakey]["skipped_during_discovery"] = skipped_during_discovery
 
     # Write output JSON unless stats_only mode
     if not stats_only:
@@ -543,32 +796,31 @@ def process_all_files(
                         output_file = output_filename
                         logger.warning(f"Using current directory for output: {output_file}")
                 
-            # Use the enhanced safe JSON writer instead of direct write
-            success = write_json_safely(all_data, output_file)
+            # Detect output format and write accordingly
+            output_format = detect_output_format(output_file)
             
-            if success:
-                logger.info(f"Created JSON output at {output_file}")
+            if output_format == 'markdown':
+                success = write_markdown_output(all_data, output_file, stats)
+                if success:
+                    logger.info(f"Created Markdown output at {output_file}")
+                else:
+                    logger.error(f"Failed to write Markdown output to {output_file}")
             else:
-                logger.error(f"Failed to write JSON output to {output_file}")
-                # Try alternative approach with simpler JSON structure
-                try:
-                    logger.info("Attempting alternative JSON writing approach...")
-                    # Create a simplified version of the data with just the essential information
-                    simplified_data = {}
-                    for lib in all_data:
-                        simplified_data[lib] = {
-                            "metadata": all_data[lib]["metadata"],
-                            "doc_count": len(all_data[lib].get("docs_data", [])),
-                            "summary": f"Processed {len(all_data[lib].get('docs_data', []))} documents"
-                        }
-                    
-                    temp_output = f"{output_file}.simple.json"
-                    with open(temp_output, "w", encoding="utf-8") as f:
-                        json.dump(simplified_data, f, ensure_ascii=False, indent=2)
-                    
-                    logger.info(f"Created simplified JSON output at {temp_output}")
-                except Exception as alt_err:
-                    logger.error(f"Alternative JSON writing also failed: {alt_err}")
+                # Use optimized JSON output instead of legacy format
+                success = write_optimized_json(all_data, output_file)
+                
+                if success:
+                    logger.info(f"Created optimized JSON output at {output_file}")
+                else:
+                    logger.error(f"Failed to write optimized JSON output to {output_file}")
+                    # Fallback to legacy JSON format
+                    try:
+                        logger.info("Attempting fallback to legacy JSON format...")
+                        success = write_json_safely(all_data, output_file)
+                        if success:
+                            logger.info(f"Created legacy JSON output at {output_file}")
+                    except Exception as alt_err:
+                        logger.error(f"Legacy JSON writing also failed: {alt_err}")
             
             if progress_callback:
                 progress_callback(100, 100, "completed")
@@ -743,6 +995,7 @@ def start_processing():
 def get_output_filepath(filename, user_defined_dir=None):
     """
     Resolves user-specified output directory or uses default fallback.
+    Automatically detects output format based on file extension.
     
     Args:
         filename (str): The desired output filename (with or without extension)
@@ -755,18 +1008,35 @@ def get_output_filepath(filename, user_defined_dir=None):
     if not filename:
         filename = "output"
     
-    # Strip .json extension if provided
-    if filename.lower().endswith('.json'):
-        filename = filename[:-5]
+    # Detect output format based on extension and preserve it
+    output_format = detect_output_format(filename)
     
-    # Sanitize the filename
-    sanitized_name = sanitize_filename(filename) + ".json"
+    # Extract base filename without extension for sanitization
+    if filename.lower().endswith('.json'):
+        base_filename = filename[:-5]
+        extension = '.json'
+    elif filename.lower().endswith('.md'):
+        base_filename = filename[:-3]
+        extension = '.md'
+    else:
+        base_filename = filename
+        extension = '.json'  # Default to JSON if no extension
+    
+    # Sanitize the filename and restore extension
+    sanitized_name = sanitize_filename(base_filename) + extension
     
     # Check if we have a full path in output_filename
     if os.path.dirname(filename):
         # User provided a path with the filename
         target_folder = os.path.dirname(filename)
-        sanitized_name = sanitize_filename(os.path.basename(filename)) + ".json"
+        base_name = os.path.basename(filename)
+        # Preserve the extension from the original filename
+        if base_name.lower().endswith('.md'):
+            sanitized_name = sanitize_filename(base_name[:-3]) + ".md"
+        elif base_name.lower().endswith('.json'):
+            sanitized_name = sanitize_filename(base_name[:-5]) + ".json"
+        else:
+            sanitized_name = sanitize_filename(base_name) + ".json"
     else:
         # Use override folder or default to the DEFAULT_OUTPUT_FOLDER
         target_folder = user_defined_dir or DEFAULT_OUTPUT_FOLDER

@@ -836,6 +836,7 @@ class BaseTask:
             # Use centralized emit function
             success = emit_task_started(
                 task_id=self.task_id,
+                task_type=self.task_type,
                 message=self.message
             )
             
@@ -1000,16 +1001,25 @@ class BaseTask:
 
         # Prepare serialized stats
         serialized_stats = {}
+        logger.info(f"🔍 DEBUGGING BaseTask - self.stats type: {type(self.stats)}")
+        logger.info(f"🔍 DEBUGGING BaseTask - self.stats value: {self.stats}")
+        
         if isinstance(self.stats, CustomFileStats):
             if hasattr(self.stats, 'finish_processing'):
                 self.stats.finish_processing()  # Finalize stats object if method exists
             serialized_stats = self.stats.to_dict()
+            logger.info(f"🔍 DEBUGGING BaseTask - serialized CustomFileStats: {serialized_stats}")
         elif isinstance(self.stats, dict):
             serialized_stats = self.stats.copy()
+            logger.info(f"🔍 DEBUGGING BaseTask - copied dict stats: {serialized_stats}")
         elif hasattr(self.stats, '__dict__'):
             serialized_stats = self.stats.__dict__.copy()
+            logger.info(f"🔍 DEBUGGING BaseTask - converted __dict__ stats: {serialized_stats}")
+        else:
+            logger.info(f"🔍 DEBUGGING BaseTask - No valid stats object found")
         
         serialized_stats["total_duration_seconds"] = duration_seconds  # Ensure this is in final stats
+        logger.info(f"🔍 DEBUGGING BaseTask - final serialized_stats: {serialized_stats}")
 
         # Prepare and emit payload
         payload = {
@@ -1580,6 +1590,28 @@ class ProcessingTask(BaseTask):
         else:
             self.progress = 0
         
+        # PERFORMANCE FIX: Throttle progress emissions to prevent overhead
+        # Initialize last emit time if not exists
+        if not hasattr(self, '_last_progress_emit_time'):
+            self._last_progress_emit_time = 0
+            self._last_progress_percent = -1
+        
+        current_time = time.time()
+        time_since_last_emit = current_time - self._last_progress_emit_time
+        progress_change = abs(self.progress - self._last_progress_percent)
+        
+        # Only emit if:
+        # 1. It's been at least 0.5 seconds since last emit, OR
+        # 2. Progress changed by at least 5%, OR  
+        # 3. We're at 0%, 100%, or this is the first file
+        should_emit = (
+            time_since_last_emit >= 0.5 or
+            progress_change >= 5 or
+            self.progress in [0, 100] or
+            processed_count == 1 or
+            processed_count == total_count
+        )
+        
         # Update CustomFileStats with comprehensive information
         if isinstance(self.stats, CustomFileStats):
             self.stats.total_files = total_count
@@ -1594,7 +1626,6 @@ class ProcessingTask(BaseTask):
                 self.performance_metrics['time_to_halfway'] = self._halfway_processed - self.start_time
         
         # Enhanced performance tracking
-        current_time = time.time()
         elapsed_time = current_time - self.start_time
         
         # Enhanced detailed progress tracking
@@ -1610,46 +1641,51 @@ class ProcessingTask(BaseTask):
             "memory_usage_mb": self._get_current_memory_usage()
         }
         
-        # Prepare enhanced message
-        msg = f"Stage: {stage_message} ({processed_count}/{total_count})"
-        if current_file:
-            msg += f" - Current: {os.path.basename(current_file)}"
-        
-        # Add performance indicators to message
-        if elapsed_time > 30:  # After 30 seconds, include rate information
-            rate = processed_count / elapsed_time
-            msg += f" - Rate: {rate:.1f} files/sec"
-        
-        # Enhanced details for emission
-        details = {
-            "current_stage_message": stage_message,
-            "processed_count": processed_count,
-            "total_count": total_count,
-            "elapsed_time": elapsed_time,
-            "processing_rate_files_per_sec": processed_count / elapsed_time if elapsed_time > 0 else 0,
-            "memory_usage_mb": self.detailed_progress.get("memory_usage_mb", 0)
-        }
-        
-        if current_file:
-            details["current_file_processing"] = os.path.basename(current_file)
-        
-        # Periodic memory and performance tracking
-        if processed_count % 25 == 0:
-            if hasattr(self.stats, 'track_memory_usage'):
-                self.stats.track_memory_usage()
+        # Only emit if we should based on throttling rules
+        if should_emit:
+            # Prepare enhanced message
+            msg = f"Stage: {stage_message} ({processed_count}/{total_count})"
+            if current_file:
+                msg += f" - Current: {os.path.basename(current_file)}"
             
-            # Record performance checkpoint
-            checkpoint = {
-                'processed_count': processed_count,
-                'timestamp': current_time,
-                'memory_mb': self._get_current_memory_usage(),
-                'rate': processed_count / elapsed_time if elapsed_time > 0 else 0
+            # Add performance indicators to message
+            if elapsed_time > 30:  # After 30 seconds, include rate information
+                rate = processed_count / elapsed_time
+                msg += f" - Rate: {rate:.1f} files/sec"
+            
+            # Enhanced details for emission
+            details = {
+                "current_stage_message": stage_message,
+                "processed_count": processed_count,
+                "total_count": total_count,
+                "elapsed_time": elapsed_time,
+                "processing_rate_files_per_sec": processed_count / elapsed_time if elapsed_time > 0 else 0,
+                "memory_usage_mb": self.detailed_progress.get("memory_usage_mb", 0)
             }
-            self.performance_metrics['processing_checkpoints'].append(checkpoint)
-        
-        # Emit progress update with enhanced information
-        self.emit_progress_update(progress=self.progress, message=msg, details=details)
-
+            
+            if current_file:
+                details["current_file_processing"] = os.path.basename(current_file)
+            
+            # Periodic memory and performance tracking
+            if processed_count % 25 == 0:
+                if hasattr(self.stats, 'track_memory_usage'):
+                    self.stats.track_memory_usage()
+                
+                # Record performance checkpoint
+                checkpoint = {
+                    'processed_count': processed_count,
+                    'timestamp': current_time,
+                    'memory_mb': self._get_current_memory_usage(),
+                    'rate': processed_count / elapsed_time if elapsed_time > 0 else 0
+                }
+                self.performance_metrics['processing_checkpoints'].append(checkpoint)
+            
+            # Emit progress update with enhanced information
+            self.emit_progress_update(progress=self.progress, message=msg, details=details)
+            
+            # Update last emit tracking
+            self._last_progress_emit_time = current_time
+            self._last_progress_percent = self.progress
     def _calculate_processing_efficiency(self) -> dict:
         """Calculate comprehensive task-specific efficiency metrics."""
         try:
@@ -1681,8 +1717,9 @@ class ProcessingTask(BaseTask):
 
     def _process_logic(self):
         """Enhanced process logic with comprehensive stats and corrected cancellation handling."""
-        # Import here to avoid circular import
-        from .structify_integration import structify_available, process_all_files
+        # Import optimized file processor
+        from blueprints.features.file_processor import process_all_files
+        structify_available = True  # Our optimized processor is always available
         
         # Start enhanced monitoring systems
         self._start_memory_monitoring()
@@ -1740,14 +1777,9 @@ class ProcessingTask(BaseTask):
                 timeout_timer.start()
             
             try:
-                # Select optimal processing function
-                try:
-                    from Structify.claude import process_all_files as direct_process_all_files
-                    logger.info("Using direct import of process_all_files")
-                    process_func = direct_process_all_files
-                except ImportError:
-                    logger.info("Using process_all_files from components")
-                    process_func = process_all_files
+                # Use our optimized file processor
+                logger.info("Using optimized file processor from blueprints.features.file_processor")
+                process_func = process_all_files
                 
                 # Record processing stage
                 self.processing_stages.append({
@@ -4170,17 +4202,26 @@ def emit_task_completion(task_id, task_type="generic", output_file=None, stats=N
         from blueprints.socketio_events import emit_task_completion_unified
         
         # Process stats for serialization
+        logger.info(f"🔍 DEBUGGING emit_task_completion - stats type: {type(stats)}")
+        logger.info(f"🔍 DEBUGGING emit_task_completion - stats value: {stats}")
+        
         processed_stats = None
         if stats:
             if hasattr(stats, 'to_dict') and callable(stats.to_dict):
                 processed_stats = stats.to_dict()
+                logger.info(f"🔍 DEBUGGING emit_task_completion - processed via to_dict(): {processed_stats}")
             elif isinstance(stats, dict):
                 processed_stats = stats
+                logger.info(f"🔍 DEBUGGING emit_task_completion - processed as dict: {processed_stats}")
             else:
                 try:
                     processed_stats = stats.__dict__ if hasattr(stats, '__dict__') else str(stats)
+                    logger.info(f"🔍 DEBUGGING emit_task_completion - processed via __dict__: {processed_stats}")
                 except (AttributeError, TypeError):
                     processed_stats = {'raw_stats': str(stats)}
+                    logger.info(f"🔍 DEBUGGING emit_task_completion - processed as raw_stats: {processed_stats}")
+        else:
+            logger.info(f"🔍 DEBUGGING emit_task_completion - No stats provided")
         
         # Use centralized emit function
         success = emit_task_completion_unified(

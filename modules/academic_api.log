@@ -211,3 +211,247 @@ TypeError: argument must be an int, or have a fileno() method.
 2025-06-01 11:08:21,362 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
 2025-06-01 11:11:16,567 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
 2025-06-01 11:24:26,472 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:07:54,943 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:09:06,272 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:09:06,320 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:09:06,326 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:09:06,339 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:09:06,340 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:09:06,359 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:09:06,359 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:09:06,370 - file_processor - INFO - Found 0 valid files in ../test_input (0.01s)
+2025-06-02 16:09:06,371 - file_processor - WARNING - No files found in ../test_input matching the provided criteria
+2025-06-02 16:10:17,445 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:10:17,474 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:10:17,475 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:10:17,489 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:10:17,490 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:10:17,492 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:10:17,493 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:10:17,509 - file_processor - INFO - Found 1 valid files in test_input (0.01s)
+2025-06-02 16:10:17,512 - file_processor - INFO - Using none executor with max_workers=8
+2025-06-02 16:10:17,512 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 16:12:50,260 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:12:50,307 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:12:50,308 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:12:50,311 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:12:50,312 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:12:50,314 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:12:50,315 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:12:50,327 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.01s)
+2025-06-02 16:12:50,328 - file_processor - INFO - Using none executor with max_workers=1
+2025-06-02 16:12:50,328 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 16:14:05,808 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:14:05,844 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:14:05,847 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:14:05,851 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:14:05,852 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:14:05,855 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:14:05,856 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:14:05,867 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.01s)
+2025-06-02 16:14:05,867 - file_processor - INFO - Using none executor with max_workers=1
+2025-06-02 16:14:05,868 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 16:14:05,875 - root - ERROR - Error processing /workspace/modules/test_input/test.txt: DocData.__init__() got an unexpected keyword argument 'chunks'
+2025-06-02 16:14:05,884 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 16:14:05,884 - file_processor - INFO - write_optimized_json called with 0 libraries
+2025-06-02 16:14:05,885 - file_processor - INFO - Total documents across all libraries: 0
+2025-06-02 16:14:05,885 - file_processor - ERROR - Input data contains no documents!
+2025-06-02 16:14:05,886 - file_processor - ERROR - all_data keys: []
+2025-06-02 16:14:05,889 - file_processor - INFO - Created training-optimized JSON with 0 documents
+2025-06-02 16:14:05,890 - file_processor - ERROR - No documents were processed! Training data is empty.
+2025-06-02 16:14:05,890 - file_processor - ERROR - Input libraries: []
+2025-06-02 16:14:05,891 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/test_fixed.json
+2025-06-02 16:14:05,891 - file_processor - INFO - Processing complete in 0.02s
+2025-06-02 16:14:05,891 - file_processor - INFO - Stats: 1 files found, 0 processed, 0 skipped, 1 errors, 1 chunks created
+2025-06-02 16:36:47,882 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:36:47,915 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:36:47,916 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:36:47,925 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:36:47,926 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:36:47,933 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:36:47,934 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:36:47,960 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.02s)
+2025-06-02 16:36:47,960 - file_processor - INFO - Using none executor with max_workers=1
+2025-06-02 16:36:47,962 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 16:36:47,979 - root - ERROR - Error processing /workspace/modules/test_input/test.txt: 'FileStats' object has no attribute 'total_bytes'
+2025-06-02 16:36:47,994 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 16:36:47,994 - file_processor - INFO - write_optimized_json called with 0 libraries
+2025-06-02 16:36:47,994 - file_processor - INFO - Total documents across all libraries: 0
+2025-06-02 16:36:47,995 - file_processor - ERROR - Input data contains no documents!
+2025-06-02 16:36:47,995 - file_processor - ERROR - all_data keys: []
+2025-06-02 16:36:47,999 - file_processor - INFO - Created training-optimized JSON with 0 documents
+2025-06-02 16:36:48,000 - file_processor - ERROR - No documents were processed! Training data is empty.
+2025-06-02 16:36:48,000 - file_processor - ERROR - Input libraries: []
+2025-06-02 16:36:48,000 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/test_fixed2.json
+2025-06-02 16:36:48,001 - file_processor - INFO - Processing complete in 0.05s
+2025-06-02 16:36:48,001 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 1 errors, 1 chunks created
+2025-06-02 16:37:31,263 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:37:31,289 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:37:31,289 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:37:31,293 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:37:31,294 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:37:31,297 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:37:31,297 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:37:31,342 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.04s)
+2025-06-02 16:37:31,343 - file_processor - INFO - Using none executor with max_workers=1
+2025-06-02 16:37:31,343 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 16:37:31,410 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 16:37:31,411 - file_processor - INFO - write_optimized_json called with 1 libraries
+2025-06-02 16:37:31,411 - file_processor - INFO - Total documents across all libraries: 1
+2025-06-02 16:37:31,412 - file_processor - INFO - Processing library 'test.txt' with 1 documents
+2025-06-02 16:37:31,419 - file_processor - INFO - Created training-optimized JSON with 1 documents
+2025-06-02 16:37:31,420 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/test_fixed3.json
+2025-06-02 16:37:31,421 - file_processor - INFO - Processing complete in 0.09s
+2025-06-02 16:37:31,421 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 1 chunks created
+2025-06-02 16:47:28,726 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:47:28,747 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:47:28,750 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:47:28,756 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:47:28,757 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:47:28,759 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:47:28,760 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:47:28,770 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.01s)
+2025-06-02 16:47:28,772 - file_processor - INFO - Using none executor with max_workers=1
+2025-06-02 16:47:28,773 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 16:47:28,791 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 16:47:28,791 - file_processor - INFO - write_markdown_output called with 1 libraries
+2025-06-02 16:47:28,792 - file_processor - INFO - Total documents across all libraries: 1
+2025-06-02 16:47:28,792 - file_processor - INFO - Processing library 'test.txt' with 1 documents
+2025-06-02 16:47:28,797 - file_processor - INFO - Created training-optimized Markdown with 1 documents
+2025-06-02 16:47:28,798 - file_processor - INFO - Created Markdown output at /workspace/modules/test_output/test_optimized.md
+2025-06-02 16:47:28,798 - file_processor - INFO - Processing complete in 0.03s
+2025-06-02 16:47:28,798 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 1 chunks created
+2025-06-02 16:48:20,723 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 16:48:20,745 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 16:48:20,747 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 16:48:20,753 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 16:48:20,753 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 16:48:20,756 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 16:48:20,756 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 16:48:20,768 - file_processor - INFO - Found 2 valid files in /workspace/modules/test_input_complex (0.01s)
+2025-06-02 16:48:20,768 - file_processor - INFO - Using none executor with max_workers=1
+2025-06-02 16:48:20,769 - file_processor - INFO - Processing batch 1/1 (2 files)
+2025-06-02 16:48:20,791 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 16:48:20,791 - file_processor - INFO - write_optimized_json called with 2 libraries
+2025-06-02 16:48:20,791 - file_processor - INFO - Total documents across all libraries: 2
+2025-06-02 16:48:20,792 - file_processor - INFO - Processing library 'documentation.md' with 1 documents
+2025-06-02 16:48:20,792 - file_processor - INFO - Processing library 'python_code.py' with 1 documents
+2025-06-02 16:48:20,795 - file_processor - INFO - Created training-optimized JSON with 2 documents
+2025-06-02 16:48:20,797 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/complex_optimized.json
+2025-06-02 16:48:20,797 - file_processor - INFO - Processing complete in 0.03s
+2025-06-02 16:48:20,797 - file_processor - INFO - Stats: 2 files found, 2 processed, 0 skipped, 0 errors, 2 chunks created
+2025-06-02 16:48:20,808 - file_processor - INFO - Found 2 valid files in /workspace/modules/test_input_complex (0.01s)
+2025-06-02 16:48:20,809 - file_processor - INFO - Using none executor with max_workers=1
+2025-06-02 16:48:20,809 - file_processor - INFO - Processing batch 1/1 (2 files)
+2025-06-02 16:48:20,828 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 16:48:20,829 - file_processor - INFO - write_markdown_output called with 2 libraries
+2025-06-02 16:48:20,830 - file_processor - INFO - Total documents across all libraries: 2
+2025-06-02 16:48:20,830 - file_processor - INFO - Processing library 'documentation.md' with 1 documents
+2025-06-02 16:48:20,831 - file_processor - INFO - Processing library 'python_code.py' with 1 documents
+2025-06-02 16:48:20,834 - file_processor - INFO - Created training-optimized Markdown with 2 documents
+2025-06-02 16:48:20,835 - file_processor - INFO - Created Markdown output at /workspace/modules/test_output/complex_optimized.md
+2025-06-02 16:48:20,835 - file_processor - INFO - Processing complete in 0.03s
+2025-06-02 16:48:20,836 - file_processor - INFO - Stats: 2 files found, 2 processed, 0 skipped, 0 errors, 2 chunks created
+2025-06-02 17:22:03,925 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 17:22:03,934 - blueprints.core.services - INFO - BaseTask test_completion (file_processing) created.
+2025-06-02 17:22:03,945 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-06-02 17:22:03,947 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:22:03,948 - blueprints.core.services - WARNING - Failed to emit progress_update for test_completion
+2025-06-02 17:22:03,949 - blueprints.core.services - INFO - Task test_completion (file_processing) started processing.
+2025-06-02 17:22:03,949 - blueprints.core.services - INFO - Task test_completion (file_processing) thread started.
+2025-06-02 17:22:03,949 - blueprints.core.services - ERROR - Error emitting task_started for test_completion: emit_task_started() missing 1 required positional argument: 'task_type'
+2025-06-02 17:22:03,954 - blueprints.core.services - INFO - Task test_completion: Starting enhanced file processing for directory: /workspace/modules/test_input
+2025-06-02 17:22:03,960 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:22:03,960 - blueprints.core.services - WARNING - Failed to emit progress_update for test_completion
+2025-06-02 17:22:03,960 - blueprints.core.services - INFO - Task test_completion progress: 1% - Processing files in /workspace/modules/test_input with enhanced analytics...
+2025-06-02 17:22:03,961 - blueprints.core.services - INFO - Using optimized file processor from blueprints.features.file_processor
+2025-06-02 17:22:03,963 - blueprints.core.services - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-06-02 17:22:03,976 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 17:22:03,977 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 17:22:03,979 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 17:22:03,980 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 17:22:03,983 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 17:22:03,983 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 17:22:03,993 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.01s)
+2025-06-02 17:22:04,006 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:22:04,008 - blueprints.core.services - WARNING - Failed to emit progress_update for test_completion
+2025-06-02 17:22:04,009 - blueprints.core.services - INFO - Task test_completion progress: 0% - Stage: discovery (0/1)
+2025-06-02 17:22:04,010 - file_processor - INFO - Using thread executor with max_workers=3
+2025-06-02 17:22:04,018 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 17:22:04,033 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:22:04,033 - blueprints.core.services - WARNING - Failed to emit progress_update for test_completion
+2025-06-02 17:22:04,034 - blueprints.core.services - INFO - Task test_completion progress: 100% - Stage: processing (1/1)
+2025-06-02 17:22:04,038 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 17:22:04,038 - file_processor - INFO - write_optimized_json called with 1 libraries
+2025-06-02 17:22:04,040 - file_processor - INFO - Total documents across all libraries: 1
+2025-06-02 17:22:04,041 - file_processor - INFO - Processing library 'test.txt' with 1 documents
+2025-06-02 17:22:04,045 - file_processor - INFO - Created training-optimized JSON with 1 documents
+2025-06-02 17:22:04,046 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/test_task_completion.json
+2025-06-02 17:22:04,062 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:22:04,063 - blueprints.core.services - WARNING - Failed to emit progress_update for test_completion
+2025-06-02 17:22:04,065 - blueprints.core.services - INFO - Task test_completion progress: 100% - Stage: completed (100/100)
+2025-06-02 17:22:04,066 - file_processor - INFO - Processing complete in 0.05s
+2025-06-02 17:22:04,067 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 1 chunks created
+2025-06-02 17:22:04,091 - blueprints.core.services - INFO - Output file validation passed: /workspace/modules/test_output/test_task_completion.json (213 bytes)
+2025-06-02 17:22:04,097 - blueprints.core.services - INFO - Processing completed in 0.16s: 1/100 files processed, 0 errors, 0 skipped
+2025-06-02 17:22:04,097 - blueprints.api.management - INFO - Added task test_completion to history
+2025-06-02 17:22:04,098 - blueprints.core.services - INFO - Task test_completion completed - BaseTask will handle emission
+2025-06-02 17:22:04,098 - blueprints.core.services - INFO - Task test_completion enhanced final stats: processed=1, errors=0, skipped=0, pdfs=0, duration=0.16s, efficiency=50.0
+2025-06-02 17:22:04,099 - blueprints.core.services - INFO - Task test_completion (file_processing) completed in 0.16s.
+2025-06-02 17:22:04,102 - blueprints.core.services - INFO - Processing completed in 0.16s: 1/100 files processed, 0 errors, 0 skipped
+2025-06-02 17:22:04,102 - blueprints.socketio_events - WARNING - Could not emit task_completed - no socketio context available
+2025-06-02 17:22:04,103 - blueprints.core.services - WARNING - Failed to emit task_completed for test_completion
+2025-06-02 17:24:13,108 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 17:24:13,124 - blueprints.core.services - INFO - BaseTask test_socketio_fix (file_processing) created.
+2025-06-02 17:24:13,143 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-06-02 17:24:13,146 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:24:13,147 - blueprints.core.services - WARNING - Failed to emit progress_update for test_socketio_fix
+2025-06-02 17:24:13,148 - blueprints.core.services - INFO - Task test_socketio_fix (file_processing) started processing.
+2025-06-02 17:24:13,148 - blueprints.core.services - INFO - Task test_socketio_fix (file_processing) thread started.
+2025-06-02 17:24:13,149 - blueprints.socketio_events - ERROR - Error emitting task_started: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-06-02 17:24:13,151 - blueprints.core.services - WARNING - Failed to emit task_started for test_socketio_fix
+2025-06-02 17:24:13,161 - blueprints.core.services - INFO - Task test_socketio_fix: Starting enhanced file processing for directory: /workspace/modules/test_input
+2025-06-02 17:24:13,163 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:24:13,164 - blueprints.core.services - WARNING - Failed to emit progress_update for test_socketio_fix
+2025-06-02 17:24:13,164 - blueprints.core.services - INFO - Task test_socketio_fix progress: 1% - Processing files in /workspace/modules/test_input with enhanced analytics...
+2025-06-02 17:24:13,165 - blueprints.core.services - INFO - Using optimized file processor from blueprints.features.file_processor
+2025-06-02 17:24:13,172 - blueprints.core.services - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-06-02 17:24:13,195 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 17:24:13,196 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 17:24:13,198 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 17:24:13,201 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 17:24:13,206 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 17:24:13,206 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 17:24:13,219 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.01s)
+2025-06-02 17:24:13,228 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:24:13,228 - blueprints.core.services - WARNING - Failed to emit progress_update for test_socketio_fix
+2025-06-02 17:24:13,229 - blueprints.core.services - INFO - Task test_socketio_fix progress: 0% - Stage: discovery (0/1)
+2025-06-02 17:24:13,229 - file_processor - INFO - Using thread executor with max_workers=3
+2025-06-02 17:24:13,229 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 17:24:13,241 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:24:13,241 - blueprints.core.services - WARNING - Failed to emit progress_update for test_socketio_fix
+2025-06-02 17:24:13,241 - blueprints.core.services - INFO - Task test_socketio_fix progress: 100% - Stage: processing (1/1)
+2025-06-02 17:24:13,247 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 17:24:13,247 - file_processor - INFO - write_optimized_json called with 1 libraries
+2025-06-02 17:24:13,248 - file_processor - INFO - Total documents across all libraries: 1
+2025-06-02 17:24:13,248 - file_processor - INFO - Processing library 'test.txt' with 1 documents
+2025-06-02 17:24:13,254 - file_processor - INFO - Created training-optimized JSON with 1 documents
+2025-06-02 17:24:13,254 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/test_socketio_fix.json
+2025-06-02 17:24:13,265 - blueprints.socketio_events - WARNING - Could not emit progress_update - no socketio context available
+2025-06-02 17:24:13,270 - blueprints.core.services - WARNING - Failed to emit progress_update for test_socketio_fix
+2025-06-02 17:24:13,273 - blueprints.core.services - INFO - Task test_socketio_fix progress: 100% - Stage: completed (100/100)
+2025-06-02 17:24:13,274 - file_processor - INFO - Processing complete in 0.04s
+2025-06-02 17:24:13,275 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 1 chunks created
+2025-06-02 17:24:13,282 - blueprints.core.services - INFO - Output file validation passed: /workspace/modules/test_output/test_socketio_fix.json (213 bytes)
+2025-06-02 17:24:13,286 - blueprints.core.services - INFO - Processing completed in 0.16s: 1/100 files processed, 0 errors, 0 skipped
+2025-06-02 17:24:13,287 - blueprints.api.management - INFO - Added task test_socketio_fix to history
+2025-06-02 17:24:13,288 - blueprints.core.services - INFO - Task test_socketio_fix completed - BaseTask will handle emission
+2025-06-02 17:24:13,288 - blueprints.core.services - INFO - Task test_socketio_fix enhanced final stats: processed=1, errors=0, skipped=0, pdfs=0, duration=0.16s, efficiency=50.0
+2025-06-02 17:24:13,289 - blueprints.core.services - INFO - Task test_socketio_fix (file_processing) completed in 0.16s.
+2025-06-02 17:24:13,292 - blueprints.core.services - INFO - Processing completed in 0.16s: 1/100 files processed, 0 errors, 0 skipped
+2025-06-02 17:24:13,292 - blueprints.socketio_events - WARNING - Could not emit task_completed - no socketio context available
+2025-06-02 17:24:13,292 - blueprints.core.services - WARNING - Failed to emit task_completed for test_socketio_fix

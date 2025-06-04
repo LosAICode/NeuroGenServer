@@ -3022,41 +3022,6 @@ class DocData:
         return asdict(self)
 
 
-
-# Document data storage class
-class DocData:
-    """Store data for a single document."""
-    def __init__(self, file_path: str, content: str, chunks: List[str], 
-                 metadata: Dict[str, Any] = None, tags: Set[str] = None):
-        self.file_path = file_path
-        self.relative_path = ""
-        self.content = content
-        self.chunks = chunks
-        self.metadata = metadata or {}
-        self.tags = tags or set()
-        self.chunk_count = len(chunks)
-        
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary for JSON serialization."""
-        return {
-            "file_path": self.file_path,
-            "relative_path": self.relative_path,
-            "content": self.content,
-            "chunks": self.chunks,
-            "metadata": self.metadata,
-            "tags": list(self.tags),
-            "chunk_count": self.chunk_count
-        }
-    def calculate_duration(self) -> float:
-        """Calculate duration since start time"""
-        return time.time() - self.start_time
-
-    def update_largest_file(self, file_path: str, file_size: int) -> None:
-        """Update largest file information if current file is larger"""
-        if file_size > self.largest_file_bytes:
-            self.largest_file_bytes = file_size
-            self.largest_file_path = file_path
-
 @dataclass
 class PDFDocument:
     """Structure for enhanced PDF data"""
@@ -7178,8 +7143,17 @@ def safe_process(
             stats.total_chunks += 1
         
         # Create DocData object
-        docdata = DocData(file_path=str(path), content=content, chunks=chunks, 
-                         metadata=metadata, tags=set())
+        docdata = DocData(
+            section_name=os.path.basename(str(path)),
+            content=content,
+            file_path=str(path),
+            file_size=file_info.st_size,
+            last_modified=datetime.fromtimestamp(file_info.st_mtime).strftime("%Y-%m-%d %H:%M:%S"),
+            tags=list(set()) if isinstance(set(), set) else [],
+            metadata=metadata
+        )
+        # Set chunks as an attribute
+        docdata.chunks = chunks
         docdata.relative_path = rel_path
         
         # Update statistics

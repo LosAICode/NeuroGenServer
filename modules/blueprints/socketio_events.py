@@ -106,7 +106,14 @@ def emit_task_completion_unified(task_id: str, task_type: str = "generic", outpu
     if output_file:
         payload['output_file'] = output_file
     if stats:
-        payload['stats'] = _serialize_stats(stats)
+        serialized_stats = _serialize_stats(stats)
+        payload['stats'] = serialized_stats
+        logger.info(f"🔍 DEBUGGING - Serialized stats for {task_id}: {serialized_stats}")
+        logger.info(f"🔍 DEBUGGING - Original stats type: {type(stats)}")
+        logger.info(f"🔍 DEBUGGING - Has to_dict: {hasattr(stats, 'to_dict')}")
+        logger.info(f"🔍 DEBUGGING - Stats keys: {list(serialized_stats.keys()) if isinstance(serialized_stats, dict) else 'Not a dict'}")
+    else:
+        logger.info(f"🔍 DEBUGGING - No stats provided for task {task_id}")
     if details:
         payload['details'] = details
     
@@ -994,15 +1001,14 @@ def emit_task_started(task_id, task_type, message=None, stats=None, details=None
         if details:
             payload['details'] = details
             
-        # Get socketio from current app
-        socketio_instance = current_app.extensions.get('socketio')
-        if socketio_instance:
-            socketio_instance.emit('task_started', payload)
-        else:
-            emit('task_started', payload)
-        logger.info(f"Emitted task_started for task {task_id} ({task_type})")
+        # Use safe_emit which handles context properly
+        success = safe_emit('task_started', payload)
+        if success:
+            logger.info(f"Emitted task_started for task {task_id} ({task_type})")
+        return success
     except Exception as e:
         logger.error(f"Error emitting task_started: {e}")
+        return False
 def emit_progress_update(task_id, progress, status="processing", message=None, stats=None, details=None):
     """
     Emit a progress update event via Socket.IO.

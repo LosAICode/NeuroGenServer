@@ -145,17 +145,39 @@
                                 
                                 <!-- Enhanced Output Filename Selection with validation feedback -->
                                 <div class="mb-4">
-                                    <label for="output-file" class="form-label">Output JSON Filename</label>
+                                    <label for="output-file" class="form-label">Output Filename</label>
                                     <div class="input-group has-validation">
                                         <input type="text" class="form-control" id="output-file" name="output_file" 
-                                              placeholder="Your output file name (without extension)" required>
-                                        <span class="input-group-text">.json</span>
+                                              placeholder="Your output file name with extension (.json or .md)" required>
                                         <div class="invalid-feedback">
                                             Please provide an output filename.
                                         </div>
                                     </div>
                                     <div class="form-text">
-                                        Enter just the filename to save in the input directory, or a full path to save elsewhere. 
+                                        <strong>Smart Format Detection:</strong> Enter filename with <code>.json</code> for optimized JSON or <code>.md</code> for Markdown output. 
+                                        <br>Examples: <code>my_data.json</code> or <code>my_docs.md</code>
+                                    </div>
+                                    
+                                    <!-- Format Info Alert -->
+                                    <div class="alert alert-info mt-2 py-2 px-3 small">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <strong>📄 JSON Format:</strong>
+                                                <ul class="mb-0 mt-1 small">
+                                                    <li>Machine-readable structured data</li>
+                                                    <li>Optimized structure (60% smaller)</li>
+                                                    <li>Perfect for APIs and processing</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>📝 Markdown Format:</strong>
+                                                <ul class="mb-0 mt-1 small">
+                                                    <li>Human-readable documentation</li>
+                                                    <li>75% smaller files</li>
+                                                    <li>Perfect for knowledge management</li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 

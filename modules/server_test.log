@@ -1,0 +1,234 @@
+2025-06-03 17:01:41,972 - app - INFO - Using static folder: /workspace/modules/static
+2025-06-03 17:01:41,973 - app - INFO - Using template folder: /workspace/modules/blueprints/templates
+Server initialized for eventlet.
+2025-06-03 17:01:42,046 - engineio.server - INFO - Server initialized for eventlet.
+2025-06-03 17:01:42,244 - blueprints.core.utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-03 17:01:42,365 - blueprints.core.http_client - INFO - HTTP session created with retry strategy
+2025-06-03 17:01:44,146 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-03 17:01:44,146 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-03 17:01:44,147 - file_processor - INFO - Started temp file cleanup service
+2025-06-03 17:01:44,147 - file_processor - INFO - Started temp file cleanup service
+🚀 Starting NeuroGen Server (Blueprint Architecture)
+==================================================
+📍 Server URL: http://127.0.0.1:5025
+🔧 Debug mode: False
+📁 Working directory: /workspace/modules
+==================================================
+2025-06-03 17:01:44,392 - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-06-03 17:01:44,392 - pdf_extractor - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-06-03 17:01:44,477 - INFO - PyPDF2 version 3.0.1 detected
+2025-06-03 17:01:44,477 - pdf_extractor - INFO - PyPDF2 version 3.0.1 detected
+2025-06-03 17:01:44,479 - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-06-03 17:01:44,479 - pdf_extractor - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-06-03 17:01:44,496 - INFO - Tabula detected for table extraction
+2025-06-03 17:01:44,496 - pdf_extractor - INFO - Tabula detected for table extraction
+2025-06-03 17:01:44,497 - INFO - OCR available with Tesseract and PIL/Pillow
+2025-06-03 17:01:44,497 - pdf_extractor - INFO - OCR available with Tesseract and PIL/Pillow
+2025-06-03 17:01:44,516 - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-06-03 17:01:44,516 - pdf_extractor - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-06-03 17:01:44,517 - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-06-03 17:01:44,517 - pdf_extractor - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-06-03 17:01:44,518 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-03 17:01:44,518 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-03 17:01:44,524 - INFO - Initializing PDF extractor module...
+2025-06-03 17:01:44,524 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-03 17:01:44,530 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-03 17:01:44,530 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-03 17:01:44,542 - pdf_output_enhancer - INFO - PDF Output Enhancer module imported. Call init_improved_output_format() to initialize.
+2025-06-03 17:01:44,543 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-03 17:01:44,543 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-03 17:01:44,545 - Structify - INFO - Successfully imported claude.py from Structify package
+2025-06-03 17:01:44,547 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-06-03 17:01:44,548 - blueprints.core.structify_integration - INFO - Set structify TEMP_OCR_DIR to: /workspace/modules/blueprints/core/../../temp
+2025-06-03 17:01:44,581 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-06-03 17:01:44,581 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-06-03 17:01:44,582 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-06-03 17:01:44,582 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-06-03 17:01:44,583 - blueprints.core.structify_integration - INFO - Initialized structify OCR environment
+2025-06-03 17:01:44,583 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-06-03 17:01:44,583 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-06-03 17:01:44,583 - blueprints.core.structify_integration - INFO - Patched pytesseract temp directory
+2025-06-03 17:01:44,584 - blueprints.core.structify_integration - INFO - Successfully loaded structify_module and components
+2025-06-03 17:01:44,610 - blueprints.core.ocr_config - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-06-03 17:01:44,617 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-06-03 17:01:44,617 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-06-03 17:01:44,618 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-06-03 17:01:44,624 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-03 17:01:44,624 - blueprints.core.ocr_config - INFO - OCR environment initialized successfully (singleton)
+2025-06-03 17:01:44,629 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-03 17:01:44,629 - blueprints.core.ocr_config - INFO - Successfully imported pdf_extractor module
+2025-06-03 17:01:44,629 - INFO - Initializing PDF extractor module...
+2025-06-03 17:01:44,629 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-03 17:01:44,631 - blueprints.core.ocr_config - ERROR - Error initializing PDF extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-03 17:01:44,640 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-06-03 17:01:44,642 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-03 17:01:44,642 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-06-03 17:01:44,642 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-06-03 17:01:44,984 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-06-03 17:01:44,994 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-06-03 17:01:44,997 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-03 17:01:44,997 - blueprints.core.ocr_config - INFO - OCR environment set up with temp directory: /workspace/modules/temp
+2025-06-03 17:01:44,998 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-06-03 17:01:44,998 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-06-03 17:01:45,360 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-06-03 17:01:45,360 - blueprints.core.ocr_config - INFO - OCR handler initialized successfully
+2025-06-03 17:01:45,366 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-03 17:01:45,600 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-06-03 17:01:45,601 - INFO - Claude module is available for processing
+2025-06-03 17:01:45,601 - web_scraper - INFO - Claude module is available for processing
+2025-06-03 17:01:45,601 - INFO - PDF extractor module is available
+2025-06-03 17:01:45,601 - web_scraper - INFO - PDF extractor module is available
+2025-06-03 17:01:47,601 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-03 17:01:47,635 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-06-03 17:01:47,649 - socketio_context_helper - INFO - Unified SocketIO Context Helper v4.0 loaded - Complete Blueprint alignment enabled
+2025-06-03 17:01:47,650 - socketio_context_helper - INFO - Unified SocketIO context helper v4.0 initialized
+2025-06-03 17:01:47,651 - blueprints.socketio_events - INFO - SocketIO Events context initialized for background threads
+2025-06-03 17:01:47,788 - task_api_routes - INFO - Task history module loaded successfully
+2025-06-03 17:01:47,796 - task_api_routes - INFO - Task API routes registered
+2025-06-03 17:01:47,796 - app - INFO - All blueprints registered successfully
+2025-06-03 17:01:47,797 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-06-03 17:01:47,797 - app - INFO - NeuroGen Server application created successfully
+2025-06-03 17:01:47,798 - app - INFO - Starting NeuroGen Server on 127.0.0.1:5025
+2025-06-03 17:01:47,798 - app - INFO - Debug mode: False
+2025-06-03 17:02:03,061 - blueprints.features.file_processor - INFO - Processing request: input_dir=/tmp/integration_test, output_file=test_output.json, output_dir=None
+2025-06-03 17:02:03,063 - blueprints.features.file_processor - INFO - Output file will be saved at: /workspace/modules/downloads/test_output.json
+2025-06-03 17:02:03,063 - blueprints.features.file_processor - INFO - Resolved output path: /workspace/modules/downloads/test_output.json
+2025-06-03 17:02:03,063 - blueprints.core.services - INFO - BaseTask b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 (file_processing) created.
+2025-06-03 17:02:03,067 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-06-03 17:02:03,067 - blueprints.core.services - INFO - Added task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 to active tasks
+2025-06-03 17:02:03,068 - blueprints.api.management - INFO - Registered new task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 of type file_processing
+emitting event "progress_update" to all [/]
+2025-06-03 17:02:03,069 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-06-03 17:02:03,073 - blueprints.core.services - INFO - Task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 (file_processing) started processing.
+emitting event "task_started" to all [/]
+2025-06-03 17:02:03,075 - socketio.server - INFO - emitting event "task_started" to all [/]
+2025-06-03 17:02:03,076 - blueprints.socketio_events - INFO - Emitted task_started for task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 (file_processing)
+2025-06-03 17:02:03,076 - blueprints.core.services - INFO - Task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 (file_processing) thread started.
+2025-06-03 17:02:03,077 - blueprints.features.file_processor - INFO - Started processing task: b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 for input directory: /tmp/integration_test
+2025-06-03 17:02:03,094 - blueprints.core.services - INFO - Task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4: Starting enhanced file processing for directory: /tmp/integration_test
+2025-06-03 17:02:03,095 - blueprints.core.services - INFO - Task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 progress: 1% - Processing files in /tmp/integration_test with enhanced analytics...
+2025-06-03 17:02:03,098 - blueprints.core.services - INFO - Using optimized file processor from blueprints.features.file_processor
+2025-06-03 17:02:03,101 - blueprints.core.services - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-06-03 17:02:03,503 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-03 17:02:03,503 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-03 17:02:03,505 - file_processor - INFO - Started temp file cleanup service
+2025-06-03 17:02:03,505 - file_processor - INFO - Started temp file cleanup service
+2025-06-03 17:02:03,510 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-03 17:02:03,510 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-03 17:02:03,511 - INFO - Initializing PDF extractor module...
+2025-06-03 17:02:03,511 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-03 17:02:03,513 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-03 17:02:03,513 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-03 17:02:03,514 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-03 17:02:03,514 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-03 17:02:03,516 - file_processor - INFO - Found 0 valid files in /tmp/integration_test (0.00s)
+2025-06-03 17:02:03,516 - file_processor - INFO - Found 0 valid files in /tmp/integration_test (0.00s)
+2025-06-03 17:02:03,516 - file_processor - WARNING - No files found in /tmp/integration_test matching the provided criteria
+2025-06-03 17:02:03,516 - file_processor - WARNING - No files found in /tmp/integration_test matching the provided criteria
+2025-06-03 17:02:03,519 - blueprints.core.services - ERROR - Task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 (file_processing) failed: Processing completed but output file was not created. Details: {'stage_at_failure': 'output_validation'}
+emitting event "task_error" to all [/]
+2025-06-03 17:02:03,519 - socketio.server - INFO - emitting event "task_error" to all [/]
+2025-06-03 17:02:03,520 - blueprints.socketio_events - INFO - Emitted task_error for b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 (file_processing): Processing completed but output file was not created
+2025-06-03 17:02:03,520 - blueprints.core.services - INFO - Removed task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 from active tasks
+2025-06-03 17:02:03,521 - blueprints.core.services - INFO - Task b850a27e-651c-43f1-a7b9-3e3d01bbc4f4 enhanced final stats: processed=0, errors=0, skipped=0, pdfs=0, duration=0.46s, efficiency=50
+2025-06-03 17:03:14,731 - file_processor - INFO - Processing request: input_dir=/workspace/modules/static/js/modules, output_file=real_test_output.json, output_dir=None
+2025-06-03 17:03:14,731 - file_processor - INFO - Processing request: input_dir=/workspace/modules/static/js/modules, output_file=real_test_output.json, output_dir=None
+2025-06-03 17:03:14,734 - file_processor - INFO - Output file will be saved at: /workspace/modules/downloads/real_test_output.json
+2025-06-03 17:03:14,734 - file_processor - INFO - Output file will be saved at: /workspace/modules/downloads/real_test_output.json
+2025-06-03 17:03:14,734 - file_processor - INFO - Resolved output path: /workspace/modules/downloads/real_test_output.json
+2025-06-03 17:03:14,734 - file_processor - INFO - Resolved output path: /workspace/modules/downloads/real_test_output.json
+2025-06-03 17:03:14,735 - blueprints.core.services - INFO - BaseTask cc108c6b-245e-4b97-a5f1-ec5b7c35431d (file_processing) created.
+2025-06-03 17:03:14,753 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-06-03 17:03:14,753 - blueprints.core.services - INFO - Added task cc108c6b-245e-4b97-a5f1-ec5b7c35431d to active tasks
+2025-06-03 17:03:14,753 - blueprints.api.management - INFO - Registered new task cc108c6b-245e-4b97-a5f1-ec5b7c35431d of type file_processing
+emitting event "progress_update" to all [/]
+2025-06-03 17:03:14,756 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-06-03 17:03:14,757 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d (file_processing) started processing.
+emitting event "task_started" to all [/]
+2025-06-03 17:03:14,757 - socketio.server - INFO - emitting event "task_started" to all [/]
+2025-06-03 17:03:14,758 - blueprints.socketio_events - INFO - Emitted task_started for task cc108c6b-245e-4b97-a5f1-ec5b7c35431d (file_processing)
+2025-06-03 17:03:14,758 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d (file_processing) thread started.
+2025-06-03 17:03:14,761 - file_processor - INFO - Started processing task: cc108c6b-245e-4b97-a5f1-ec5b7c35431d for input directory: /workspace/modules/static/js/modules
+2025-06-03 17:03:14,761 - file_processor - INFO - Started processing task: cc108c6b-245e-4b97-a5f1-ec5b7c35431d for input directory: /workspace/modules/static/js/modules
+2025-06-03 17:03:14,773 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d: Starting enhanced file processing for directory: /workspace/modules/static/js/modules
+2025-06-03 17:03:14,775 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 1% - Processing files in /workspace/modules/static/js/modules with enhanced analytics...
+2025-06-03 17:03:14,779 - blueprints.core.services - INFO - Using optimized file processor from blueprints.features.file_processor
+2025-06-03 17:03:14,784 - blueprints.core.services - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-06-03 17:03:15,239 - file_processor - INFO - Found 49 valid files in /workspace/modules/static/js/modules (0.45s)
+2025-06-03 17:03:15,239 - file_processor - INFO - Found 49 valid files in /workspace/modules/static/js/modules (0.45s)
+2025-06-03 17:03:15,248 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 0% - Stage: discovery (0/49)
+2025-06-03 17:03:15,248 - file_processor - INFO - Using thread executor with max_workers=3
+2025-06-03 17:03:15,248 - file_processor - INFO - Using thread executor with max_workers=3
+2025-06-03 17:03:15,249 - file_processor - INFO - Processing batch 1/3 (20 files)
+2025-06-03 17:03:15,249 - file_processor - INFO - Processing batch 1/3 (20 files)
+emitting event "progress_update" to all [/]
+2025-06-03 17:03:15,285 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-06-03 17:03:15,287 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 2% - Stage: processing (1/49)
+2025-06-03 17:03:15,374 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 8% - Stage: processing (4/49)
+2025-06-03 17:03:15,435 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 14% - Stage: processing (7/49)
+2025-06-03 17:03:15,472 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 20% - Stage: processing (10/49)
+2025-06-03 17:03:15,515 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 26% - Stage: processing (13/49)
+2025-06-03 17:03:15,557 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 32% - Stage: processing (16/49)
+2025-06-03 17:03:15,595 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 38% - Stage: processing (19/49)
+2025-06-03 17:03:15,608 - file_processor - INFO - Processing batch 2/3 (20 files)
+2025-06-03 17:03:15,608 - file_processor - INFO - Processing batch 2/3 (20 files)
+2025-06-03 17:03:15,645 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 44% - Stage: processing (22/49)
+2025-06-03 17:03:15,690 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 51% - Stage: processing (25/49)
+2025-06-03 17:03:15,730 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 57% - Stage: processing (28/49)
+2025-06-03 17:03:15,770 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 63% - Stage: processing (31/49)
+emitting event "progress_update" to all [/]
+2025-06-03 17:03:15,818 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-06-03 17:03:15,821 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 69% - Stage: processing (34/49)
+2025-06-03 17:03:15,875 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 75% - Stage: processing (37/49)
+2025-06-03 17:03:15,920 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 81% - Stage: processing (40/49)
+2025-06-03 17:03:15,923 - file_processor - INFO - Processing batch 3/3 (9 files)
+2025-06-03 17:03:15,923 - file_processor - INFO - Processing batch 3/3 (9 files)
+2025-06-03 17:03:15,996 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 87% - Stage: processing (43/49)
+2025-06-03 17:03:16,053 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 93% - Stage: processing (46/49)
+emitting event "progress_update" to all [/]
+2025-06-03 17:03:16,099 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-06-03 17:03:16,101 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 100% - Stage: processing (49/49)
+2025-06-03 17:03:16,105 - file_processor - INFO - Ensured output directory exists: /workspace/modules/downloads
+2025-06-03 17:03:16,105 - file_processor - INFO - Ensured output directory exists: /workspace/modules/downloads
+2025-06-03 17:03:16,105 - file_processor - INFO - write_optimized_json called with 5 libraries
+2025-06-03 17:03:16,105 - file_processor - INFO - write_optimized_json called with 5 libraries
+2025-06-03 17:03:16,106 - file_processor - INFO - Total documents across all libraries: 49
+2025-06-03 17:03:16,106 - file_processor - INFO - Total documents across all libraries: 49
+2025-06-03 17:03:16,106 - file_processor - INFO - Processing library 'config' with 3 documents
+2025-06-03 17:03:16,106 - file_processor - INFO - Processing library 'config' with 3 documents
+2025-06-03 17:03:16,107 - file_processor - INFO - Processing library 'core' with 15 documents
+2025-06-03 17:03:16,107 - file_processor - INFO - Processing library 'core' with 15 documents
+2025-06-03 17:03:16,107 - file_processor - INFO - Processing library 'features' with 17 documents
+2025-06-03 17:03:16,107 - file_processor - INFO - Processing library 'features' with 17 documents
+2025-06-03 17:03:16,108 - file_processor - INFO - Processing library 'services' with 1 documents
+2025-06-03 17:03:16,108 - file_processor - INFO - Processing library 'services' with 1 documents
+2025-06-03 17:03:16,108 - file_processor - INFO - Processing library 'utils' with 13 documents
+2025-06-03 17:03:16,108 - file_processor - INFO - Processing library 'utils' with 13 documents
+2025-06-03 17:03:16,163 - file_processor - INFO - Created training-optimized JSON with 49 documents
+2025-06-03 17:03:16,163 - file_processor - INFO - Created training-optimized JSON with 49 documents
+2025-06-03 17:03:16,164 - file_processor - INFO - Created optimized JSON output at /workspace/modules/downloads/real_test_output.json
+2025-06-03 17:03:16,164 - file_processor - INFO - Created optimized JSON output at /workspace/modules/downloads/real_test_output.json
+2025-06-03 17:03:16,172 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d progress: 100% - Stage: completed (100/100)
+2025-06-03 17:03:16,172 - file_processor - INFO - Processing complete in 1.32s
+2025-06-03 17:03:16,172 - file_processor - INFO - Processing complete in 1.32s
+2025-06-03 17:03:16,173 - file_processor - INFO - Stats: 49 files found, 49 processed, 0 skipped, 0 errors, 428 chunks created
+2025-06-03 17:03:16,173 - file_processor - INFO - Stats: 49 files found, 49 processed, 0 skipped, 0 errors, 428 chunks created
+2025-06-03 17:03:16,180 - blueprints.core.services - INFO - Output file validation passed: /workspace/modules/downloads/real_test_output.json (1627725 bytes)
+2025-06-03 17:03:16,183 - blueprints.core.services - INFO - Processing completed in 1.45s: 49/100 files processed, 0 errors, 0 skipped
+2025-06-03 17:03:16,185 - blueprints.api.management - INFO - Added task cc108c6b-245e-4b97-a5f1-ec5b7c35431d to history
+2025-06-03 17:03:16,186 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d completed - BaseTask will handle emission
+2025-06-03 17:03:16,186 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d enhanced final stats: processed=49, errors=0, skipped=0, pdfs=0, duration=1.45s, efficiency=55.22
+2025-06-03 17:03:16,186 - blueprints.core.services - INFO - Task cc108c6b-245e-4b97-a5f1-ec5b7c35431d (file_processing) completed in 1.45s.
+2025-06-03 17:03:16,187 - blueprints.core.services - INFO - 🔍 DEBUGGING BaseTask - self.stats type: <class 'blueprints.core.services.CustomFileStats'>
+2025-06-03 17:03:16,187 - blueprints.core.services - INFO - 🔍 DEBUGGING BaseTask - self.stats value: Files: 49/100 processed, 0 errors, 0 skipped. Duration: 1.45s
+2025-06-03 17:03:16,190 - blueprints.core.services - INFO - Processing completed in 1.45s: 49/100 files processed, 0 errors, 0 skipped
+2025-06-03 17:03:16,191 - blueprints.core.services - INFO - 🔍 DEBUGGING BaseTask - serialized CustomFileStats: {'total_files': 100, 'processed_files': 49, 'skipped_files': 0, 'error_files': 0, 'total_bytes': 1587683, 'total_chunks': 428, 'pdf_files': 0, 'tables_extracted': 0, 'references_extracted': 0, 'scanned_pages_processed': 0, 'ocr_processed_files': 0, 'binary_files_detected': 0, 'total_processing_time': 1.4520905017852783, 'largest_file_bytes': 0, 'largest_file_path': '', 'peak_memory_usage_mb': 0, 'avg_memory_usage_mb': 0, 'duration_seconds': 1.4552001953125, 'current_processing_rate': 0, 'completion_percentage': 49.0, 'files_remaining': 51, 'estimated_completion_time': 0.0, 'current_stage': '25% complete', 'formatted_total_size': '1.5 MB', 'formatted_largest_file': '0 B', 'formatted_duration': '1.5s', 'formatted_processing_rate': '0.0 files/sec', 'start_time_iso': '2025-06-03T17:03:14.735722', 'current_time_iso': '2025-06-03T17:03:16.190966', 'elapsed_time': 1.4552018642425537, 'files_per_second': 33.67, 'average_file_size': 32401.69, 'success_rate_percent': 49.0, 'error_rate_percent': 0.0, 'speed_profile': {'current_rate_files_per_second': 0, 'average_rate_files_per_second': 33.67, 'average_bytes_per_second': 1090995.19}}
+2025-06-03 17:03:16,191 - blueprints.core.services - INFO - 🔍 DEBUGGING BaseTask - final serialized_stats: {'total_files': 100, 'processed_files': 49, 'skipped_files': 0, 'error_files': 0, 'total_bytes': 1587683, 'total_chunks': 428, 'pdf_files': 0, 'tables_extracted': 0, 'references_extracted': 0, 'scanned_pages_processed': 0, 'ocr_processed_files': 0, 'binary_files_detected': 0, 'total_processing_time': 1.4520905017852783, 'largest_file_bytes': 0, 'largest_file_path': '', 'peak_memory_usage_mb': 0, 'avg_memory_usage_mb': 0, 'duration_seconds': 1.4552001953125, 'current_processing_rate': 0, 'completion_percentage': 49.0, 'files_remaining': 51, 'estimated_completion_time': 0.0, 'current_stage': '25% complete', 'formatted_total_size': '1.5 MB', 'formatted_largest_file': '0 B', 'formatted_duration': '1.5s', 'formatted_processing_rate': '0.0 files/sec', 'start_time_iso': '2025-06-03T17:03:14.735722', 'current_time_iso': '2025-06-03T17:03:16.190966', 'elapsed_time': 1.4552018642425537, 'files_per_second': 33.67, 'average_file_size': 32401.69, 'success_rate_percent': 49.0, 'error_rate_percent': 0.0, 'speed_profile': {'current_rate_files_per_second': 0, 'average_rate_files_per_second': 33.67, 'average_bytes_per_second': 1090995.19}, 'total_duration_seconds': 1.45}
+2025-06-03 17:03:16,191 - blueprints.socketio_events - INFO - 🔍 DEBUGGING - Serialized stats for cc108c6b-245e-4b97-a5f1-ec5b7c35431d: {'total_files': 100, 'processed_files': 49, 'skipped_files': 0, 'error_files': 0, 'total_bytes': 1587683, 'total_chunks': 428, 'pdf_files': 0, 'tables_extracted': 0, 'references_extracted': 0, 'scanned_pages_processed': 0, 'ocr_processed_files': 0, 'binary_files_detected': 0, 'total_processing_time': 1.4520905017852783, 'largest_file_bytes': 0, 'largest_file_path': '', 'peak_memory_usage_mb': 0, 'avg_memory_usage_mb': 0, 'duration_seconds': 1.4552001953125, 'current_processing_rate': 0, 'completion_percentage': 49.0, 'files_remaining': 51, 'estimated_completion_time': 0.0, 'current_stage': '25% complete', 'formatted_total_size': '1.5 MB', 'formatted_largest_file': '0 B', 'formatted_duration': '1.5s', 'formatted_processing_rate': '0.0 files/sec', 'start_time_iso': '2025-06-03T17:03:14.735722', 'current_time_iso': '2025-06-03T17:03:16.190966', 'elapsed_time': 1.4552018642425537, 'files_per_second': 33.67, 'average_file_size': 32401.69, 'success_rate_percent': 49.0, 'error_rate_percent': 0.0, 'speed_profile': {'current_rate_files_per_second': 0, 'average_rate_files_per_second': 33.67, 'average_bytes_per_second': 1090995.19}, 'total_duration_seconds': 1.45}
+2025-06-03 17:03:16,191 - blueprints.socketio_events - INFO - 🔍 DEBUGGING - Original stats type: <class 'dict'>
+2025-06-03 17:03:16,192 - blueprints.socketio_events - INFO - 🔍 DEBUGGING - Has to_dict: False
+2025-06-03 17:03:16,192 - blueprints.socketio_events - INFO - 🔍 DEBUGGING - Stats keys: ['total_files', 'processed_files', 'skipped_files', 'error_files', 'total_bytes', 'total_chunks', 'pdf_files', 'tables_extracted', 'references_extracted', 'scanned_pages_processed', 'ocr_processed_files', 'binary_files_detected', 'total_processing_time', 'largest_file_bytes', 'largest_file_path', 'peak_memory_usage_mb', 'avg_memory_usage_mb', 'duration_seconds', 'current_processing_rate', 'completion_percentage', 'files_remaining', 'estimated_completion_time', 'current_stage', 'formatted_total_size', 'formatted_largest_file', 'formatted_duration', 'formatted_processing_rate', 'start_time_iso', 'current_time_iso', 'elapsed_time', 'files_per_second', 'average_file_size', 'success_rate_percent', 'error_rate_percent', 'speed_profile', 'total_duration_seconds']
+emitting event "task_completed" to all [/]
+2025-06-03 17:03:16,192 - socketio.server - INFO - emitting event "task_completed" to all [/]
+2025-06-03 17:03:16,193 - blueprints.socketio_events - INFO - Emitted unified task_completed for cc108c6b-245e-4b97-a5f1-ec5b7c35431d (file_processing)
+2025-06-03 17:03:16,193 - blueprints.core.services - INFO - Removed task cc108c6b-245e-4b97-a5f1-ec5b7c35431d from active tasks

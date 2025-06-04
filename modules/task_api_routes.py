@@ -117,6 +117,54 @@ def get_task(task_id):
             "error": str(e)
         }), 500
 
+@task_api.route('/api/task/<task_id>/status', methods=['GET'])
+def get_task_status(task_id):
+    """Get status information for a specific task"""
+    try:
+        progress_data = get_task_progress(task_id)
+        task_info = get_task_info(task_id)
+        
+        if not progress_data and not task_info:
+            return jsonify({
+                "status": "not_found",
+                "task_id": task_id,
+                "error": f"Task with ID {task_id} not found"
+            }), 404
+        
+        # Combine progress and task info
+        status_response = {
+            "task_id": task_id,
+            "status": progress_data.get("status", "unknown") if progress_data else "unknown",
+            "progress": progress_data.get("progress", 0) if progress_data else 0,
+            "message": progress_data.get("message", "") if progress_data else ""
+        }
+        
+        if task_info:
+            status_response.update({
+                "task_type": task_info.get("task_type", "unknown"),
+                "created": task_info.get("created", ""),
+                "output_path": task_info.get("output_path", "")
+            })
+        
+        return jsonify(status_response)
+    except Exception as e:
+        logger.error(f"Error retrieving status for task {task_id}: {e}")
+        return jsonify({
+            "status": "error",
+            "task_id": task_id,
+            "error": str(e)
+        }), 500
+
+@task_api.route('/api/status/<task_id>', methods=['GET'])
+def get_status(task_id):
+    """Alternative endpoint for task status (for compatibility)"""
+    return get_task_status(task_id)
+
+@task_api.route('/api/task_status/<task_id>', methods=['GET'])  
+def get_task_status_alt(task_id):
+    """Alternative endpoint for task status (for compatibility)"""
+    return get_task_status(task_id)
+
 @task_api.route('/api/task/<task_id>/cancel', methods=['POST'])
 def cancel_task(task_id):
     """Cancel a running task"""

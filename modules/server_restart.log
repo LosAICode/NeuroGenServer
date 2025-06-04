@@ -1,0 +1,162 @@
+2025-06-02 23:36:46,016 - app - INFO - Using static folder: /workspace/modules/static
+2025-06-02 23:36:46,019 - app - INFO - Using template folder: /workspace/modules/blueprints/templates
+Server initialized for eventlet.
+2025-06-02 23:36:46,091 - engineio.server - INFO - Server initialized for eventlet.
+2025-06-02 23:36:46,386 - blueprints.core.utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 23:36:46,497 - blueprints.core.http_client - INFO - HTTP session created with retry strategy
+2025-06-02 23:36:50,509 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 23:36:50,509 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 23:36:50,510 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 23:36:50,510 - file_processor - INFO - Started temp file cleanup service
+🚀 Starting NeuroGen Server (Blueprint Architecture)
+==================================================
+📍 Server URL: http://127.0.0.1:5025
+🔧 Debug mode: False
+📁 Working directory: /workspace/modules
+==================================================
+2025-06-02 23:36:55,226 - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-06-02 23:36:55,226 - pdf_extractor - INFO - PyMuPDF (fitz) version ('1.26.0', '1.26.1', '20250522000001') detected
+2025-06-02 23:36:55,687 - INFO - PyPDF2 version 3.0.1 detected
+2025-06-02 23:36:55,687 - pdf_extractor - INFO - PyPDF2 version 3.0.1 detected
+2025-06-02 23:36:55,691 - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-06-02 23:36:55,691 - pdf_extractor - WARNING - pdfplumber not available. Install with: pip install pdfplumber
+2025-06-02 23:36:55,750 - INFO - Tabula detected for table extraction
+2025-06-02 23:36:55,750 - pdf_extractor - INFO - Tabula detected for table extraction
+2025-06-02 23:36:55,753 - INFO - OCR available with Tesseract and PIL/Pillow
+2025-06-02 23:36:55,753 - pdf_extractor - INFO - OCR available with Tesseract and PIL/Pillow
+2025-06-02 23:36:55,760 - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-06-02 23:36:55,760 - pdf_extractor - WARNING - Failed to find Java in PATH: [Errno 2] No such file or directory: 'where'
+2025-06-02 23:36:55,761 - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-06-02 23:36:55,761 - pdf_extractor - WARNING - Java installation not found. Table extraction with Tabula will not be available.
+2025-06-02 23:36:55,762 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 23:36:55,762 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 23:36:55,762 - INFO - Initializing PDF extractor module...
+2025-06-02 23:36:55,762 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 23:36:55,780 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 23:36:55,780 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 23:36:55,811 - pdf_output_enhancer - INFO - PDF Output Enhancer module imported. Call init_improved_output_format() to initialize.
+2025-06-02 23:36:55,811 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 23:36:55,811 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 23:36:55,813 - Structify - INFO - Successfully imported claude.py from Structify package
+2025-06-02 23:36:55,814 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-06-02 23:36:55,814 - blueprints.core.structify_integration - INFO - Set structify TEMP_OCR_DIR to: /workspace/modules/blueprints/core/../../temp
+2025-06-02 23:36:56,025 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-06-02 23:36:56,025 - file_processor - INFO - Tesseract language data already exists at /workspace/modules/blueprints/core/../../temp/tessdata/eng.traineddata
+2025-06-02 23:36:56,026 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-06-02 23:36:56,026 - file_processor - INFO - OCR environment initialized with TESSDATA_PREFIX=/workspace/modules/temp/tessdata
+2025-06-02 23:36:56,027 - blueprints.core.structify_integration - INFO - Initialized structify OCR environment
+2025-06-02 23:36:56,028 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-06-02 23:36:56,028 - file_processor - INFO - Successfully patched pytesseract to use temp directory: /workspace/modules/blueprints/core/../../temp
+2025-06-02 23:36:56,028 - blueprints.core.structify_integration - INFO - Patched pytesseract temp directory
+2025-06-02 23:36:56,029 - blueprints.core.structify_integration - INFO - Successfully loaded structify_module and components
+2025-06-02 23:36:56,143 - blueprints.core.ocr_config - WARNING - pikepdf not available. Some PDF repair functions will be limited.
+2025-06-02 23:36:56,150 - blueprints.core.ocr_config - INFO - Set full permissions on temp directory: /workspace/modules/temp
+2025-06-02 23:36:56,150 - blueprints.core.ocr_config - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-06-02 23:36:56,156 - blueprints.core.ocr_config - INFO - Set temp directory environment variables to: /workspace/modules/temp
+2025-06-02 23:36:56,197 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-02 23:36:56,198 - blueprints.core.ocr_config - INFO - OCR environment initialized successfully (singleton)
+2025-06-02 23:36:56,245 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-02 23:36:56,246 - blueprints.core.ocr_config - INFO - Successfully imported pdf_extractor module
+2025-06-02 23:36:56,246 - INFO - Initializing PDF extractor module...
+2025-06-02 23:36:56,246 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 23:36:56,260 - blueprints.core.ocr_config - ERROR - Error initializing PDF extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 23:36:56,309 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-06-02 23:36:56,314 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-02 23:36:56,315 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-06-02 23:36:56,316 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-06-02 23:36:57,064 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-06-02 23:36:57,072 - safe_ocr_handler - INFO - Set TESSDATA_PREFIX to: /workspace/modules/temp/tessdata
+2025-06-02 23:36:57,077 - safe_ocr_handler - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-02 23:36:57,078 - blueprints.core.ocr_config - INFO - OCR environment set up with temp directory: /workspace/modules/temp
+2025-06-02 23:36:57,078 - safe_ocr_handler - WARNING - Tesseract executable not found at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2025-06-02 23:36:57,079 - safe_ocr_handler - INFO - Successfully patched pytesseract for better temp file handling
+2025-06-02 23:36:57,675 - safe_ocr_handler - INFO - Started periodic cleanup service for /workspace/modules/temp
+2025-06-02 23:36:57,675 - blueprints.core.ocr_config - INFO - OCR handler initialized successfully
+2025-06-02 23:36:57,684 - blueprints.core.ocr_config - INFO - Confirmed eng.traineddata exists at: /workspace/modules/temp/tessdata/eng.traineddata
+2025-06-02 23:36:58,112 - structify_import - INFO - Successfully imported claude.py module from Structify package
+2025-06-02 23:36:58,113 - INFO - Claude module is available for processing
+2025-06-02 23:36:58,113 - web_scraper - INFO - Claude module is available for processing
+2025-06-02 23:36:58,113 - INFO - PDF extractor module is available
+2025-06-02 23:36:58,113 - web_scraper - INFO - PDF extractor module is available
+2025-06-02 23:37:02,720 - blueprints.features.file_utils - WARNING - python-magic not available. Try installing python-magic-bin on Windows
+2025-06-02 23:37:02,765 - blueprints.core.services - INFO - Loaded 1 API keys
+2025-06-02 23:37:02,780 - socketio_context_helper - INFO - Unified SocketIO Context Helper v4.0 loaded - Complete Blueprint alignment enabled
+2025-06-02 23:37:02,780 - socketio_context_helper - INFO - Unified SocketIO context helper v4.0 initialized
+2025-06-02 23:37:02,781 - blueprints.socketio_events - INFO - SocketIO Events context initialized for background threads
+2025-06-02 23:37:02,956 - app - INFO - All blueprints registered successfully
+2025-06-02 23:37:02,965 - blueprints.socketio_events - INFO - SocketIO events registered successfully
+2025-06-02 23:37:02,966 - app - INFO - NeuroGen Server application created successfully
+2025-06-02 23:37:02,967 - app - INFO - Starting NeuroGen Server on 127.0.0.1:5025
+2025-06-02 23:37:02,968 - app - INFO - Debug mode: False
+2025-06-02 23:43:17,982 - blueprints.features.file_processor - INFO - Processing request: input_dir=/workspace/modules/test_input, output_file=/workspace/modules/test_output/undo_test.json, output_dir=None
+2025-06-02 23:43:18,026 - blueprints.features.file_processor - INFO - Output file will be saved at: /workspace/modules/test_output/undo_test.json
+2025-06-02 23:43:18,026 - blueprints.features.file_processor - INFO - Resolved output path: /workspace/modules/test_output/undo_test.json
+2025-06-02 23:43:18,039 - blueprints.core.services - INFO - BaseTask cfb4a22a-d09f-4552-8f41-10663b29022d (file_processing) created.
+2025-06-02 23:43:18,103 - blueprints.core.services - INFO - Calibrated processing parameters: max_memory=2048MB, batch_size=25, gc_threshold=1536MB
+2025-06-02 23:43:18,103 - blueprints.core.services - INFO - Added task cfb4a22a-d09f-4552-8f41-10663b29022d to active tasks
+2025-06-02 23:43:18,107 - blueprints.api.management - INFO - Registered new task cfb4a22a-d09f-4552-8f41-10663b29022d of type file_processing
+emitting event "progress_update" to all [/]
+2025-06-02 23:43:18,136 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-06-02 23:43:18,146 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d (file_processing) started processing.
+2025-06-02 23:43:18,148 - blueprints.socketio_events - ERROR - Error emitting task_started: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+2025-06-02 23:43:18,149 - blueprints.core.services - WARNING - Failed to emit task_started for cfb4a22a-d09f-4552-8f41-10663b29022d
+2025-06-02 23:43:18,152 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d (file_processing) thread started.
+2025-06-02 23:43:18,152 - blueprints.features.file_processor - INFO - Started processing task: cfb4a22a-d09f-4552-8f41-10663b29022d for input directory: /workspace/modules/test_input
+2025-06-02 23:43:18,193 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d: Starting enhanced file processing for directory: /workspace/modules/test_input
+2025-06-02 23:43:18,196 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d progress: 1% - Processing files in /workspace/modules/test_input with enhanced analytics...
+2025-06-02 23:43:18,197 - blueprints.core.services - INFO - Using optimized file processor from blueprints.features.file_processor
+2025-06-02 23:43:18,199 - blueprints.core.services - INFO - Starting main processing with batch_size=25, chunk_size=4096
+2025-06-02 23:43:19,257 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 23:43:19,257 - file_processor - INFO - Successfully patched pytesseract to ignore temp file deletion errors
+2025-06-02 23:43:19,259 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 23:43:19,259 - file_processor - INFO - Started temp file cleanup service
+2025-06-02 23:43:19,299 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 23:43:19,299 - file_processor - INFO - Successfully imported pdf_extractor module
+2025-06-02 23:43:19,300 - INFO - Initializing PDF extractor module...
+2025-06-02 23:43:19,300 - pdf_extractor - INFO - Initializing PDF extractor module...
+2025-06-02 23:43:19,309 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 23:43:19,309 - file_processor - WARNING - Failed to initialize pdf_extractor: name 'JAVA_AVAILABLE' is not defined
+2025-06-02 23:43:19,310 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 23:43:19,310 - file_processor - INFO - Successfully imported pdf_output_enhancer module
+2025-06-02 23:43:19,336 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.02s)
+2025-06-02 23:43:19,336 - file_processor - INFO - Found 1 valid files in /workspace/modules/test_input (0.02s)
+2025-06-02 23:43:19,348 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d progress: 0% - Stage: discovery (0/1)
+2025-06-02 23:43:19,349 - file_processor - INFO - Using thread executor with max_workers=3
+2025-06-02 23:43:19,349 - file_processor - INFO - Using thread executor with max_workers=3
+2025-06-02 23:43:19,349 - file_processor - INFO - Processing batch 1/1 (1 files)
+2025-06-02 23:43:19,349 - file_processor - INFO - Processing batch 1/1 (1 files)
+emitting event "progress_update" to all [/]
+2025-06-02 23:43:19,374 - socketio.server - INFO - emitting event "progress_update" to all [/]
+2025-06-02 23:43:19,375 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d progress: 100% - Stage: processing (1/1)
+2025-06-02 23:43:19,381 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 23:43:19,381 - file_processor - INFO - Ensured output directory exists: /workspace/modules/test_output
+2025-06-02 23:43:19,382 - file_processor - INFO - write_optimized_json called with 1 libraries
+2025-06-02 23:43:19,382 - file_processor - INFO - write_optimized_json called with 1 libraries
+2025-06-02 23:43:19,383 - file_processor - INFO - Total documents across all libraries: 1
+2025-06-02 23:43:19,383 - file_processor - INFO - Total documents across all libraries: 1
+2025-06-02 23:43:19,387 - file_processor - INFO - Processing library 'test.txt' with 1 documents
+2025-06-02 23:43:19,387 - file_processor - INFO - Processing library 'test.txt' with 1 documents
+2025-06-02 23:43:19,396 - file_processor - INFO - Created training-optimized JSON with 1 documents
+2025-06-02 23:43:19,396 - file_processor - INFO - Created training-optimized JSON with 1 documents
+2025-06-02 23:43:19,397 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/undo_test.json
+2025-06-02 23:43:19,397 - file_processor - INFO - Created optimized JSON output at /workspace/modules/test_output/undo_test.json
+2025-06-02 23:43:19,406 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d progress: 100% - Stage: completed (100/100)
+2025-06-02 23:43:19,406 - file_processor - INFO - Processing complete in 0.06s
+2025-06-02 23:43:19,406 - file_processor - INFO - Processing complete in 0.06s
+2025-06-02 23:43:19,407 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 1 chunks created
+2025-06-02 23:43:19,407 - file_processor - INFO - Stats: 1 files found, 1 processed, 0 skipped, 0 errors, 1 chunks created
+2025-06-02 23:43:19,413 - blueprints.core.services - INFO - Output file validation passed: /workspace/modules/test_output/undo_test.json (203 bytes)
+2025-06-02 23:43:19,416 - blueprints.core.services - INFO - Processing completed in 1.37s: 1/100 files processed, 0 errors, 0 skipped
+2025-06-02 23:43:19,419 - blueprints.api.management - INFO - Added task cfb4a22a-d09f-4552-8f41-10663b29022d to history
+2025-06-02 23:43:19,420 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d completed - BaseTask will handle emission
+2025-06-02 23:43:19,421 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d enhanced final stats: processed=1, errors=0, skipped=0, pdfs=0, duration=1.38s, efficiency=7.26
+2025-06-02 23:43:19,422 - blueprints.core.services - INFO - Task cfb4a22a-d09f-4552-8f41-10663b29022d (file_processing) completed in 1.38s.
+2025-06-02 23:43:19,430 - blueprints.core.services - INFO - Processing completed in 1.38s: 1/100 files processed, 0 errors, 0 skipped
+emitting event "task_completed" to all [/]
+2025-06-02 23:43:19,431 - socketio.server - INFO - emitting event "task_completed" to all [/]
+2025-06-02 23:43:19,432 - blueprints.socketio_events - INFO - Emitted unified task_completed for cfb4a22a-d09f-4552-8f41-10663b29022d (file_processing)
+2025-06-02 23:43:19,432 - blueprints.core.services - INFO - Removed task cfb4a22a-d09f-4552-8f41-10663b29022d from active tasks

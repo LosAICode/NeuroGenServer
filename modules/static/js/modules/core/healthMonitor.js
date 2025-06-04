@@ -263,7 +263,7 @@ class HealthMonitor {
     
     try {
       const startTime = Date.now();
-      const response = await fetch(this.healthEndpoints.api);
+      const response = await fetch(this.healthEndpoints.health || '/api/health');
       apiStatus.responseTime = Date.now() - startTime;
       
       if (response.ok) {
