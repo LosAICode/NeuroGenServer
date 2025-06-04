@@ -925,15 +925,22 @@ function handleTaskCompleted(data) {
   task.completionData = data;
   task.duration = task.endTime - task.startTime;
 
-  // Final UI update
-  updateProgressUI(taskId, {
-    progress: 100,
-    message: data.message || 'Completed successfully!',
-    stats: data.stats || {}
-  });
+  // Check if task uses custom completion handler - let it handle the transition
+  if (task && task.options && task.options.customUIHandler === true) {
+    console.log(`📊 [ProgressHandler] Task ${taskId} uses customUIHandler - skipping final UI update (module will handle completion)`);
+    // Module's completion handler will take over from here
+    // Still continue with other completion tasks but skip UI updates
+  } else {
+    // Final UI update for tasks without custom handlers
+    updateProgressUI(taskId, {
+      progress: 100,
+      message: data.message || 'Completed successfully!',
+      stats: data.stats || {}
+    });
 
-  // Update result container if available
-  updateResultContainer(taskId, data);
+    // Update result container if available
+    updateResultContainer(taskId, data);
+  }
 
   // Update button state
   updateButtonForTask(taskId, 'completed');

@@ -497,12 +497,31 @@ class FileProcessor {
 
     // Task completed
     const completedHandler = (data) => {
+      console.log('📡 [FileProcessor] COMPLETION EVENT RECEIVED:', data);
+      console.log('📡 [FileProcessor] Current task ID:', this.state.currentTask?.id);
+      console.log('📡 [FileProcessor] Event task ID:', data.task_id);
+      console.log('📡 [FileProcessor] IDs match:', data.task_id === this.state.currentTask?.id);
+      
       if (data.task_id === this.state.currentTask?.id) {
+        console.log('✅ [FileProcessor] Calling handleTaskCompleted...');
         this.handleTaskCompleted(data);
+      } else {
+        console.log('❌ [FileProcessor] Task ID mismatch - completion event ignored');
       }
     };
     window.socket.on(TASK_EVENTS.COMPLETED, completedHandler);
     this.state.socketListeners.add(() => window.socket.off(TASK_EVENTS.COMPLETED, completedHandler));
+    
+    // BACKUP: Also listen for 'task_completed' directly in case event name differs
+    const backupCompletedHandler = (data) => {
+      console.log('📡 [FileProcessor] BACKUP COMPLETION EVENT RECEIVED:', data);
+      if (data.task_id === this.state.currentTask?.id) {
+        console.log('✅ [FileProcessor] BACKUP: Calling handleTaskCompleted...');
+        this.handleTaskCompleted(data);
+      }
+    };
+    window.socket.on('task_completed', backupCompletedHandler);
+    this.state.socketListeners.add(() => window.socket.off('task_completed', backupCompletedHandler));
 
     // Task error
     const errorHandler = (data) => {
@@ -960,6 +979,17 @@ class FileProcessor {
           return;
         }
         
+        // Stop polling after maximum attempts to prevent indefinite polling
+        if (pollCount >= maxPollAttempts) {
+          console.log(`⏱️ [FileProcessor] Maximum polling attempts reached (${maxPollAttempts}) - stopping monitoring`);
+          this.clearAllTimers();
+          // If we still haven't received completion, trigger a final status check
+          if (!this.state.completionState.completed) {
+            this.showNotification('Task monitoring timeout - please check task status manually', 'warning');
+          }
+          return;
+        }
+        
         // Check if we've received recent SocketIO updates (only if not forced fallback)
         if (!forceFallback) {
           const timeSinceLastUpdate = Date.now() - this.state.lastProgressTimestamp;
@@ -974,6 +1004,14 @@ class FileProcessor {
         const statusData = await this.fetchTaskStatusFromMultipleEndpoints(taskId);
         
         if (statusData) {
+          // Check if task was already completed and removed from cache
+          if (statusData.message === 'Task not found in progress cache' && 
+              this.state.completionState.completed) {
+            console.log(`✅ [FileProcessor] Task already completed and removed from cache - stopping monitoring`);
+            this.clearAllTimers();
+            return;
+          }
+          
           consecutiveErrors = 0; // Reset error counter on success
           
           // Handle different status types
@@ -1366,9 +1404,6 @@ class FileProcessor {
   handleTaskCompleted(data) {
     try {
       console.log('✅ [FileProcessor] Task completion received:', data);
-      console.log('🔍 [FileProcessor] DEBUGGING - Full data structure:', JSON.stringify(data, null, 2));
-      console.log('🔍 [FileProcessor] DEBUGGING - Stats field:', data.stats);
-      console.log('🔍 [FileProcessor] DEBUGGING - Stats type:', typeof data.stats);
       
       // Enhanced completion validation with multiple checks
       if (!this.validateTaskCompletion(data)) {
@@ -1384,12 +1419,17 @@ class FileProcessor {
         return;
       }
       
+      // CRITICAL: Clear all timers IMMEDIATELY before any other processing
+      console.log("🛑 [FileProcessor] Stopping all monitoring timers");
+      this.clearAllTimers();
+      this.clearCompletionMonitoring();
+      
       // Mark as completed to prevent duplicate processing
       this.state.completionState.completed = true;
       this.state.completionState.completionTime = Date.now();
       this.state.processingState = 'completed';
       
-      console.log("🎉 [FileProcessor] Processing task completion with enhanced cleanup");
+      console.log("🎉 [FileProcessor] Processing task completion");
       
       // Enhanced cleanup with multiple fallback timers
       this.performEnhancedCleanup();
@@ -1403,15 +1443,227 @@ class FileProcessor {
       // Enhanced result display with better UX
       this.displayEnhancedResults(data);
       
-      console.log("✅ [FileProcessor] Enhanced task completion processing completed successfully");
+      // IMMEDIATE: Force direct container transition
+      setTimeout(() => {
+        this.forceContainerTransition(data);
+      }, 100);
+      
+      // EMERGENCY BACKUP: Force transition with even simpler approach
+      setTimeout(() => {
+        this.emergencyContainerTransition(data);
+      }, 500);
+      
+      console.log("✅ [FileProcessor] Task completion processing completed successfully");
       
     } catch (error) {
-      console.error('❌ [FileProcessor] Error in enhanced task completion:', error);
+      console.error('❌ [FileProcessor] Error in task completion:', error);
       this.showNotification(`Completion handling error: ${error.message}`, 'error', 'File Processor');
       
       // Fallback completion handling
       this.performFallbackCompletion(data);
     }
+  }
+
+  /**
+   * Force immediate container transition with simple approach
+   */
+  forceContainerTransition(data) {
+    console.log('🔥 [FileProcessor] FORCE: Direct container transition');
+    
+    try {
+      // Get containers directly from DOM
+      const progressContainer = document.getElementById('progress-container');
+      const resultContainer = document.getElementById('result-container');
+      
+      console.log('📦 FORCE: Progress container found:', !!progressContainer);
+      console.log('📦 FORCE: Result container found:', !!resultContainer);
+      
+      if (!resultContainer) {
+        console.error('❌ FORCE: Result container not found in DOM!');
+        return;
+      }
+      
+      // Hide progress container immediately
+      if (progressContainer) {
+        progressContainer.classList.add('d-none');
+        progressContainer.style.display = 'none';
+        console.log('✅ FORCE: Progress container hidden');
+      }
+      
+      // Show result container immediately
+      resultContainer.classList.remove('d-none');
+      resultContainer.style.display = 'block';
+      console.log('✅ FORCE: Result container shown');
+      
+      // Update result stats directly
+      const resultStatsElement = document.getElementById('result-stats');
+      if (resultStatsElement && data.stats) {
+        resultStatsElement.innerHTML = `
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="card border-0 bg-light">
+                <div class="card-body text-center py-2">
+                  <div class="fs-4 fw-bold text-primary">${data.stats.processed_files || 0}</div>
+                  <div class="small text-muted">Files Processed</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 bg-light">
+                <div class="card-body text-center py-2">
+                  <div class="fs-4 fw-bold text-success">${data.stats.formatted_duration || 'Unknown'}</div>
+                  <div class="small text-muted">Duration</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 bg-light">
+                <div class="card-body text-center py-2">
+                  <div class="fs-4 fw-bold text-warning">${data.stats.formatted_total_size || 'Unknown'}</div>
+                  <div class="small text-muted">Total Size</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 bg-light">
+                <div class="card-body text-center py-2">
+                  <div class="fs-4 fw-bold text-info">${data.stats.success_rate_percent || 100}%</div>
+                  <div class="small text-muted">Success Rate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        console.log('✅ FORCE: Result stats updated');
+      }
+      
+      console.log('🎉 FORCE: Container transition completed successfully');
+      
+    } catch (error) {
+      console.error('❌ FORCE: Error in forced transition:', error);
+    }
+  }
+
+  /**
+   * Emergency container transition - absolute simplest approach
+   */
+  emergencyContainerTransition(data) {
+    console.log('🚨 [FileProcessor] EMERGENCY: Attempting absolute simplest container transition');
+    
+    try {
+      // Get elements using multiple fallback methods
+      let progressContainer = document.getElementById('progress-container');
+      let resultContainer = document.getElementById('result-container');
+      
+      console.log('🚨 EMERGENCY: Progress container found:', !!progressContainer);
+      console.log('🚨 EMERGENCY: Result container found:', !!resultContainer);
+      
+      if (progressContainer) {
+        progressContainer.style.display = 'none';
+        progressContainer.classList.add('d-none');
+        console.log('🚨 EMERGENCY: Progress container hidden');
+      }
+      
+      if (resultContainer) {
+        resultContainer.style.display = 'block';
+        resultContainer.classList.remove('d-none');
+        console.log('🚨 EMERGENCY: Result container shown');
+        
+        // Add emergency stats if container is empty
+        if (resultContainer.innerHTML.trim().indexOf('stats') === -1) {
+          const emergencyStats = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle me-2"></i>
+              Processing Completed Successfully!
+            </div>
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div class="text-center p-3 border rounded bg-light">
+                  <div class="h4 mb-1 text-primary">${data.stats?.processed_files || 'N/A'}</div>
+                  <small class="text-muted">Files</small>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="text-center p-3 border rounded bg-light">
+                  <div class="h4 mb-1 text-success">${data.stats?.formatted_duration || 'N/A'}</div>
+                  <small class="text-muted">Duration</small>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="text-center p-3 border rounded bg-light">
+                  <div class="h4 mb-1 text-warning">${data.stats?.formatted_total_size || 'N/A'}</div>
+                  <small class="text-muted">Size</small>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="text-center p-3 border rounded bg-light">
+                  <div class="h4 mb-1 text-info">${data.stats?.success_rate_percent || 100}%</div>
+                  <small class="text-muted">Success</small>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button id="new-task-btn" class="btn btn-outline-primary">
+                <i class="fas fa-plus me-2"></i>New Task
+              </button>
+            </div>
+          `;
+          
+          // Find the stats element and update it
+          const resultStats = document.getElementById('result-stats');
+          if (resultStats) {
+            resultStats.innerHTML = emergencyStats;
+            console.log('🚨 EMERGENCY: Stats added to result container');
+          }
+        }
+        
+        console.log('🚨 EMERGENCY: Result container transition completed');
+      } else {
+        console.error('🚨 EMERGENCY: Result container not found in DOM!');
+      }
+      
+    } catch (error) {
+      console.error('🚨 EMERGENCY: Error in emergency transition:', error);
+    }
+  }
+
+  /**
+   * MANUAL TEST: Force completion transition for testing
+   */
+  testCompletionTransition(mockData = null) {
+    console.log('🧪 [FileProcessor] MANUAL TEST: Forcing completion transition');
+    
+    const testData = mockData || {
+      task_id: 'test_manual_completion',
+      task_type: 'file_processing',
+      status: 'completed',
+      progress: 100,
+      message: 'Test completion',
+      output_file: 'test_output.json',
+      stats: {
+        total_files: 5,
+        processed_files: 5,
+        error_files: 0,
+        formatted_duration: '2.1s',
+        formatted_total_size: '48.1 KB',
+        success_rate_percent: 100
+      }
+    };
+    
+    console.log('🧪 [FileProcessor] Test data:', testData);
+    
+    // Set mock current task to match
+    this.state.currentTask = { id: testData.task_id };
+    
+    // Test all three transition methods
+    try {
+      console.log('🧪 [FileProcessor] Testing handleTaskCompleted...');
+      this.handleTaskCompleted(testData);
+    } catch (error) {
+      console.error('❌ [FileProcessor] handleTaskCompleted failed:', error);
+    }
+    
+    return testData;
   }
 
   /**
@@ -1547,6 +1799,13 @@ class FileProcessor {
    */
   displayEnhancedResults(data) {
     try {
+      console.log('🎯 [FileProcessor] displayEnhancedResults called with:', data);
+      console.log('🔍 [FileProcessor] DEBUGGING - current state:', {
+        processingState: this.state.processingState,
+        completionState: this.state.completionState,
+        currentTask: this.state.currentTask
+      });
+      
       // Prepare enhanced result data
       const enhancedData = {
         stats: data.stats || {},
@@ -1557,6 +1816,8 @@ class FileProcessor {
         completionTime: this.state.completionState.completionTime,
         duration: this.state.currentTask ? (Date.now() - this.state.currentTask.startTime) : 0
       };
+      
+      console.log('🎯 [FileProcessor] Enhanced data prepared:', enhancedData);
       
       // IMMEDIATE transition to results - no delay
       console.log('🎯 [FileProcessor] Transitioning to results immediately...');
@@ -1983,15 +2244,37 @@ class FileProcessor {
    */
   showResult(data) {
     console.log('🎯 [FileProcessor] showResult called with data:', data);
+    console.log('🔍 [FileProcessor] DEBUGGING showResult - state.elements map:', this.state.elements);
     
     try {
       // Force immediate container transition
-      const resultContainer = this.state.elements.get('result-container');
+      const resultContainer = this.state.elements.get('result-container') || document.getElementById('result-container');
+      const progressContainer = this.state.elements.get('progress-container') || document.getElementById('progress-container');
+      
+      console.log('🔍 [FileProcessor] DEBUGGING - resultContainer found:', !!resultContainer);
+      console.log('🔍 [FileProcessor] DEBUGGING - progressContainer found:', !!progressContainer);
       
       if (!resultContainer) {
         console.error('❌ [FileProcessor] Result container not found!');
+        // Try to find it in DOM directly
+        const fallbackContainer = document.getElementById('result-container');
+        console.log('🔍 [FileProcessor] DEBUGGING - fallback result container:', !!fallbackContainer);
+        if (fallbackContainer) {
+          console.log('🔄 [FileProcessor] Using fallback result container');
+          this.state.elements.set('result-container', fallbackContainer);
+          this.showResult(data); // Retry with fallback
+          return;
+        }
         this.showNotification('Results container not available', 'error');
         return;
+      }
+      
+      // Clear any remaining progress UI elements to prevent duplicates
+      if (progressContainer) {
+        const progressBar = progressContainer.querySelector('.progress-bar');
+        const progressStatus = progressContainer.querySelector('#progress-status');
+        if (progressBar) progressBar.style.display = 'none';
+        if (progressStatus) progressStatus.style.display = 'none';
       }
       
       console.log('📦 [FileProcessor] Transitioning to result container...');
@@ -2194,29 +2477,37 @@ class FileProcessor {
         .stat-card {
           background: var(--bs-body-bg);
           border: 1px solid var(--bs-border-color);
-          border-radius: 0.5rem;
-          padding: 1rem;
+          border-radius: 0.75rem;
+          padding: 1.5rem 1rem;
           margin-bottom: 0.5rem;
-          transition: all 0.2s ease;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+          position: relative;
+          overflow: hidden;
         }
         .stat-card:hover {
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+          transform: translateY(-3px);
         }
         .stat-card .icon {
-          font-size: 1.5rem;
-          margin-right: 1rem;
-          color: var(--bs-primary);
+          font-size: 2rem;
+          margin-bottom: 0.75rem;
+          display: block;
+          opacity: 0.8;
         }
         .stat-card .value {
-          font-size: 1.8rem;
-          font-weight: 600;
-          margin-bottom: 0.25rem;
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+          line-height: 1;
         }
         .stat-card .label {
-          font-size: 0.875rem;
+          font-size: 0.9rem;
           color: var(--bs-secondary);
           margin: 0;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
         .zero-value {
           opacity: 0.6;
@@ -2297,40 +2588,72 @@ class FileProcessor {
         </div>
         ` : ''}
         
+        <!-- Primary Statistics Row -->
         <div class="row mb-4">
-          <div class="col-md-4">
-            <div class="stat-card">
-              <div class="d-flex align-items-center">
-                <div class="icon"><i class="fas fa-file"></i></div>
-                <div>
-                  <div class="value ${stats.total_files === 0 ? 'zero-value' : ''}">${stats.total_files}</div>
-                  <div class="label">Total Files</div>
-                </div>
-              </div>
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-primary"><i class="fas fa-file"></i></div>
+              <div class="value ${stats.total_files === 0 ? 'zero-value' : ''}">${stats.total_files}</div>
+              <div class="label">Total Files</div>
             </div>
           </div>
           
-          <div class="col-md-4">
-            <div class="stat-card">
-              <div class="d-flex align-items-center">
-                <div class="icon text-success"><i class="fas fa-check-circle"></i></div>
-                <div>
-                  <div class="value text-success">${stats.processed_files}</div>
-                  <div class="label">Processed Files</div>
-                </div>
-              </div>
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-success"><i class="fas fa-check-circle"></i></div>
+              <div class="value text-success">${stats.processed_files}</div>
+              <div class="label">Files Processed</div>
             </div>
           </div>
           
-          <div class="col-md-4">
-            <div class="stat-card">
-              <div class="d-flex align-items-center">
-                <div class="icon text-danger"><i class="fas fa-times-circle"></i></div>
-                <div>
-                  <div class="value text-danger">${stats.error_files}</div>
-                  <div class="label">Error Files</div>
-                </div>
-              </div>
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-danger"><i class="fas fa-times-circle"></i></div>
+              <div class="value text-danger">${stats.error_files}</div>
+              <div class="label">Error Files</div>
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-warning"><i class="fas fa-skip-forward"></i></div>
+              <div class="value text-warning">${stats.skipped_files}</div>
+              <div class="label">Skipped Files</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Statistics Row -->
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-info"><i class="fas fa-database"></i></div>
+              <div class="value">${stats.formatted_total_size || this.formatBytes(stats.total_bytes || 0)}</div>
+              <div class="label">Total Size</div>
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-primary"><i class="fas fa-layer-group"></i></div>
+              <div class="value">${stats.total_chunks || 0}</div>
+              <div class="label">Total Chunks</div>
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-danger"><i class="fas fa-file-pdf"></i></div>
+              <div class="value">${stats.pdf_files || 0}</div>
+              <div class="label">PDF Files</div>
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <div class="stat-card text-center">
+              <div class="icon text-secondary"><i class="fas fa-file-code"></i></div>
+              <div class="value">${stats.binary_files_detected || 0}</div>
+              <div class="label">Binary Files</div>
             </div>
           </div>
         </div>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completion Transition Fix Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>File Processor Completion Fix Test</h2>
+        
+        <!-- Progress Container -->
+        <div id="progress-container" class="card mb-4">
+            <div class="card-body">
+                <h5>Processing Files...</h5>
+                <div class="progress mb-3">
+                    <div id="progress-bar" class="progress-bar bg-success" style="width: 100%">100%</div>
+                </div>
+                <div id="progress-status">Processing complete, transitioning to results...</div>
+            </div>
+        </div>
+
+        <!-- Result Container -->
+        <div id="result-container" class="card mb-4 d-none">
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Processing Completed Successfully!
+                </div>
+                <div id="result-stats" class="mb-3"></div>
+                <button id="new-task-btn" class="btn btn-outline-primary">
+                    <i class="fas fa-plus me-2"></i>New Task
+                </button>
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="card">
+            <div class="card-body">
+                <h5>Test Controls</h5>
+                <button id="test-transition" class="btn btn-primary me-2">Test Transition</button>
+                <button id="reset-containers" class="btn btn-secondary">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simplified transition function
+        function testTransition() {
+            console.log('🧪 Testing container transition...');
+            
+            const progressContainer = document.getElementById('progress-container');
+            const resultContainer = document.getElementById('result-container');
+            
+            console.log('📦 Progress container found:', !!progressContainer);
+            console.log('📦 Result container found:', !!resultContainer);
+            
+            if (progressContainer && resultContainer) {
+                // Hide progress
+                progressContainer.classList.add('d-none');
+                progressContainer.style.display = 'none';
+                
+                // Show result
+                resultContainer.classList.remove('d-none');
+                resultContainer.style.display = 'block';
+                
+                // Update result stats
+                const resultStats = document.getElementById('result-stats');
+                if (resultStats) {
+                    resultStats.innerHTML = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body text-center py-2">
+                                        <div class="fs-4 fw-bold text-primary">3</div>
+                                        <div class="small text-muted">Files Processed</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body text-center py-2">
+                                        <div class="fs-4 fw-bold text-success">2.1s</div>
+                                        <div class="small text-muted">Duration</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                console.log('✅ Transition completed successfully');
+            } else {
+                console.error('❌ Containers not found');
+            }
+        }
+        
+        function resetContainers() {
+            const progressContainer = document.getElementById('progress-container');
+            const resultContainer = document.getElementById('result-container');
+            
+            if (progressContainer) {
+                progressContainer.classList.remove('d-none');
+                progressContainer.style.display = 'block';
+            }
+            
+            if (resultContainer) {
+                resultContainer.classList.add('d-none');
+                resultContainer.style.display = 'none';
+            }
+            
+            console.log('🔄 Containers reset');
+        }
+        
+        // Event listeners
+        document.getElementById('test-transition').addEventListener('click', testTransition);
+        document.getElementById('reset-containers').addEventListener('click', resetContainers);
+        
+        // Auto-test after 3 seconds
+        setTimeout(() => {
+            console.log('🕐 Auto-testing transition after 3 seconds...');
+            testTransition();
+        }, 3000);
+    </script>
+</body>
+</html>
